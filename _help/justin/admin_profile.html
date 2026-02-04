@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAdmin - User Settings</title>
+    
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Font Awesome 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            --warning-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+            --dark-bg: #0f0f1e;
+            --card-bg: #1a1a2e;
+            --sidebar-bg: #16162a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --border-color: #2a2a3e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 240px;
+            background-color: var(--sidebar-bg);
+            padding: 20px 0;
+            z-index: 1000;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo i {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 10px;
+            font-size: 28px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin: 5px 15px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: var(--text-primary);
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .workstation-section {
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+        
+        .workstation-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            object-fit: cover;
+        }
+        
+        .user-info {
+            text-align: left;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Page Title */
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Current Profile Card */
+        .current-profile-card {
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-username {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .profile-badges {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .badge-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Settings Card */
+        .settings-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--text-secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Profile Picture Upload */
+        .profile-pic-section {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        .pic-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--border-color);
+            object-fit: cover;
+            background: var(--primary-gradient);
+        }
+        
+        .pic-upload-area {
+            flex: 1;
+        }
+        
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-zone i {
+            font-size: 36px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .upload-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .upload-text strong {
+            color: #667eea;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            padding: 12px 30px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-danger {
+            padding: 12px 30px;
+            background: var(--danger-gradient);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(235, 51, 73, 0.3);
+        }
+        
+        .btn-secondary {
+            padding: 8px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Sessions Table */
+        .sessions-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .session-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .session-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .session-icon.active {
+            background: var(--success-gradient);
+        }
+        
+        .session-icon.inactive {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .session-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .session-details p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .session-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .status-badge.active {
+            background: rgba(56, 239, 125, 0.2);
+            color: #38ef7d;
+        }
+        
+        .status-badge.inactive {
+            background: rgba(160, 160, 184, 0.2);
+            color: var(--text-secondary);
+        }
+        
+        /* Login Records */
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .log-time {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
+        .log-ip {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .stat-icon.purple {
+            background: var(--primary-gradient);
+        }
+        
+        .stat-icon.blue {
+            background: var(--accent-gradient);
+        }
+        
+        .stat-icon.pink {
+            background: var(--secondary-gradient);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        /* Complaint Form */
+        .form-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-warning {
+            background: rgba(242, 153, 74, 0.1);
+            border: 1px solid rgba(242, 153, 74, 0.3);
+            color: #f2994a;
+        }
+        
+        .alert-success {
+            background: rgba(56, 239, 125, 0.1);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            color: #38ef7d;
+        }
+        
+        .scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .current-profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-pic-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-robot"></i>
+            <span>MyAdmin</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-video"></i>
+                    <span>Meetings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-code"></i>
+                    <span>Snippets</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Action Items</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>AI Tags</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="workstation-section">
+            <div class="workstation-title">Workstation</div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <span>Integrations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Find any discussion point...">
+            </div>
+            
+            <div class="user-section">
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="user-profile">
+                    <img id="headerAvatar" src="https://ui-avatars.com/api/?name=Branden+Lee&background=667eea&color=fff" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name" id="headerName">Branden Lee</div>
+                        <div class="user-email" id="headerEmail">branden@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">User Settings</h1>
+            <p class="page-subtitle">Manage your account settings and preferences</p>
+        </div>
+        
+        <!-- Current Profile Card -->
+        <div class="current-profile-card">
+            <img id="profileAvatar" src="https://ui-avatars.com/api/?name=Branden+Lee&background=667eea&color=fff" alt="Profile" class="profile-avatar-large">
+            <div class="profile-details">
+                <h2 class="profile-username" id="profileUsername">Branden Lee</h2>
+                <p class="profile-email" id="profileEmail">branden@gmail.com</p>
+                <div class="profile-badges">
+                    <span class="badge-item">
+                        <i class="fas fa-shield-alt"></i>
+                        Active User
+                    </span>
+                    <span class="badge-item">
+                        <i class="fas fa-clock"></i>
+                        Member since <span id="memberSince">Jan 2024</span>
+                    </span>
+                    <span class="badge-item">
+                        <i class="fas fa-check-circle"></i>
+                        Verified
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Change Username -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-user-edit"></i>
+                    Change Username
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Current Username</label>
+                <input type="text" id="currentUsername" class="form-control" value="Branden Lee" readonly style="opacity: 0.6;">
+            </div>
+            <div class="form-group">
+                <label class="form-label">New Username</label>
+                <input type="text" id="newUsername" class="form-control" placeholder="Enter new username">
+            </div>
+            <button class="btn-primary" onclick="updateUsername()">
+                <i class="fas fa-save"></i> Update Username
+            </button>
+        </div>
+        
+        <!-- Change Profile Picture -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-camera"></i>
+                    Profile Picture
+                </div>
+            </div>
+            <div class="profile-pic-section">
+                <img id="picPreview" src="https://ui-avatars.com/api/?name=Branden+Lee&background=667eea&color=fff" alt="Preview" class="pic-preview">
+                <div class="pic-upload-area">
+                    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p class="upload-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            PNG, JPG or GIF (max. 5MB)
+                        </p>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn-primary" onclick="uploadProfilePicture()">
+                            <i class="fas fa-upload"></i> Upload Picture
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Sessions -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-desktop"></i>
+                    Active Sessions
+                </div>
+                <span style="color: var(--text-secondary); font-size: 13px;">
+                    <i class="fas fa-circle" style="color: #38ef7d; font-size: 8px;"></i> 
+                    <span id="activeSessionCount">3</span> Active
+                </span>
+            </div>
+            <div class="sessions-table" id="sessionsContainer">
+                <!-- Sessions will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Login Records -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-history"></i>
+                    Login Records
+                </div>
+                <button class="btn-secondary" onclick="exportLogs()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+            <div class="scroll-container" id="loginRecords">
+                <!-- Login records will be populated here -->
+            </div>
+        </div>
+        
+        <!-- User Statistics -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    Your Statistics
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-value" id="accountAge">425</div>
+                    <div class="stat-label">Days Active</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value" id="sessionDuration">2h 34m</div>
+                    <div class="stat-label">Current Session</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon pink">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div class="stat-value" id="totalLogins">1,247</div>
+                    <div class="stat-label">Total Logins</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- File a Complaint -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    File a Complaint
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Complaint Type</label>
+                <select class="form-control" id="complaintType">
+                    <option value="">Select complaint type...</option>
+                    <option value="technical">Technical Issue</option>
+                    <option value="billing">Billing Problem</option>
+                    <option value="harassment">Harassment</option>
+                    <option value="privacy">Privacy Concern</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <input type="text" class="form-control" id="complaintSubject" placeholder="Brief description of the issue">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Detailed Description</label>
+                <textarea class="form-textarea" id="complaintDescription" placeholder="Please provide as much detail as possible..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="submitComplaint()">
+                <i class="fas fa-paper-plane"></i> Submit Complaint
+            </button>
+        </div>
+        
+        <!-- Delete Account -->
+        <div class="settings-card">
+            <div class="card-header-section">
+                <div class="card-title">
+                    <i class="fas fa-user-times"></i>
+                    Delete Account
+                </div>
+            </div>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted after admin approval.
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Reason for Deletion (Optional)</label>
+                <textarea class="form-textarea" id="deletionReason" placeholder="Please tell us why you want to delete your account..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Type "DELETE" to confirm</label>
+                <input type="text" class="form-control" id="deleteConfirm" placeholder="Type DELETE">
+            </div>
+            <button class="btn-danger" onclick="requestAccountDeletion()">
+                <i class="fas fa-trash-alt"></i> Request Account Deletion
+            </button>
+        </div>
+    </div>
+    
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // User data
+        let userData = {
+            username: 'Branden Lee',
+            email: 'branden@gmail.com',
+            avatar: 'https://ui-avatars.com/api/?name=Branden+Lee&background=667eea&color=fff',
+            memberSince: 'Jan 2024',
+            accountCreated: new Date('2024-01-15')
+        };
+        
+        // Sessions data
+        const sessions = [
+            {
+                id: 1,
+                device: 'Windows PC - Chrome',
+                location: 'Nairobi, Kenya',
+                ip: '192.168.1.105',
+                active: true,
+                current: true,
+                lastActive: 'Now'
+            },
+            {
+                id: 2,
+                device: 'iPhone 13 - Safari',
+                location: 'Nairobi, Kenya',
+                ip: '192.168.1.142',
+                active: true,
+                current: false,
+                lastActive: '5 mins ago'
+            },
+            {
+                id: 3,
+                device: 'MacBook Pro - Firefox',
+                location: 'Mombasa, Kenya',
+                ip: '41.90.123.45',
+                active: true,
+                current: false,
+                lastActive: '2 hours ago'
+            }
+        ];
+        
+        // Login records data
+        const loginRecords = [
+            { date: '2026-02-04 14:30', action: 'Login', ip: '192.168.1.105' },
+            { date: '2026-02-04 09:15', action: 'Logout', ip: '192.168.1.105' },
+            { date: '2026-02-03 16:45', action: 'Login', ip: '192.168.1.142' },
+            { date: '2026-02-03 12:20', action: 'Logout', ip: '192.168.1.142' },
+            { date: '2026-02-03 08:00', action: 'Login', ip: '192.168.1.105' },
+            { date: '2026-02-02 18:30', action: 'Logout', ip: '41.90.123.45' },
+            { date: '2026-02-02 10:15', action: 'Login', ip: '41.90.123.45' },
+            { date: '2026-02-01 17:00', action: 'Logout', ip: '192.168.1.105' },
+            { date: '2026-02-01 09:00', action: 'Login', ip: '192.168.1.105' },
+            { date: '2026-01-31 19:45', action: 'Logout', ip: '192.168.1.142' }
+        ];
+        
+        // Initialize page
+        function init() {
+            renderSessions();
+            renderLoginRecords();
+            updateSessionTimer();
+            setInterval(updateSessionTimer, 60000); // Update every minute
+        }
+        
+        // Render sessions
+        function renderSessions() {
+            const container = document.getElementById('sessionsContainer');
+            container.innerHTML = sessions.map(session => `
+                <div class="session-item">
+                    <div class="session-info">
+                        <div class="session-icon ${session.active ? 'active' : 'inactive'}">
+                            <i class="fas ${getDeviceIcon(session.device)}"></i>
+                        </div>
+                        <div class="session-details">
+                            <h4>${session.device}</h4>
+                            <p>${session.location} • ${session.ip} • ${session.lastActive}</p>
+                        </div>
+                    </div>
+                    <div class="session-actions">
+                        ${session.current ? 
+                            '<span class="status-badge active">Current Session</span>' : 
+                            `<span class="status-badge active">Active</span>
+                             <button class="btn-secondary" onclick="terminateSession(${session.id})">
+                                 <i class="fas fa-times"></i> Terminate
+                             </button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('activeSessionCount').textContent = sessions.filter(s => s.active).length;
+        }
+        
+        // Get device icon
+        function getDeviceIcon(device) {
+            if (device.includes('iPhone') || device.includes('Android')) return 'fa-mobile-alt';
+            if (device.includes('Mac')) return 'fa-laptop';
+            return 'fa-desktop';
+        }
+        
+        // Terminate session
+        function terminateSession(sessionId) {
+            if (confirm('Are you sure you want to terminate this session?')) {
+                const index = sessions.findIndex(s => s.id === sessionId);
+                if (index !== -1) {
+                    sessions[index].active = false;
+                    renderSessions();
+                    showNotification('Session terminated successfully', 'success');
+                }
+            }
+        }
+        
+        // Render login records
+        function renderLoginRecords() {
+            const container = document.getElementById('loginRecords');
+            container.innerHTML = loginRecords.map(record => `
+                <div class="log-item">
+                    <div>
+                        <strong>${record.action}</strong>
+                        <span class="log-time"> - ${record.date}</span>
+                    </div>
+                    <span class="log-ip">${record.ip}</span>
+                </div>
+            `).join('');
+        }
+        
+        // Update username
+        function updateUsername() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            
+            if (!newUsername) {
+                alert('Please enter a new username');
+                return;
+            }
+            
+            if (newUsername === userData.username) {
+                alert('New username must be different from current username');
+                return;
+            }
+            
+            userData.username = newUsername;
+            
+            // Update all instances
+            document.getElementById('currentUsername').value = newUsername;
+            document.getElementById('profileUsername').textContent = newUsername;
+            document.getElementById('headerName').textContent = newUsername;
+            
+            // Update avatars
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(newUsername)}&background=667eea&color=fff`;
+            userData.avatar = avatarUrl;
+            
+            document.getElementById('newUsername').value = '';
+            showNotification('Username updated successfully!', 'success');
+        }
+        
+        // Preview image
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('picPreview').src = e.target.result;
+                    userData.tempAvatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Upload profile picture
+        function uploadProfilePicture() {
+            if (!userData.tempAvatar) {
+                alert('Please select an image first');
+                return;
+            }
+            
+            userData.avatar = userData.tempAvatar;
+            
+            // Update all avatar instances
+            document.getElementById('profileAvatar').src = userData.avatar;
+            document.getElementById('headerAvatar').src = userData.avatar;
+            
+            showNotification('Profile picture updated successfully!', 'success');
+        }
+        
+        // Submit complaint
+        function submitComplaint() {
+            const type = document.getElementById('complaintType').value;
+            const subject = document.getElementById('complaintSubject').value.trim();
+            const description = document.getElementById('complaintDescription').value.trim();
+            
+            if (!type || !subject || !description) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Simulate submission
+            document.getElementById('complaintType').value = '';
+            document.getElementById('complaintSubject').value = '';
+            document.getElementById('complaintDescription').value = '';
+            
+            showNotification('Complaint submitted successfully! Admin will review it shortly.', 'success');
+        }
+        
+        // Request account deletion
+        function requestAccountDeletion() {
+            const confirmation = document.getElementById('deleteConfirm').value;
+            const reason = document.getElementById('deletionReason').value.trim();
+            
+            if (confirmation !== 'DELETE') {
+                alert('Please type "DELETE" to confirm account deletion');
+                return;
+            }
+            
+            if (confirm('Are you absolutely sure? This will send a deletion request to the admin.')) {
+                showNotification('Account deletion request sent to admin. You will be notified once processed.', 'success');
+                document.getElementById('deleteConfirm').value = '';
+                document.getElementById('deletionReason').value = '';
+            }
+        }
+        
+        // Export logs
+        function exportLogs() {
+            const csv = 'Date,Action,IP Address\n' + 
+                loginRecords.map(r => `${r.date},${r.action},${r.ip}`).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'login-records.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Login records exported successfully!', 'success');
+        }
+        
+        // Update session timer
+        function updateSessionTimer() {
+            const now = new Date();
+            const sessionStart = new Date(now.getTime() - (2 * 60 * 60 * 1000 + 34 * 60 * 1000)); // 2h 34m ago
+            const diff = now - sessionStart;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('sessionDuration').textContent = `${hours}h ${minutes}m`;
+            
+            // Update account age
+            const accountCreated = userData.accountCreated;
+            const daysDiff = Math.floor((now - accountCreated) / (1000 * 60 * 60 * 24));
+            document.getElementById('accountAge').textContent = daysDiff;
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <div>${message}</div>
+            `;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '10000';
+            alert.style.minWidth = '300px';
+            alert.style.animation = 'slideIn 0.3s ease';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>
