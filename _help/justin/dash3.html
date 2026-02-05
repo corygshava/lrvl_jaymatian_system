@@ -1059,7 +1059,7 @@
             gap: 10px;
         }
 
-        .toast {
+        .toast_ {
             background: white;
             border-radius: var(--radius-sm);
             padding: 16px 20px;
@@ -1944,7 +1944,7 @@
         function showToast(type, title, message) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            toast.className = `toast_ ${type}`;
             
             const icon = type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info';
             

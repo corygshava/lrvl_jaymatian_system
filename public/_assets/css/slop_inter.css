@@ -1,0 +1,37 @@
+/* forms */
+	.form-label {
+		display: block;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--gray);
+		margin: 12px 8px;
+	}
+	.form-control-custom {
+		width: 100%;
+		padding: 12px 15px;
+		border: 1px solid var(--clr-border);
+		border-radius: var(--roundness);
+		font-size: 14px;
+		transition: all 0.3s;
+	}
+	.form-control-custom:focus {
+		outline: none;
+		border-color: var(--primary);
+		box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+	}
+
+/* buttons */
+	.mybtn {
+		border: none;
+		padding: 10px 20px;
+		font-weight: 800;
+		gap: 8px;
+		transition: all 0.3s;
+		cursor: pointer;
+		font-size: 14px;
+		border-radius: var(--roundness);
+	}
+	.mybtn.primary{
+		background: var(--themecolor);
+		color: var(--alttext);
+	}
