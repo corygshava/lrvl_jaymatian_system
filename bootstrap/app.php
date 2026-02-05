@@ -12,11 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // limit API usage rates
-        RateLimiter::for('api',function($request){
-            return Limit::perMinute(100)->by($request->user()?->id ?: $request->ip());
-        });
+        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->withProviders([
+        App\Providers\AppServiceProvider::class,
+    ])
+    ->create();
