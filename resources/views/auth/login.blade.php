@@ -8,7 +8,8 @@
 					<hr>
 					<p>enter your details to log in</p>
 				</div>
-				<form method="post">
+				<form method="post" action="./login">
+                    @csrf
 					<div class="input-group-custom">
 						<div class="form-group">
 							<label class="form-label" for="email">Email Address</label>
@@ -21,8 +22,14 @@
 							<input type="password" class="form-control-custom" id="password" name="password" placeholder="enter password" required>
 						</div>
 					</div>
+                    <div class="distance-sm">
+						<div class="custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="remember" name="Remember">
+							<label class="custom-control-label" for="remember">Remember me</label>
+						</div>
+					</div>
 					<div>
-						<button class="mybtn primary in_fullwidth w3-center" onclick="saveStudent()">
+						<button class="mybtn primary in_fullwidth w3-center">
 							log in
 						</button>
 					</div>

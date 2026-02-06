@@ -28,6 +28,20 @@
     @endauth
 {{-- end of common ui forms --}}
 
+{{-- session flashes --}}
+    @if ($errors->any())
+		<script>
+			@foreach ($errors->all() as $err)
+				alert_danger(`{{$err}}`,10);
+			@endforeach
+		</script>
+	@endif
+
+    @if (session()->has('message'))
+		<script>alert_success(`{{session('message')}}`,15);</script>
+	@endif
+{{-- end of session flashes --}}
+
 <script>
     const confirm_modal = document.querySelector('#confirmerBox');
     const confirm_toggler = document.querySelector('[data-role="toggleConfirmModal"]');

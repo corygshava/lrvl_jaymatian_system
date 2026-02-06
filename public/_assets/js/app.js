@@ -312,7 +312,8 @@ if(window[curfun] == undefined){
 	window[curfun] = (m) => {
         dft_holder = document.querySelector('#app_ui');
 
-		alert_info('making extras');
+		// alert_info('making extras');
+		alert_silent('making extras');
 
 		// make the confirmer modal
 		if(confirm_modal === undefined){
@@ -395,7 +396,8 @@ if(window[curfun] == undefined){
 		document.body.appendChild(b);
 		document.body.appendChild(btn);
 
-		alert_info('med modal');
+		// alert_info('med modal');
+		alert_silent('med modal');
 		the_modal = b;
 		the_modal_toggler = btn;
 
