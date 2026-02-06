@@ -1,24 +1,23 @@
 /* copyright Cornelis G Shava, UIKIT starter pack: DO NOT resell */
 
 :root {
-	--themecolor: #fed018;
-	--seccolor: #ff8c00;
-	--darkcolor: #eb7820;
+	--themecolor: #0081ff;
+	--seccolor: #01ad4e;
+	--darkcolor: #063bd0;
 	--clr-theme-dark: var(--darkcolor);
 	--clr-bg: #dedede;
 	/* --clr-bg: red; */
 	--clr-bgglass: #393939aa;
-	--clr-border: #e0e0e0;
+	--clr-border: #c0c0c0;
 	--clr-shadow: #ffe87483;
-	--clr-panelbg: #fefefe;
-
+	--clr-panelbg: #fff;
 	--clr-darkglass: #000000aa;
 	--clr-whiteglass: #efefefaa;
 	--clr-alttext: #fff;
 	--clr-text: #292929;
-	--clr-text-muted: #8a8a8a;
+	--clr-text-muted: #787878;
 	--themeglow: 0 0 16px var(--themecolor);
-	--themeshadow: 0 0 16px rgba(120,120,120,0.4);
+	--themeshadow: 0 0 16px rgba(100,100,100,0.3);
 	--overlaybg: rgba(0,0,0,0.8);
 	--size-tn: 8px;
 	--size-sm: 16px;
@@ -26,14 +25,14 @@
 	--size-md: 32px;
 	--size-lg: 48px;
 	--size-mg: 64px;
-
-	--span-sm: 450px;
-	--span-md: 600px;
+	--span-tn: 240px;
+	--span-sm: 400px;
+	--span-nm: 400px;
+	--span-md: 700px;
 	--span-lg: 800px;
 	--span-mg: 1280px;
-
 	--roundness: 12px;
-	--rounder: 16px;
+	--rounder: 20px;
 	--minspan: 800px;
 }
 
@@ -41,9 +40,9 @@
 	--clr-bg: #e7e7e7;
 	--clr-bgglass: #e7e7e7aa;
 	--clr-border: #e0e0e0;
+	/* --clr-shadow: #36d015aa; */
 	--clr-text: #222;
 	--clr-panelbg: #ffffff;
-	--clr-shadow: #36d015aa;
 }
 
 /* images */
@@ -61,19 +60,21 @@
 /**:not(.fa):not(.fas):not(.fab):not(.far)
 :not(h1):not(h2):not(h3):not(h4):not(.h1):not(.h2):not(.h3):not(.h4){*/
 body{
-	font-family: 'monte','Inter_24pt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	font-family: 'Inter_24pt',-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 html{
 	scroll-behavior: smooth;
 }
 body{
-	/* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 	background: var(--clr-bg);
 	color:var(--clr-text);
 	padding: 0;
 	margin: 0;
 	overflow-x: hidden;
 	min-height: 100vh;
+}
+body.t1{
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -132,20 +133,33 @@ a{
 			opacity: 1;
 			translate: 0 0px;
 		}
-	/* ---------- 3. containers ------ */
-		.fullcon{width: 100vw;height: 100vh}
 
-		.mycon:not(.except){
-			box-shadow: var(--themeshadow);
-		}
-		.mycon{max-width: var(--minspan);}
+	/* ---------- 3. containers --------- */
+		.fullcon{width: 100vw;height: 100vh;}
+		.in_fullcon{width: 100%;height: 100%;}
+
+		.mycon:not(.except){box-shadow: var(--themeshadow);background-color: var(--clr-panelbg);width: 96%;}
+		.mycon.tn{max-width: var(--span-tn);}
 		.mycon.sm{max-width: var(--span-sm);}
+		.mycon.nm{max-width: var(--span-nm);}
 		.mycon.md{max-width: var(--span-md);}
 		.mycon.lg{max-width: var(--span-lg);}
 		.mycon.mg{max-width: var(--span-mg);}
-	/* ---------- 4. formholder ------ */
-		.formholder{
-			width: 96vw;
+
+	/* ---------- 4. Banner ------------------ */
+		.banner{
+			background:linear-gradient(80deg,var(--themecolor) 0,var(--seccolor) 80%);
+			color:var(--clr-alttext) !important;
+			text-align:center;
+			padding:.75rem 1rem;
+			font-weight:600;
+			width: 100%;
+			display: flex;
+			justify-content: space-around;
+			z-index: 16 !important;
+		}
+		.banner a{
+			color: #fff;
 		}
 
 /* reusables x utilities */

@@ -2,6 +2,7 @@ const appkey = "trybxp_companion_";
 const pref_paths = appkey + 'savedlinks';
 
 const fetch_bypass = "fetch_bypass_" + mekRandomString(5);
+const fetch_ui = "fetch_bypass_" + mekRandomString(5);
 const fetch_bypass_fyls = "fetch_bypass_fyls_" + mekRandomString(5);
 const simple_fetch = "simple_fetch_bypass_" + mekRandomString(5);
 const session_CSRF_token = mekRandomString(12);
@@ -31,6 +32,8 @@ if(window[curfun] == undefined){
 		try{
 			alert_silent({to: p,data: dta,method: mt});
 
+			mt = mt.toUpperCase();
+
 			if(!skipappend && !use_as_is){
 				dta[fetch_identifier] = 'yes';
 				dta['source'] = 'makwldnnalwkndajkdnajwdn_testenviron';
@@ -57,12 +60,17 @@ if(window[curfun] == undefined){
 			// alert_info(JSON.stringify(headers));
 			// console.log(`${fetch_bypass}: `,dta);
 
-			let req = await fetch(p,{
+			let s_data = {
 				method: mt.toUpperCase(),
 				headers: headers,
 				// credentials: 'same-origin',
-				body: body,
-			});
+			};
+
+			if(!(mt == "GET" || mt == 'HEAD')){
+				s_data.body = body;
+			}
+
+			let req = await fetch(p,s_data);
 
 			if(!req.ok){
 				if(req.status == 422){
@@ -206,6 +214,44 @@ if(window[curfun] == undefined){
 		} catch (error){
 			alert_danger(error);
 			throw error;
+		}
+	}
+}
+
+curfun = fetch_ui;
+if(window[curfun] == undefined){
+	window[curfun] = async (p,dta = {},mt = 'POST',skipappend = false,use_as_is=false) => {
+		try{
+			alert_silent({to: p,data: dta,method: mt});
+
+			const prff = JSON.parse(localStorage.getItem(pref_auth));
+
+			let headers = {
+				'X-Requested-With' : 'XMLHttpRequest',
+				'X-CSRF-TOKEN' : session_CSRF_token,
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json',
+			};
+
+			// alert(prff);
+
+			if (prff !== null) {
+				headers['Authorization'] = `Bearer ${prff.value}`
+			}
+
+			let s_data = {
+				method: mt.toUpperCase(),
+				headers: headers,
+				// credentials: 'same-origin',
+			};
+
+			let req = await fetch(p,s_data);
+			let final = await req.text();
+
+			return final;
+		} catch (error){
+			alert_danger(error);
+			throw new Error(error);
 		}
 	}
 }

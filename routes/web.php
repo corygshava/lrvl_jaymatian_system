@@ -17,4 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::prefix('test')->group(function () {
+    Route::get('/is_logged_in', [ProfileController::class, 'check_session']);
+});
+
 require __DIR__.'/auth.php';
