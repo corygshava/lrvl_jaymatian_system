@@ -363,5 +363,29 @@
         "country": "KE",
         "location": "register",
         "user": "guest"
+    },
+    {
+        "timestamp": "06-02-26 11:49:31",
+        "country": "KE",
+        "location": "dashboard",
+        "user": "guest"
+    },
+    {
+        "timestamp": "06-02-26 11:51:40",
+        "country": "KE",
+        "location": "dashboard",
+        "user": "guest"
+    },
+    {
+        "timestamp": "06-02-26 11:52:08",
+        "country": "KE",
+        "location": "dashboard",
+        "user": "guest"
+    },
+    {
+        "timestamp": "06-02-26 11:52:30",
+        "country": "KE",
+        "location": "dashboard",
+        "user": "guest"
     }
 ]

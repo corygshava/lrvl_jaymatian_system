@@ -60,11 +60,4 @@
 			</div>
 		</div>
 	</div>
-
-    {{--
-        name="name"
-        type="email"
-        name="password"
-        name="password_confirmation"
-    --}}
 </x-layouts.mainlayout>
