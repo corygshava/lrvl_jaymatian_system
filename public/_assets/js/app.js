@@ -8,16 +8,19 @@ const simple_fetch = "simple_fetch_bypass_" + mekRandomString(5);
 const session_CSRF_token = mekRandomString(12);
 const fetch_identifier = "viaFetch";
 
-const mainhost = "http://localhost:3333";
+const mainhost = ".";
 const imagepath = `${mainhost}/res/images/`;
 
 const pref_auth = 'trybXP_comp_app_access_token';
 
 var curfun = "";
-var confirm_modal = undefined;
-var confirm_toggler = undefined;
+// var confirm_modal = undefined;
+// var confirm_toggler = undefined;
 var the_modal = undefined;
 var the_modal_toggler = undefined;
+
+// UI elements
+var dft_holder = undefined;
 
 const pages = {
 	'emulator' : './UX_dev/app.html',
@@ -296,9 +299,9 @@ if(window[curfun] == undefined){
 		// alert_info(c_page);
 		window['simple_fetcher'](`${mainhost}/api/log_visit`,{where: c_page}).then(w => {
 			if(w){
-				alert_success('wirked');
+				alert_silent('wirked');
 			} else {
-				alert_success('not wirked');
+				alert_silent('not wirked');
 			}
 		});
 	}
@@ -307,49 +310,53 @@ if(window[curfun] == undefined){
 curfun = "mekXtras";
 if(window[curfun] == undefined){
 	window[curfun] = (m) => {
+        dft_holder = document.querySelector('#app_ui');
+
 		alert_info('making extras');
 
 		// make the confirmer modal
-		let conid = "confirmerBox_" + mekRandomString(3);
-		let desig = `#${conid}`;
+		if(confirm_modal === undefined){
+			let conid = "confirmerBox_" + mekRandomString(3);
+			let desig = `#${conid}`;
 
-		let b = document.createElement('div');
+			let b = document.createElement('div');
 
-		b.className = "mymodal fade";
-		b.style.display = "none";
-		b.id = conid;
-		b.dataset.shown = "0";
-		b.innerHTML = `
-			<div class="modal-content modal-sm w3-animate-opacity" role="document">
-				<button type="button" class="close w3-right w3-btn" data-toggler="${desig}" aria-label="Close">
-					<i class="fa fa-times"></i>
-				</button>
-				<div class="flow gap-sm">
-					<div class="modal-header">
-						<span class="modal-title h3">Confirm Action</span>
-					</div>
-					<div class="modal-body">
-						do you want to delete this
-					</div>
-					<div class="modal-footer w3-left-align">
-						<button type="button" class="btn outline except" data-toggler="${desig}" data-subrole="cancel">cancel</button>
-						<button class="btn primary except" data-subrole="continue">continue &raquo;</button>
+			b.className = "mymodal";
+			b.style.display = "none";
+			b.id = conid;
+			b.dataset.shown = "0";
+			b.innerHTML = `
+				<div class="modal-content modal-sm w3-animate-opacity" role="document">
+					<button type="button" class="close w3-right w3-btn" data-toggler="${desig}" aria-label="Close">
+						<i class="fa fa-times"></i>
+					</button>
+					<div class="flow gap-sm">
+						<div class="modal-header">
+							<span class="modal-title h3">Confirm Action</span>
+						</div>
+						<div class="modal-body">
+							do you want to delete this
+						</div>
+						<div class="modal-footer w3-left-align">
+							<button type="button" class="btn outline except" data-toggler="${desig}" data-subrole="cancel">cancel</button>
+							<button class="btn primary except" data-subrole="continue">continue &raquo;</button>
+						</div>
 					</div>
 				</div>
-			</div>
-		`;
+			`;
 
-		let btn = document.createElement('button');
-		btn.classList.add('w3-hide');
-		btn.dataset.toggler = desig;
-		btn.dataset.onshow = "flex";
+			let btn = document.createElement('button');
+			btn.classList.add('w3-hide');
+			btn.dataset.toggler = desig;
+			btn.dataset.onshow = "flex";
 
-		document.body.appendChild(b);
-		document.body.appendChild(btn);
-		confirm_modal = b;
-		confirm_toggler = btn;
+			document.body.appendChild(b);
+			document.body.appendChild(btn);
+			confirm_modal = b;
+			confirm_toggler = btn;
+		}
 
-		// make the confirmer modal
+		// make the common modal
 		conid = "modalBox_" + mekRandomString(3);
 		desig = `#${conid}`;
 
