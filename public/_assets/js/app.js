@@ -256,6 +256,31 @@ if(window[curfun] == undefined){
 	}
 }
 
+curfun = "loadUI";
+if(window[curfun] == undefined){
+	window[curfun] = async ({p='/',mt='get',holder=undefined,prerun = () => {alert_info('loading...')},postrun=() => {alert_info('loaded')}}) => {
+		if(holder === undefined){
+			holder = dft_holder;
+		}
+
+		if(typeof prerun == "function"){
+			prerun();
+		}
+
+		showloader();
+
+		window[fetch_ui](p,{},mt).then(d => {
+			hideloader();
+			holder.innerHTML = d;
+			refreshUI(300)
+
+			if(typeof postrun == "function"){
+				postrun();
+			}
+		})
+	}
+}
+
 curfun = "log_visit";
 if(window[curfun] == undefined){
 	window[curfun] = async (p,dta = {},mt = 'POST') => {
@@ -473,7 +498,7 @@ function mekError(demo='an error happened'){
 function mekStandin(demo='an error happened',class_ovr = 'w3-text-black',cta_link = undefined,cta_text = undefined){
 	let cta = '';
 
-	cta = cta_link != undefined ? 
+	cta = cta_link != undefined ?
 		`<a href="${cta_link}" class="btn outline"><i class="fa fa-plus"></i> ${cta_text || 'go now'}</a>` :
 		'';
 
@@ -488,7 +513,7 @@ function mekStandin(demo='an error happened',class_ovr = 'w3-text-black',cta_lin
 function mekSection(heading = "heading",demo='an error happened',class_ovr = 'w3-text-black',cta_link = undefined,cta_text = undefined){
 	let cta = '';
 
-	cta = cta_link != undefined ? 
+	cta = cta_link != undefined ?
 		`<a href="${cta_link}" class="btn outline"><i class="fa fa-plus"></i> ${cta_text || 'go now'}</a>` :
 		'';
 
