@@ -26,7 +26,7 @@ abstract class Controller{
         "success" => false,
         'result' => false,
         "message" => "default",
-        "tosend" => null,
+        "sendme" => null,
         "runlog" => []
     ];
 
@@ -455,16 +455,7 @@ abstract class Controller{
 			'user_data' => [
 				'deliveryCharge' => 300,
 				'valueCutoff' => 30000,
-				'sitelink' => 'https://lrvl.houseofjrm.com',
-				'PendingOrderLifetime' => 12,
-				'NewSubPromocode' => 'NEWSUBSCRIBER_Y1',
-				'returnDeadline' => 12,
-				'pre-orderDiscount' => 19,
-				'failurePercent' => 40,
-				'failureCap' => 40000,
-				'orderCompletionPoints' => 700,
-				'creditsConversion' => 0.9,
-				'creditsCap' => 45,
+				'sitelink' => 'https://migori.jaymattlab.com/',
 				'Mpesa' => [
 					'passkey' => 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
 					'BusinessShortCode' => '174379',
@@ -473,25 +464,18 @@ abstract class Controller{
 				],
 				'PaymentMethods' => [
 					'Mpesa' => 'mpesa',
-					'Stripe' => 'card',
 				],
 				'AvailablePaymentMethods' => [
 					'Mpesa' => 'mpesa',
-					'Stripe' => 'card',
-				],
-				'supportedCountries' => [
-					'Mpesa' => ['KE'],
-					'Stripe' => ['KE','UG','TZ'],
-					'Delivery' => ['KE','UG','TZ'],
 				]
 			],
 			"developer_details" => [
-				'email' => 'corygshava777+houseofjrmdev@gmail.com',
+				'email' => 'corygshava777+jaymattdev@gmail.com',
 				"name" => 'Cory',
 			],
 			"owner_details" => [
-				'email' => 'justruthmartin@gmail.com',
-				'name' => 'Madam Ruth',
+				'email' => 'jaymattianlabs@gmail.com',
+				'name' => 'JayMatt',
 			]
 		];
 
@@ -521,7 +505,7 @@ abstract class Controller{
 
 			$updatesitedata('--');
         } else {
-        	$contents = $fl::saferead($sitedatapath,true,12);
+            $contents = $fl::saferead($sitedatapath,true,12);
 			$sitedata = json_decode($contents,true);
 		}
 

@@ -18,7 +18,7 @@ class ApiController extends Controller{
 		// writes to visitslog.json in the format [date] [country] -> page visited
 		$fl = new FileopsController();
 		$date = date('my');
-		$fpath = storage_path("runtime/visitslogs/{$date}_visitlogs.json");
+		$fpath = storage_path("runtime/visits_logs/{$date}_visitlogs.json");
 
 		$logs = [];
 		$vl = $req->all();
