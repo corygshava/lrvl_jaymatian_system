@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class userRoles extends Model
 {
-    public $protected = [
+    public $fillable = [
         'role_name',
         'role_permissions',
     ];

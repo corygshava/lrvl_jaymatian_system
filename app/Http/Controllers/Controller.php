@@ -5,23 +5,31 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\userRoles;
+use App\Models\systemData;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Crypt;
+
 use Stevebauman\Location\Facades\Location;
 use App\Http\Controllers\FileopsController;
 use Illuminate\Contracts\Encryption\DecryptException;
 
 abstract class Controller{
-	public static $prefix = 'ui';
+	public static $prefix = '_assets';
 	public static $uimode = "dark";
-	public static $_dir = "admin";
 	public static $sitedata = null;
+    public static $permissions = [];
+    public static $mypermissions = [];
 
 	// Api stuff
 	public static $fetchId = 'viaFetch';
 	public static $exchage_rates_url = 'https://api.exchangerate-api.com/v4/latest/USD';
 
+    // response shape stuff
+    public static $showlogs = true;
     public $dftres = [
         "success" => false,
         'result' => false,
@@ -61,7 +69,7 @@ abstract class Controller{
 		$utype = "normal";
 
 		if(auth()->check()){
-			$utype = auth()->user()->userrole;
+			$utype = auth()->user()->myRoles()?->role_name ?? '';
 
 			if(strtolower($utype) == 'admin'){
 				$res = true;
@@ -84,23 +92,25 @@ abstract class Controller{
 	public static function commondata(){
 		$uimode = self::$uimode;
 		$prefix = self::$prefix;
-		$_dir = self::$_dir;
 		$_sdata = self::getSiteData();
 		$_uid = null;
 		$cur_user = null;
+        $allpermissions = self::getpermissions();
+        $mypermissions = [];
 
 		if(auth()->check()){
 			$cur_user = auth()->user();
-			$_uid = self::encryptuid($cur_user->id);
+			// $_uid = self::encryptuid($cur_user->id);
 		}
 
 		return [
 			'uimode' => $uimode,
 			'prefix' => $prefix,
-			'_dir' => $_dir,
 			'sitedata' => $_sdata,
 			'uid' => $_uid,
 			'cur_user' => $cur_user,
+            'permissions' => $allpermissions,
+            'mypermissions' => $mypermissions,
 		];
 	}
 
@@ -443,6 +453,7 @@ abstract class Controller{
 		}
 	}
 
+    // site data
 	public static function defaultSiteData(){
 		$created = Carbon::now()->toDateTimeString();
 		$lastupdate = Carbon::parse('2025-11-21 03:25:29');
@@ -522,6 +533,7 @@ abstract class Controller{
 
 		return $sitedata;
 	}
+    // end of sitedata
 
 	public static function getSupportedCountries_paymethod($meth){
 		$sdata = self::getSiteData(false);
@@ -553,7 +565,7 @@ abstract class Controller{
 		$fl = new FileopsController();
 		$tdate = $usedate ? date('dmy')."_" : '';
 		$fname = $fname == null ? 'payloads' : $fname;
-		$fstore = "runtime/payloads/{$tdate}{$fname}.json";
+		$fstore = "runtime/payloads/{$tdate}_{$fname}.json";
         $fpath = storage_path($fstore);
 		$contents = '[]';
 		$curdata = [];
@@ -581,6 +593,81 @@ abstract class Controller{
 		$tosave = json_encode($curdata,JSON_PRETTY_PRINT);
 		return $fl::safewrite_txt($fpath,$tosave,true,24);
 	}
+
+    // system roles subsys
+    public static function sys_permissions(){
+        return [
+            "last_update" => Carbon::parse('2026-02-12 13:42:35'),
+            "permissions" => [
+                'ADD_ROLE',
+                'EDIT_ROLE',
+                'ADD_CLIENT',
+                'EDIT_CLIENT',
+                'VIEW_CLIENT',
+                'ADD_JOB',
+                'EDIT_JOB',
+                'VIEW_JOB',
+                'VIEW_PAYMENTS',
+                'GEN_REPORT',
+                'ADD_REPORT',
+                'VIEW_REPORT',
+            ],
+        ];
+    }
+
+    public static function getpermissions($useDefault = false,$forceReload = false){
+        if(self::$permissions !== null && $forceReload){
+            return self::$permissions;
+        }
+
+        // get defaults
+        $dft = self::sys_permissions();
+        $saved_data = [];
+        $fl = new FileopsController();
+        $fpath = storage_path('runtime/all_permissions.json');
+        $err = "";
+
+        $updatepermissions = function() use ($dft,$fl,$err,$fpath){
+            if(!$fl::safewrite_txt($fpath,json_encode($dft,JSON_PRETTY_PRINT),true,12,$err)){
+                die("there was an error writing permissions file: $err");
+            }
+
+            systemData::query()->updateOrCreate(
+                ['item_name' => 'system_permissions'],
+                ['item_data' => $dft['permissions']]
+            );
+
+            userRoles::query()->updateOrCreate(
+                ['role_name' => "admin"],
+                ['role_permissions' => $dft['permissions']]
+            );
+        };
+
+        if(is_file($fpath)){
+            $rawdata = $fl::saferead($fpath, true, 12, $err);
+            $inter_data = $rawdata == '' && typeOf($rawdata) == 'string' ? [] : json_decode($rawdata,true);
+            $saved_data = is_array($inter_data) ? $inter_data : [];
+        } else {
+            $fl::c_file($fpath,$err);
+            $updatepermissions();
+        }
+
+        if(empty($saved_data)){
+            $updatepermissions();
+            $saved_data = $dft;
+        } else{
+            $dft_update = Carbon::parse($dft['last_update']);
+            $saved_update = Carbon::parse($saved_data['last_update']);
+            $shouldupdate = $saved_update->isBefore($dft_update);
+
+            if($shouldupdate){
+                $updatepermissions();
+                $saved_data = $dft;
+            }
+        }
+
+        return $saved_data['permissions'];
+    }
 
 	// model based agnostics
 	public function getme(Request $r) {
@@ -698,49 +785,33 @@ abstract class Controller{
 
 	// Templates
 	public function ReqTemplate(Request $req){
-		$vl = $req->all();
+		$res = $this->dftres;
+        $alldata = $req->all();
 
-		$passeddata = $req->validate([
-			'condition' => ['required'],
-		]);
+        /*
+        $passed = $req->validate([
+            'condition' => ['required']
+        ]);
+        // */
 
-		$fetchid = self::$fetchId;
-		$isapi = isset($vl[$fetchid]) ? $vl[$fetchid] == 'true' || $vl[$fetchid] == "yes" : false;
-		$success = false;
-		$res = false;
-		$sendme = [];
-		$incl = [];
-		$msg = "procedure was unable to begin";
 
-		$con = $passeddata['condition'];
+        if($this->ili()){
+            $res['success'] = true;
+            $res['message'] = "fetching permissions";
 
-		if(auth()->check()){
-			$success = true;
+            $cmdt = self::commondata();
+            $mdta = random_int(0,14);
 
-			// run some operations only make true when its successful
-			$res = rand(0,100) > 40;
-		}
+            $res['result'] = $mdta >= 7;
+            $res['sendme'] = $cmdt['permissions'];
+        }
 
-		$thedata = [
-			'input' => $vl,
-			'success' => $success,
-			'result' => $res,
-			'sendme' => $sendme,
-			'xtras' => $incl,
-			'message' => $msg,
-		];
+        if(!self::$showlogs){
+            if(array_key_exists('runlog',$res)){
+                unset($res['runlog']);
+            }
+        }
 
-		// echo json_encode($isapi);
-		// exit();
-
-		// for debug purposes
-		// return self::showJSON($thedata);
-		// dd($thedata);
-
-		if($isapi){
-			return response()->json($thedata);
-		}else{
-			return redirect()->back()->with(['success' => 'Added to cart successfully']);
-		}
+        return response()->json($res);
 	}
 }

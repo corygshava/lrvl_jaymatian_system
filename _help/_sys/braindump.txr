@@ -1,0 +1,5 @@
+system data setup
+user roles
+	when getting system data make a method for getting all system permissions. theres a last_update flag in the returned result from the seeder method.
+	then it compares the date saved in the file (saved previously). if the last_update flag is more recent it overwrites the file and then updates the db.
+	then the system permissions array is returned

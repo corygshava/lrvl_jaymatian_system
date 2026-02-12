@@ -5,15 +5,25 @@
 
 	let maincon = undefined;
 	let dynacode = undefined;
+	var menuItems = [];
 
 	const fadein = [{opacity: 1},{opacity: 0}];
 
-	var menuItems = [
-		{caption: "dashboard",url: './pieces/dash',icon: 'fas fa-th-large'},
-		{caption: "admin dashboard",url: './pieces/admin_dash',icon: 'fas fa-th-large'},
-		{caption: "login",url: './pieces/login',icon: 'fa fa-cog'},
-		{caption: "client",url: './pieces/empty',icon: 'fa fa-user'},
-	];
+	menuItems = [
+		{caption: "dashboard", url: './ui_view/console',icon: 'fa fa-th-large'},
+		{caption: "User Roles", url: './ui_view/user_roles',icon: 'fa fa-users'},
+		{caption: "test permissions", url: './get_menu',icon: 'fa fa-list'},
+		{caption: "view permissions", url: './my_permissions',icon: 'fa fa-user'},
+	]
+
+	/*
+		menuItems = [
+			{caption: "dashboard",url: './pieces/dash',icon: 'fas fa-th-large'},
+			{caption: "admin dashboard",url: './pieces/admin_dash',icon: 'fas fa-th-large'},
+			{caption: "login",url: './pieces/login',icon: 'fa fa-cog'},
+			{caption: "client",url: './pieces/empty',icon: 'fa fa-user'},
+		];
+	// */
 
 	function setUI() {
 		if(menubar == undefined){
@@ -24,7 +34,7 @@
 		if(dynacode == undefined){dynacode = document.querySelector('#dynamic_js');}
 	}
 
-	window['toggleSidebar'] = (me) => {
+	window['toggleSidenav'] = (me) => {
 		setUI();
 
 		if(menubar === undefined){
