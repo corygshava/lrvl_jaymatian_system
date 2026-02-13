@@ -9,6 +9,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>JayMatian Mineral Laboratory System</title>
 
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+
 	<link rel="stylesheet" href="_assets/_vendor/BS4/css/bootstrap.min.css">
 	<link rel="stylesheet" href="_assets/css/fa-all.css">
 	<link rel="stylesheet" href="_assets/css/w3.css">

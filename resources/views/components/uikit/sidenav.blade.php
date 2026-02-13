@@ -3,7 +3,7 @@
 		<div class="menubar-brand">
 			<span>Menu</span>
 		</div>
-		<button class="mybtn trans" data-runme="toggleSidenav" style="padding: 8px !important;translate: -12px 0;">
+		<button class="mybtn trans" data-runme="toggleSidenav" id="menubar_toggle_btn" style="padding: 8px !important;translate: -12px 0;">
 			<i class="fa fa-chevron-left"></i>
 		</button>
 	</div>

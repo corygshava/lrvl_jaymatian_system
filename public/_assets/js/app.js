@@ -5,7 +5,8 @@ const fetch_bypass = "fetch_bypass_" + mekRandomString(5);
 const fetch_ui = "fetch_bypass_" + mekRandomString(5);
 const fetch_bypass_fyls = "fetch_bypass_fyls_" + mekRandomString(5);
 const simple_fetch = "simple_fetch_bypass_" + mekRandomString(5);
-const session_CSRF_token = mekRandomString(12);
+// const session_CSRF_token = mekRandomString(12);
+const session_CSRF_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 const fetch_identifier = "viaFetch";
 
 const mainhost = ".";
@@ -16,8 +17,8 @@ const pref_auth = 'trybXP_comp_app_access_token';
 var curfun = "";
 // var confirm_modal = undefined;
 // var confirm_toggler = undefined;
-var the_modal = undefined;
-var the_modal_toggler = undefined;
+// var the_modal = undefined;
+// var the_modal_toggler = undefined;
 
 // UI elements
 var dft_holder = undefined;
@@ -310,13 +311,13 @@ if(window[curfun] == undefined){
 curfun = "mekXtras";
 if(window[curfun] == undefined){
 	window[curfun] = (m) => {
-        dft_holder = document.querySelector('#app_ui');
+				dft_holder = document.querySelector('#app_ui');
 
 		// alert_info('making extras');
 		alert_silent('making extras');
 
 		// make the confirmer modal
-		if(confirm_modal === undefined){
+		if(false && confirm_modal === undefined){
 			let conid = "confirmerBox_" + mekRandomString(3);
 			let desig = `#${conid}`;
 
@@ -843,6 +844,18 @@ if(window['objtoquery'] == undefined){
 
 		return pairs.join('&');
 	}
+}
+
+function formatDate(date) {
+	const d = new Date(date); // Ensures input is a Date object
+	const day = String(d.getDate()).padStart(2, '0');
+	const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+	const year = d.getFullYear();
+	const hours = String(d.getHours()).padStart(2, '0');
+	const minutes = String(d.getMinutes()).padStart(2, '0');
+	const seconds = String(d.getSeconds()).padStart(2, '0');
+	
+	return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
 // log visit

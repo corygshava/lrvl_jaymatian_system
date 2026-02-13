@@ -17,6 +17,20 @@
 		/*box-shadow: 4px 0 10px rgba(0,0,0,0.1);*/
 		overflow: auto;
 	}
+	.menubar.unavailable{
+		opacity: 0.3;
+		pointer-events: none;
+		/*position: relative;*/
+	}
+	.menubar.unavailable::before{
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		background: red;
+	}
 	.menubar.squish, .menubar.squish + main{
 		--w: 45px;
 		overflow-x: visible;
@@ -223,7 +237,7 @@
 	.stats-row {
 		margin-bottom: 25px;
 		display: flex;
-		align-items: center;
+		align-items: stretch;
 		justify-content: flex-start;
 		flex-wrap: wrap;
 		width: 100%;
@@ -240,7 +254,7 @@
 		align-items: center;
 		justify-content: flex-start;
 		gap: 15px;
-		height: 100%;
+		/*height: 100%;*/
 		border: 1px solid var(--clr-border);
 		cursor: pointer;
 	}
@@ -307,7 +321,7 @@
 		/*border: 1px solid var(--clr-border);*/
 		overflow: hidden;
 	}
-	.data-header {
+	.data-container .data-header {
 		padding: 20px;
 		border-bottom: 1px solid var(--border);
 		display: flex;
@@ -317,23 +331,23 @@
 		gap: 15px;
 	}
 
-	.data-title {
+	.data-container .data-title {
 		font-size: 16px;
 		font-weight: 600;
 		color: var(--dark);
 	}
 
-	.data-actions {
+	.data-container .data-actions {
 		display: flex;
 		gap: 10px;
 		align-items: center;
 	}
 
-	.search-table {
+	.data-container .search-table {
 		position: relative;
 	}
 
-	.search-table input {
+	.data-container .search-table input {
 		padding: 8px 35px 8px 15px;
 		border: 1px solid var(--border);
 		border-radius: 20px;
@@ -341,7 +355,7 @@
 		width: 250px;
 	}
 
-	.search-table i {
+	.data-container .search-table i {
 		position: absolute;
 		right: 12px;
 		top: 50%;
@@ -448,7 +462,6 @@
 		line-height: 1.5;
 	}
 
-
 /* calendar */
 	.calendar-header {
 		display: flex;
@@ -522,6 +535,7 @@
 	.calendar-grid .calendar-day.other-month {
 		color: #ccc;
 	}
+
 /* chart styles */
 	.chart-container {
 		position: relative;
@@ -549,7 +563,6 @@
 		height: 10px;
 		border-radius: 50%;
 	}
-
 
 /* viewer styles */
 	.page-header {
@@ -627,16 +640,26 @@
 	.mybtn.sm {
 		padding: 8px 16px;
 	}
-	.mybtn.secondary{
+	.mybtn.secondary,.mybtn.outline{
 		border: 1px solid var(--themecolor);
 		color: var(--themecolor);
 		background: var(--clr-alttext);
 	}
-	.mybtn.secondary:hover{
+	.mybtn.secondary:hover,.mybtn.outline:hover{
 		background: var(--themecolor);
 		border: 1px solid var(--themecolor);
 		color: white;
 		box-shadow: var(--themeshadow);
+		text-decoration: none;
+	}
+	.mybtn.danger{
+		color: #fff;
+		background: var(--danger);
+	}
+	.mybtn.danger:hover{
+		background: var(--red);
+		color: white;
+		/*box-shadow: var(--themeshadow);*/
 		text-decoration: none;
 	}
 
@@ -704,4 +727,16 @@
 			cursor: pointer;
 			opacity: 0;
 			font-size: 0.7rem;
+		}
+	/* BS4 fixes */
+		.modal{
+			background-color: #11111155;
+			z-index: 1002;
+		}
+		.modal-header{
+			border-bottom: none;
+		}
+		.modal-backdrop{
+			background: transparent;
+			display: none;
 		}

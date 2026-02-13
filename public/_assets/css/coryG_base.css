@@ -229,12 +229,12 @@ a{
 	}
 
 	.nogap{gap: 0 !important;}
-	.gap-tn{gap: var(--size-tn);}
-	.gap-sm{gap: var(--size-sm);}
-	.gap-nm{gap: var(--size-nm);}
-	.gap-md{gap: var(--size-md);}
-	.gap-lg{gap: var(--size-lg);}
-	.gap-mg{gap: var(--size-mg);}
+	.gap-tn{gap: var(--size-tn) !important;}
+	.gap-sm{gap: var(--size-sm) !important;}
+	.gap-nm{gap: var(--size-nm) !important;}
+	.gap-md{gap: var(--size-md) !important;}
+	.gap-lg{gap: var(--size-lg) !important;}
+	.gap-mg{gap: var(--size-mg) !important;}
 
 	.text-tn{font-size: var(--size-tn);}
 	.text-sm{font-size: var(--size-sm);}

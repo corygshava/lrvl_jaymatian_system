@@ -40,29 +40,20 @@ class UserController extends Controller{
 
         return view('profile.userroles',$topass);
     }
-
-    // opts
-
-    public function getOptions(Request $req){
+    public function checkadmin(Request $req){
         $res = $this->dftres;
         $alldata = $req->all();
 
-        /*
-        $passed = $req->validate([
-            'condition' => ['required']
-        ]);
-        // */
-
-
         if($this->ili()){
             $res['success'] = true;
-            $res['message'] = "fetching permissions";
+            $res['message'] = "checking status";
 
-            $cmdt = self::commondata();
-            $mdta = random_int(0,14);
+            $isadmin = $this->isadmin();
 
-            $res['result'] = $mdta >= 7;
-            $res['sendme'] = $cmdt['permissions'];
+            $res['result'] = true;
+            $res['sendme'] = $isadmin;
+
+            // dd($rolename);
         }
 
         if(!self::$showlogs){
@@ -73,6 +64,52 @@ class UserController extends Controller{
         return response()->json($res);
     }
 
+    // opts
+    public function getMenu(Request $req){
+        $res = $this->dftres;
+        $alldata = $req->all();
+
+        if($this->ili()){
+            $res['success'] = true;
+            $res['message'] = "fetching permissions";
+
+            $cmdt = self::commondata();
+            $mdta = random_int(0,14);
+
+            $res['result'] = $mdta >= 7;
+            $res['sendme'] = $cmdt['permissions'];
+
+            // dd($cmdt);
+        }
+
+        if(!self::$showlogs){
+            if(array_key_exists('runlog',$res)){
+                unset($res['runlog']);
+            }
+        }
+        return response()->json($res);
+    }
+    public function showpermissions(Request $req){
+        $res = $this->dftres;
+        $alldata = $req->all();
+
+        if($this->ili()){
+            $res['success'] = true;
+            $res['message'] = "fetching permissions";
+
+            $cmdt = self::commondata();
+
+            $res['result'] = true;
+            $res['sendme'] = $cmdt['permissions'];
+        }
+
+        if(!self::$showlogs){
+            if(array_key_exists('runlog',$res)){
+                unset($res['runlog']);
+            }
+        }
+        return response()->json($res);
+    }
     public function mypermissions(Request $req){
         $res = $this->dftres;
         $alldata = $req->all();
@@ -105,7 +142,7 @@ class UserController extends Controller{
             $res['result'] = !empty($permissions);
             $res['sendme'] = $permissions;
 
-            dd($permissions);
+            // dd($permissions);
         }
 
         if(!self::$showlogs){

@@ -19,8 +19,8 @@
 		<div class="dropdown open">
 			<div class="user-profile" id="userOpsDropper" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">
-				<img src="_assets/img/demos/demoimg2.jpg" loading="lazy" alt="Admin">
-				<span class="d-none d-md-block">Admin User</span>
+				<img src="_assets/img/demos/placeholder.jpg" class="border" loading="lazy" alt="Admin">
+				<span class="d-none d-md-block">{{ auth()->user()->name }}</span>
 				<i class="fa fa-caret-down"></i>
 			</div>
 			<div class="dropdown-menu nopadding nooverflow w3-animate-opacity themeround realign" aria-labelledby="userOpsDropper" style="margin-top: 12px;border: none;">
@@ -28,7 +28,7 @@
 					<i class="fa fa-edit"></i>
 					<span>Edit profile</span>
 				</button>
-				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#">
+				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" data-submitme="#logoutform" href="#">
 					<i class="fa fa-user-slash"></i>
 					<span>Logout</span>
 				</button>
