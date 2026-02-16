@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_role_id',
+        'user_roles_id',
     ];
 
     /**
@@ -48,7 +48,8 @@ class User extends Authenticatable
         ];
     }
 
+    // relationships
     public function myRoles(): BelongsTo {
-        return $this->belongsTo(userRoles::class, 'user_role_id');
+        return $this->belongsTo(userRoles::class, 'user_roles_id');
     }
 }

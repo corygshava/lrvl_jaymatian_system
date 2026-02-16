@@ -33,13 +33,32 @@ class UserController extends Controller{
         return view('profile.console',$topass);
     }
     public function showroles(Request $req){
-        $cmdt = self::commondata();
-        $topass = [
-            "cmdt" => $cmdt
-        ];
+        if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
 
-        return view('profile.userroles',$topass);
+            return view('profile.userroles',$topass);
+        } else {
+            // return view('error');
+            return response()->json("nothing here");
+        }
     }
+    public function showdatatable(Request $req){
+        if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.datatables_remake',$topass);
+        } else {
+            // return view('error');
+            return response()->json("nothing here");
+        }
+    }
+
     public function checkadmin(Request $req){
         $res = $this->dftres;
         $alldata = $req->all();
@@ -144,6 +163,45 @@ class UserController extends Controller{
 
             // dd($permissions);
         }
+
+        if(!self::$showlogs){
+            if(array_key_exists('runlog',$res)){
+                unset($res['runlog']);
+            }
+        }
+
+        return response()->json($res);
+    }
+
+    public function get_all(Request $req){
+        $res = $this->dftres;
+        $alldata = $req->all();
+
+        if($this->ili()){
+            $res['success'] = true;
+            $res['message'] = "all userRoles retrieved";
+
+            // $users = User::all();
+
+            /*
+            $users = User::with(['myRoles' => function ($query) {
+                $query->select('id', 'role_name');
+            }])->get();
+            // */
+            // $mdta = random_int(0,14);
+
+            $users = User::with('myRoles')->get();
+
+            for($i = 0;$i < count($users);$i++){
+                $users[$i]->role_name = $users[$i]->myRoles?->role_name;
+                $users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+            }
+
+            $res['result'] = true;
+            $res['sendme'] = $users;
+        }
+
+        // dd($res);
 
         if(!self::$showlogs){
             if(array_key_exists('runlog',$res)){

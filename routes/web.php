@@ -26,10 +26,12 @@ Route::prefix('/ui')->group(function (){
     Route::get('/get_menu', [UserController::class,'showpermissions'])->middleware(['auth', 'verified']);
 	Route::get('/console', [UserController::class,'showconsole'])->name('user_console');
 	Route::get('/user_roles', [UserController::class,'showroles'])->name('user_roles');
+	Route::get('/datatables', [UserController::class,'showdatatable']);
 });
 
 Route::prefix('/data')->group(function(){
 	Route::get('/user_roles', [UserRoleController::class,'get_all']);
+	Route::get('/users', [UserController::class,'get_all']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions']);
 });
 

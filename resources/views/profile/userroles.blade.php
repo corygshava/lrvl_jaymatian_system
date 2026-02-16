@@ -241,6 +241,8 @@
 	let userRoles = [];
 	let rec_id = null;
 
+	// let afterfx_canrun = true;
+
 	function populateEditForm() {
 		const p_box = add_edit_form.querySelector('.permissions_box');
 
@@ -304,6 +306,14 @@
 
 	function renderRoles() {
 		rolesHolder.innerHTML = '';
+
+		if(userRoles.length == 0){
+			rolesHolder.innerHTML = `
+				<div class="spacy-md w3-center">
+					<div class="text-muted"><i>no user roles found</i></div>
+				</div>
+			`;
+		}
 
 		userRoles.forEach((f,id) => {
 			let roles_list = [...f.role_permissions].map(f => {return `<li>${f}</li>`;})
@@ -434,6 +444,7 @@
 	}
 
 	window['form_afterfx'] = () => {
+		alert_danger('runnin afterfx');
 		add_role_btn.click();
 
 		window['refresh_stuff']();

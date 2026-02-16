@@ -20,10 +20,12 @@
 	menuItems = [
 		{caption: "dashboard", url: './ui/console',icon: 'fa fa-th-large'},
 		{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-users'},
+		{caption: "get users", url: './ui/datatables',icon: 'fa fa-th'},
 		{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-list'},
 		{caption: "view permissions", url: './my_permissions',icon: 'fa fa-user'},
 		{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-question'},
 		{caption: "get roles", url: './data/user_roles',icon: 'fa fa-question'},
+		{caption: "get users", url: './data/users',icon: 'fa fa-users'},
 	]
 
 	function setUI() {
@@ -244,16 +246,16 @@
 
 		let fdata = getFormdata(m);
 		let myres = undefined;
+		// let cango = true;
 
 		// add_edit_form.style.pointerEvents = "all";
 		window[fetch_bypass_fyls](m.action,fdata,'POST',true,true).then(d => {
 			// alert_danger('awkdhawkjdkawj')
 			myres = d;
-
 			responseHandler(d,callback,{'el': m,'data': d});
 
 			// console.log("finally, the result is: ",myres);
-			callback(m);
+			// callback(m);
 		})
 		.catch(err => {
 			alert_danger(err.message);

@@ -6,5 +6,5 @@
 @media(max-width: 600px){
     .hedtxt{font-size: 3rem;}
     .profile-section .profile-info {align-items: center;justify-content: center;}
-    .dropdown-menu.realign{translate: -44% 0px;}
+    .dropdown-menu.realign{translate: -16px 0px;}
 }

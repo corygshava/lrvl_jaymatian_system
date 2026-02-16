@@ -1,0 +1,1444 @@
+<style>
+	:root {
+		--primary: #6366f1;
+		--primary-dark: #4f46e5;
+		--primary-light: #e0e7ff;
+		--secondary: #ec4899;
+		--success: #10b981;
+		--warning: #f59e0b;
+		--danger: #ef4444;
+		--info: #3b82f6;
+		--dark: #1e293b;
+		--gray: #64748b;
+		--gray-light: #f1f5f9;
+		--border: #e2e8f0;
+		--white: #ffffff;
+		--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+		--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+		--radius: 12px;
+		--radius-sm: 8px;
+	}
+
+	.container-fluid {
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	/* Page Header */
+	.page-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 25px;
+		flex-wrap: wrap;
+		gap: 15px;
+		background: white;
+		padding: 20px;
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.page-title h2 {
+		font-size: 28px;
+		font-weight: 700;
+		color: var(--dark);
+		margin: 0;
+	}
+
+	.page-title p {
+		color: var(--gray);
+		margin: 5px 0 0 0;
+		font-size: 14px;
+	}
+
+	.header-actions {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+
+	/* Buttons */
+	.btn-primary-custom {
+		background: var(--primary);
+		color: white;
+		border: none;
+		padding: 10px 20px;
+		border-radius: var(--radius-sm);
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		transition: all 0.3s;
+		cursor: pointer;
+		font-size: 14px;
+	}
+
+	.btn-primary-custom:hover {
+		background: var(--primary-dark);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow);
+		color: white;
+		text-decoration: none;
+	}
+
+	.btn-secondary-custom {
+		background: white;
+		color: var(--dark);
+		border: 1px solid var(--border);
+		padding: 10px 20px;
+		border-radius: var(--radius-sm);
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		transition: all 0.3s;
+		cursor: pointer;
+		font-size: 14px;
+	}
+
+	.btn-secondary-custom:hover {
+		background: var(--gray-light);
+		border-color: var(--primary);
+		color: var(--primary);
+		text-decoration: none;
+	}
+
+	/* Stats Cards Row */
+	.stats-row {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 20px;
+		margin-bottom: 25px;
+	}
+
+	.stat-card-modern {
+		background: white;
+		border-radius: var(--radius);
+		padding: 20px;
+		display: flex;
+		align-items: center;
+		gap: 15px;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.3s;
+		border: 1px solid var(--border);
+	}
+
+	.stat-card-modern:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow);
+	}
+
+	.stat-icon-modern {
+		width: 50px;
+		height: 50px;
+		border-radius: var(--radius-sm);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 20px;
+	}
+
+	.stat-icon-modern.total { background: var(--primary-light); color: var(--primary); }
+	.stat-icon-modern.active { background: #d1fae5; color: var(--success); }
+	.stat-icon-modern.inactive { background: #fee2e2; color: var(--danger); }
+	.stat-icon-modern.new { background: #fef3c7; color: var(--warning); }
+
+	.stat-info-modern h3 {
+		font-size: 24px;
+		font-weight: 700;
+		margin: 0;
+		color: var(--dark);
+	}
+
+	.stat-info-modern p {
+		margin: 0;
+		color: var(--gray);
+		font-size: 13px;
+	}
+
+	/* Filter Bar */
+	.filter-bar {
+		background: white;
+		border-radius: var(--radius);
+		padding: 20px;
+		margin-bottom: 20px;
+		box-shadow: var(--shadow-sm);
+		border: 1px solid var(--border);
+	}
+
+	.filter-row {
+		display: flex;
+		gap: 15px;
+		flex-wrap: wrap;
+		align-items: end;
+	}
+
+	.filter-group {
+		flex: 1;
+		min-width: 200px;
+	}
+
+	.filter-group label {
+		display: block;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--gray);
+		margin-bottom: 6px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.filter-control {
+		width: 100%;
+		padding: 10px 15px;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		font-size: 14px;
+		transition: all 0.3s;
+		background: white;
+	}
+
+	.filter-control:focus {
+		outline: none;
+		border-color: var(--primary);
+		box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+	}
+
+	/* Data Container */
+	.data-container {
+		background: white;
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
+		border: 1px solid var(--border);
+		overflow: hidden;
+	}
+
+	.data-header {
+		padding: 20px;
+		border-bottom: 1px solid var(--border);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 15px;
+	}
+
+	.data-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--dark);
+	}
+
+	.data-actions {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.search-table {
+		position: relative;
+	}
+
+	.search-table input {
+		padding: 8px 35px 8px 15px;
+		border: 1px solid var(--border);
+		border-radius: 20px;
+		font-size: 13px;
+		width: 250px;
+	}
+
+	.search-table i {
+		position: absolute;
+		right: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: var(--gray);
+		font-size: 13px;
+	}
+
+	/* Modern Table */
+	.table-modern {
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0;
+	}
+
+	.table-modern thead th {
+		background: var(--gray-light);
+		padding: 14px 20px;
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--gray);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		border-bottom: 1px solid var(--border);
+		white-space: nowrap;
+		cursor: pointer;
+		user-select: none;
+		transition: background 0.3s;
+	}
+
+	.table-modern thead th:hover {
+		background: #e2e8f0;
+	}
+
+	.table-modern thead th i {
+		margin-left: 5px;
+		font-size: 10px;
+	}
+
+	.table-modern tbody tr {
+		transition: all 0.3s;
+	}
+
+	.table-modern tbody tr:hover {
+		background: #f8fafc;
+	}
+
+	.table-modern tbody td {
+		padding: 16px 20px;
+		border-bottom: 1px solid var(--border);
+		font-size: 14px;
+		vertical-align: middle;
+	}
+
+	.table-modern tbody tr:last-child td {
+		border-bottom: none;
+	}
+
+	.checkbox-custom {
+		width: 18px;
+		height: 18px;
+		border: 2px solid var(--border);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.3s;
+		appearance: none;
+		position: relative;
+	}
+
+	.checkbox-custom:checked {
+		background: var(--primary);
+		border-color: var(--primary);
+	}
+
+	.checkbox-custom:checked::after {
+		content: '\f00c';
+		font-family: 'Font Awesome 5 Free';
+		font-weight: 900;
+		color: white;
+		font-size: 10px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	/* Status Badge */
+	.status-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 6px 12px;
+		border-radius: 20px;
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.status-badge::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+	}
+
+	.status-active {
+		background: #d1fae5;
+		color: #065f46;
+	}
+
+	.status-active::before { background: var(--success); }
+
+	.status-inactive {
+		background: #fee2e2;
+		color: #991b1b;
+	}
+
+	.status-inactive::before { background: var(--danger); }
+
+	.status-pending {
+		background: #fef3c7;
+		color: #92400e;
+	}
+
+	.status-pending::before { background: var(--warning); }
+
+	/* Action Buttons */
+	.action-btns {
+		display: flex;
+		gap: 8px;
+	}
+
+	.btn-action {
+		width: 32px;
+		height: 32px;
+		border-radius: 6px;
+		border: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s;
+		font-size: 13px;
+	}
+
+	.btn-view { background: #e0e7ff; color: var(--primary); }
+	.btn-edit { background: #fef3c7; color: var(--warning); }
+	.btn-delete { background: #fee2e2; color: var(--danger); }
+
+	.btn-action:hover {
+		transform: scale(1.1);
+	}
+
+	/* Pagination */
+	.pagination-container {
+		padding: 20px;
+		border-top: 1px solid var(--border);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 15px;
+	}
+
+	.pagination-info {
+		font-size: 14px;
+		color: var(--gray);
+	}
+
+	.pagination {
+		display: flex;
+		gap: 5px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.page-item {
+		list-style: none;
+	}
+
+	.page-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: white;
+		color: var(--gray);
+		font-size: 14px;
+		cursor: pointer;
+		transition: all 0.3s;
+		text-decoration: none;
+	}
+
+	.page-link:hover, .page-link.active {
+		background: var(--primary);
+		color: white;
+		border-color: var(--primary);
+	}
+
+	.page-link:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* Loading Spinner */
+	.loading-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255, 255, 255, 0.9);
+		display: none;
+		align-items: center;
+		justify-content: center;
+		z-index: 10;
+	}
+
+	.loading-overlay.show {
+		display: flex;
+	}
+
+	.spinner {
+		width: 50px;
+		height: 50px;
+		border: 4px solid var(--border);
+		border-top-color: var(--primary);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
+	/* Empty State */
+	.empty-state {
+		text-align: center;
+		padding: 60px 20px;
+		display: none;
+	}
+
+	.empty-state.show {
+		display: block;
+	}
+
+	.empty-icon {
+		width: 80px;
+		height: 80px;
+		background: var(--primary-light);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 auto 20px;
+		color: var(--primary);
+		font-size: 32px;
+	}
+
+	.empty-state h3 {
+		font-size: 18px;
+		color: var(--dark);
+		margin-bottom: 10px;
+	}
+
+	.empty-state p {
+		color: var(--gray);
+		font-size: 14px;
+	}
+
+	/* Toast Notification */
+	.toast-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 3000;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.toast_ {
+		background: white;
+		border-radius: var(--radius-sm);
+		padding: 16px 20px;
+		box-shadow: var(--shadow-lg);
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		min-width: 300px;
+		border-left: 4px solid;
+	}
+
+	.toast.success { border-left-color: var(--success); }
+	.toast.error { border-left-color: var(--danger); }
+	.toast.info { border-left-color: var(--info); }
+
+	.toast-icon {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 12px;
+	}
+
+	.toast.success .toast-icon { background: #d1fae5; color: var(--success); }
+	.toast.error .toast-icon { background: #fee2e2; color: var(--danger); }
+	.toast.info .toast-icon { background: #dbeafe; color: var(--info); }
+
+	.toast-content {
+		flex: 1;
+	}
+
+	.toast-title {
+		font-weight: 600;
+		font-size: 14px;
+		color: var(--dark);
+	}
+
+	.toast-message {
+		font-size: 13px;
+		color: var(--gray);
+		margin-top: 2px;
+	}
+
+	.toast-close {
+		background: none;
+		border: none;
+		color: var(--gray);
+		cursor: pointer;
+		padding: 4px;
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.filter-row {
+			flex-direction: column;
+		}
+		
+		.filter-group {
+			min-width: 100%;
+		}
+		
+		.search-table input {
+			width: 100%;
+		}
+	}
+</style>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+<div class="container-fluid">
+	<!-- Page Header -->
+	<div class="page-header">
+		<div class="page-title">
+			<h2>Reusable DataTable Demo</h2>
+			<p>Laravel-powered, drag-and-drop data table component</p>
+		</div>
+		<div class="header-actions">
+			<button class="mybtn secondary" onclick="refreshData()">
+				<i class="fas fa-sync-alt"></i>
+				Refresh
+			</button>
+			<button class="mybtn primary">
+				<i class="fas fa-plus"></i>
+				Add New
+			</button>
+		</div>
+	</div>
+
+	<!-- Stats Row (Optional - can be configured) -->
+	<div class="stats-row" id="statsContainer">
+		<!-- Stats will be populated dynamically -->
+	</div>
+
+	<!-- Filter Bar (Optional - can be configured) -->
+	<div class="filter-bar" id="filterContainer">
+		<div class="filter-row">
+			<!-- Filters will be populated dynamically -->
+		</div>
+	</div>
+
+	<!-- Data Container -->
+	<div class="data-container" style="position: relative;">
+		<!-- Loading Overlay -->
+		<div class="loading-overlay" id="loadingOverlay">
+			<div class="spinner"></div>
+		</div>
+
+		<!-- Data Header -->
+		<div class="data-header">
+			<div class="d-flex align-items-center gap-3">
+				<h5 class="data-title" id="tableTitle">Data Table</h5>
+			</div>
+			<div class="data-actions">
+				<div class="search-table">
+					<input type="text" placeholder="Quick search..." id="quickSearch">
+					<i class="fas fa-search"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Table View -->
+		<div class="table-responsive" id="tableView">
+			<table class="table-modern">
+				<thead id="tableHead">
+					<!-- Table headers will be generated dynamically -->
+				</thead>
+				<tbody id="tableBody">
+					<!-- Table body will be populated by LaravelDataTable -->
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Empty State -->
+		<div class="empty-state" id="emptyState">
+			<div class="empty-icon">
+				<i class="fas fa-inbox"></i>
+			</div>
+			<h3>No data found</h3>
+			<p>Try adjusting your filters or search query</p>
+		</div>
+
+		<!-- Pagination -->
+		<div class="pagination-container">
+			<div class="pagination-info">
+				Showing <span id="showingStart">0</span> to <span id="showingEnd">0</span> of <span id="totalItems">0</span> entries
+			</div>
+			<ul class="pagination" id="pagination">
+				<!-- Pagination will be generated dynamically -->
+			</ul>
+		</div>
+	</div>
+</div>
+
+<!-- Scripts -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
+
+<script>
+	/**
+	 * LaravelDataTable - Reusable Data Table Component
+	 * 
+	 * @description A plug-and-play data table system for Laravel backends
+	 * @author Cornelius Shava
+	 * 
+	 * assumes you are using my template for sending info from APIs
+	 */
+
+	const LaravelDataTable = (function() {
+		// Private variables
+		let config = {};
+		let currentPage = 1;
+		let perPage = 10;
+		let totalRecords = 0;
+		let currentFilters = {};
+		let searchQuery = '';
+		let sortColumn = '';
+		let sortDirection = 'asc';
+		let debounceTimer = null;
+
+		/**
+		 * Default configuration
+		 */
+		const defaultConfig = {
+			// Required
+			apiEndpoint: '/api/data',           // Laravel API endpoint
+			tableBodyId: 'tableBody',           // ID of tbody element
+			
+			// Optional
+			tableHeadId: 'tableHead',           // ID of thead element
+			paginationId: 'pagination',         // ID of pagination container
+			searchInputId: 'quickSearch',       // ID of search input
+			loadingOverlayId: 'loadingOverlay', // ID of loading overlay
+			emptyStateId: 'emptyState',         // ID of empty state container
+			
+			// Table configuration
+			columns: [],                        // Array of column definitions
+			perPage: 10,                        // Records per page (max 300)
+			enableSearch: true,                 // Enable search functionality
+			enableSort: true,                   // Enable column sorting
+			enableFilters: false,               // Enable filters
+			filters: [],                        // Array of filter definitions
+			
+			// Stats configuration
+			enableStats: false,                 // Show stats cards
+			statsEndpoint: null,                // Endpoint for stats data
+			statsContainer: 'statsContainer',   // ID of stats container
+			
+			// Callbacks
+			onRowClick: null,                   // Callback for row click
+			onDataLoaded: null,                 // Callback after data loads
+			onError: null,                      // Callback on error
+			
+			// Row rendering
+			rowRenderer: null,                  // Custom row renderer function
+			
+			// CSRF token (Laravel)
+			csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '',
+			
+			// Additional request parameters
+			additionalParams: {}
+		};
+
+		/**
+		 * Initialize the data table
+		 * @param {Object} userConfig - User configuration
+		 */
+		function init(userConfig) {
+			config = { ...defaultConfig, ...userConfig };
+			perPage = Math.min(config.perPage, 300); // Enforce 300 max
+			
+			// Validate required config
+			if (!config.apiEndpoint) {
+				console.error('LaravelDataTable: apiEndpoint is required');
+				return;
+			}
+			
+			if (!config.columns || config.columns.length === 0) {
+				console.error('LaravelDataTable: columns configuration is required');
+				return;
+			}
+			
+			// Setup event listeners
+			setupEventListeners();
+			
+			// Generate table headers
+			generateTableHeaders();
+			
+			// Generate filters if enabled
+			if (config.enableFilters && config.filters.length > 0) {
+				generateFilters();
+			}
+			
+			// Load stats if enabled
+			if (config.enableStats && config.statsEndpoint) {
+				loadStats();
+			}
+			
+			// Load initial data
+			loadData();
+		}
+
+		/**
+		 * Setup event listeners
+		 */
+		function setupEventListeners() {
+			// Search input
+			if (config.enableSearch) {
+				const searchInput = document.getElementById(config.searchInputId);
+				if (searchInput) {
+					searchInput.addEventListener('keyup', function(e) {
+						clearTimeout(debounceTimer);
+						debounceTimer = setTimeout(() => {
+							searchQuery = e.target.value;
+							currentPage = 1;
+							loadData();
+						}, 500); // 500ms debounce
+					});
+				}
+			}
+		}
+
+		/**
+		 * Generate table headers
+		 */
+		function generateTableHeaders() {
+			const thead = document.getElementById(config.tableHeadId);
+			if (!thead) return;
+			
+			let headerHTML = '<tr>';
+			
+			config.columns.forEach(column => {
+				const sortable = column.sortable !== false && config.enableSort;
+				const sortClass = sortable ? 'cursor-pointer' : '';
+				const sortIcon = sortable ? '<i class="fas fa-sort"></i>' : '';
+				
+				headerHTML += `
+					<th class="${sortClass}" 
+						${sortable ? `onclick="LaravelDataTable.sortBy('${column.data}')"` : ''} 
+						${column.width ? `width="${column.width}"` : ''}>
+						${column.title} ${sortIcon}
+					</th>
+				`;
+			});
+			
+			headerHTML += '</tr>';
+			thead.innerHTML = headerHTML;
+		}
+
+		/**
+		 * Generate filters
+		 */
+
+		function generateFilters() {
+			/*
+				const filterContainer = document.getElementById('filterContainer');
+				if (!filterContainer) return;
+				
+				const filterRow = filterContainer.querySelector('.filter-row');
+				if (!filterRow) return;
+				
+				let filtersHTML = '';
+				
+				config.filters.forEach(filter => {
+					filtersHTML += `
+						<div class="filter-group">
+							<label>${filter.label}</label>
+							<select class="filter-control" id="filter_${filter.name}" 
+									onchange="LaravelDataTable.applyFilter('${filter.name}', this.value)">
+								<option value="">All ${filter.label}</option>
+								${filter.options.map(opt => 
+									`<option value="${opt.value}">${opt.label}</option>`
+								).join('')}
+							</select>
+						</div>
+					`;
+				});
+				
+				filterRow.innerHTML = filtersHTML;
+			// */
+		}
+
+		/**
+		 * Load data from Laravel backend
+		 */
+		function loadData() {
+			showLoading(true);
+			
+			// Build request parameters
+			const params = {
+				page: currentPage,
+				per_page: perPage,
+				search: searchQuery,
+				sort_by: sortColumn,
+				sort_direction: sortDirection,
+				...currentFilters,
+				...config.additionalParams
+			};
+			
+			// Make AJAX request
+			fetch(`${config.apiEndpoint}?${new URLSearchParams(params)}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRF-TOKEN': config.csrfToken,
+					'Accept': 'application/json'
+				}
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				handleDataResponse(data);
+				showLoading(false);
+				
+				// Call onDataLoaded callback
+				if (config.onDataLoaded && typeof config.onDataLoaded === 'function') {
+					config.onDataLoaded(data.sendme);
+				}
+			})
+			.catch(error => {
+				console.error('LaravelDataTable Error:', error);
+				showLoading(false);
+				showToast('error', 'Error', 'Failed to load data');
+				
+				// Call onError callback
+				if (config.onError && typeof config.onError === 'function') {
+					config.onError(error);
+				}
+			});
+		}
+
+		/**
+		 * Handle data response from Laravel
+		 * Expected format: { data: [], total: 0, per_page: 10, current_page: 1 }
+		 */
+		function handleDataResponse(response) {
+			if(!response.success){
+				alert_danger('access denied!');
+				return;
+			}
+
+			if(!response.result){
+				alert_danger('there was an error processing your request',12);
+				return;
+			}
+
+			const data = response.sendme || [];
+			totalRecords = response.total || 0;
+			currentPage = response.current_page || 1;
+			
+			// Render table rows
+			renderTable(data);
+			
+			// Update pagination
+			updatePagination(response);
+			
+			// Show/hide empty state
+			toggleEmptyState(data.length === 0);
+		}
+
+		/**
+		 * Render table rows
+		 */
+		function renderTable(data) {
+			const tbody = document.getElementById(config.tableBodyId);
+			if (!tbody) return;
+			
+			if (data.length === 0) {
+				tbody.innerHTML = '';
+				return;
+			}
+			
+			let rowsHTML = '';
+			
+			data.forEach((row, index) => {
+				if (config.rowRenderer && typeof config.rowRenderer === 'function') {
+					// Use custom row renderer
+					rowsHTML += config.rowRenderer(row, index);
+				} else {
+					// Default row renderer
+					rowsHTML += renderDefaultRow(row, index);
+				}
+			});
+			
+			tbody.innerHTML = rowsHTML;
+			
+			// Attach row click events if configured
+			if (config.onRowClick && typeof config.onRowClick === 'function') {
+				tbody.querySelectorAll('tr').forEach((tr, index) => {
+					tr.style.cursor = 'pointer';
+					tr.addEventListener('click', () => config.onRowClick(data[index], index));
+				});
+			}
+		}
+
+		/**
+		 * Default row renderer
+		 */
+		function renderDefaultRow(row, index) {
+			let rowHTML = '<tr>';
+			
+			config.columns.forEach(column => {
+				let cellValue = getNestedValue(row, column.data);
+				
+				// Apply cell renderer if provided
+				if (column.render && typeof column.render === 'function') {
+					cellValue = column.render(cellValue, row, index);
+				}
+				
+				rowHTML += `<td>${cellValue !== null && cellValue !== undefined ? cellValue : '-'}</td>`;
+			});
+			
+			rowHTML += '</tr>';
+			return rowHTML;
+		}
+
+		/**
+		 * Get nested object value
+		 */
+		function getNestedValue(obj, path) {
+			return path.split('.').reduce((prev, curr) => {
+				return prev ? prev[curr] : null;
+			}, obj);
+		}
+
+		/**
+		 * Update pagination
+		 */
+		function updatePagination(response) {
+			const lastPage = response.last_page || 1;
+			const from = response.from || 0;
+			const to = response.to || 0;
+			
+			// Update pagination info
+			document.getElementById('showingStart').textContent = from;
+			document.getElementById('showingEnd').textContent = to;
+			document.getElementById('totalItems').textContent = totalRecords;
+			
+			// Generate pagination buttons
+			const paginationContainer = document.getElementById(config.paginationId);
+			if (!paginationContainer) return;
+			
+			let paginationHTML = '';
+			
+			// Previous button
+			paginationHTML += `
+				<li class="page-item">
+					<button class="page-link" 
+							onclick="LaravelDataTable.changePage(${currentPage - 1})" 
+							${currentPage === 1 ? 'disabled' : ''}>
+						<i class="fas fa-chevron-left"></i>
+					</button>
+				</li>
+			`;
+			
+			// Page numbers (show 5 pages at a time)
+			const startPage = Math.max(1, currentPage - 2);
+			const endPage = Math.min(lastPage, currentPage + 2);
+			
+			for (let i = startPage; i <= endPage; i++) {
+				paginationHTML += `
+					<li class="page-item">
+						<button class="page-link ${i === currentPage ? 'active' : ''}" 
+								onclick="LaravelDataTable.changePage(${i})">
+							${i}
+						</button>
+					</li>
+				`;
+			}
+			
+			// Next button
+			paginationHTML += `
+				<li class="page-item">
+					<button class="page-link" 
+							onclick="LaravelDataTable.changePage(${currentPage + 1})" 
+							${currentPage === lastPage ? 'disabled' : ''}>
+						<i class="fas fa-chevron-right"></i>
+					</button>
+				</li>
+			`;
+			
+			paginationContainer.innerHTML = paginationHTML;
+		}
+
+		/**
+		 * Change page
+		 */
+		function changePage(page) {
+			currentPage = page;
+			loadData();
+		}
+
+		/**
+		 * Sort by column
+		 */
+		function sortBy(column) {
+			if (sortColumn === column) {
+				sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+			} else {
+				sortColumn = column;
+				sortDirection = 'asc';
+			}
+			currentPage = 1;
+			loadData();
+		}
+
+		/**
+		 * Apply filter
+		 */
+		function applyFilter(filterName, value) {
+			if (value === '') {
+				delete currentFilters[filterName];
+			} else {
+				currentFilters[filterName] = value;
+			}
+			currentPage = 1;
+			loadData();
+		}
+
+		/**
+		 * Show/hide loading overlay
+		 */
+		function showLoading(show) {
+			const overlay = document.getElementById(config.loadingOverlayId);
+			if (overlay) {
+				overlay.classList.toggle('show', show);
+			}
+		}
+
+		/**
+		 * Toggle empty state
+		 */
+		function toggleEmptyState(show) {
+			const emptyState = document.getElementById(config.emptyStateId);
+			if (emptyState) {
+				emptyState.classList.toggle('show', show);
+			}
+		}
+
+		/**
+		 * Load stats data
+		 */
+		function loadStats() {
+			fetch(config.statsEndpoint, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRF-TOKEN': config.csrfToken,
+					'Accept': 'application/json'
+				}
+			})
+			.then(response => response.json())
+			.then(data => {
+				renderStats(data);
+			})
+			.catch(error => {
+				console.error('Stats loading error:', error);
+			});
+		}
+
+		/**
+		 * Render stats cards
+		 */
+		function renderStats(stats) {
+			const container = document.getElementById(config.statsContainer);
+			if (!container || !stats) return;
+			
+			let statsHTML = '';
+			
+			stats.forEach(stat => {
+				statsHTML += `
+					<div class="stat-card-modern">
+						<div class="stat-icon-modern ${stat.type || 'total'}">
+							<i class="${stat.icon || 'fas fa-chart-line'}"></i>
+						</div>
+						<div class="stat-info-modern">
+							<h3>${stat.value}</h3>
+							<p>${stat.label}</p>
+						</div>
+					</div>
+				`;
+			});
+			
+			container.innerHTML = statsHTML;
+		}
+
+		/**
+		 * Refresh data
+		 */
+		function refresh() {
+			loadData();
+		}
+
+		/**
+		 * Reset filters
+		 */
+		function resetFilters() {
+			currentFilters = {};
+			searchQuery = '';
+			currentPage = 1;
+			
+			// Reset filter inputs
+			config.filters.forEach(filter => {
+				const input = document.getElementById(`filter_${filter.name}`);
+				if (input) input.value = '';
+			});
+			
+			// Reset search input
+			const searchInput = document.getElementById(config.searchInputId);
+			if (searchInput) searchInput.value = '';
+			
+			loadData();
+		}
+
+		// Public API
+		return {
+			init: init,
+			loadData: loadData,
+			changePage: changePage,
+			sortBy: sortBy,
+			applyFilter: applyFilter,
+			refresh: refresh,
+			resetFilters: resetFilters,
+			getConfig: () => config,
+			getCurrentPage: () => currentPage,
+			getTotalRecords: () => totalRecords
+		};
+	})();
+
+	/**
+	 * Toast notification helper
+	 */
+	function showToast(type, title, message) {
+		showAlert(message,7,type);
+		return;
+
+		const container = document.getElementById('toastContainer');
+		if (!container) return;
+		
+		const toast = document.createElement('div');
+		toast.className = `toast_ ${type} slide-l`;
+		
+		const icon = type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info';
+		
+		toast.innerHTML = `
+			<div class="toast-icon">
+				<i class="fas fa-${icon}"></i>
+			</div>
+			<div class="toast-content">
+				<div class="toast-title">${title}</div>
+				<div class="toast-message">${message}</div>
+			</div>
+			<button class="toast-close" onclick="this.parentElement.remove()">
+				<i class="fas fa-times"></i>
+			</button>
+		`;
+		
+		container.appendChild(toast);
+		
+		setTimeout(() => {
+			toast.remove();
+		}, 25000);
+	}
+
+	/**
+	 * Refresh data helper
+	 */
+	function refreshData() {
+		LaravelDataTable.refresh();
+		showToast('info', 'Refreshing', 'Loading latest data...');
+	}
+</script>
+
+<script>
+	// Initialize the data table with your configuration
+	window['runOnAwake'] = () => {
+		LaravelDataTable.init({
+			// Required: Laravel API endpoint
+			apiEndpoint: './data/users', // Change this to your endpoint
+			
+			// Required: Column definitions
+			columns: [
+				{
+					title: 'ID',
+					data: 'id',
+					width: '80px',
+					sortable: true
+				},
+				{
+					title: 'Student',
+					data: 'name',
+					sortable: true,
+					render: function(value, row) {
+						return `
+							<div class="d-flex align-items-center gap-2">
+								<img src="${row.avatar || 'https://i.pravatar.cc/150?img=1'}" 
+									 alt="" 
+									 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+								<div>
+									<div style="font-weight: 600;">${value}</div>
+									<div style="font-size: 12px; color: #64748b;">${row.email}</div>
+								</div>
+							</div>
+						`;
+					}
+				},
+				{
+					title: 'Student ID',
+					data: 'student_id',
+					sortable: true,
+					render: function(value) {
+						return `<strong>${value}</strong>`;
+					}
+				},
+				{
+					title: 'Grade',
+					data: 'grade',
+					sortable: true
+				},
+				{
+					title: 'Section',
+					data: 'section',
+					sortable: true
+				},
+				{
+					title: 'GPA',
+					data: 'gpa',
+					sortable: true,
+					render: function(value) {
+						return `<strong>${value}</strong>`;
+					}
+				},
+				{
+					title: 'Status',
+					data: 'status',
+					sortable: true,
+					render: function(value) {
+						return `<span class="status-badge status-${value}">${value}</span>`;
+					}
+				},
+				{
+					title: 'Actions',
+					data: 'id',
+					sortable: false,
+					width: '120px',
+					render: function(value, row) {
+						return `
+							<div class="action-btns">
+								<button class="btn-action btn-view" onclick="viewStudent(${value})" title="View">
+									<i class="fas fa-eye"></i>
+								</button>
+								<button class="btn-action btn-edit" onclick="editStudent(${value})" title="Edit">
+									<i class="fas fa-edit"></i>
+								</button>
+								<button class="btn-action btn-delete" onclick="deleteStudent(${value})" title="Delete">
+									<i class="fas fa-trash"></i>
+								</button>
+							</div>
+						`;
+					}
+				}
+			],
+			
+			// Optional: Items per page (max 300)
+			perPage: 10,
+			
+			// Optional: Enable features
+			enableSearch: true,
+			enableSort: true,
+			enableFilters: true,
+			
+			// Optional: Filter definitions
+			filters: [
+				{
+					name: 'grade',
+					label: 'Grade',
+					options: [
+						{ value: '10', label: 'Grade 10' },
+						{ value: '11', label: 'Grade 11' },
+						{ value: '12', label: 'Grade 12' }
+					]
+				},
+				{
+					name: 'section',
+					label: 'Section',
+					options: [
+						{ value: 'A', label: 'Section A' },
+						{ value: 'B', label: 'Section B' },
+						{ value: 'C', label: 'Section C' }
+					]
+				},
+				{
+					name: 'status',
+					label: 'Status',
+					options: [
+						{ value: 'active', label: 'Active' },
+						{ value: 'inactive', label: 'Inactive' },
+						{ value: 'pending', label: 'Pending' }
+					]
+				}
+			],
+			
+			// Optional: Enable stats
+			// enableStats: false,
+			// statsEndpoint: '/api/students/stats',
+			
+			// Optional: Callbacks
+			onDataLoaded: function(data) {
+				console.log('Data loaded:', data);
+			},
+			
+			onError: function(error) {
+				console.error('Error occurred:', error);
+			},
+			
+			onRowClick: function(row, index) {
+				console.log('Row clicked:', row);
+			}
+		});
+	};
+
+	// Page-specific action handlers
+	function viewStudent(id) {
+		showToast('info', 'View Student', `Viewing student ID: ${id}`);
+		// Add your view logic here
+	}
+
+	function editStudent(id) {
+		showToast('info', 'Edit Student', `Editing student ID: ${id}`);
+		// Add your edit logic here
+	}
+
+	function deleteStudent(id) {
+		if (confirm('Are you sure you want to delete this student?')) {
+			// Add your delete logic here
+			showToast('success', 'Deleted', `Student ${id} deleted successfully`);
+			LaravelDataTable.refresh();
+		}
+	}
+</script>
+
+</body>
+</html>

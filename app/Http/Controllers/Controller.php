@@ -598,7 +598,7 @@ abstract class Controller{
     // system roles subsys
     public static function sys_permissions(){
         return [
-            "last_update" => Carbon::parse('2026-02-12 13:44:35'),
+            "last_update" => Carbon::parse('2026-02-14 13:44:35'),
             "permissions" => [
                 'VIEW_DASHBOARD' => "view the staff dashboard",
                 'VIEW_ANALYTICS' => "view analytics dashboard",

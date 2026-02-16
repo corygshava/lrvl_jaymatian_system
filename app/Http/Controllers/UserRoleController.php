@@ -15,6 +15,7 @@ class UserRoleController extends Controller{
 			$res['success'] = true;
 			$res['message'] = "all userRoles retrieved";
 
+			$res['runlog'] = $this->getpermissions();
 			$sysroles = userRoles::withCount('users')->get();
 			// $mdta = random_int(0,14);
 
