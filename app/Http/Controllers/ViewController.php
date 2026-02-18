@@ -5,67 +5,97 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller{
+    // UIs
+	public function showdash(Request $req){
+        if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('dashboard',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+	public function showconsole(Request $req){
+        if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.console',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+	public function showroles(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.userroles',$topass);
+		} else {
+			// return view('error');
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+	public function showdatatable(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.datatables_remake',$topass);
+		} else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+	public function showusers(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.user_mgt',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+
+    public function showerror(Request $req,$msg = 'an error occured'){
+        $dta = [
+            'msg' => $msg,
+        ];
+
+        return view('error',$dta);
+    }
+
+    // data
     public function showpermissions(Request $req){
-        $res = $this->dftres;
-        $alldata = $req->all();
+		$res = $this->dftres;
+		$alldata = $req->all();
 
-        if($this->ili()){
-            $res['success'] = true;
-            $res['message'] = "fetching permissions";
+		if($this->ili()){
+			$res['success'] = true;
+			$res['message'] = "fetching permissions";
 
-            $cmdt = self::commondata();
+			$cmdt = self::commondata();
 
-            $res['result'] = true;
-            $res['sendme'] = $cmdt['permissions'];
-        }
+			$res['result'] = true;
+			$res['sendme'] = $cmdt['permissions'];
+		}
 
-        if(!self::$showlogs){
-            if(array_key_exists('runlog',$res)){
-                unset($res['runlog']);
-            }
-        }
-        return response()->json($res);
-    }
-    public function showdash(Request $req){
-        $cmdt = self::commondata();
-        $topass = [
-            "cmdt" => $cmdt
-        ];
-
-        return view('dashboard',$topass);
-    }
-    public function showconsole(Request $req){
-        $cmdt = self::commondata();
-        $topass = [
-            "cmdt" => $cmdt
-        ];
-
-        return view('profile.console',$topass);
-    }
-    public function showroles(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
-
-            return view('profile.userroles',$topass);
-        } else {
-            // return view('error');
-            return response()->json("nothing here");
-        }
-    }
-    public function showdatatable(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
-
-            return view('profile.datatables_remake',$topass);
-        } else {
-            // return view('error');
-            return response()->json("nothing here");
-        }
-    }
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+		return response()->json($res);
+	}
 }
