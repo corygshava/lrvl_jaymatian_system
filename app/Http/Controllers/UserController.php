@@ -153,4 +153,28 @@ class UserController extends Controller{
 
         return response()->json($res);
     }
+    public function get_current(Request $req){
+        $res = $this->dftres;
+        $alldata = $req->all();
+
+        if($this->ili()){
+            $res['success'] = true;
+            $res['message'] = "all userRoles retrieved";
+
+            $user = auth()->user()->with('myRoles')->first();
+            $user['role_name'] = $user->myRoles->role_name;
+            $user['role_permissions'] = $user->myRoles->role_permissions;
+
+            $res['result'] = true;
+            $res['sendme'] = $user;
+        }
+
+        if(!self::$showlogs){
+            if(array_key_exists('runlog',$res)){
+                unset($res['runlog']);
+            }
+        }
+
+        return response()->json($res);
+    }
 }

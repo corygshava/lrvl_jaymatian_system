@@ -27,13 +27,16 @@ Route::prefix('/ui')->group(function (){
     Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
 	Route::get('/console', [ViewController::class,'showconsole'])->name('user_console');
 	Route::get('/user_roles', [ViewController::class,'showroles'])->name('user_roles');
+	Route::get('/user_mgt', [ViewController::class,'showusers'])->name('user_mgt');
 	Route::get('/datatables', [ViewController::class,'showdatatable']);
 });
 
 Route::prefix('/data')->group(function(){
 	Route::get('/user_roles', [UserRoleController::class,'get_all']);
+	Route::get('/cur_user', [UserController::class,'get_current']);
 	Route::get('/users', [UserController::class,'get_all']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions']);
+	Route::get('/my_permissions', [UserController::class,'mypermissions']);
 });
 
 Route::prefix('/op')->group(function(){
