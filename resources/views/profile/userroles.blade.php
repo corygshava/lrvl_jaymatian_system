@@ -383,12 +383,12 @@
 			let con = myn.role_permissions.indexOf(b.dataset.value) !== -1;
 			b.checked = con;
 		})
-		alert_info(boxes.length);
+		// alert_info(boxes.length);
 
 		add_role_btn.click();
 
 		// alert_info(rec_id);
-		alert_info(e.textContent);
+		// alert_info(e.textContent);
 		add_edit_title.innerHTML = "Edit user role";
 	}
 
@@ -417,7 +417,7 @@
 		`;
 
 		confirmAction('Delete User Role',explain,delRole);
-		alert_info(e.textContent);
+		// alert_info(e.textContent);
 	}
 
 	// autoruns
@@ -444,7 +444,7 @@
 	}
 
 	window['form_afterfx'] = () => {
-		alert_danger('runnin afterfx');
+		// alert_danger('runnin afterfx');
 		add_role_btn.click();
 
 		window['refresh_stuff']();

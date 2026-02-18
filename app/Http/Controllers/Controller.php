@@ -598,22 +598,27 @@ abstract class Controller{
     // system roles subsys
     public static function sys_permissions(){
         return [
-            "last_update" => Carbon::parse('2026-02-14 13:44:35'),
+            "last_update" => Carbon::parse('2026-02-18 11:44:35'),
             "permissions" => [
-                'VIEW_DASHBOARD' => "view the staff dashboard",
-                'VIEW_ANALYTICS' => "view analytics dashboard",
-                'ADD_ROLE' => "add a user role",
-                'EDIT_ROLE' => "edit a user role",
-                'ADD_CLIENT' => "register a client",
-                'EDIT_CLIENT' => "modify client information",
-                'VIEW_CLIENT' => "view client information",
-                'ADD_JOB' => "add a processing job",
-                'EDIT_JOB' => "handle job processing",
-                'VIEW_JOB' => "view job details",
-                'VIEW_PAYMENTS' => "view payments",
-                'GEN_REPORT' => "generate a report from a job",
+                "VIEW_DASHBOARD" => "view the staff dashboard",
+		        "VIEW_ANALYTICS" => "view analytics dashboard",
+		        "ADD_USER" => "add a new user",
+		        "EDIT_USER" => "edit user details",
+		        "MANAGE_USERS" => "manage registered users",
+		        "ACTIVATE_USER" => "activate / deactivate accounts",
+		        "EDIT_PROFILE" => "modify their details",
+		        "ADD_ROLE" => "add a user role",
+		        "EDIT_ROLE" => "edit a user role",
+		        "ADD_CLIENT" => "register a client",
+		        "EDIT_CLIENT" => "modify client information",
+		        "VIEW_CLIENT" => "view client information",
+		        "ADD_JOB" => "add a processing job",
+		        "EDIT_JOB" => "handle job processing",
+		        "VIEW_JOB" => "view job details",
+		        "VIEW_PAYMENTS" => "view payments",
+		        "GEN_REPORT" => "generate a report from a job",
+		        "VIEW_REPORT" => "view generated reports internally"
                 // 'ADD_REPORT' => "",
-                'VIEW_REPORT' => "view generated reports internally",
             ],
         ];
     }

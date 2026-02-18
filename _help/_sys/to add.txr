@@ -1,0 +1,5 @@
+to add
+	users model
+		phone_number: text (to prevent trimmin of the 0 or the + that most numbers start with)
+		last_login: date (updates on login)
+		is_active: bool
