@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ViewController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class,'index']);
 
-Route::get('/dashboard', [UserController::class,'showdash'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth', 'verified']);
+Route::get('/dashboard', [ViewController::class,'showdash'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/my_permissions', [ViewController::class,'mypermissions'])->middleware(['auth', 'verified']);
 Route::get('/am_i_admin', [UserController::class,'checkadmin'])->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
@@ -23,10 +24,10 @@ Route::prefix('test')->group(function () {
 
 Route::prefix('/ui')->group(function (){
     // Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
-    Route::get('/get_menu', [UserController::class,'showpermissions'])->middleware(['auth', 'verified']);
-	Route::get('/console', [UserController::class,'showconsole'])->name('user_console');
-	Route::get('/user_roles', [UserController::class,'showroles'])->name('user_roles');
-	Route::get('/datatables', [UserController::class,'showdatatable']);
+    Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
+	Route::get('/console', [ViewController::class,'showconsole'])->name('user_console');
+	Route::get('/user_roles', [ViewController::class,'showroles'])->name('user_roles');
+	Route::get('/datatables', [ViewController::class,'showdatatable']);
 });
 
 Route::prefix('/data')->group(function(){

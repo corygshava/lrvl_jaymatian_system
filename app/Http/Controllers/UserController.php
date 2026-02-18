@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\userRoles;
+use App\Http\Controllers\ViewController;
 use Illuminate\Http\Request;
 
 class UserController extends Controller{
@@ -14,50 +15,6 @@ class UserController extends Controller{
 			return redirect('/login');
 		}
 	}
-
-    public function showdash(Request $req){
-        $cmdt = self::commondata();
-        $topass = [
-            "cmdt" => $cmdt
-        ];
-
-        return view('dashboard',$topass);
-    }
-
-    public function showconsole(Request $req){
-        $cmdt = self::commondata();
-        $topass = [
-            "cmdt" => $cmdt
-        ];
-
-        return view('profile.console',$topass);
-    }
-    public function showroles(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
-
-            return view('profile.userroles',$topass);
-        } else {
-            // return view('error');
-            return response()->json("nothing here");
-        }
-    }
-    public function showdatatable(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
-
-            return view('profile.datatables_remake',$topass);
-        } else {
-            // return view('error');
-            return response()->json("nothing here");
-        }
-    }
 
     public function checkadmin(Request $req){
         $res = $this->dftres;
@@ -108,27 +65,12 @@ class UserController extends Controller{
         }
         return response()->json($res);
     }
+
     public function showpermissions(Request $req){
-        $res = $this->dftres;
-        $alldata = $req->all();
-
-        if($this->ili()){
-            $res['success'] = true;
-            $res['message'] = "fetching permissions";
-
-            $cmdt = self::commondata();
-
-            $res['result'] = true;
-            $res['sendme'] = $cmdt['permissions'];
-        }
-
-        if(!self::$showlogs){
-            if(array_key_exists('runlog',$res)){
-                unset($res['runlog']);
-            }
-        }
-        return response()->json($res);
+        $vc = new ViewController();
+        return $vc->showpermissions($req);
     }
+
     public function mypermissions(Request $req){
         $res = $this->dftres;
         $alldata = $req->all();
@@ -190,7 +132,7 @@ class UserController extends Controller{
             // */
             // $mdta = random_int(0,14);
 
-            $users = User::with('myRoles')->get();
+            $users = User::with('myRoles')->paginate();
 
             for($i = 0;$i < count($users);$i++){
                 $users[$i]->role_name = $users[$i]->myRoles?->role_name;

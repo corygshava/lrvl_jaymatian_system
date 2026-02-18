@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'user_roles_id',
+        'last_login_at',
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
     protected function casts(): array{
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
