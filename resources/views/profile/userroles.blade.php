@@ -15,7 +15,7 @@
 		background: var(--clr-panelbg);
 		border-radius: var(--roundness);
 		border: 1px solid var(--clr-border);
-		box-shadow: 
+		box-shadow:
 			0 1px 3px color-mix(in srgb, var(--clr-text) 4%, transparent),
 			0 4px 12px color-mix(in srgb, var(--clr-text) 2%, transparent);
 		transition: box-shadow 0.2s ease, transform 0.1s ease;
@@ -132,8 +132,9 @@
 		gap: 12px;
 	}
 	.permissions_box>div{
-		flex: 1 0 160px;
-		max-width: 180px;
+        --w: 240px;
+		flex: 1 0 var(--w);
+		/* max-width: var(--w); */
 		/*overflow: auto;*/
 	}
 </style>
@@ -250,7 +251,7 @@
 			return `
 				<div class="custom-control custom-switch">
 					<input type="checkbox" class="custom-control-input" id="${f}" data-value="${f}" onchange="form_op_update_perms(this)">
-					<label class="custom-control-label" for="${f}"> ${f}</label>
+					<label class="custom-control-label" for="${f}"> ${permissions[f]}</label>
 				</div>
 			`;
 		}).join('');
@@ -316,7 +317,7 @@
 		}
 
 		userRoles.forEach((f,id) => {
-			let roles_list = [...f.role_permissions].map(f => {return `<li>${f}</li>`;})
+			let roles_list = [...f.role_permissions].map(f => {return `<li>${permissions[f]}</li>`;})
 
 			// console.log(roles_list);
 
@@ -411,7 +412,7 @@
 		}
 
 		let explain = `
-			this will delete this user role from the database. 
+			this will delete this user role from the database.
 			<br><br>
 			<b>NOTE:</b> if any users are assigned to this role, deleting it will fail
 		`;
