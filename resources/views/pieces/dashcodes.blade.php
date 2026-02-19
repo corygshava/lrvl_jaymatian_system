@@ -11,8 +11,11 @@
 		let linkAtlas = {
 			'view_users' : './ui/view_user',
 			'view_user' : './ui/view_user',
-			'view_profile' : './pieces/view_user',
-			'view_users' : './ui/user_tables',
+			'view_profile' : './ui/view_user',
+			'view_users' : './ui/user_mgt',
+
+			// operations
+			'toggle_account_active' : './op/toggle_active',
 		};
 
 		/*
@@ -28,6 +31,7 @@
 			{caption: "dashboard", url: './ui/console',icon: 'fa fa-th-large'},
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
 			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-users'},
+			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-list'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-user'},
 			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-question'},
@@ -41,6 +45,23 @@
 
 			if(maincon == undefined){maincon = document.querySelector('#dynamic_ui');}
 			if(dynacode == undefined){dynacode = document.querySelector('#dynamic_js');}
+
+			updateSessionUI();
+		}
+
+		function updateSessionUI(){
+			let namedisplays = document.querySelectorAll('[data-role="user_name_display"]');
+
+			if(namedisplays.length == 0){
+				// alert_danger('no name displays found');
+			}
+
+			namedisplays.forEach(e => {
+				e.innerHTML = cur_user.name || "??";
+			})
+
+			// alert_warning('updating user');
+			console.log(cur_user);
 		}
 
 		window['toggleSidenav'] = (me,override = undefined) => {
@@ -194,7 +215,7 @@
 				let navbtn = menubar.querySelector(`[data-template="${p.template}"]`);
 				if(navbtn){
 					navbtn.click();
-					alert_dark('btn found');
+					// alert_dark('btn found');
 					return;
 				} else {
 					// alert_dark('no btn found');
@@ -304,26 +325,27 @@
 			if(callback == undefined){
 				if(m.dataset.callback){
 					console.log('callback: ',m.dataset.callback);
-					alert_dark('callback: ' + m.dataset.callback);
+					// alert_dark('callback: ' + m.dataset.callback);
+
 					callback = window[m.dataset.callback.trim()];
 				} else {
 					console.log('no fallback to the callback');
-					alert_dark('no fallback to the callback');
+					// alert_dark('no fallback to the callback');
 				}
 			} else {
 				if(typeof callback != "function"){
 					console.log('trying to read from a window variable');
-					alert_dark('trying to read from a window variable');
+					// alert_dark('trying to read from a window variable');
 					callback = window[callback];
 				}
 			}
 
 			if(typeof callback == "function"){
 				console.log('valid callback')
-				alert_dark('valid callback')
+				// alert_dark('valid callback')
 			} else {
 				console.log('not a function')
-				alert_dark('not a function')
+				// alert_dark('not a function')
 			}
 
 			// return;
@@ -357,6 +379,47 @@
 				m.style.opacity = 1;
 				m.dataset.submitting = false;
 			})
+		}
+
+		function killghost(who) {
+			// kills ghost processes and functions
+			// NOTE: this shit is OP as fukari so use it sparingly
+			delete(window[who]);
+		}
+
+		function compareUserData(udata) {
+			let cur_u = cur_user;
+
+			if(udata.id == cur_u.id){
+				cur_user = udata;
+				mypermissions = cur_user.role_permissions;
+
+				updateSessionUI();
+			}
+		}
+
+        function awaitConfirmPass(callback) {
+            if(typeof callback !== "function"){
+                alert_danger('invalid callback');
+                return;
+            }
+
+			// create a ghost process to call when password is confirmed
+            window['confirmPasswordCallback'] = callback;
+            password_confo_trig.click();
+        }
+
+		function confirmPassword(m){
+			// alert_info('doxing password: ' + m.admin_password.value);
+			password_confo_trig.click();
+
+			window['confirmPasswordCallback']({admin_password: m.admin_password.value});
+
+			killghost('confirmPasswordCallback');
+		}
+
+		window['password_confo_clearghost'] = () => {
+			killghost('confirmPasswordCallback');
 		}
 
 		callOnDocLoad.push({act: initstuff});

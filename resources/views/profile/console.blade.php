@@ -339,9 +339,10 @@
 		}
 	});
 
+    /*
 	// Close sidebar when clicking outside on mobile
 	document.addEventListener('click', function(e) {
-		const sidebar = document.getElementById('sidebar');
+		const sidebar = document.getElementById('menubar');
 		const toggle = document.querySelector('.mobile-toggle');
 
 		if (window.innerWidth <= 991 &&
@@ -351,4 +352,5 @@
 			sidebar.classList.remove('active');
 		}
 	});
+    // */
 </script>

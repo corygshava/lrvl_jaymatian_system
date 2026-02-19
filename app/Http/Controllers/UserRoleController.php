@@ -134,35 +134,4 @@ class UserRoleController extends Controller{
 
 		return response()->json($res);
 	}
-
-	public function log_my_payload(Request $req){
-		$res = $this->dftres;
-		$alldata = $req->all();
-
-		// /*
-		$passed = $req->validate([
-			'recid' => ['required']
-		]);
-		// */
-
-
-		if($this->ili()){
-			$res['success'] = true;
-
-			$reslt = self::log_payload($alldata,'delete_role');
-			$msg = "logging payload";
-
-			$res['result'] = $reslt;
-			$res['message'] = $msg;
-			$res['sendme'] = true;
-		}
-
-		if(!self::$showlogs){
-			if(array_key_exists('runlog',$res)){
-				unset($res['runlog']);
-			}
-		}
-
-		return response()->json($res);
-	}
 }

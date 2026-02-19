@@ -30,7 +30,7 @@
 		left: 0;
 		height: 100%;
 		width: 100%;
-		background: red;
+		background: var(--themecolor);
 	}
 	.menubar.squish, .menubar.squish + main{
 		--w: 45px;
@@ -199,14 +199,23 @@
 		background: var(--c);
 		color: var(--clr-text);
 		padding: 6px 16px 6px 4px;
+		translate: 0 12px;
+		pointer-events: none;
 		/*border-radius: 0 var(--roundness) var(--roundness) 0;*/
 		box-shadow: 8px 0 10px var(--clr-shadow);
-		width: 0px;
+		/* width: 0px; */
 		transition: 0.4s ease-out;
+		width: 180px;
+	}
+	.menubar.squish [data-sidenote].active:hover::before{
+		background-color: var(--themecolor);
+		color: #fff;
 	}
 	.menubar.squish [data-sidenote]:hover::before{
 		opacity: 1;
-		width: 90px;
+		/* width: 90px; */
+		pointer-events: all;
+		translate: 0 0;
 	}
 
 /* Forms */

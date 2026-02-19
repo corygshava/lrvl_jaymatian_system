@@ -317,7 +317,7 @@
 		}
 
 		userRoles.forEach((f,id) => {
-			let roles_list = [...f.role_permissions].map(f => {return `<li>${permissions[f]}</li>`;})
+			let roles_list = [...f.role_permissions].map(f => {return f == undefined || f == '' ? '<i>NONE</i>' : `<li data-wot="${f}">${permissions[f]}</li>`;})
 
 			// console.log(roles_list);
 

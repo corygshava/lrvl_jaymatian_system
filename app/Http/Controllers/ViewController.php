@@ -67,6 +67,18 @@ class ViewController extends Controller{
             return $this->showerror($req,'log in to continue');
         }
 	}
+	public function showuser(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.user_view',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
 
     public function showerror(Request $req,$msg = 'an error occured'){
         $dta = [

@@ -20,13 +20,13 @@
 			<div class="user-profile" id="userOpsDropper" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">
 				<img src="_assets/img/demos/placeholder.jpg" class="border" loading="lazy" alt="Admin">
-				<span class="d-none d-md-block">{{ auth()->user()->name }}</span>
+				<span class="d-none d-md-block" data-role="user_name_display">{{ auth()->user()->name }}</span>
 				<i class="fa fa-caret-down"></i>
 			</div>
 			<div class="dropdown-menu nopadding nooverflow w3-animate-opacity themeround realign" aria-labelledby="userOpsDropper" style="margin-top: 12px;border: none;">
-				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#">
-					<i class="fa fa-edit"></i>
-					<span>Edit profile</span>
+				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#" data-runme="view_profile">
+					<i class="fa fa-user"></i>
+					<span>View profile</span>
 				</button>
 				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" data-submitme="#logoutform" href="#">
 					<i class="fa fa-user-slash"></i>

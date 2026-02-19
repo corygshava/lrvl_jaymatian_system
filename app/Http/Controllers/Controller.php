@@ -10,7 +10,7 @@ use App\Models\systemData;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 
 use Stevebauman\Location\Facades\Location;
@@ -21,25 +21,25 @@ abstract class Controller{
 	public static $prefix = '_assets';
 	public static $uimode = "dark";
 	public static $sitedata = null;
-    public static $permissions = [];
-    public static $mypermissions = [];
+	public static $permissions = [];
+	public static $mypermissions = [];
 
 	// Api stuff
 	public static $fetchId = 'viaFetch';
 	public static $exchage_rates_url = 'https://api.exchangerate-api.com/v4/latest/USD';
 
-    // response shape stuff
-    public static $showlogs = true;
-    public $dftres = [
-        "success" => false,
-        'result' => false,
-        "message" => "default",
-        "sendme" => null,
-        "runlog" => []
-    ];
+	// response shape stuff
+	public static $showlogs = true;
+	public $dftres = [
+		"success" => false,
+		'result' => false,
+		"message" => "default",
+		"sendme" => null,
+		"runlog" => []
+	];
 
 	// shared methods start
-    public static function mekRandomString($charcount = 7, $useNums = true, $useSymbols = false) {
+	public static function mekRandomString($charcount = 7, $useNums = true, $useSymbols = false) {
 		// setup character sets
 		$letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*()^~`";
 		if (!$useSymbols) {
@@ -68,9 +68,9 @@ abstract class Controller{
 		$res = false;
 		$utype = "normal";
 
-		if(auth()->check()){
-			$urole = auth()->user()->myRoles;
-            $rolename = $urole == null ? '' : $urole->role_name;
+		if(Auth::check()){
+			$urole = Auth::user()->myRoles;
+			$rolename = $urole == null ? '' : $urole->role_name;
 
 			if(strtolower($rolename) == 'admin'){
 				$res = true;
@@ -83,7 +83,7 @@ abstract class Controller{
 	}
 
 	public static function isloggedin(){
-		return auth()->check();
+		return Auth::check();
 	}
 
 	public static function ili() {
@@ -96,11 +96,11 @@ abstract class Controller{
 		$_sdata = self::getSiteData();
 		$_uid = null;
 		$cur_user = null;
-        $allpermissions = self::getpermissions();
-        $mypermissions = [];
+		$allpermissions = self::getpermissions();
+		$mypermissions = [];
 
-		if(auth()->check()){
-			$cur_user = auth()->user();
+		if(Auth::check()){
+			$cur_user = Auth::user();
 			// $_uid = self::encryptuid($cur_user->id);
 		}
 
@@ -110,14 +110,14 @@ abstract class Controller{
 			'sitedata' => $_sdata,
 			'uid' => $_uid,
 			'cur_user' => $cur_user,
-            'permissions' => $allpermissions,
-            'mypermissions' => $mypermissions,
+			'permissions' => $allpermissions,
+			'mypermissions' => $mypermissions,
 		];
 	}
 
 	public static function mekuid(){
-		if(auth()->check()){
-			$uid = auth()->user()->id;
+		if(Auth::check()){
+			$uid = Auth::user()->id;
 			return self::encryptuid($uid);
 		} else {
 			return null;
@@ -183,7 +183,7 @@ abstract class Controller{
 		}
 	}
 
-	public function getCountryList(Request $req = null){
+	public function getCountryList(Request $req){
 		$countries = FileopsController::saferead(storage_path('runtime/countries_list.json'),true,12);
 		$san_countries = json_decode($countries,true);
 		$finres = [];
@@ -454,7 +454,7 @@ abstract class Controller{
 		}
 	}
 
-    // site data
+	// site data
 	public static function defaultSiteData(){
 		$created = Carbon::now()->toDateTimeString();
 		$lastupdate = Carbon::parse('2025-11-21 03:25:29');
@@ -498,7 +498,7 @@ abstract class Controller{
 		if(self::$sitedata != null && $forceReload === false) {return self::$sitedata;}
 
 		$fl = new FileopsController();
-        $sitedatapath = storage_path('runtime/sitedata.json');
+		$sitedatapath = storage_path('runtime/sitedata.json');
 		$dft = self::defaultSiteData();
 		$parseddft = json_decode($dft,true);
 		$sitedata = $parseddft;
@@ -512,12 +512,12 @@ abstract class Controller{
 
 		if($useDefault === true) return $sitedata;
 
-        if(!is_file($sitedatapath)){
-            $fl::c_file($sitedatapath,$err);
+		if(!is_file($sitedatapath)){
+			$fl::c_file($sitedatapath,$err);
 
 			$updatesitedata('--');
-        } else {
-            $contents = $fl::saferead($sitedatapath,true,12);
+		} else {
+			$contents = $fl::saferead($sitedatapath,true,12);
 			$sitedata = json_decode($contents,true);
 		}
 
@@ -534,7 +534,7 @@ abstract class Controller{
 
 		return $sitedata;
 	}
-    // end of sitedata
+	// end of sitedata
 
 	public static function getSupportedCountries_paymethod($meth){
 		$sdata = self::getSiteData(false);
@@ -562,138 +562,115 @@ abstract class Controller{
 		}
 	}
 
-	public static function log_payload($entry = 'empty payload',$fname = null,$usedate = true){
-		$fl = new FileopsController();
-		$tdate = $usedate ? date('dmy')."_" : '';
-		$fname = $fname == null ? 'payloads' : $fname;
-		$fstore = "runtime/payloads/{$tdate}_{$fname}.json";
-        $fpath = storage_path($fstore);
-		$contents = '[]';
-		$curdata = [];
-
-		// echo "File storage: ".$fstore."\nline: ".json_encode($entry)."\n";
-
-		if(is_file($fpath)){
-			$contents = $fl::saferead($fpath,true,12);
-		} else {
-			$fl::c_file($fpath);
-		}
-
-		$curdata = $contents == '' ? $curdata : json_decode($contents,true);
-		$tstring = Carbon::now()->timestamp;
-
-		// echo json_encode($curdata)."\n";
-
-		if(isset($curdata[$tstring])){
-			usleep(0.2 * 1000000);
-			$tstring .= Carbon::now()->timestamp;
-		}
-
-		$curdata[$tstring] = $entry;
-
-		$tosave = json_encode($curdata,JSON_PRETTY_PRINT);
-		return $fl::safewrite_txt($fpath,$tosave,true,24);
+	// system roles subsys
+	public static function sys_permissions(){
+		return [
+			"last_update" => Carbon::parse('2026-02-18 12:44:35'),
+			"permissions" => [
+				"VIEW_DASHBOARD" => "view the staff dashboard",
+				"VIEW_ANALYTICS" => "view analytics dashboard",
+				"ADD_USER" => "add a new user",
+				"EDIT_USER" => "edit user details",
+				"MANAGE_USERS" => "manage registered users",
+				"ACTIVATE_USER" => "activate / deactivate accounts",
+				"EDIT_PROFILE" => "modify account details",
+				"ADD_ROLE" => "add a user role",
+				"EDIT_ROLE" => "edit a user role",
+				"ADD_CLIENT" => "register a client",
+				"EDIT_CLIENT" => "modify client information",
+				"VIEW_CLIENT" => "view client information",
+				"ADD_JOB" => "add a processing job",
+				"EDIT_JOB" => "handle job processing",
+				"VIEW_JOB" => "view job details",
+				"VIEW_PAYMENTS" => "view payments",
+				"GEN_REPORT" => "generate a report from a job",
+				"VIEW_REPORT" => "view generated reports internally"
+				// 'ADD_REPORT' => "",
+			],
+		];
 	}
 
-    // system roles subsys
-    public static function sys_permissions(){
-        return [
-            "last_update" => Carbon::parse('2026-02-18 11:44:35'),
-            "permissions" => [
-                "VIEW_DASHBOARD" => "view the staff dashboard",
-		        "VIEW_ANALYTICS" => "view analytics dashboard",
-		        "ADD_USER" => "add a new user",
-		        "EDIT_USER" => "edit user details",
-		        "MANAGE_USERS" => "manage registered users",
-		        "ACTIVATE_USER" => "activate / deactivate accounts",
-		        "EDIT_PROFILE" => "modify their details",
-		        "ADD_ROLE" => "add a user role",
-		        "EDIT_ROLE" => "edit a user role",
-		        "ADD_CLIENT" => "register a client",
-		        "EDIT_CLIENT" => "modify client information",
-		        "VIEW_CLIENT" => "view client information",
-		        "ADD_JOB" => "add a processing job",
-		        "EDIT_JOB" => "handle job processing",
-		        "VIEW_JOB" => "view job details",
-		        "VIEW_PAYMENTS" => "view payments",
-		        "GEN_REPORT" => "generate a report from a job",
-		        "VIEW_REPORT" => "view generated reports internally"
-                // 'ADD_REPORT' => "",
-            ],
-        ];
-    }
+	public static function getpermissions($useDefault = false,$forceReload = false){
+		if(self::$permissions !== null && $forceReload){
+			return self::$permissions;
+		}
 
-    public static function getpermissions($useDefault = false,$forceReload = false){
-        if(self::$permissions !== null && $forceReload){
-            return self::$permissions;
-        }
+		// get defaults
+		$dft = self::sys_permissions();
+		$saved_data = [];
+		$fl = new FileopsController();
+		$fpath = storage_path('runtime/all_permissions.json');
+		$err = "";
 
-        // get defaults
-        $dft = self::sys_permissions();
-        $saved_data = [];
-        $fl = new FileopsController();
-        $fpath = storage_path('runtime/all_permissions.json');
-        $err = "";
+		$updatepermissions = function() use ($dft,$fl,$err,$fpath){
+			$pms = array_keys($dft['permissions']);
 
-        $updatepermissions = function() use ($dft,$fl,$err,$fpath){
-            $pms = array_keys($dft['permissions']);
+			if(!$fl::safewrite_txt($fpath,json_encode($dft,JSON_PRETTY_PRINT),true,12,$err)){
+				die("there was an error writing permissions file: $err");
+			}
 
-            if(!$fl::safewrite_txt($fpath,json_encode($dft,JSON_PRETTY_PRINT),true,12,$err)){
-                die("there was an error writing permissions file: $err");
-            }
+			systemData::query()->updateOrCreate(
+				['item_name' => 'system_permissions'],
+				['item_data' => $pms]
+			);
 
-            systemData::query()->updateOrCreate(
-                ['item_name' => 'system_permissions'],
-                ['item_data' => $pms]
-            );
+			userRoles::query()->updateOrCreate(
+				['role_name' => "admin"],
+				['role_permissions' => $pms]
+			);
+		};
 
-            userRoles::query()->updateOrCreate(
-                ['role_name' => "admin"],
-                ['role_permissions' => $pms]
-            );
-        };
+		if(is_file($fpath)){
+			$rawdata = $fl::saferead($fpath, true, 12, $err);
+			$inter_data = $rawdata == '' && typeOf($rawdata) == 'string' ? [] : json_decode($rawdata,true);
+			$saved_data = is_array($inter_data) ? $inter_data : [];
+		} else {
+			$fl::c_file($fpath,$err);
+			$updatepermissions();
+		}
 
-        if(is_file($fpath)){
-            $rawdata = $fl::saferead($fpath, true, 12, $err);
-            $inter_data = $rawdata == '' && typeOf($rawdata) == 'string' ? [] : json_decode($rawdata,true);
-            $saved_data = is_array($inter_data) ? $inter_data : [];
-        } else {
-            $fl::c_file($fpath,$err);
-            $updatepermissions();
-        }
+		if(empty($saved_data)){
+			$updatepermissions();
+			$saved_data = $dft;
+		} else{
+			$dft_update = Carbon::parse($dft['last_update']);
+			$saved_update = Carbon::parse($saved_data['last_update']);
+			$shouldupdate = $saved_update->isBefore($dft_update);
 
-        if(empty($saved_data)){
-            $updatepermissions();
-            $saved_data = $dft;
-        } else{
-            $dft_update = Carbon::parse($dft['last_update']);
-            $saved_update = Carbon::parse($saved_data['last_update']);
-            $shouldupdate = $saved_update->isBefore($dft_update);
+			if($shouldupdate){
+				$updatepermissions();
+				$saved_data = $dft;
+			}
+		}
 
-            if($shouldupdate){
-                $updatepermissions();
-                $saved_data = $dft;
-            }
-        }
+		self::$permissions = $dft;
 
-        self::$permissions = $dft;
+		return $dft['permissions'];
+	}
 
-        return $dft['permissions'];
-    }
+	public static function getmypermissions(){
+		$permissions = [];
 
-    public static function getmypermissions(){
-        $permissions = [];
+		if(self::ili()){
+			$user = Auth::user();
+			$urole = $user->myRoles;
+			$permissions = $urole == null ? [] : $urole->role_permissions;
+		}
 
-        if($this->ili()){
-            $user = auth()->user();
-            $urole = $user->myRoles;
-            $permissions = $urole == null ? [] : $urole->role_permissions;
-        }
+		self::$mypermissions = $permissions;
 
-        self::$mypermissions = $permissions;
+		return $permissions;
+	}
+	public static function haspermission($perm){
+		$outres = false;
 
-        return $permissions;
-    }
+		if(self::ili()){
+			$perms = self::getmypermissions();
+            $outres = in_array($perm,$perms);
+		}
+
+		return $outres;
+	}
 
 	// model based agnostics
 	public function getme(Request $r) {
@@ -809,35 +786,103 @@ abstract class Controller{
 		}
 	}
 
+    // misc utilities
+	public function log_my_payload(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			'recid' => ['required']
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+
+			$reslt = self::log_payload($alldata,'delete_role');
+			$msg = "logging payload";
+
+			$res['result'] = $reslt;
+			$res['message'] = $msg;
+			$res['sendme'] = true;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+    public static function log_payload($entry = 'empty payload',$fname = null,$usedate = true){
+		$fl = new FileopsController();
+		$tdate = $usedate ? date('dmy')."_" : '';
+		$fname = $fname == null ? 'payloads' : $fname;
+		$fstore = "runtime/payloads/{$tdate}_{$fname}.json";
+		$fpath = storage_path($fstore);
+		$contents = '[]';
+		$curdata = [];
+
+		// echo "File storage: ".$fstore."\nline: ".json_encode($entry)."\n";
+
+		if(is_file($fpath)){
+			$contents = $fl::saferead($fpath,true,12);
+		} else {
+			$fl::c_file($fpath);
+		}
+
+		$curdata = $contents == '' ? $curdata : json_decode($contents,true);
+		$tstring = Carbon::now()->timestamp;
+
+		// echo json_encode($curdata)."\n";
+
+		if(isset($curdata[$tstring])){
+			usleep(0.2 * 1000000);
+			$tstring .= Carbon::now()->timestamp;
+		}
+
+		$curdata[$tstring] = $entry;
+
+		$tosave = json_encode($curdata,JSON_PRETTY_PRINT);
+		return $fl::safewrite_txt($fpath,$tosave,true,24);
+	}
+
+    public static function verifyPassword($pw){
+        return Hash::check($pw,Auth::user()->password);
+    }
+
 	// Templates
 	public function ReqTemplate(Request $req){
 		$res = $this->dftres;
-        $alldata = $req->all();
+		$alldata = $req->all();
 
-        /*
-        $passed = $req->validate([
-            'condition' => ['required']
-        ]);
-        // */
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
 
 
-        if($this->ili()){
-            $res['success'] = true;
-            $res['message'] = "fetching permissions";
+		if($this->ili()){
+			$res['success'] = true;
+			$res['message'] = "fetching permissions";
 
-            $cmdt = self::commondata();
-            $mdta = random_int(0,14);
+			$cmdt = self::commondata();
+			$mdta = random_int(0,14);
 
-            $res['result'] = $mdta >= 7;
-            $res['sendme'] = $cmdt['permissions'];
-        }
+			$res['result'] = $mdta >= 7;
+			$res['sendme'] = $cmdt['permissions'];
+		}
 
-        if(!self::$showlogs){
-            if(array_key_exists('runlog',$res)){
-                unset($res['runlog']);
-            }
-        }
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
 
-        return response()->json($res);
+		return response()->json($res);
 	}
 }
