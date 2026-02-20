@@ -1,0 +1,9 @@
+system_data
+	stores list of perms
+
+biz_data
+	stores sample_types
+	stores charges of sample types
+	stores logo image
+	stores technician signature image
+	stores signature image

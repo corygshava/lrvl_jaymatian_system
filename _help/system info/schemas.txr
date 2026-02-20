@@ -1,0 +1,103 @@
+System_data
+	item_name
+	item_data (json)
+
+	laravel timestamps
+Users
+	...Laravel defaults
+	user_role_id
+	is_active (boolean)
+
+	laravel timestamps
+User_roles
+	...Laravel defaults
+	role_name
+	role_permissions (json)
+
+	laravel timestamps
+Clients
+	id,
+	client_name
+	client_contact
+	client_gender
+	payment_plan (either 'monthly' or 'per_visit')
+	credit_balance (used to store how much they paid last time)
+	kra_pin (not necessary can be null)
+	id_number
+	extra_details (json)
+
+	laravel timestamps
+tasks
+	id,
+	task_no (unique string to define jobs)
+	client_id,
+	client_name,
+	status (number)
+	payment_status (paid, incomplete, or unpaid)
+	is_paid (boolean)
+	notes
+
+	laravel timestamps
+Samples
+	id,
+	sample_no (unique string to define samples)
+	sample_type
+	sample_count
+	date_added
+	results (a json object for each sample)
+	deviation_summary (a json object)
+
+	laravel timestamps
+Payments
+	id
+	task_id (links to task_id in tasks table)
+	status (number)
+	amount
+	client_id
+
+	laravel timestamps
+biz_data
+	id
+	item_name
+	item_data (json) (can hold both json, text and numbers if required)
+
+reports
+	task_id
+	created_by (id of a user)
+	sample_id (id of the samples)
+reports_gen
+	id
+	company_contact
+	smaple_type
+	sample_count
+	date_recieved
+	date_compiled
+	task_no
+	created_by
+	technical_staff_name (name of the user who created it)
+	analytical_report (json for results from the samples)
+	deviation_data
+	business_logo_img
+	pdf_link
+	image_link
+
+	laravel timestamps
+reports_gen_images
+	task_id
+	reports_gen_id
+	image_path
+	image_hash
+	created_by
+
+	laravel timestamps
+messages
+	id
+	msg_text
+	msg_type (announcement or message)
+	msg_title (can be blank if its not an announcement)
+	msg_sender (userid of sender)
+	msg_receipient (can be null but is the user_id of the intended recipient)
+
+	laravel timestamps
+
+
