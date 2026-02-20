@@ -30,13 +30,13 @@
 		menuItems = [
 			{caption: "dashboard", url: './ui/console',icon: 'fa fa-th-large'},
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
-			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-users'},
+			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
 			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user'},
-			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-list'},
-			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-user'},
-			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-question'},
-			{caption: "get roles", url: './data/user_roles',icon: 'fa fa-question'},
-		]
+			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
+			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
+			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-code'},
+			{caption: "get roles", url: './data/user_roles',icon: 'fa fa-code'},
+		];
 
 		function setUI() {
 			if(menubar == undefined){
