@@ -17,13 +17,13 @@ User_roles
 	laravel timestamps
 Clients
 	id,
-	client_name
-	client_contact
-	client_gender
-	payment_plan (either 'monthly' or 'per_visit')
-	credit_balance (used to store how much they paid last time)
-	kra_pin (not necessary can be null)
-	id_number
+	client_name - text
+	client_contact - text
+	client_gender - text
+	payment_plan - text (either 'monthly' or 'per_visit')
+	credit_balance (used to store how much they paid last time, stored in kenya shillings)
+	kra_pin - text (not necessary can be null)
+	id_number - text (i know why its not a number)
 	extra_details (json)
 
 	laravel timestamps
