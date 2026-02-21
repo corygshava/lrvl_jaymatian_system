@@ -469,7 +469,7 @@
 		<!-- Data Header -->
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Users' information</h5>
+				<h5 class="data-title" id="tableTitle">Users' records</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">
@@ -512,7 +512,7 @@
 	</div>
 </div>
 
-@include('pieces.userops_forms')
+@include('pieces.forms_userops')
 
 <div class="modal fade" id="ViewModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-lg" role="document">
