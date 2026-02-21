@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,8 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/user_mgt', [ViewController::class,'showusers'])->name('user_mgt');
 	Route::get('/datatables', [ViewController::class,'showdatatable']);
 	Route::get('/view_user', [ViewController::class,'showuser']);
+	Route::get('/client_mgt', [ViewController::class,'showclients'])->name('client_mgt');
+	Route::get('/view_client', [ViewController::class,'showclient']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -38,14 +41,19 @@ Route::prefix('/data')->group(function(){
 	Route::get('/users', [UserController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);
 	Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth','verified']);
+	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){
 	Route::post('/user_roles', [UserRoleController::class,'add_new'])->middleware(['auth','verified']);
 	Route::delete('/user_roles', [UserRoleController::class,'delete_role'])->middleware(['auth','verified']);
+
     Route::post('/users',[UserController::class, 'add_edit'])->middleware(['auth','verified']);
     Route::post('/change_password',[UserController::class, 'change_password'])->middleware(['auth','verified']);
     Route::post('/toggle_active',[UserController::class, 'toggle_active'])->middleware(['auth','verified']);
+
+    Route::post('/clients',[ClientController::class, 'add_edit'])->middleware(['auth','verified']);
+    Route::post('/change_credit',[ClientController::class, 'change_credit'])->middleware(['auth','verified']);
     // Route::post('/user',[UserController::class, 'add_edit']);
 });
 

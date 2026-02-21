@@ -80,6 +80,31 @@ class ViewController extends Controller{
         }
 	}
 
+	public function showclients(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.client_mgt',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+	public function showclient(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.clients_view',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
     public function showerror(Request $req,$msg = 'an error occured'){
         $dta = [
             'msg' => $msg,
