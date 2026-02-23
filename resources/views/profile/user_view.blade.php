@@ -41,7 +41,7 @@
 		width: 100%;
 		/*background: red;*/
 		padding: 12px 0;
-		flex: 1 0 calc(var(--width) * 0.4);
+		flex: 1 1 calc(var(--width) * 0.4);
 	}
 	.profile_card .icon-circle {
 		--w: 48px;
@@ -72,7 +72,7 @@
 				</div>
 				<div>
 					<strong class="h3" id="user-name"></strong>
-					<b>Role: </b><span id="user-role-badge">test</span>
+					<b>Role: </b><span class="badge badge-dark" id="user-role-badge">test</span>
 				</div>
 				<div class="w3-display-right spacy-md" style="z-index: 102">
 					<div class="dropdown">

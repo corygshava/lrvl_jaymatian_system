@@ -34,6 +34,8 @@
 <body>
     {{ $slot }}
 
-    @include('pieces.commons')
+    @auth
+    	@include('pieces.commons')
+    @endauth
 </body>
 </html>

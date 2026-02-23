@@ -39,7 +39,7 @@
 		flex-direction: row;
 		width: 100%;
 		padding: 12px 0;
-		flex: 1 0 calc(var(--width) * 0.4);
+		flex: 1 1 calc(var(--width) * 0.4);
 	}
 	.profile_card .icon-circle {
 		--w: 48px;
@@ -107,11 +107,8 @@
 							<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan_()">
 								<i class="fas fa-money-check-alt mr-2 text-muted"></i>Change Payment Plan
 							</a>
-							<a class="dropdown-item spacy-tn" href="#" onclick="manageCreditBalance()">
+							<a class="dropdown-item spacy-tn" id="credit_mgt_btn" href="#" onclick="manageCreditBalance()">
 								<i class="fas fa-wallet mr-2 text-muted"></i>Manage Credit
-							</a>
-							<a class="dropdown-item text-danger border-top spacy-tn w3-hide" id="deact_client_btn" href="#" onclick="deactivateClient()">
-								<i class="fas fa-user-slash mr-2"></i>Deactivate
 							</a>
 						</div>
 					</div>
@@ -154,10 +151,10 @@
 						<div class="col-md-3 col-sm-6 mb-3">
 							<div class="action-card card themeround text-center p-3" onclick="viewJobs()">
 								<div class="action-icon bg-success text-white mx-auto">
-									<i class="fas fa-briefcase"></i>
+									<i class="fas fa-folder"></i>
 								</div>
-								<h6 class="mb-0 font-weight-bold">View Jobs</h6>
-								<small class="text-muted">All client jobs</small>
+								<h6 class="mb-0 font-weight-bold">View Tasks</h6>
+								<small class="text-muted">All client Tasks</small>
 							</div>
 						</div>
 						<div class="col-md-3 col-sm-6 mb-3">
@@ -176,6 +173,15 @@
 								</div>
 								<h6 class="mb-0 font-weight-bold">View Reports</h6>
 								<small class="text-muted">Client reports</small>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6 mb-3">
+							<div class="action-card card themeround text-center p-3" onclick="viewReports()">
+								<div class="action-icon bg-info text-white mx-auto">
+									<i class="fas fa-money-check-alt"></i>
+								</div>
+								<h6 class="mb-0 font-weight-bold">View Payments</h6>
+								<small class="text-muted">All payments made</small>
 							</div>
 						</div>
 					</div>
@@ -229,7 +235,7 @@
 						</div>
 						<div class="row mt-2">
 							<div class="col-md-6">
-								<small class="text-muted">Added By (User ID)</small>
+								<small class="text-muted">Added By</small>
 								<p class="mb-0" id="added-by">--</p>
 							</div>
 							<div class="col-md-6">
@@ -285,11 +291,7 @@
 		to_clients_mgt_btn.querySelector('a').dataset.link = linkAtlas['view_clients'];
 
 		if(!mypermissions.includes('MANAGE_CLIENTS')){
-			// to_clients_mgt_btn.remove();
-		}
-
-		if(!mypermissions.includes('DEACTIVATE_CLIENT') && false){
-			deact_client_btn.remove();
+			to_clients_mgt_btn.remove();
 		}
 
 		if(window['cur_record'] !== undefined){
@@ -326,12 +328,19 @@
 		// Set badges
 		document.getElementById('client-gender-badge').textContent = data.client_gender.charAt(0).toUpperCase() + data.client_gender.slice(1);
 		const paymentBadge = document.getElementById('payment-plan-badge');
+		credit_mgt_btn.classList.add('w3-hide');
+
 		if(data.payment_plan === 'monthly') {
 			paymentBadge.textContent = 'Monthly';
-			paymentBadge.className = 'badge badge-success ml-2';
+			paymentBadge.className = 'badge w3-green ml-2';
+
+			if(mypermissions.includes('MANAGE_CLIENT_CREDIT')){
+				credit_mgt_btn.classList.remove('w3-hide');
+			}
 		} else {
 			paymentBadge.textContent = 'Per Visit';
-			paymentBadge.className = 'badge badge-info ml-2';
+			paymentBadge.className = 'badge w3-black ml-2';
+			zeclass = 'add';
 		}
 
 		// Credit balance
@@ -357,7 +366,7 @@
 		// Additional details
 		document.getElementById('kra-pin-detail').textContent = data.kra_pin || 'Not provided';
 		document.getElementById('id-number-detail').textContent = data.id_number || 'Not provided';
-		document.getElementById('added-by').textContent = `User #${data.added_by}`;
+		document.getElementById('added-by').textContent = `${data.mycreator.name || '--'}`;
 		document.getElementById('payment-plan-detail').textContent = data.payment_plan.replace('_', ' ');
 
 		// Update load time
@@ -398,9 +407,6 @@
 	}
 
 	function manageCreditBalance() {
-		// console.log('Manage credit clicked');
-		// alert('Credit balance management functionality would open here');
-
 		change_credit_form.recid.value = clientData.id;
 		change_credit_form.client_name_2.value = clientData.client_name;
 		change_credit_form.user_credit.value = clientData.credit_balance;
@@ -477,6 +483,8 @@
 		} else {
 			alert_danger(`invalid trigger for form [#${caller.id}]`);
 		}
+
+		caller.reset();
 
 		// window['lastClientEditResult'] = m;
 		clientData = m.data.sendme;

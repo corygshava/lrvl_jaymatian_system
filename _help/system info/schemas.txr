@@ -41,6 +41,7 @@ tasks
 Samples
 	id,
 	sample_no (unique string to define samples)
+	sample_tag (a name that can be given for easy identification later)
 	sample_type
 	sample_count
 	date_added

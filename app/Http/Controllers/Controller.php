@@ -565,23 +565,35 @@ abstract class Controller{
 	// system roles subsys
 	public static function sys_permissions(){
 		return [
-			"last_update" => Carbon::parse('2026-02-18 12:44:35'),
+			"last_update" => Carbon::parse('2026-02-21 12:44:35'),
 			"permissions" => [
 				"VIEW_DASHBOARD" => "view the staff dashboard",
 				"VIEW_ANALYTICS" => "view analytics dashboard",
+
+				// roles
+				"ADD_ROLE" => "add a user role",
+				"EDIT_ROLE" => "edit a user role",
+
+				// users
 				"ADD_USER" => "add a new user",
 				"EDIT_USER" => "edit user details",
 				"MANAGE_USERS" => "manage registered users",
 				"ACTIVATE_USER" => "activate / deactivate accounts",
 				"EDIT_PROFILE" => "modify account details",
-				"ADD_ROLE" => "add a user role",
-				"EDIT_ROLE" => "edit a user role",
+
+				// clients
 				"ADD_CLIENT" => "register a client",
 				"EDIT_CLIENT" => "modify client information",
 				"VIEW_CLIENT" => "view client information",
-				"ADD_JOB" => "add a processing job",
-				"EDIT_JOB" => "handle job processing",
-				"VIEW_JOB" => "view job details",
+				"MANAGE_CLIENTS" => "manage client information",
+				"MANAGE_CLIENT_CREDIT" => "change client's credit",
+
+				// jobs
+				"ADD_TASK" => "add a processing task",
+				"EDIT_TASK" => "handle job processing",
+				"VIEW_TASK" => "view job details",
+
+				// payments
 				"VIEW_PAYMENTS" => "view payments",
 				"GEN_REPORT" => "generate a report from a job",
 				"VIEW_REPORT" => "view generated reports internally"

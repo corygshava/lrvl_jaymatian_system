@@ -60,7 +60,7 @@ class ClientController extends Controller{
 			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
 
 			$clients = $clients
-				// ->with('myRoles')
+				->with('mycreator')
 				->orderBy($sortBy, $sortDirection)
 				->paginate($perPage);
 
@@ -146,7 +146,7 @@ class ClientController extends Controller{
 					$msg = "phone number is already taken";
 				}
 			} else {
-				$changed = Client::where('id',$recid)->first();
+				$changed = Client::where('id',$recid)->with('mycreator')->first();
 				$changed->update($tosend);
 				$changed->refresh();
 
@@ -206,7 +206,7 @@ class ClientController extends Controller{
 
 				$msg = "valid password";
 
-				$target = Client::find($recid);
+				$target = Client::where('id',$recid)->with('mycreator')->first();
 
 				if($target == null){
 					$msg = "invalid identifier";
@@ -234,14 +234,19 @@ class ClientController extends Controller{
 						}
 					}
 
+					if($newbal < 0){
+						$msg = "the balance will be less than zero, try again";
+						$keepgoing = false;
+					}
+
 					if($keepgoing){
 						$target->update([
 							'credit_balance' => $newbal,
 						]);
 						$target->refresh();
+						$msg = "credit updated successfully";
 					}
 
-					$msg = "credit updated successfully";
 					$reslt = $keepgoing;
 				}
 			}

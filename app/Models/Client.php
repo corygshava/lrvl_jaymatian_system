@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model {
     protected $fillable = [
@@ -21,4 +22,9 @@ class Client extends Model {
         'credit_balance' => 'decimal:2',
         'extra_details' => 'array',
     ];
+
+	// relationships
+	public function mycreator(): BelongsTo {
+		return $this->belongsTo(User::class, 'added_by');
+	}
 }
