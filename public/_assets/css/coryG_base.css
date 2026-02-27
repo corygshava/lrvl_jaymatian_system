@@ -17,6 +17,7 @@
 	--clr-alttext: #fff;
 	--clr-text: #292929;
 	--clr-text-muted: #787878;
+	--clr-fade: #f3f3f3;
 	--themeglow: 0 0 16px var(--themecolor);
 	--themeshadow: 0 0 16px var(--clr-shadow);
 	--overlaybg: rgba(0,0,0,0.8);
@@ -64,7 +65,7 @@ body{
 	font-family: 'Inter_24pt',-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 html{
-	scroll-behavior: smooth;
+	scroll-behavior: smooth !important;
 }
 body{
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -323,3 +324,8 @@ a{
 	.cta-btn{background: linear-gradient(80deg,var(--themecolor),var(--themecolor));}
 	.themegrad{background: linear-gradient(80deg,var(--seccolor),var(--themecolor));color: var(--clr-text);}
 	.themegrad.alt{color: var(--clr-alttext);}
+
+	.is_inactive{
+		pointer-events: none;
+		opacity: 0.3;
+	}

@@ -5,6 +5,33 @@
 	--light-gray: #f3f3f3;
 }
 
+/* loader */
+	.loader {
+		width: 50px;
+		aspect-ratio: 1;
+		display: grid;
+		border: 4px solid #0000;
+		border-radius: 50%;
+		border-right-color: var(--themecolor);
+		animation: l15 1s infinite linear;
+	}
+	.loader::before,
+	.loader::after {    
+		content: "";
+		grid-area: 1/1;
+		margin: 2px;
+		border: inherit;
+		border-radius: 50%;
+		animation: l15 2s infinite ease-out;
+	}
+	.loader::after {
+		margin: 8px;
+		animation-duration: 3s;
+	}
+	@keyframes l15{ 
+		100%{transform: rotate(1turn)}
+	}
+
 /* Sidebar */
 	.menubar {
 		position: fixed;
@@ -668,7 +695,7 @@
 		padding: 10px 20px;
 		border-radius: var(--roundness);
 		font-weight: 500;
-		display: flex;
+		display: inline-flex;
 		justify-content: center;
 		align-items: center;
 		gap: 8px;
@@ -817,3 +844,4 @@
 			background: transparent;
 			display: none;
 		}
+

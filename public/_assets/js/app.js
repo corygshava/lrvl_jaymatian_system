@@ -8,6 +8,8 @@ const simple_fetch = "simple_fetch_bypass_" + mekRandomString(5);
 // const session_CSRF_token = mekRandomString(12);
 const session_CSRF_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 const fetch_identifier = "viaFetch";
+const confirm_callback = "runtime_fun_" + mekRandomString(5);
+const confirm_canceller = "runtime_fun_" + mekRandomString(5);
 
 const mainhost = ".";
 const imagepath = `${mainhost}/res/images/`;
@@ -440,7 +442,7 @@ function responseHandler(w,callback,args = undefined,quiet = false,skip_prepro =
 
 			runcallback();
 		} else {
-			if(!quiet) alert_warning(w.message);
+			if(!quiet) alert_warning(w.message,7);
 		}
 	} else {
 		alert_warning('sorry, you arent logged in. lets fix that',12);
@@ -789,9 +791,13 @@ const mekModal = (d) => {
 	the_modal_toggler.click();
 }
 
+function mekHeading(content,type){
+	return `<span class="${type || 'h2'}">${content || 'heading'}</span>`;
+}
+
 // [end of generators]_____________________________________________________________
 
-function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warning('testing dialog confirmation')},keepopen = false) {
+function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warning('testing dialog confirmation')},keepopen = false,canceller=()=>{}) {
 	if(typeof callback != 'function'){
 		alert_danger('invalid callback');
 		return;
@@ -808,13 +814,47 @@ function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warni
 	txt.innerHTML = msg;
 	hed.innerHTML = title;
 
-	cont_btn.onclick = () => {
+	window['confirm_callback_called'] = false;
+	window['confirm_canceller_called'] = false;
+
+	window[confirm_callback] = (n) => {
+		if(window['confirm_callback_called']){
+			alert_silent('double calling detected for `confirm_callback`')
+			return;
+		}
+		window['confirm_callback_called'] = true;
+
 		callback();
 
 		if(!keepopen){
-			closebtn.click();
+			confirm_toggler.click();
 		}
 	};
+	window[confirm_canceller] = (n) => {
+		if(window['confirm_canceller_called']){
+			alert_silent('double calling detected for `confirm_canceller`')
+			return;
+		}
+		window['confirm_canceller_called'] = true;
+
+		canceller();
+	};
+
+	if(cont_btn.dataset.wasset == undefined){
+		cont_btn.addEventListener('click',() => {
+			window[confirm_callback]();
+			cont_btn.dataset.wasset = "imset";
+			// alert_success('confirmer');
+		})
+	}
+	if(closebtn.dataset.wasset == undefined){
+		closebtn.addEventListener('click',() => {
+			window[confirm_canceller]()
+			closebtn.dataset.wasset = "imset";
+			confirm_toggler.click();
+			// alert_danger('cancelling');
+		});
+	}
 
 	confirm_toggler.click();
 }

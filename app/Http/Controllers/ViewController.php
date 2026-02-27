@@ -105,6 +105,31 @@ class ViewController extends Controller{
 		}
 	}
 
+	public function showtasks(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.task_mgt',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+	public function addtask(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.add_task',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
     public function showerror(Request $req,$msg = 'an error occured'){
         $dta = [
             'msg' => $msg,

@@ -267,6 +267,9 @@
 </div>
 
 @include('pieces.forms_clientops')
+<?php
+	// require_once __DIR__.'/piece_add_client_form.php';
+?>
 
 <script>
 	let clientData = {
@@ -420,9 +423,11 @@
 
 	// Quick Action handlers
 	function createNewTask() {
-		console.log('Create new task for client:', clientData.id);
-		alert(`Creating new task for ${clientData.client_name}`);
-		// Implement new task creation
+		window['task_client_data'] = clientData;
+		loadPage({
+			template: linkAtlas['add_task'],
+			sidenote: 'create new task',
+		});
 	}
 
 	function viewJobs() {

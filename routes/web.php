@@ -33,6 +33,8 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/view_user', [ViewController::class,'showuser']);
 	Route::get('/client_mgt', [ViewController::class,'showclients'])->name('client_mgt');
 	Route::get('/view_client', [ViewController::class,'showclient']);
+	Route::get('/task_mgt', [ViewController::class,'showtasks']);
+	Route::get('/add_task', [ViewController::class,'addtask']);
 });
 
 Route::prefix('/data')->group(function(){

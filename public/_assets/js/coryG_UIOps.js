@@ -246,7 +246,9 @@ var callOnDocLoad = [];
 			*/
 
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 
 				let startat = el.dataset.scrollstart !== undefined ? el.dataset.scrollstart : 'me';
 				let endat = el.dataset.scrollend !== undefined ? el.dataset.scrollend : '0%';
@@ -323,7 +325,9 @@ var callOnDocLoad = [];
 
 		togglers.forEach((el,id) => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 				el.dataset.togglerid = id;
 				let _toggle = el.dataset.toggler;
 				let _onshow = el.dataset.onshow || "block";
@@ -370,7 +374,9 @@ var callOnDocLoad = [];
 
 		items.forEach((el, id) => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 				// assumes the data is in the form 0,0,1
 				let vizdata = el.dataset.visibledata.split(","),screen = ["small","medium","large"];
 				let mid = 0,xclass = new Array();
@@ -400,7 +406,10 @@ var callOnDocLoad = [];
 				let tk = document.querySelector(el.dataset.copyme);
 				
 				if(tk != undefined){
-					el.dataset.picker = picker;
+					if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+						el.dataset.picker = picker;
+					}
+
 					let dt = tk.innerHTML;
 
 					el.innerHTML = dt;
@@ -418,7 +427,9 @@ var callOnDocLoad = [];
 	
 		gotos.forEach(el => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 				const mytarget = document.querySelector(el.dataset.copythis);
 
 				el.addEventListener('click',() => {
@@ -453,7 +464,9 @@ var callOnDocLoad = [];
 
 		gotos.forEach(el => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 
 				el.addEventListener('click',() => {
 					let where = el.dataset.goto;
@@ -604,7 +617,9 @@ var callOnDocLoad = [];
 
 		subz.forEach((el,id) => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
-				el.dataset.picker = picker;
+				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
+					el.dataset.picker = picker;
+				}
 
 				let fun = el.dataset.onsubmit;
 				let _block = el.dataset.blockdefault;
