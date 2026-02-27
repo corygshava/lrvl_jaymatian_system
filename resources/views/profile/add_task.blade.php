@@ -701,9 +701,13 @@
 		},debounce);
 	}
 	window['run_search_client'] = (s) => {
+		if(s == ''){
+			alert_warning('type something first');
+			return;
+		}
 		alert_info(`searching for ${s}`);
 
-		window[fetch_bypass](client_search_url,{q: s},'POST').then(w => {
+		window[fetch_bypass](`${client_search_url}?&per_page=10&search=${s}`,{q: s},'GET').then(w => {
 			responseHandler(w,render_client_search,w);
 			refreshUI(300);
 		}).catch(w => {
@@ -711,9 +715,9 @@
 		});
 	}
 	function render_client_search(d) {
-		// alert_info('results recieved');
+		alert_info('results recieved');
 
-		if(d.sendme.length == 0){
+		if(d.sendme.data.length == 0){
 			client_search_results.innerHTML = `
 				<div class="spacy-md flow centroid w3-center" style="flex: 1 1 1280px">
 					<span class="h4">None found</span>
@@ -727,8 +731,8 @@
 
 		let outht = '';
 
-		loadedClients = d.sendme;
-		d.sendme.forEach((w,id) => {
+		loadedClients = d.sendme.data;
+		d.sendme.data.forEach((w,id) => {
 			outht += `
 				<div class="client_container flow slide-up" data-runme="pick_client" data-id="${id}" style="${mekstagger(200,id)}">
 					<strong class="thename">${w.client_name}</strong>

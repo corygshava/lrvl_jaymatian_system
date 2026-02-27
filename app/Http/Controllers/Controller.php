@@ -813,7 +813,7 @@ abstract class Controller{
 		if($this->ili()){
 			$res['success'] = true;
 
-			$reslt = self::log_payload($alldata,'delete_role');
+			$reslt = self::log_payload($alldata,'debug_payload');
 			$msg = "logging payload";
 
 			$res['result'] = $reslt;

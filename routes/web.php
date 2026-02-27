@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,8 @@ Route::prefix('test')->group(function () {
 });
 
 Route::prefix('/ui')->group(function (){
-    // Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
-    Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
+	// Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
+	Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
 	Route::get('/console', [ViewController::class,'showconsole'])->name('user_console');
 	Route::get('/user_roles', [ViewController::class,'showroles'])->name('user_roles');
 	Route::get('/user_mgt', [ViewController::class,'showusers'])->name('user_mgt');
@@ -44,19 +45,21 @@ Route::prefix('/data')->group(function(){
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);
 	Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth','verified']);
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
+	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){
 	Route::post('/user_roles', [UserRoleController::class,'add_new'])->middleware(['auth','verified']);
 	Route::delete('/user_roles', [UserRoleController::class,'delete_role'])->middleware(['auth','verified']);
 
-    Route::post('/users',[UserController::class, 'add_edit'])->middleware(['auth','verified']);
-    Route::post('/change_password',[UserController::class, 'change_password'])->middleware(['auth','verified']);
-    Route::post('/toggle_active',[UserController::class, 'toggle_active'])->middleware(['auth','verified']);
+	Route::post('/users',[UserController::class, 'add_edit'])->middleware(['auth','verified']);
+	Route::post('/change_password',[UserController::class, 'change_password'])->middleware(['auth','verified']);
+	Route::post('/toggle_active',[UserController::class, 'toggle_active'])->middleware(['auth','verified']);
 
-    Route::post('/clients',[ClientController::class, 'add_edit'])->middleware(['auth','verified']);
-    Route::post('/change_credit',[ClientController::class, 'change_credit'])->middleware(['auth','verified']);
-    // Route::post('/user',[UserController::class, 'add_edit']);
+	Route::post('/clients',[ClientController::class, 'add_edit'])->middleware(['auth','verified']);
+	Route::post('/change_credit',[ClientController::class, 'change_credit'])->middleware(['auth','verified']);
+
+	Route::post('/add_task',[TaskController::class, 'log_my_payload'])->middleware(['auth','verified']);
 });
 
 require __DIR__.'/auth.php';
