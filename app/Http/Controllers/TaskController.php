@@ -166,13 +166,19 @@ class TaskController extends Controller{
 						}
 					} else {
 						if($sent['paymentStats']['balance'] > 0){
-							$wegood = $this->verifyPassword($sent['admin_password']);
-							$msg = $wegood ? "valid admin password" : "invalid admin password";
-							$cango = $wegood;
+							if(!isset($sent['admin_password'])){
+								$msg = "pass an admin password first";
+							} else {
+								$wegood = $this->verifyPassword($sent['admin_password']);
+								$msg = $wegood ? "valid admin password" : "invalid admin password";
+								$cango = $wegood;
+							}
 						} else {
 							$cango = true;
 						}
 					}
+
+					$res['runlog'] = $msg;
 
 					if(!$cango){
 						$reslt = false;
