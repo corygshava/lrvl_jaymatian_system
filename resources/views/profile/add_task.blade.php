@@ -584,6 +584,7 @@
 				last_step();
 			},false,() => {
 				step2();
+				localStorage.removeItem(prefsAtlas['last_saved_task']);
 			});
 			pick_step(0);
 		} else {
@@ -1033,11 +1034,12 @@
 
 		const final_step = (dta) => {
 			window[task_data_var] = dta.tosend;
+			localStorage.removeItem(prefsAtlas['last_saved_task']);
 
 			confirmAction(mekHeading('Manage created task','h4'),'would you like to manage the created task',() => {
 				alert_info('going to task management UI');
 			},false,() => {
-				alert_info('adding another task');
+				alert_info('you are adding another task');
 			});
 
 			task_runtime_data.sampleData = [];
