@@ -1,5 +1,8 @@
-# Author: CoryGProductions
 # JayMatian Labs Internal Operations Management System [hw: 26_02]
+
+## info
+**Author:** CoryGProductions (Cornelius G Shava)  
+**Due Date:** March 16th 2026  
 
 ## Overview
 
