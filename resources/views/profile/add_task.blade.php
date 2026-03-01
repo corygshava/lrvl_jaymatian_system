@@ -459,8 +459,8 @@
 	let search_interval = undefined;
 	let save_inter = undefined;
 
-	let debounce = 700;						// delay for search to prevent overloading the server with requests
-	let autosave_delay = 3000;
+	let debounce = 700;								// delay for search to prevent overloading the server with requests
+	let autosave_delay = 3000;						// delay in microseconds to prevent slowing down your browser
 	let client_search_url = linkAtlas['search_clients'];
 	let loadedClients = [];
 
