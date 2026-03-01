@@ -123,6 +123,6 @@ Caching will be introduced incrementally to optimize performance under high oper
 
 ## Summary
 
-IOMS is a modular, secure, and extensible internal operations portal built on Laravel 12 with a lightweight Vanilla JS UI orchestration layer.
+this is a modular, secure, and extensible internal operations portal built on Laravel 12 with a lightweight Vanilla JS UI orchestration layer.
 
 It consolidates operational workflows, client management, sample processing, and financial tracking into a unified, auditable, and scalable system, with future-ready performance enhancements through a planned caching layer.
