@@ -484,7 +484,7 @@
 		if(search_interval !== undefined){clearTimeout(search_interval);}
 		if(save_inter !== undefined){clearInterval(save_inter);}
 
-		// kill all local functions to prevent unused ghost variables
+		// kill all locally made functions and variables to prevent unused ghost variables
 		delete(window['task_runtime_data']);
 		delete(window['runOnLeave']);
 		delete(window['pick_step_2']);
@@ -755,14 +755,36 @@
 	window['pick_client'] = (el) => {
 		let id = el.dataset.id;
 
-		alert_info(`picking client ${id}`);
+		// alert_info(`picking client ${id}`);
 		picked_client = loadedClients[id] || undefined;
 		window['select_client'](picked_client);
 	}
 	window['select_client']= (c) => {
-		task_runtime_data.clientData = c;
-		render_all_data();
-		pick_step(1);
+		const select = () => {
+			task_runtime_data.clientData = c;
+			render_all_data();
+			pick_step(1);
+			alert_info('client selected successfully');
+		}
+
+		if(task_runtime_data.paymentData !== undefined && task_runtime_data.clientData !== undefined){
+			if(c.id == task_runtime_data.clientData.id){
+				// picked the same client twice
+				select();
+			} else if(task_runtime_data.paymentData.length > 0) {
+				confirmAction(mekHeading('Payment Records found','h4'),'we have found some payment information saved, changing clients will result in the data being cleared',() => {
+					select();
+					task_runtime_data.paymentData = [];
+				},false,() => {
+					pick_step(2);
+				});
+			} else {
+				// paymentData is empty
+				select();
+			}
+		} else {
+			select();
+		}
 	}
 
 	// sample ops
@@ -872,7 +894,11 @@
 
 		// first confirmation
 		const step1 = () => {
-			confirmAction('<span class="h4">Deduct from Credit</span>',`this will result in <b>${Math.floor(Number(a_bal)).toLocaleString()}</b> being deducted from the client's balance (balance: <b>${Math.floor(Number(c_bal)).toLocaleString()}</b>)<br>are you sure?`,() => {
+			if(Math.floor(Number(c_bal)) == 0){
+				confirmAction(mekHeading('Insufficient Credits','h4'),'The client doesnt have any Credit to deduct',() => {},false,() => {});
+				return;
+			}
+			confirmAction(mekHeading('Deduct from Credit','h4'),`this will result in <b>${Math.floor(Number(a_bal)).toLocaleString()}</b> being deducted from the client's balance (balance: <b>${Math.floor(Number(c_bal)).toLocaleString()}</b>)<br>are you sure?`,() => {
 				// alert_info('deducting');
 				setTimeout(() => {
 					step2();
@@ -995,7 +1021,7 @@
 			// set timeout to prevent request overload
 			setTimeout(() => {
 				// console.log('task data to pass: ',tosend);
-				window[fetch_bypass](linkAtlas['add_new_task'],tosend,'POST').then((d) => {
+				window[fetch_bypass](linkAtlas['add_new_task'],{'sentdata' : tosend},'POST').then((d) => {
 					if(d.result == false){
 						pick_step(3);
 						progress_panel.classList.remove('is_inactive');

@@ -20,6 +20,7 @@ class Task extends Model{
 		'is_paid' => 'boolean',
 		'status' => 'integer',
 	];
+
 	public $state_atlas = [
 		0 => 'pending',
 		1 => 'awaiting_payment',
@@ -40,10 +41,10 @@ class Task extends Model{
 	}
 
 	// relationships
-	public function client(): BelongsTo{
-		return $this->belongsTo(Client::class,'client_id');
-	}
 	public function creator(): BelongsTo{
 		return $this->belongsTo(User::class,'added_by');
+	}
+	public function client(): BelongsTo{
+		return $this->belongsTo(Client::class,'client_id');
 	}
 }

@@ -12,8 +12,8 @@ return new class extends Migration
             $table->id();
 
 			$table->integer('added_by');
-			$table->integer('task_id');
-			$table->integer('client_id');
+			$table->integer('task_id')->constrained()->onDelete('cascade');
+			$table->integer('client_id')->constrained()->onDelete('cascade');
 
             $table->string('sample_no')->unique();
             $table->string('sample_tag');

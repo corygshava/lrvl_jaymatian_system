@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Sample extends Model
 {
     protected $fillable = [
-        'sample_no',
-        'sample_tag',
-        'sample_type',
-        'sample_count',
-        'date_added',
-        'results',
-        'deviation_summary',
+        'added_by',
+		'task_id',
+		'client_id',
+		'sample_no',
+		'sample_tag',
+		'sample_type',
+		'sample_count',
+		'results',
+		'deviation_summary',
     ];
 
     protected $casts = [
-        'date_added' => 'date',
         'sample_count' => 'integer',
         'results' => 'array',
         'deviation_summary' => 'array',

@@ -69,7 +69,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="mybtn secondary" data-dismiss="modal" data-runme="password_confo_clearghost">Cancel</button>
-					<button type="button" class="mybtn primary" data-submitme="#confo_password">Save</button>
+					<button type="button" class="mybtn primary" data-submitme="#confo_password">confirm password</button>
 				</div>
 			</div>
 		</div>

@@ -880,13 +880,16 @@ abstract class Controller{
 
 		if($this->ili()){
 			$res['success'] = true;
-			$res['message'] = "fetching permissions";
+			$msg = "fetching permissions";
+			$reslt = false;
 
 			$cmdt = self::commondata();
 			$mdta = random_int(0,14);
+			$reslt = $mdta >= 7;
 
-			$res['result'] = $mdta >= 7;
+			$res['result'] = $reslt;
 			$res['sendme'] = $cmdt['permissions'];
+			$res['message'] = $msg;
 		}
 
 		if(!self::$showlogs){
