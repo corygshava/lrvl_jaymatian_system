@@ -1,59 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Author: CoryGProductions
+# JayMatian Labs Internal Operations Management System [hw: 26_02]
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+The **JayMatian Labs Internal Operations Management System** is a centralized, web-based internal operations portal built using **Laravel 12** as the backend framework and a lightweight frontend stack consisting of **Vanilla JavaScript, HTML, and CSS**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The system is designed to unify operational workflows, user governance, financial tracking, and client lifecycle management within a single modular and extensible architecture.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+main priorities:
+* Strict access control
+* User friendly interface
+* User centric UX design
+* Auditability
+* Clear separation of concerns
+* Future scalability (including caching and performance optimization layers)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Technology Stack
 
-## Learning Laravel
+### Backend
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* **Laravel 12**
+* Eloquent ORM
+* RESTful controllers
+* Service-layer pattern for business logic
+* Middleware-driven authorization
+* Relational database (MySQL/ PostgreSQL/ Sqlite compatible)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Frontend
 
-## Laravel Sponsors
+* Vanilla JavaScript (no frontend framework)
+* Bootstrap 4 + jQuery + popper
+* CoryG_Base style setup
+* Server-rendered views
+* Dynamic view loading via internal UI module
+* HTML5 + CSS3 compatible interfaces
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Planned Enhancements
 
-### Premium Partners
+* Application-level caching layer
+* Query-level caching
+* Response caching for heavy endpoints
+* Optional Redis integration (unnecessary but nice to have later)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Architectural Overview
 
-## Contributing
+The system follows a layered, modular architecture:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+Client (Browser)
+    ↓
+UI Management Module (Vanilla JS)
+    ↓
+Laravel Controllers (Business Logic)
+    ↓
+Eloquent Models (database communicators)
+    ↓
+Relational Database (either MySQL/ PostgreSQL/ Sqlite)
+```
+## UI Management Module (Custom Layer)
 
-## Code of Conduct
+A dedicated **UI Management Module** is implemented in Vanilla JavaScript to:
+* Minimize unnecessary reloads
+* Maintain separation between UI logic and backend logic
+* Allow view based caching for non dynamic views
+* Dynamically load views as required
+* Reduce redundant DOM rendering
+* Manage page state transitions
+* Handle client-side view orchestration
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Design Goals
 
-## Security Vulnerabilities
+* Avoid SPA framework overhead
+* Maintain server-side authority
+* Keep frontend lightweight, usable and predictable
+* Improve perceived performance
+* Allow future integrations
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Caching Strategy (Planned)
 
-## License
+The system is designed with a future caching layer in mind:
+* Query result caching for heavy reports
+* Config caching (Laravel native)
+* Redis-ready infrastructure
+* View-level caching where applicable
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Caching will be introduced incrementally to optimize performance under high operational load.
+
+## Data Integrity & Constraints
+
+* Strict foreign key relationships
+* Transactional updates for financial and sample processing operations
+* Soft deletes for recoverability
+* Audit trails for sensitive operations
+* Validation at request, logic and domain levels
+
+## Security Considerations
+
+* Password hashing
+* XSS mitigation via Blade escaping
+* Middleware-based permission checks
+* Access restrictions on sensitive modules
+* Input validation at Form Request level
+
+## Scalability Considerations
+
+* Modular codebase organization
+* Query optimization
+* Indexing strategy for relational entities
+* Caching-ready architecture
+* Minimal frontend overhead
+
+## Development Philosophy
+
+* Keep frontend simple, predictable, and controlled
+* Keep business logic centralized in service layer
+* Maintain strict access boundaries
+* Build for auditability first, performance second
+* Introduce performance layers (caching) deliberately and measurably
+
+## Summary
+
+IOMS is a modular, secure, and extensible internal operations portal built on Laravel 12 with a lightweight Vanilla JS UI orchestration layer.
+
+It consolidates operational workflows, client management, sample processing, and financial tracking into a unified, auditable, and scalable system, with future-ready performance enhancements through a planned caching layer.
