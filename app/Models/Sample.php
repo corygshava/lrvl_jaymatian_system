@@ -17,6 +17,7 @@ class Sample extends Model
 		'sample_count',
 		'results',
 		'deviation_summary',
+		'status',
     ];
 
     protected $casts = [
@@ -24,6 +25,17 @@ class Sample extends Model
         'results' => 'array',
         'deviation_summary' => 'array',
     ];
+
+	public $state_atlas = [
+		0 => 'pending',
+		1 => 'incomplete',
+		2 => 'complete',
+	];
+
+	// helpers
+	public static function getStatus(int $n){
+		return self::$state_atlas[$n];
+	}
 
 	// relationships
 	public function mycreator(): BelongsTo {
