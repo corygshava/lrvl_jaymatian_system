@@ -39,6 +39,7 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/task_mgt', [ViewController::class,'showtasks']);
 	Route::get('/add_task', [ViewController::class,'addtask']);
+	Route::get('/view_task', [ViewController::class,'showtask']);
 });
 
 Route::prefix('/data')->group(function(){

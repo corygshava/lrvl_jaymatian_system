@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Carbon\Carbon;
-use App\Models\userRoles;
-use App\Models\systemData;
+
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
-
 use Stevebauman\Location\Facades\Location;
-use App\Http\Controllers\FileopsController;
 use Illuminate\Contracts\Encryption\DecryptException;
+
+use App\Models\userRoles;
+use App\Models\systemData;
+
+use App\Http\Controllers\FileopsController;
 
 abstract class Controller{
 	public static $prefix = '_assets';
@@ -88,6 +90,14 @@ abstract class Controller{
 
 	public static function ili() {
 		return self::isloggedin();
+	}
+
+	public static function cur_user(){
+		if(self::ili()){
+			return auth()->user();
+		} else {
+			return null;
+		}
 	}
 
 	public static function commondata(){
@@ -565,7 +575,7 @@ abstract class Controller{
 	// system roles subsys
 	public static function sys_permissions(){
 		return [
-			"last_update" => Carbon::parse('2026-02-21 12:44:35'),
+			"last_update" => Carbon::parse('2026-03-01 12:44:35'),
 			"permissions" => [
 				"VIEW_DASHBOARD" => "view the staff dashboard",
 				"VIEW_ANALYTICS" => "view analytics dashboard",
@@ -588,10 +598,12 @@ abstract class Controller{
 				"MANAGE_CLIENTS" => "manage client information",
 				"MANAGE_CLIENT_CREDIT" => "change client's credit",
 
-				// jobs
+				// tasks
 				"ADD_TASK" => "add a processing task",
 				"EDIT_TASK" => "handle job processing",
 				"VIEW_TASK" => "view job details",
+				"MANAGE_TASKS" => "manage tasks",
+				// "CANCEL_TASK" => "cancel a created tasks",
 
 				// payments
 				"VIEW_PAYMENTS" => "view payments",

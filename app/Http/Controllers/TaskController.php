@@ -47,7 +47,10 @@ class TaskController extends Controller{
 
 			// return response()->json($res);
 
-			$tasks = Task::query();
+			$tasks = Task::query()
+				->withCount('samples')
+				->withCount('payments')
+			;
 
 			if($search){
 				$tasks = $tasks
@@ -116,7 +119,7 @@ class TaskController extends Controller{
 		if($this->ili()){
 			$res['success'] = true;
 			$msg = "fetching permissions";
-			$user = auth()->user();
+			$user = $this->cur_user();
 			$uid = $user->id;
 			$reslt = false;
 			$task = null;
@@ -189,6 +192,11 @@ class TaskController extends Controller{
 							$task_serial = 'TSK_' . date('Ymd') . '_' . $suffix;
 
 							$paystate = isset($sent['paymentStats']) ? ($sent['paymentStats']['balance'] == 0 ? 2 : 1) : 0;
+							$safesave = $sent;
+
+							if(isset($safesave['admin_password'])){
+								unset($safesave['admin_password']);
+							}
 
 							DB::beginTransaction();
 
@@ -201,6 +209,7 @@ class TaskController extends Controller{
 								'payment_status' => $paystate,
 								'is_paid' => $paystate == 2,
 								'notes' => $sent['note'] ?? null,
+								'passed_task_data' => $safesave,
 							]);
 
 							$batch = app(Batch::class);
