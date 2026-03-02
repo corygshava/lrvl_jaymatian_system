@@ -124,7 +124,19 @@ class ViewController extends Controller{
 				"cmdt" => $cmdt
 			];
 
-			return view('profile.add_task',$topass);
+			return view('profile.task_add',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+	public function showtask(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.task_view',$topass);
 		} else {
 			return $this->showerror($req,'log in to continue');
 		}

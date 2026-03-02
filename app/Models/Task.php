@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model{
 	protected $fillable = [
@@ -15,10 +16,12 @@ class Task extends Model{
 		'payment_status',
 		'is_paid',
 		'notes',
+		'passed_task_data',
 	];
 	protected $casts = [
 		'is_paid' => 'boolean',
 		'status' => 'integer',
+		'passed_task_data' => 'array',
 	];
 
 	public $state_atlas = [
@@ -46,5 +49,12 @@ class Task extends Model{
 	}
 	public function client(): BelongsTo{
 		return $this->belongsTo(Client::class,'client_id');
+	}
+
+	public function samples(): HasMany{
+		return $this->hasMany(Sample::class,'task_id','id');
+	}
+	public function payments(): HasMany{
+		return $this->hasMany(Payment::class,'task_id','id');
 	}
 }
