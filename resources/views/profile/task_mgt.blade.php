@@ -700,13 +700,13 @@
 			data: myn,
 		}
 
-		alert_dark(`viewing ${myn.client_name}'s details`);
+		// alert_dark(`viewing ${myn.id}'s details`);
 
 		// alert_info('set current user: ' + myn.name);
 		// alert_dark('set current userid: ' + myn.id);
 		window['cur_record'] = cur;
 
-		loadPage({template: linkAtlas['view_task'],sidenote: 'User Information'});
+		loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
 	}
 
 	function deleteRecord(id) {

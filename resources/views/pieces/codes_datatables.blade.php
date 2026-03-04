@@ -175,15 +175,15 @@
 				let filtersHTML = '';
 
 				config.filters.forEach(filter => {
-					let lbl = `${filter.rawname || filter.label}`;
+					let lbl = `${filter.label}`;
 					filtersHTML += `
 						<div class="filter-group" data-myobj="${JSON.stringify(filter)}">
-							<label>${filter.rawname}</label>
+							<label>${lbl}</label>
 							<select class="filter-control" id="filter_${filter.name}"
 									onchange="filterme('${filter.name}', this.value)">
 								<option value="">All</option>
 								${filter.options.map(opt =>
-									`<option value="${opt.value}">${opt.label}</option>`
+									`<option value="${opt.value || null}">${opt.label || '??'}</option>`
 								).join('')}
 							</select>
 						</div>

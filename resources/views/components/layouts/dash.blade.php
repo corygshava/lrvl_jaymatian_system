@@ -42,6 +42,8 @@
     <main>
         <x-uikit.topnav/>
 
+		<x-uikit.breadcrumb/>
+
         <div id="dynamic_ui">
             {{ $slot }}
         </div>

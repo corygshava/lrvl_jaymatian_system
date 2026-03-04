@@ -181,7 +181,7 @@ class TaskController extends Controller{
 						}
 					}
 
-					$res['runlog'] = $msg;
+					$res['runlog'][] = $msg;
 
 					if(!$cango){
 						$reslt = false;
@@ -277,7 +277,7 @@ class TaskController extends Controller{
 						}catch (\Exception $e){
 							// DB::rollBack();
 
-							$res['runlog'] = $e;
+							$res['runlog'][] = $e;
 							$msg = 'task creation failed: '.$e->getMessage();
 						}
 						*/

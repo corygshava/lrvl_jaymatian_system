@@ -1,3 +1,4 @@
+
 	<script>
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
@@ -10,17 +11,24 @@
 		let dynacode = undefined;
 		let menuItems = [];
 		let permissions = {};
+		let mypermissions = [];
+		let browseHistory = [];
+		let fullHistory = [];
+		let crumbs = [];
+		const crumbDepth = 4;
 
 		const linkAtlas = {
 			'view_users' : './ui/view_user',
 			'view_user' : './ui/view_user',
 			'view_client' : './ui/view_client',
 			'view_clients' : './ui/client_mgt',
+			'client_info' : './ui/client_info',
 			'view_profile' : './ui/view_user',
 			'view_users' : './ui/user_mgt',
 			'add_task' : './ui/add_task',
 			'view_task' : './ui/view_task',
 			'view_tasks' : './ui/task_mgt',
+			'task_info' : './ui/task_info',
 
 			// operations
 			'toggle_account_active' : './op/toggle_active',
@@ -28,6 +36,7 @@
 
 			// datalinks
 			'search_clients' : './data/search_clients',
+			'get_task' : './data/get_task',
 		};
 		let pref_prefix = 'jaymatt_MIS_';
 		let prefsAtlas = {
@@ -48,6 +57,7 @@
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
 			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
 			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user'},
+			{caption: "Client Management", url: './ui/client_mgt',icon: 'fa fa-users'},
 			{caption: "Task Management", url: './ui/task_mgt',icon: 'fa fa-folder'},
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
@@ -117,25 +127,25 @@
 				window[fetch_bypass_fyls]('./data/my_permissions',{},'GET').then(d => {
 					responseHandler(d,step2,d);
 				}).catch(err => {
-					dynamic_ui.innerHTML = 'error getting user';
+					dynamic_ui.innerHTML = 'error getting user permissions';
 				})
 			};
 
 			const step2 = (w) => {
 				// sets permissions
-				// mypermissions = w.sendme;
+				mypermissions = w.sendme;
 
 				window[fetch_bypass_fyls]('./data/cur_user',{},'GET').then(d => {
 					responseHandler(d,step3,d);
 				}).catch(err => {
-					dynamic_ui.innerHTML = 'error getting user';
+					dynamic_ui.innerHTML = 'error getting user information';
 				})
 			};
 
 			const step3 = (w) => {
 				// sets current user
 				window['cur_user'] = w.sendme;
-				mypermissions = w.sendme.role_permissions;
+				// mypermissions = w.sendme.role_permissions;
 
 				// initmenu();
 				step4();
@@ -253,6 +263,8 @@
 			}
 			p = {...dft,...p};
 
+			// alert_dark(p.template);
+
 			if(!p.fromBtn){
 				let navbtn = menubar.querySelector(`[data-template="${p.template}"]`);
 				if(navbtn){
@@ -267,7 +279,7 @@
 
 			if(window['runOnLeave'] !== undefined){
 				window['runOnLeave']();
-				window['runOnLeave'] = undefined;
+				delete(window['runOnLeave']);
 			}
 
 			activateSidebar(false);
@@ -282,7 +294,7 @@
 			document.body.classList.remove('modal-open');
 
 			setTimeout(() => {
-				// TODO: add a loader here
+				// TODO: add a loader logic here
 				maincon.innerHTML = '';
 
 				window[fetch_ui](p.template,{},'get').then(dt => {
@@ -309,8 +321,12 @@
 						// alert_dark('no afterfx defined');
 					}
 
+					browseHistory.push(p);
+					fullHistory.push(p);
+					renderCrumbs();
 					return;
 
+					// was quite buggy and i had already found a workaround so had to ignore it somehow
 					if(typeof after == 'function'){
 						setTimeout(() => {
 							after();
@@ -322,7 +338,7 @@
 			},400);
 		}
 
-		window['load_page'] = (el) => {
+		window['load_page'] = (el,topass) => {
 			// let fun = el.dataset.afterfx !== undefined ? window[el.dataset.afterfx] : undefined;
 			let passme = {
 				template: el.dataset.link || './ui/error',
@@ -335,7 +351,7 @@
 				passme.template = linkAtlas[i];
 			}
 
-			window['loadPage'](passme)
+			window['loadPage'](passme);
 		}
 
 		window['view_profile'] = () => {
@@ -351,6 +367,78 @@
 			mbtn.click();
 		};
 
+		// breadcrumbs ops
+		function renderCrumbs(){
+			let ui = breadcrumb_trail;
+
+			if(ui == undefined){
+				alert_danger('breadcrumbs component missing');
+				return;
+			}
+
+			ui.classList.add('w3-hide');
+			ui.innerHTML = '';
+			ui.style.opacity = 1;
+
+			setTimeout(() => {
+				let bh = [...browseHistory];
+				alert_silent('browseHistory: ',bh);
+
+				crumbs = [];
+
+				[...bh].reverse().forEach((el,id) => {
+					if(id < crumbDepth){
+						crumbs.push(el);
+					}
+				})
+
+				crumbs = [...crumbs].reverse();
+				alert_silent('crumbs: ',crumbs);
+
+				if(crumbs.length < 2){
+					return;
+				}
+
+				outht = '';
+
+				crumbs.forEach((el,id,arr) => {
+					let islast = (id == (arr.length - 1));
+					let href = !islast ? 'href="#" ' : '';
+					let op = !islast ? `data-runme="history_crawl" ` : '';
+					let active = islast ? 'active' : '';
+
+					outht += `
+						<li class="breadcrumb-item ${active}"><a ${href} ${op} data-level="${id}">${el.sidenote}</a></li>
+					`;
+				})
+
+				ui.innerHTML = outht;
+				ui.classList.remove('w3-hide');
+				ui.style.opacity = 1;
+				refreshUI(300);
+			},200);
+		}
+
+		function hidecrumbs() {
+			let ui = breadcrumb_trail;
+			ui.style.opacity = 0;
+
+			setTimeout(() => {
+				ui.classList.add('w3-hide');
+			},400);
+		}
+
+		window['history_crawl'] = (l) => {
+			let lvl = l.dataset.level || crumbs.length - 2;
+			let killfrom = browseHistory.indexOf(crumbs[lvl]);
+			let bh = [...browseHistory];
+
+			// browseHistory = [...bh].splice(0,bh.length - (crumbDepth - lvl));
+
+			loadPage({...crumbs[lvl],fromBtn: false});
+		}
+
+		// utility ops
 		function ParseMyJS(who) {
 			let oldscs = who.querySelectorAll('script');
 

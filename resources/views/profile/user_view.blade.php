@@ -1,20 +1,4 @@
 <style>
-	#user-profile-container{
-		--width: 900px;
-	}
-	.profile_card{
-		/*overflow: hidden;*/
-		background: var(--clr-panelbg);
-		border-radius: var(--roundness);
-		max-width: 900px;
-		margin: 0 auto;
-	}
-	.profile_card .card-header{
-		position: relative;
-		width: 100%;
-		border-radius: var(--roundness) var(--roundness) 0 0;
-		color: #fff;
-	}
 	#user-profile-container .avatar-circle {
 		--w: 48px;
 		width: var(--w);
@@ -29,20 +13,6 @@
 		border: 3px solid rgba(255,255,255,0.3);
 	}
 
-	.profile_card .user_stats .user_stat{
-		flex: 1 0 175px;
-		padding: 12px 0;
-	}
-
-	.profile_card .media{
-		display: flex;
-		flex-wrap: nowrap;
-		flex-direction: row;
-		width: 100%;
-		/*background: red;*/
-		padding: 12px 0;
-		flex: 1 1 calc(var(--width) * 0.4);
-	}
 	.profile_card .icon-circle {
 		--w: 48px;
 		width: var(--w);
@@ -68,11 +38,10 @@
 			<div class="card-header panelbg themegrad flowline overflow left centerline">
 				<div class="avatar-circle bg-white text-primary">
 					<span id="user-initials">C</span>
-					<span class="badge bg-danger w3-display-topright w3-text-white slide-up" id="inactive_account_marker">account inactive</span>
 				</div>
 				<div>
 					<strong class="h3" id="user-name"></strong>
-					<b>Role: </b><span class="badge badge-dark" id="user-role-badge">test</span>
+					<b>Role: </b><span id="user-role-badge">test</span>
 				</div>
 				<div class="w3-display-right spacy-md" style="z-index: 102">
 					<div class="dropdown">
@@ -96,20 +65,20 @@
 			</div>
 
 			<div class="card-body">
-				<div class="flowline overflow w3-center user_stats">
-					<div class="user_stat">
+				<div class="flowline overflow w3-center stats">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">User ID</small>
 						<b class="text-primary font-weight-bold"><span id="user-id">2</span></b>
 					</div>
-					<div class="user_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
 						<span class="text-dark font-weight-bold" id="member-since">--</span>
 					</div>
-					<div class="user_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Login</small>
 						<span class="text-dark font-weight-bold" id="last-login">--</span>
 					</div>
-					<div class="user_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
 						<span class="text-dark font-weight-bold" id="last-updated">--</span>
 					</div>
@@ -208,7 +177,13 @@
 	</div>
 </div>
 
+<?php
+	// require_once __DIR__.'/piece_add_user_form.php';
+?>
+
+{{-- <!-- --}}
 @include('pieces.forms_userops')
+{{-- --> --}}
 
 <script>
 	let userData = {};
@@ -218,6 +193,10 @@
 
 		if(!mypermissions.includes('MANAGE_USERS')){
 			to_user_mgt_btn.remove();
+		}
+
+		if(!mypermissions.includes('ACTIVATE_USER')){
+			deact_user_btn.remove();
 		}
 
 		if(window['cur_record'] !== undefined){
@@ -237,24 +216,6 @@
 	}
 
 	function initializeUserProfile(data) {
-		if(!mypermissions.includes('ACTIVATE_USER')){
-			deact_user_btn.style.display = 'none';
-			deact_user_btn.setAttribute('disabled', true);
-		} else {
-			deact_user_btn.style.display = 'block';
-			deact_user_btn.removeAttribute('disabled');
-
-            if(userData.is_active){
-				deact_user_btn.classList.add('text-danger');
-				deact_user_btn.classList.remove('text-success');
-				deact_user_btn.innerHTML = `<i class="fas fa-user-slash mr-2"></i> Deactivate`;
-			} else {
-				deact_user_btn.classList.remove('text-danger');
-				deact_user_btn.classList.add('text-success');
-				deact_user_btn.innerHTML = `<i class="fas fa-user-check mr-2"></i> Activate`;
-			}
-        }
-
 		// hide placeholders
 		blank.classList.add('w3-hide');
 		document.querySelector('#user-profile-container').classList.remove('w3-hide');
@@ -266,16 +227,15 @@
 		document.getElementById('user-email').textContent = data.email || "--";
 		document.getElementById('user-phone').textContent = data.phone_number || "---";
 		document.getElementById('user-role-badge').textContent = data.role_name;
-		document.getElementById('inactive_account_marker').style.display = data.is_active ? 'none' : 'block';
 
 		// Format dates
 		const createdDate = new Date(data.created_at);
 		const updatedDate = new Date(data.updated_at);
-		const loginDate = data.last_login_at != null ? new Date(data.last_login_at) : null;
+		const loginDate = new Date(data.last_login_at);
 
-		document.getElementById('member-since').textContent = createdDate != null ? formatDate(createdDate) : '--';
-		document.getElementById('last-updated').textContent = updatedDate != null ? formatDate(updatedDate) : '--';
-		document.getElementById('last-login').textContent = loginDate != null ? formatDate(loginDate) : '--';
+		document.getElementById('member-since').textContent = formatDate(createdDate);
+		document.getElementById('last-updated').textContent = formatDate(updatedDate);
+		document.getElementById('last-login').textContent = formatDate(loginDate);
 
 		// Email verification status
 		const verifyBadge = document.getElementById('email-verified-badge');
@@ -325,8 +285,31 @@
 		document.getElementById('permission-count').textContent = perms.length;
 	}
 
+	function formatDate(date) {
+		return date.toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	}
+
+	function formatDateTime(date) {
+		return date.toLocaleString('en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false
+		}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
+	}
+
 	// Action handlers
 	function editProfile() {
+		console.log('Edit profile clicked');
+		// Implement your edit logic here
+		// alert('Edit profile functionality would open here');
 		window['edit_user']();
 	}
 
@@ -350,62 +333,31 @@
 	}
 
 	function deactivateAccount() {
-		const step1 = () => {
-			// allows entering the user's password
-			awaitConfirmPass(step2);
-		}
-
-		const step2 = (arg) => {
-			alert_info('password confirmed');
-
-			window[fetch_bypass](linkAtlas['toggle_account_active'],{...arg,recid: userData.id},'POST').then(r => {
-				responseHandler(r,step3,r);
-			});
-		}
-
-		const step3 = (arg) => {
-			// alert_info('user activated successfully');
-			// alert_silent('process complete');
-			userData = arg.sendme;
-			compareUserData(userData);
-			initializeUserProfile(userData);
-		}
-
-		const isa = userData.is_active;
-		const op = isa ? 'deactivate' : 'activate';
-		const exp = isa ? `
-			The user will be <b class="themetxt">unable</b> to log in with their details after this.<br>
-			Are you sure you want to ${op} this user account?
-		` : `
-			The user will be <b class="themetxt">able</b> to log in with their details after this.<br>
-			Are you sure you want to ${op} this user account?
-		`;
-
-		confirmAction(`${op} Account`,exp,step1);
+		confirmAction('Deactivate Account','Are you sure you want to deactivate this user account?');
 	}
 
 	window['edit_user'] = (e) => {
-        roleop = "edit";
+		// if(e === undefined){return;}
+
+		roleop = "edit";
 		rec_id = userData.id;
 		add_edit_form.recid.value = rec_id;
 
-		let myn = userData;
+		let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
+
 		// window['userBeingEdited'] = myn;
 
 		add_edit_form.name.value = myn.name;
 		add_edit_form.user_name.value = myn.name;
 		add_edit_form.user_email.value = myn.email;
-		add_edit_form.user_contact.value = myn.phone_number || '';
 		add_edit_form.user_password.value = "*************************";
 		add_edit_form.user_password.setAttribute('readonly',true);
-		add_edit_form.user_role_name.value = myn.my_roles.id;
-		add_edit_modal_trig.click();
 
-		if(!mypermissions.includes('MANAGE_USERS')){
-			user_role_field_input.style.display = 'none';
-		} else {
-			user_role_field_input.style.display = 'block';
-		}
+		// add_edit
+		add_edit_form.user_role_name.value = myn.my_roles.id;
+		// add_edit_form.user_role_name.value = myn.role_name;
+
+		add_edit_modal_trig.click();
 
 		// alert_info(rec_id);
 		// alert_info(e.textContent);
@@ -420,11 +372,15 @@
 		rec_id = userData.id;
 		maform.recid.value = rec_id;
 
-		let myn = userData;
+		let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
 
 		// window['userBeingEdited'] = myn;
 
+		// maform.setAttribute('readonly',false);
 		maform.user_name.value = myn.name;
+		// maform.setAttribute('readonly',true);
+		// maform.user_role_name.value = myn.my_roles.id;
+		// add_edit_form.user_role_name.value = myn.role_name;
 
 		change_pw_modal_trig.click();
 
@@ -433,17 +389,21 @@
 		add_edit_title.innerHTML = "Edit user Details";
 	}
 
-	window['form_afterfx'] = (d) => {
+	window['form_afterfx'] = () => {
 		// alert_danger('runnin afterfx');
 		add_edit_modal_trig.click();
 
-        userData = d.data.sendme;
-		compareUserData(userData);
-        initializeUserProfile(userData);
+		// TODO: make it that it sends back the modified data for this page to show again
+		// window['refresh_stuff']();
+		// refreshData();
 	}
 
 	window['form_pw_afterfx'] = () => {
 		// alert_danger('runnin afterfx');
 		change_pw_modal_trig.click();
+
+		// TODO: make it that it sends back the modified data for this page to show again
+		// window['refresh_stuff']();
+		// refreshData();
 	}
 </script>

@@ -1,9 +1,9 @@
 /*
 	* Author: Cornelius Shava
-	* Organisation: Haosel Kenya
+	* Organisation: CoryG productions
 	* Date: 27/07/2025
-	* last modified: 19/01/2026
-	* Time: 14:08
+	* last modified: 04/03/2026
+	* Time: 11:38
 	* Email: corygprod@duck.com
 	* File: coryG_UIOps.js
 */
@@ -102,7 +102,7 @@ var callOnDocLoad = [];
 				],
 				{duration: dur + 1}
 			);
-			
+
 			setTimeout(() => {
 				if(typeof clb == 'function'){
 					clb();
@@ -333,9 +333,9 @@ var callOnDocLoad = [];
 				let _onshow = el.dataset.onshow || "block";
 				let _onhide = el.dataset.onhide || "none";
 				let _special = el.dataset.special || 'no';
-				
+
 				// alert_success('addin toggler');
-				
+
 				el.addEventListener('click',() => {
 					let a = _onshow;
 					let b = _onhide;
@@ -404,7 +404,7 @@ var callOnDocLoad = [];
 		copyguys.forEach(el => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
 				let tk = document.querySelector(el.dataset.copyme);
-				
+
 				if(tk != undefined){
 					if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
 						el.dataset.picker = picker;
@@ -424,7 +424,7 @@ var callOnDocLoad = [];
 	function init_copyacts() {
 		const picker = 'copy acts';
 		let gotos = document.querySelectorAll('[data-copythis]');
-	
+
 		gotos.forEach(el => {
 			if(el.dataset.picker == undefined || el.dataset.picker !== picker){
 				if(!(el.dataset.ignorepicker == "yes" || el.dataset.ignorepicker == "true")){
@@ -439,7 +439,7 @@ var callOnDocLoad = [];
 						const _2copy = target.innerText;
 						let resb = copytext1(_2copy);
 						let succeed = el.dataset.successtext || 'text copied successfully';
-						let fail = el.dataset.failtext || 'text copied successfully';
+						let fail = el.dataset.failtext || 'text copy failed';
 						let _quiet = el.dataset.isquiet || "false";
 						let quiet = _quiet == "true" || _quiet == "yes";
 
@@ -515,7 +515,7 @@ var callOnDocLoad = [];
 		tabs.forEach((tab,id)=>{
 			tab.dataset.picker = "tab handler";
 			let tg = tab.dataset.tabgroup == undefined ? tg_dft : tab.dataset.tabgroup;
-			
+
 			if(tg_btns[tg] == undefined){
 				tg_btns[tg] = [];
 			}
@@ -523,7 +523,7 @@ var callOnDocLoad = [];
 			tab.dataset.tabgroup = tg;
 			tg_btns[tg].push(tab);
 		});
-		
+
 		contents.forEach((con,id)=>{
 			con.dataset.picker = "tab handler";
 			let tg = con.dataset.tabgroup == undefined ? tg_dft : con.dataset.tabgroup;
@@ -545,7 +545,7 @@ var callOnDocLoad = [];
 			} else {
 				alert_silent(`tab contents found for group [${el}]`);
 			}
-			
+
 			tg_contents[el].forEach((tgc,n) => {
 				if(tgc.dataset.myid == undefined){
 					tgc.dataset.myid = `${el}_${n}`;
@@ -627,7 +627,7 @@ var callOnDocLoad = [];
 
 				el.addEventListener('submit',(e) => {
 					// alert(`block: ${_block} -> ndft: ${nodefault ? 'yes' : 'no'}`);
-					
+
 					if(nodefault){
 						e.preventDefault();
 					}
@@ -819,7 +819,7 @@ var callOnDocLoad = [];
 
 					const endme = () => {
 						clearInterval(myinter);
-						
+
 						if(finalact !== undefined){
 							if(typeof window[finalact] == 'function'){
 								window[finalact](me);
@@ -1082,10 +1082,10 @@ var callOnDocLoad = [];
 		})
 	});
 
-/** 
+/**
 	 * TODO
 	 * any shit to do goes here
 	 *
-	 * make the page parts thing in scrollers actually work
-	 * 
+	 * TODO: make the page parts thing in scrollers actually work
+	 *
 */

@@ -548,16 +548,16 @@
 
 		// samples tab
 
-
 		// payment tab
 
 		// finalize tab
-
 	}
 
 	function init_task_creation_process() {
 		const step2 = () => {
 			if(window['task_client_data'] !== undefined){
+				alert_dark('found task client data');
+				// return;
 				select_client(window['task_client_data']);
 				window['task_client_data'] = undefined;
 				// last_step();
@@ -588,9 +588,10 @@
 					localStorage.removeItem(prefsAtlas['last_saved_task']);
 				});
 			} else {
-				// pick_step(0);
+				pick_step(0);
 			}
-			pick_step(0);
+			step2();
+			// pick_step(0);
 		} else {
 			step2();
 		}
@@ -1041,7 +1042,14 @@
 			localStorage.removeItem(prefsAtlas['last_saved_task']);
 
 			confirmAction(mekHeading('Manage created task','h4'),'would you like to manage the created task',() => {
-				alert_info('going to task management UI');
+				// alert_info('going to task management UI');
+				window['cur_task_id'] = dta.sendme.id;
+
+				let senddeets = {
+					template: linkAtlas['task_info'],
+					sidenote: 'manage Task',
+				};
+				loadPage(senddeets);
 			},false,() => {
 				alert_info('you are adding another task');
 			});

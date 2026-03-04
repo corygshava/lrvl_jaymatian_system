@@ -1,81 +1,3 @@
-<style>
-	#client-profile-container{
-		--width: 900px;
-	}
-	.profile_card{
-		background: var(--clr-panelbg);
-		border-radius: var(--roundness);
-		max-width: 900px;
-		margin: 0 auto;
-	}
-	.profile_card .card-header{
-		position: relative;
-		width: 100%;
-		border-radius: var(--roundness) var(--roundness) 0 0;
-		color: #fff;
-	}
-	#client-profile-container .avatar-circle {
-		--w: 48px;
-		width: var(--w);
-		height: var(--w);
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.75rem;
-		font-weight: 700;
-		box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-		border: 3px solid rgba(255,255,255,0.3);
-	}
-
-	.profile_card .client_stats .client_stat{
-		flex: 1 0 175px;
-		padding: 12px 0;
-	}
-
-	.profile_card .media{
-		display: flex;
-		flex-wrap: nowrap;
-		flex-direction: row;
-		width: 100%;
-		padding: 12px 0;
-		flex: 1 1 calc(var(--width) * 0.4);
-	}
-	.profile_card .icon-circle {
-		--w: 48px;
-		width: var(--w);
-		height: var(--w);
-		border-radius: 50%;
-		color: var(--themecolor);
-		background-color: #eef;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1rem;
-	}
-
-	.action-card {
-		transition: all 0.3s ease;
-		cursor: pointer;
-		border: 2px solid transparent;
-	}
-	.action-card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-		border-color: var(--themecolor);
-	}
-	.action-card .action-icon {
-		width: 56px;
-		height: 56px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.5rem;
-		margin-bottom: 12px;
-	}
-</style>
-
 <div id="to_clients_mgt_btn">
 	<a href="#" class="backbtn" data-runme="load_page" data-label="Client management"><i class="fa fa-arrow-left"></i> back to <b>client management</b></a>
 </div>
@@ -101,10 +23,10 @@
 							<i class="fas fa-ellipsis-v"></i>
 						</button>
 						<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-							<a class="dropdown-item spacy-tn" href="#" onclick="editClient()">
+							<a class="dropdown-item spacy-tn" href="#" onclick="edit_client()">
 								<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
 							</a>
-							<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan_()">
+							<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan()">
 								<i class="fas fa-money-check-alt mr-2 text-muted"></i>Change Payment Plan
 							</a>
 							<a class="dropdown-item spacy-tn" id="credit_mgt_btn" href="#" onclick="manageCreditBalance()">
@@ -116,20 +38,20 @@
 			</div>
 
 			<div class="card-body">
-				<div class="flowline overflow w3-center client_stats">
-					<div class="client_stat">
+				<div class="flowline overflow w3-center stats">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client ID</small>
 						<b class="text-primary font-weight-bold"><span id="client-id">2</span></b>
 					</div>
-					<div class="client_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Credit Balance</small>
 						<span class="text-success font-weight-bold">KES <span id="credit-balance">0.00</span></span>
 					</div>
-					<div class="client_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
 						<span class="text-dark font-weight-bold" id="member-since">--</span>
 					</div>
-					<div class="client_stat">
+					<div class="stat">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
 						<span class="text-dark font-weight-bold" id="last-updated">--</span>
 					</div>
@@ -266,10 +188,13 @@
 	</div>
 </div>
 
-@include('pieces.forms_clientops')
 <?php
 	// require_once __DIR__.'/piece_add_client_form.php';
 ?>
+
+{{-- <!-- --}}
+@include('pieces.forms_clientops')
+{{-- --> --}}
 
 <script>
 	let clientData = {
@@ -316,7 +241,14 @@
 		refreshUI(300);
 	}
 
-	function initializeClientProfile(data) {
+	window['runOnLeave'] = () => {
+		// delete(window['runOnAwake']);
+		delete(window['initializeClientProfile']);
+		delete(window['edit_client']);
+		delete(window['form_afterfx']);
+	}
+
+	window['initializeClientProfile'] = (data) => {
 		// Hide placeholders
 		blank.classList.add('w3-hide');
 		document.querySelector('#client-profile-container').classList.remove('w3-hide');
@@ -363,8 +295,8 @@
 		const createdDate = new Date(data.created_at);
 		const updatedDate = new Date(data.updated_at);
 
-		document.getElementById('member-since').textContent = formatDate(createdDate);
-		document.getElementById('last-updated').textContent = formatDate(updatedDate);
+		document.getElementById('member-since').textContent = formatDate0(createdDate);
+		document.getElementById('last-updated').textContent = formatDate0(updatedDate);
 
 		// Additional details
 		document.getElementById('kra-pin-detail').textContent = data.kra_pin || 'Not provided';
@@ -376,76 +308,38 @@
 		document.getElementById('load-time').textContent = new Date().toLocaleTimeString();
 	}
 
-	function formatDate(date) {
-		return date.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric'
-		});
-	}
-
-	function formatDateTime(date) {
-		return date.toLocaleString('en-US', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false
-		}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
-	}
-
-	// Action handlers
-	function editClient() {
-		console.log('Edit client clicked');
-		// Implement your edit logic here
-		window['edit_client']();
-	}
-
-	function changePaymentPlan() {
+	window['changePaymentPlan'] = () => {
 		console.log('Change payment plan clicked');
-		// Implement payment plan change logic
-		alert('Payment plan change functionality would open here');
+		alert_info('payment plan logic not implemented yet')
 	}
-
-	function manageCreditBalance() {
+	window['manageCreditBalance'] = () => {
 		change_credit_form.recid.value = clientData.id;
 		change_credit_form.client_name_2.value = clientData.client_name;
 		change_credit_form.user_credit.value = clientData.credit_balance;
 
 		change_credit_modal_trig.click();
 	}
-
-	function deactivateClient() {
+	window['deactivateClient'] = () => {
 		confirmAction('Deactivate Client','Are you sure you want to deactivate this client account?');
 	}
 
 	// Quick Action handlers
-	function createNewTask() {
+	window['createNewTask'] = () => {
 		window['task_client_data'] = clientData;
+
 		loadPage({
 			template: linkAtlas['add_task'],
 			sidenote: 'create new task',
 		});
 	}
-
-	function viewJobs() {
-		console.log('View jobs for client:', clientData.id);
-		alert(`Viewing jobs for ${clientData.client_name}`);
-		// Implement jobs view
+	window['viewJobs'] = () => {
+		alert_info(`Viewing samples for ${clientData.client_name}`);
 	}
-
-	function viewSamples() {
-		console.log('View samples for client:', clientData.id);
-		alert(`Viewing samples for ${clientData.client_name}`);
-		// Implement samples view
+	window['viewSamples'] = () => {
+		alert_info(`Viewing samples for ${clientData.client_name}`);
 	}
-
-	function viewReports() {
-		console.log('View reports for client:', clientData.id);
-		alert(`Viewing reports for ${clientData.client_name}`);
-		// Implement reports view
+	window['viewReports'] = () => {
+		alert_info(`Viewing reports for ${clientData.client_name}`);
 	}
 
 	window['edit_client'] = (e) => {
@@ -474,9 +368,8 @@
 
 		// alert_info(rec_id);
 		// alert_info(e.textContent);
-		add_edit_title.innerHTML = "Edit user Details";
+		add_edit_title.innerHTML = "Edit Client Details";
 	}
-
 	window['form_afterfx'] = (m) => {
 		// alert_dark('runnin afterfx');
 		let caller = m.el;
