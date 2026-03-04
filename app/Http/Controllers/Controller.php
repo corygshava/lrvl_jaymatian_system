@@ -503,7 +503,6 @@ abstract class Controller{
 
 		return json_encode($data,JSON_PRETTY_PRINT);
 	}
-
 	public static function getSiteData($useDefault = false,$forceReload = false){
 		if(self::$sitedata != null && $forceReload === false) {return self::$sitedata;}
 

@@ -578,14 +578,18 @@
 
 		let last_save = localStorage.getItem(prefsAtlas['last_saved_task']) || undefined;
 		if(last_save !== undefined){
-			confirmAction('<span class="h4">Saved data found</span>','would you like to continue with creating the last task?',() => {
-				// alert_danger('continuing');
-				loadSavedTask();
-				last_step();
-			},false,() => {
-				step2();
-				localStorage.removeItem(prefsAtlas['last_saved_task']);
-			});
+			if(last_save.clientData !== undefined){
+				confirmAction('<span class="h4">Saved data found</span>','would you like to continue with creating the last task?',() => {
+					// alert_danger('continuing');
+					loadSavedTask();
+					last_step();
+				},false,() => {
+					step2();
+					localStorage.removeItem(prefsAtlas['last_saved_task']);
+				});
+			} else {
+				// pick_step(0);
+			}
 			pick_step(0);
 		} else {
 			step2();

@@ -1,4 +1,4 @@
-<script>
+	<script>
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
 
@@ -20,6 +20,7 @@
 			'view_users' : './ui/user_mgt',
 			'add_task' : './ui/add_task',
 			'view_task' : './ui/view_task',
+			'view_tasks' : './ui/task_mgt',
 
 			// operations
 			'toggle_account_active' : './op/toggle_active',
@@ -47,7 +48,6 @@
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
 			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
 			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user'},
-			{caption: "Client management", url: './ui/client_mgt',icon: 'fa fa-users'},
 			{caption: "Task Management", url: './ui/task_mgt',icon: 'fa fa-folder'},
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
@@ -490,7 +490,6 @@
 			password_confo_trig.click();
 
 			window['confirmPasswordCallback']({admin_password: m.admin_password.value});
-
 			killghost('confirmPasswordCallback');
 		}
 
