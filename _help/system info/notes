@@ -8,3 +8,4 @@ biz_data
 	stores technician signature image
 	stores signature image
 	stores stamp image
+	stores deviation summary object

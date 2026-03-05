@@ -79,7 +79,7 @@ class UserController extends Controller{
 
 		if($this->ili()){
 			$res['success'] = true;
-			$res['message'] = "fetching permissions";
+			$res['message'] = "confirming user permissions";
 
 			$user = Auth::user();
 			$savedpermissions = $this->getpermissions();
@@ -195,9 +195,9 @@ class UserController extends Controller{
 
 		if($this->ili()){
 			$res['success'] = true;
-			$res['message'] = "all userRoles retrieved";
+			$res['message'] = "User information retrieved";
 
-			$sess_user = auth()->user();
+			$sess_user = $this->cur_user();
 			$uid = $sess_user->id;
 
 			$res['runlog'][] = $uid;

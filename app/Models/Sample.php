@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sample extends Model
 {
@@ -15,7 +16,7 @@ class Sample extends Model
 		'sample_tag',
 		'sample_type',
 		'sample_count',
-		'results',
+		// 'results',
 		'deviation_summary',
 		'status',
     ];
@@ -45,6 +46,12 @@ class Sample extends Model
 		return $this->belongsTo(Client::class, 'client_id');
 	}
 	public function task(): BelongsTo {
-		return $this->belongsTo(Client::class, 'task_id');
+		return $this->belongsTo(Task::class, 'task_id');
 	}
+
+	// /*
+	public function results(): HasMany {
+		return $this->hasMany(Result::class,'sample_id','id');
+	}
+	// */
 }

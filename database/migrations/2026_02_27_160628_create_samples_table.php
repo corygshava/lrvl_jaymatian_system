@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('sample_tag');
             $table->string('sample_type');
             $table->integer('sample_count');
-            $table->json('results')->nullable();
-            $table->json('deviation_summary')->nullable();
 
             $table->timestamps();
         });

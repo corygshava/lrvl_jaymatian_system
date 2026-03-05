@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,9 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/task_mgt', [ViewController::class,'showtasks']);
 	Route::get('/add_task', [ViewController::class,'addtask']);
 	Route::get('/view_task', [ViewController::class,'showtask']);
+	Route::get('/task_info', [ViewController::class,'showtaskinfo']);
+
+	Route::get('/samples_mgt', [ViewController::class,'showsamples']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -53,6 +57,8 @@ Route::prefix('/data')->group(function(){
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
+
+	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){

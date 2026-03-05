@@ -141,6 +141,31 @@ class ViewController extends Controller{
 			return $this->showerror($req,'log in to continue');
 		}
 	}
+	public function showtaskinfo(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.task_info',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
+	public function showsamples(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.samples_mgt',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
 
     public function showerror(Request $req,$msg = 'an error occured'){
         $dta = [

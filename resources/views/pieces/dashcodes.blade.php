@@ -60,6 +60,7 @@
 			{caption: "Client Management", url: './ui/client_mgt',icon: 'fa fa-users'},
 			{caption: "Task Management", url: './ui/task_mgt',icon: 'fa fa-folder'},
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
+			{caption: "Samples management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
 			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-code'},

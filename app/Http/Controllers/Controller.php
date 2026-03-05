@@ -574,7 +574,7 @@ abstract class Controller{
 	// system roles subsys
 	public static function sys_permissions(){
 		return [
-			"last_update" => Carbon::parse('2026-03-01 12:44:35'),
+			"last_update" => Carbon::parse('2026-03-02 12:44:35'),
 			"permissions" => [
 				"VIEW_DASHBOARD" => "view the staff dashboard",
 				"VIEW_ANALYTICS" => "view analytics dashboard",
@@ -603,6 +603,9 @@ abstract class Controller{
 				"VIEW_TASK" => "view job details",
 				"MANAGE_TASKS" => "manage tasks",
 				// "CANCEL_TASK" => "cancel a created tasks",
+
+				// samples
+				"MANAGE_SAMPLES" => "manage sample records",
 
 				// payments
 				"VIEW_PAYMENTS" => "view payments",

@@ -476,15 +476,17 @@
 </div>
 
 <?php
-	require_once __DIR__.'/piece_samples_extras.php';
+	// require_once __DIR__.'/piece_samples_extras.php';
 ?>
 
 <?php
-	require_once __DIR__.'/datatables_code.php';
+	// require_once __DIR__.'/datatables_code.php';
 ?>
 
-<!-- @include('pieces.datatables') -->
-<!-- @include('pieces.new') -->
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.samples_xtras')
+{{-- --> --}}
 
 <script>
 	// Initialize the data table with your configuration
@@ -502,9 +504,21 @@
 		]
 		let state_filter = [];
 
+		let sample_types = [
+			'soil',
+			'rock',
+			'solution',
+			'carbon',
+		];
+		let samples_filter = [];
+
 		Object.keys(state_atlas).forEach(k => {
 			let tmp = {value: k, label: state_atlas[k]};
 			state_filter.push(tmp);
+		});
+		sample_types.forEach(k => {
+			let tmp = {value: k, label: k};
+			samples_filter.push(tmp);
 		});
 
 		const initstuff = (m) => {
@@ -526,8 +540,16 @@
 						sortable: true
 					},
 					{
-						title: 'Task number',
-						data: 'task_no',
+						title: 'Sample type',
+						data: 'sample_type',
+						sortable: true,
+						render: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						title: 'Samples',
+						data: 'sample_count',
 						sortable: true,
 						render: function(value) {
 							return `<strong>${value}</strong>`;
@@ -535,7 +557,7 @@
 					},
 					{
 						title: 'Sample number',
-						data: 'task_no',
+						data: 'sample_no',
 						sortable: true,
 						render: function(value) {
 							return `<strong>${value}</strong>`;
@@ -543,10 +565,10 @@
 					},
 					{
 						title: 'Client name',
-						data: 'client_name',
+						data: 'owner',
 						sortable: true,
 						render: function(value) {
-							return `<strong>${value}</strong>`;
+							return `<strong>${value.client_name}</strong>`;
 						}
 					},
 					{
@@ -599,10 +621,25 @@
 				// Optional: Filter definitions
 				filters: [
 					{
-						name: 'Status',
+						name: 'status',
 						label: 'Sample status',
 						rawname: 'status',
 						options: state_filter
+					},
+					{
+						name: 'with_results',
+						label: 'Result Status',
+						rawname: 'with_results',
+						options: [
+							{value: 'yes',label: 'with results'},
+							{value: 'no',label: 'without results'},
+						]
+					},
+					{
+						name: 'sample_type',
+						label: 'Sample Type',
+						rawname: 'sample type',
+						options: samples_filter
 					}
 				],
 
@@ -655,17 +692,25 @@
 		}
 
 		let cur = {
-			rectype: 'task',
+			rectype: 'sample',
 			data: myn,
 		}
+
+		// copytext1(JSON.stringify(cur,null,4));
+		viewRecordInfo(cur);
 
 		// alert_dark(`viewing ${myn.id}'s details`);
 
 		// alert_info('set current user: ' + myn.name);
 		// alert_dark('set current userid: ' + myn.id);
-		window['cur_record'] = cur;
+		// window['cur_record'] = cur;
 
-		loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
+		// loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
+	}
+
+	function viewRecordInfo(who) {
+		view_samples_modal_trig.click();
+		renderSampleData(who);
 	}
 
 	function deleteRecord(id) {

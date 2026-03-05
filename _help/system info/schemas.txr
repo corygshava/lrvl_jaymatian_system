@@ -45,8 +45,17 @@ Samples
 	sample_type
 	sample_count
 	date_added
-	results (a json object for each sample)
-	deviation_summary (a json object)
+
+	laravel timestamps
+results
+	id,
+	sample_id,
+	sample_type,
+	client_id,
+	added_by,
+
+	au_ppm
+	cu_ppm
 
 	laravel timestamps
 Payments
@@ -57,6 +66,7 @@ Payments
 	client_id
 
 	laravel timestamps
+
 biz_data
 	id
 	item_name

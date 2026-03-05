@@ -650,7 +650,7 @@
 				filters: [
 					{
 						name: 'user_roles_id',
-						label: 'role_name',
+						label: 'role name',
 						rawname: 'user roles',
 						options: user_roles_condensed
 					},
