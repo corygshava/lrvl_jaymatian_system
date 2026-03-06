@@ -21,7 +21,6 @@ class ReportsGen extends Model
 		'date_received',
 		'date_compiled',
 		'task_no',
-		'created_by',
 		'technical_staff_name',
 		'analytical_report',
 		'deviation_data',
@@ -44,7 +43,7 @@ class ReportsGen extends Model
 	public function sample(): BelongsTo {
 		return $this->belongsTo(Sample::class,'sample_id');
 	}
-	public function creator(): BelongsTo {
+	public function mycreator(): BelongsTo {
 		return $this->belongsTo(User::class,'created_by');
 	}
 	public function owner(): BelongsTo {
