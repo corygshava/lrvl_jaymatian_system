@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sample;
+use App\Models\Result;
 use Illuminate\Http\Request;
+use Mavinoo\Batch\Batch;
 
 class SamplesController extends Controller{
 	public function get_all(Request $req){
@@ -24,6 +26,8 @@ class SamplesController extends Controller{
 			$with_results = $req->input('with_results',null);
 			$sample_typ = $req->input('sample_type',null);
 
+			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
+
 			$res['runlog'][] = [
 				"perPage" => $perPage,
 				"search" => $search,
@@ -43,10 +47,11 @@ class SamplesController extends Controller{
 			// return response()->json($res);
 
 			$records = Sample::query()
+				->with('results')
+				->withCount('results')
 				->with('mycreator')
 				->with('owner')
 				->with('task')
-				->with('results')
 			;
 
 			if($search){
@@ -70,8 +75,13 @@ class SamplesController extends Controller{
 
 			// filter for whether or not its paid
 			if($with_results){
-				$con = $with_results == 'yes' ? '<>' : '=';
-				$records = $records->where('results',$con,null);
+				$con = $with_results == 'yes';
+
+				if($con){
+					$records = $records->has('results');
+				} else {
+					$records = $records->doesntHave('results');
+				}
 			}
 
 			if($sample_typ){
@@ -98,6 +108,134 @@ class SamplesController extends Controller{
 		}
 
 		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function get_sample(Request $req) {
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'sample_id' => ['required','numeric'],
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching sample information";
+			$reslt = false;
+
+			// find a sample
+			$therec = Sample::where('id',$passed['sample_id'])
+				->with('results')
+				->withCount('results')
+				->with('mycreator')
+				->with('owner')
+				->with('task')
+				->first()
+			;
+
+			// check if it exists
+			if($therec == null){
+				$msg = "sample not found";
+			} else {
+				$reslt = true;
+				$msg = "samples fetched successfully";
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $therec;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_results(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'sample_id' => ['required'],
+			'results' => ['required'],
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "submitting results";
+			$reslt = false;
+			$user = $this->cur_user();
+
+			// confirm sample exists
+			$thesample = Sample::where('id',$passed['sample_id'])
+				->withCount('results')
+				->first()
+			;
+
+			if($thesample == null){
+				$msg = "sample not found, try again";
+			} else {
+				// loop through passed results and figure out what to do with them
+				$batch = app(Batch::class);
+				$recs = [];
+				$cols = [];
+
+				foreach($passed['results'] as $rss){
+					$rec = [
+						'sample_id' => $thesample->id,
+						'client_id' => $thesample->client_id,
+						'added_by' => $user->id,
+						'sample_name' => $rss['sample_id'],
+						'sample_type' => $thesample->sample_type,
+						'au_ppm' => $rss['au_ppm'],
+						'cu_ppm' => $rss['cu_ppm'],
+					];
+					$recs[] = $rec;
+					$cols = array_keys($recs[0]);
+				}
+
+				$batch->insert(new Result,$cols,$recs);
+
+				$rescount = $thesample->results_count + count($passed['results']);
+				$newstate = $rescount >= $thesample->sample_count ? 2 : 1;
+
+				$res['runlog'][] = [
+					'results' => $thesample->results_count,
+					'passed results' => count($passed['results']),
+					'newstate' => count($passed['results']),
+					'res count' => $rescount,
+					'the condition' => $rescount >= $thesample->sample_count,
+				];
+
+				$thesample->status = $newstate;
+				$thesample->save();
+
+				$reslt = true;
+				$msg = "Results added successfully";
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $reslt;
+			$res['message'] = $msg;
+		}
 
 		if(!self::$showlogs){
 			if(array_key_exists('runlog',$res)){

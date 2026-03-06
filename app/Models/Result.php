@@ -11,6 +11,7 @@ class Result extends Model{
         'client_id',
         'added_by',
 
+		'sample_name',
         'sample_type',
         'au_ppm',
         'cu_ppm',

@@ -57,15 +57,9 @@
 		font-weight: 600;
 	}
 
-	.status-pending {
-		background-color: #ffc107;
-		color: #000;
-	}
-
-	.status-complete {
-		background-color: #28a745;
-		color: white;
-	}
+	.status-0 {background-color: #ffc107;color: #000;}
+	.status-1 {background-color: #444;color: #fff;}
+	.status-2 {background-color: #28a745;color: white;}
 
 	.status-paid {
 		background-color: #17a2b8;
@@ -270,12 +264,6 @@
 
 <script>
 	let sample = {};
-	let state_atlas = [
-		'pending',
-		'incomplete',
-		'complete',
-	];
-
 	let temp_results = [];
 
 	// Render results table
@@ -302,7 +290,7 @@
 				tableHTML += `
 					<tr>
 						<td class="w3-hide">${result.id}</td>
-						<td>${result.sample_id}</td>
+						<td>${result.sample_name}</td>
 						<td>${result.au_ppm}</td>
 						<td>${result.cu_ppm}</td>
 						<td class="w3-hide">${formatDate(result.date_added)}</td>
@@ -358,9 +346,7 @@
 
 		// Helper function to get status badge
 		function getStatusBadge(status) {
-			return status === 0
-				? '<span class="badge-status status-pending">Pending</span>'
-				: '<span class="badge-status status-complete">Complete</span>';
+			return `<span class="badge-status status-${status}">${sample_state_atlas[status]}</span>`;
 		}
 
 		// Helper function to get payment status badge
@@ -568,7 +554,7 @@
 
 		container.innerHTML = html;
 
-		refreshUI(300);
+		setTimeout(d => {render_results_data();},100);
 	}
 
 	// Toggle collapsible sections
@@ -598,7 +584,7 @@
 				<span>Type: <b>${sample.sample_type}</b></span>
 			</div>
 			<div>
-				<span>Status: <b>${state_atlas[sample.status]}</b></span>
+				<span>Status: <b>${sample_state_atlas[sample.status]}</b></span>
 			</div>
 		`;
 
@@ -650,10 +636,10 @@
 		// let dadate = date.toISOString();
 
 		if(sample.results){
-			n = sample.results.length + temp_results.length;
+			n += sample.results.length;
 		}
 
-		let sample_n = f.sample_id.value == '' ? `sample: ${n}` : f.sample_id.value
+		let sample_n = f.sample_id.value == '' ? `sample ${n}` : f.sample_id.value
 
 		let newrec = {
 			id : n,
@@ -738,15 +724,42 @@
 			},200);
 		}
 
+		const errguy = (err) => {
+			alert_danger(err || 'an error happened');
+			reshowmodal();
+		}
+
 		// send the temp array
 		const step2 = () => {
 			window[fetch_bypass](linkAtlas['submit_results'],{sample_id: sample.id,results: temp_results},'POST').then(d => {
 				responseHandler(d,step3,d);
 			})
 			.catch((e) => {
-				alert_danger('there was an error saving the records');
-				reshowmodal();
+				errguy('there was an error saving the records');
 			})
+		}
+
+		// if it worked get the latest sample data
+		const step3 = (dta) => {
+			refreshData();
+
+			window[fetch_bypass](linkAtlas['get_sample'],{sample_id: sample.id},'POST').then(d => {
+				responseHandler(d,step4,d);
+			})
+			.catch((e) => {
+				errguy('there was an error getting updated sample details');
+			})
+		}
+
+		// refresh ui using the fresh sample details
+		const step4 = (dta) => {
+			let cur = {
+				rectype: "sample",
+				data: dta.sendme
+			};
+
+			renderSampleData(cur);
+			reshowmodal();
 		}
 
 		setTimeout(() => {
@@ -757,8 +770,6 @@
 			})
 		}, 200);
 
-		// if it worked get the latest sample data
-		// refresh ui using the fresh sample details
 		// enable the samples entry form
 	}
 

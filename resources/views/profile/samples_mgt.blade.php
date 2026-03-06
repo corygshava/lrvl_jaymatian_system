@@ -265,37 +265,6 @@
 			cursor: not-allowed;
 		}
 
-	/* Loading Spinner */
-		.loading-overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(255, 255, 255, 0.9);
-			display: none;
-			align-items: center;
-			justify-content: center;
-			z-index: 10;
-		}
-
-		.loading-overlay.show {
-			display: flex;
-		}
-
-		.spinner {
-			width: 50px;
-			height: 50px;
-			border: 4px solid var(--border);
-			border-top-color: var(--primary);
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
-		}
-
-		@keyframes spin {
-			to { transform: rotate(360deg); }
-		}
-
 	/* Empty State */
 		.empty-state {
 			text-align: center;
@@ -431,7 +400,9 @@
 
 	<div class="data-container" style="position: relative;">
 		<div class="loading-overlay" id="loadingOverlay">
-			<div class="spinner"></div>
+			<div>
+				<div class="loader"></div>
+			</div>
 		</div>
 
 		<div class="data-header">
@@ -489,31 +460,30 @@
 {{-- --> --}}
 
 <script>
-	// Initialize the data table with your configuration
+	// view specific data
+	let sample_state_atlas = {
+		0 : 'pending',
+		1 : 'incomplete',
+		2 : 'complete',
+	};
+	let state_classes = [
+		'w3-black',
+		'w3-blue',
+		'w3-green'
+	]
+	let state_filter = [];
+
+	let sample_types = [
+		'soil',
+		'rock',
+		'solution',
+		'carbon',
+	];
+	let samples_filter = [];
+
 	window['runOnAwake'] = () => {
-		// view specific data
-		let state_atlas = {
-			0 : 'pending',
-			1 : 'incomplete',
-			2 : 'complete',
-		};
-		let state_classes = [
-			'w3-black',
-			'w3-blue',
-			'w3-green'
-		]
-		let state_filter = [];
-
-		let sample_types = [
-			'soil',
-			'rock',
-			'solution',
-			'carbon',
-		];
-		let samples_filter = [];
-
-		Object.keys(state_atlas).forEach(k => {
-			let tmp = {value: k, label: state_atlas[k]};
+		Object.keys(sample_state_atlas).forEach(k => {
+			let tmp = {value: k, label: sample_state_atlas[k]};
 			state_filter.push(tmp);
 		});
 		sample_types.forEach(k => {
@@ -530,6 +500,7 @@
 			LaravelDataTable.init({
 				// Required: Laravel API endpoint
 				apiEndpoint: './data/samples',
+				sortDirection: 'desc',
 
 				// Required: Column definitions
 				columns: [
@@ -587,7 +558,7 @@
 						render: function(value) {
 							let cls = state_classes[value];
 							// let con = value == 'monthly' ? "yes" : "no";
-							return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+							return `<strong class="w3-tag themeround ${cls}">${sample_state_atlas[value]}</strong>`;
 						}
 					},
 					{

@@ -457,6 +457,25 @@
 		border-bottom: none;
 	}
 
+	.loading-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255, 255, 255, 0.9);
+		display: none;
+		align-items: center;
+		justify-content: flex-start;
+		flex-direction: column;
+		z-index: 10;
+		padding-top: 75px;
+	}
+	.loading-overlay.show {
+		display: flex;
+	}
+
+
 /* content cards */
 	.content-card {
 		background: white;

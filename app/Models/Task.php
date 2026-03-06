@@ -18,6 +18,9 @@ class Task extends Model{
 		'notes',
 		'passed_task_data',
 	];
+	protected $hidden = [
+		'passed_task_data',
+	];
 	protected $casts = [
 		'is_paid' => 'boolean',
 		'status' => 'integer',

@@ -41,9 +41,9 @@ class Payment extends Model
 		return $this->belongsTo(User::class, 'added_by');
 	}
     public function task(): BelongsTo{
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Task::class,'task_id');
     }
-    public function client(): BelongsTo{
-        return $this->belongsTo(Client::class);
+    public function owner(): BelongsTo{
+        return $this->belongsTo(Client::class,'client_id');
     }
 }

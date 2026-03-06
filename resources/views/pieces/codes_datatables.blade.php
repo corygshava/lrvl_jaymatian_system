@@ -60,7 +60,8 @@
 			csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '',
 
 			// Additional request parameters
-			additionalParams: {}
+			additionalParams: {},
+			sortDirection: 'desc',
 		};
 
 		/**
@@ -70,6 +71,7 @@
 		function init(userConfig) {
 			config = { ...defaultConfig, ...userConfig };
 			perPage = Math.min(config.perPage, 300); // Enforce 300 max
+			sortDirection = config.sortDirection;
 
 			// Validate required config
 			if (!config.apiEndpoint) {

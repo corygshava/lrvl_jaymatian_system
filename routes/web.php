@@ -4,9 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserRoleController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class,'index']);
@@ -44,6 +46,8 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/task_info', [ViewController::class,'showtaskinfo']);
 
 	Route::get('/samples_mgt', [ViewController::class,'showsamples']);
+
+	Route::get('/payments_mgt', [ViewController::class,'showpayments']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -59,6 +63,9 @@ Route::prefix('/data')->group(function(){
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/get_sample', [SamplesController::class,'get_sample'])->middleware(['auth','verified']);
+
+	Route::get('/payments', [PaymentsController::class,'get_all'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){
@@ -73,6 +80,8 @@ Route::prefix('/op')->group(function(){
 	Route::post('/change_credit',[ClientController::class, 'change_credit'])->middleware(['auth','verified']);
 
 	Route::post('/add_task',[TaskController::class, 'add_new_task'])->middleware(['auth','verified']);
+
+	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 });
 
 require __DIR__.'/auth.php';

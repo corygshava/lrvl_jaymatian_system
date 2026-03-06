@@ -33,10 +33,13 @@
 			// operations
 			'toggle_account_active' : './op/toggle_active',
 			'add_new_task' : './op/add_task',
+			'add_result' : './op/add_result',
+			'submit_results' : './op/add_result',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
 			'get_task' : './data/get_task',
+			'get_sample' : './data/get_sample',
 		};
 		let pref_prefix = 'jaymatt_MIS_';
 		let prefsAtlas = {
@@ -56,11 +59,12 @@
 			{caption: "dashboard", url: './ui/console',icon: 'fa fa-th-large'},
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
 			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
-			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user'},
-			{caption: "Client Management", url: './ui/client_mgt',icon: 'fa fa-users'},
+			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user-tie'},
+			{caption: "client management", url: './ui/client_mgt',icon: 'fa fa-users'},
 			{caption: "Task Management", url: './ui/task_mgt',icon: 'fa fa-folder'},
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
-			{caption: "Samples management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
+			{caption: "Sample management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
+			{caption: "Payment management", url: './ui/payments_mgt',icon: 'fa fa-money-bill'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
 			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-code'},
@@ -525,9 +529,14 @@
 
 			let fdata = getFormdata(m);
 			let myres = undefined;
+			let myaction = m.action;
+
+			if(myaction.includes('defined:')){
+				myaction = linkAtlas[myaction.split(':')[1]];
+			}
 
 			// add_edit_form.style.pointerEvents = "all";
-			window[fetch_bypass_fyls](m.action,fdata,'POST',true,true).then(d => {
+			window[fetch_bypass_fyls](myaction,fdata,'POST',true,true).then(d => {
 				// alert_danger('awkdhawkjdkawj')
 				myres = d;
 
@@ -588,3 +597,4 @@
 
 		callOnDocLoad.push({act: initstuff});
 	</script>
+
