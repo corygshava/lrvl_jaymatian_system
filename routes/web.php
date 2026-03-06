@@ -61,6 +61,8 @@ Route::prefix('/data')->group(function(){
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
+	Route::post('/get_task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
 
 	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_sample', [SamplesController::class,'get_sample'])->middleware(['auth','verified']);

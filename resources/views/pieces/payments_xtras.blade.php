@@ -201,7 +201,7 @@
 	<div class="modal-dialog modal-mg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="samples_info_heading">Sample Record Information</span>
+				<span class="h3 modal-title" id="samples_info_heading">Payment Record Information</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -348,8 +348,8 @@
 		}
 
 		function getPaymentBadge(isPaid) {
-			return isPaid 
-				? '<span class="mybadge status-paid">Paid</span>' 
+			return isPaid
+				? '<span class="mybadge status-paid">Paid</span>'
 				: '<span class="mybadge status-unpaid">Unpaid</span>';
 		}
 
@@ -362,7 +362,7 @@
 						<span class="h4">Payment: ${payment.task.task_no}</span>
 						<div class="flowline overflow gap-sm left" style="margin-top: 8px;">
 							<div class="distance-tn">Method: <b>${payment.method}</b></div>
-							<div class="distance-tn">amount: <b>${payment.amount}</b></div>
+							<div class="distance-tn">amount: <b>${Number(payment.amount).toLocaleString()}</b></div>
 						</div>
 					</div>
 				</div>
@@ -371,20 +371,20 @@
 			</div>
 
 			<!-- Action Buttons -->
-			<div class="flowline centerline center spacy-sm w3-hide">
+			<div class="flowline centerline center spacy-sm w3-hide_">
 				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
 					<i class="fas fa-plus-circle"></i> Add Result
 				</button>
-				<button class="mybtn secondary" onclick="viewTask(${payment.task_id})">
+				<button class="mybtn secondary" onclick="viewTask()">
 					<i class="fas fa-folder"></i> View Task
 				</button>
-				<button class="mybtn secondary" onclick="viewClient(${payment.client_id})">
+				<button class="mybtn secondary" onclick="viewClient()">
 					<i class="fas fa-users"></i> View Client
 				</button>
 			</div>
 
 			<div class="sample-info-card w3-hide_">
-				<h5><i class="fas fa-folder"></i> Payment Information</h5>
+				<h5><i class="fas fa-money-bill"></i> Payment Information</h5>
 				<div class="info-row">
 					<span class="info-label">Client Name:</span>
 					<span class="info-value">${payment.owner.client_name}</span>
@@ -425,12 +425,17 @@
 						<span class="info-label">Created:</span>
 						<span class="info-value">${formatDate(payment.task.created_at)}</span>
 					</div>
+					<div class="info-row">
+						<button class="mybtn secondary sm" onclick="viewTask()">
+							<i class="fas fa-folder"></i> View Task
+						</button>
+					</div>
 				</div>
 			</div>
 
 			<div class="distance-sm border themeround collapser">
 				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#taskInfo" data-toggle="collapse" data-target="#taskInfo">
-					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-user-circle"></i> Client Information</span>
+					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-users"></i> Client Information</span>
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>
 				<div class="collapse panelbg distance-sm spacy-sm" id="taskInfo">
@@ -453,6 +458,11 @@
 					<div class="info-row">
 						<span class="info-label">Credit Balance:</span>
 						<span class="info-value">KES ${parseFloat(payment.owner.credit_balance).toFixed(2).toLocaleString()}</span>
+					</div>
+					<div class="info-row">
+						<button class="mybtn secondary sm" onclick="viewTask()">
+							<i class="fas fa-users"></i> View Client
+						</button>
 					</div>
 				</div>
 			</div>
@@ -488,8 +498,15 @@
 		// setTimeout(d => {render_results_data();},100);
 	}
 
-	function viewTask(taskId) {
-		console.log('View task:', taskId);
+	function viewTask() {
+		alert_info('opening task');
+		window[variableAtlas['task_id']] = payment.task.id;
+
+		let payld = {
+			template: linkAtlas['task_info'],
+			sidenote: pageNames['task_info'],
+		};
+		loadPage(payld);
 	}
 
 	function viewClient(clientId) {

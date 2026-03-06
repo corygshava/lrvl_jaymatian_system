@@ -112,6 +112,54 @@ class TaskController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_one(Request $req){
+		// return $this->log_my_payload($req);
+
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'id' => ['required']
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$reslt = false;
+
+			$task = Task::query()
+				->where('id',$passed['id'])
+				->withCount('samples')
+				->withCount('payments')
+				->with('creator')
+				->with('client')
+				->first()
+			;
+
+			if($task == null){
+				$msg = "We couldnt find the specified task";
+			} else {
+				$msg = "task loaded";
+				$reslt = true;
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $task;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
 	public function add_new_task(Request $req){
 		$res = $this->dftres;
 		$sent = $req->input('sentdata',null);

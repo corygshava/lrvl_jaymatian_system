@@ -41,6 +41,23 @@
 			'get_task' : './data/get_task',
 			'get_sample' : './data/get_sample',
 		};
+
+		const pageNames = {
+			'view_users' : 'user information',
+			'view_user' : 'user information',
+			'view_client' : 'client information',
+			'view_clients' : 'Client management',
+			'client_info' : 'Client Summary',
+			'view_profile' : 'User Profile',
+			'view_users' : 'user management',
+			'add_task' : 'Add task',
+			'view_task' : 'Task Information',
+			'view_tasks' : 'Task management',
+			'task_info' : 'Task Summary',
+		}
+		const variableAtlas = {
+			'task_id' : `cur_task_id`,
+		}
 		let pref_prefix = 'jaymatt_MIS_';
 		let prefsAtlas = {
 			'last_saved_task' : `${pref_prefix}saved_task`,
