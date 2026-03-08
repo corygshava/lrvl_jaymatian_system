@@ -418,63 +418,66 @@
 		border-spacing: 0;
 	}
 	.table-modern thead th {
+		background: var(--light-gray);
 		padding: 14px 20px;
 		font-size: 12px;
 		font-weight: 600;
+		color: var(--gray);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
 		border-bottom: 1px solid var(--clr-border);
 		white-space: nowrap;
 		cursor: pointer;
-		background: #eee;
 		user-select: none;
+		transition: background 0.3s;
 	}
 	.table-modern thead th:hover {
 		background: #e2e8f0;
 	}
-
 	.table-modern thead th i {
 		margin-left: 5px;
 		font-size: 10px;
 	}
-
 	.table-modern tbody tr {
-		/*border-bottom: 1px solid var(--clr-border);*/
+		transition: all 0.3s;
 	}
-
 	.table-modern tbody tr:hover {
 		background: #f8fafc;
 	}
-
 	.table-modern tbody td {
-		padding: 8px 12px;
+		padding: 16px 20px;
 		border-bottom: 1px solid var(--clr-border);
 		font-size: 14px;
 		vertical-align: middle;
 	}
-
 	.table-modern tbody tr:last-child td {
 		border-bottom: none;
 	}
-
-	.loading-overlay {
+	.checkbox-custom {
+		width: 18px;
+		height: 18px;
+		border: 2px solid var(--border);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.3s;
+		appearance: none;
+		position: relative;
+	}
+	.checkbox-custom:checked {
+		background: var(--primary);
+		border-color: var(--primary);
+	}
+	.checkbox-custom:checked::after {
+		content: '\f00c';
+		font-family: 'Font Awesome 5 Free';
+		font-weight: 900;
+		color: white;
+		font-size: 10px;
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(255, 255, 255, 0.9);
-		display: none;
-		align-items: center;
-		justify-content: flex-start;
-		flex-direction: column;
-		z-index: 10;
-		padding-top: 75px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
-	.loading-overlay.show {
-		display: flex;
-	}
-
 
 /* content cards */
 	.content-card {
@@ -834,7 +837,7 @@
 		border: 3px solid rgba(255,255,255,0.3);
 	}
 	.profile_card .stats .stat{
-		--myw: 105px;
+		--myw: 175px;
 		flex: 1 0 var(--myw);
 		padding: 12px 0;
 	}

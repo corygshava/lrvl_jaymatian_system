@@ -9,7 +9,7 @@ class Mylog extends Model{
 	protected $table="logs";
 
     protected $fillable = [
-        'user_id',
+		'user_id',
 		'user_name',
 		'path',
 		'ip_address',

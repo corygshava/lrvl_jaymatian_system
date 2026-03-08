@@ -240,7 +240,7 @@
 						<span>Status: <b>Pending</b></span>
 					</div>
 				</div>
-				<form id="addResultForm" action="defined:add_result" data-onsubmit="sendform" data-blockdefault="yes" data-callback="refreshData">
+				<form id="addResultForm" action="defined:add_result" data-onsubmit="sendform" data-blockdefault="yes" data-callback="refreshStuff">
 					<input type="hidden" name="sample_id">
 					<div class="input-group-custom">
 						<div class="form-group">
@@ -264,7 +264,7 @@
 
 <script>
 	let sample = {};
-	let temp_results = [];
+	window['temp_results'] = [];
 
 	// Render results table
 	function renderResultsTable(results,xtra_results) {
@@ -364,6 +364,8 @@
 
 		// return;
 		// Build the interface
+		let genreport = (sample.status == 2) ?
+			`<button type="button" class="mybtn primary sm w3-hide" data-runme="save_results" id="save_results_btn"><i class="fa fa-save"></i> make report</button>` : '';
 		const html = `
 			<div class="sample-header themegrad w3-display-container">
 				<div class="d-flex justify-content-between align-items-center">
@@ -385,37 +387,12 @@
 				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
 					<i class="fas fa-plus-circle"></i> Add Result
 				</button>
-				<button class="mybtn secondary" onclick="viewTask(${sample.task_id})">
+				<button class="mybtn secondary" onclick="viewTask_samples(${sample.task_id})">
 					<i class="fas fa-folder"></i> View Task
 				</button>
-				<button class="mybtn secondary" onclick="viewClient(${sample.client_id})">
+				<button class="mybtn secondary" onclick="viewClient_samples(${sample.owner.id})" data-openthis="clientinfo">
 					<i class="fas fa-users"></i> View Client
 				</button>
-			</div>
-
-			<!-- Client Information (Primary) -->
-			<div class="sample-info-card w3-hide">
-				<h5><i class="fas fa-user-circle"></i> Client Information</h5>
-				<div class="info-row">
-					<span class="info-label">Client Name:</span>
-					<span class="info-value">${sample.owner.client_name}</span>
-				</div>
-				<div class="info-row">
-					<span class="info-label">Contact:</span>
-					<span class="info-value">${sample.owner.client_contact}</span>
-				</div>
-				<div class="info-row">
-					<span class="info-label">Gender:</span>
-					<span class="info-value">${sample.owner.client_gender}</span>
-				</div>
-				<div class="info-row">
-					<span class="info-label">Payment Plan:</span>
-					<span class="info-value">${sample.owner.payment_plan}</span>
-				</div>
-				<div class="info-row">
-					<span class="info-label">Credit Balance:</span>
-					<span class="info-value">KES ${parseFloat(sample.owner.credit_balance).toFixed(2)}</span>
-				</div>
 			</div>
 
 			<div class="distance-sm border themeround collapser" style="border-color: var(--themecolor) !important;" id="add_section">
@@ -461,6 +438,7 @@
 						<span><b>NOTE: </b> once results are <b>saved</b> they cannot be edited, ensure you enter accurate Information</span>
 					</div>
 					<button type="button" class="mybtn primary sm w3-hide" data-runme="save_results" id="save_results_btn"><i class="fa fa-save"></i> save results</button>
+					${genreport}
 				</div>
 			</div>
 
@@ -501,6 +479,41 @@
 				</div>
 			</div>
 
+
+			<div class="distance-sm border themeround collapser">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#clientInfo" data-toggle="collapse" data-target="#taskInfo">
+					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-users"></i> Client Information</span>
+					<i class="fa fa-chevron-down myicon"></i>
+				</a>
+				<div class="collapse panelbg distance-sm spacy-sm" id="clientInfo">
+					<div class="info-row">
+						<span class="info-label">Client Name:</span>
+						<span class="info-value">${sample.owner.client_name}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Contact:</span>
+						<span class="info-value">${sample.owner.client_contact}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Gender:</span>
+						<span class="info-value">${sample.owner.client_gender}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Payment Plan:</span>
+						<span class="info-value">${sample.owner.payment_plan}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Credit Balance:</span>
+						<span class="info-value">KES ${Math.floor(parseFloat(sample.owner.credit_balance)).toLocaleString()}</span>
+					</div>
+					<div class="info-row">
+						<button class="mybtn secondary" onclick="viewClient_samples(${sample.owner.id})" data-openthis="clientinfo">
+							<i class="fas fa-users"></i> View Client
+						</button>
+					</div>
+				</div>
+			</div>
+
 			<div class="distance-sm border themeround collapser">
 				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#taskInfo" data-toggle="collapse" data-target="#taskInfo">
 					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-folder"></i> Task Information</span>
@@ -522,6 +535,11 @@
 					<div class="info-row">
 						<span class="info-label">Created:</span>
 						<span class="info-value">${formatDate(sample.task.created_at)}</span>
+					</div>
+					<div class="info-row">
+						<button class="mybtn secondary sm" onclick="viewTask_samples()" data-openthis="taskinfo">
+							<i class="fas fa-folder"></i> View Task
+						</button>
 					</div>
 				</div>
 			</div>
@@ -593,12 +611,26 @@
 		},300);
 	}
 
-	function viewTask(taskId) {
-		console.log('View task:', taskId);
+	function viewTask_samples(taskId) {
+		alert_info('opening task');
+		window[variableAtlas['task_id']] = sample.task.id;
+
+		let payld = {
+			template: linkAtlas['task_info'],
+			sidenote: pageNames['task_info'],
+		};
+		loadPage(payld);
 	}
 
-	function viewClient(clientId) {
-		console.log('View client:', clientId);
+	function viewClient_samples(clientId) {
+		alert_info('opening client Information');
+		window[variableAtlas['client_id']] = sample.owner.id;
+
+		let payld = {
+			template: linkAtlas['client_info'],
+			sidenote: pageNames['client_info'],
+		};
+		loadPage(payld);
 	}
 
 	window['showmodal'] = (f) => {
@@ -741,7 +773,7 @@
 
 		// if it worked get the latest sample data
 		const step3 = (dta) => {
-			refreshData();
+			refreshStuff();
 
 			window[fetch_bypass](linkAtlas['get_sample'],{sample_id: sample.id},'POST').then(d => {
 				responseHandler(d,step4,d);
@@ -771,6 +803,12 @@
 		}, 200);
 
 		// enable the samples entry form
+	}
+
+	window['refreshStuff'] = () => {
+		if(window['refreshData'] !== null){
+			refreshData();
+		}
 	}
 
 	/*

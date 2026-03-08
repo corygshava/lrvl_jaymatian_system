@@ -97,6 +97,25 @@
 					</div>
 				</div>
 
+				<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16">
+					<div class="stat">
+						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
+						<span class="font-weight-bold" id="task_cost">3,000</span>
+					</div>
+					<div class="stat">
+						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
+						<span class="font-weight-bold" id="task_paid">1,250</span>
+					</div>
+					<div class="stat">
+						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
+						<span class="font-weight-bold" id="task_balance">1,750</span>
+					</div>
+					<div class="stat">
+						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
+						<span class="font-weight-bold hideicon" id="task_payment_report"><b>1,250 / 3,000</b></span>
+					</div>
+				</div>
+
 				<!-- Quick Actions Section -->
 				<div class="distance-sm">
 					<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
@@ -440,8 +459,11 @@
 		document.querySelector('#task-profile-container').classList.remove('w3-hide');
 
 		// basic info
-		// document.getElementById('task-id').textContent = data.id;
-		document.getElementById('task-number').textContent = data.task_no;
+		document.getElementById('task-number').textContent = data.task_no.toLocaleString();
+		document.getElementById('task_cost').textContent = Math.floor(data.cost).toLocaleString();
+		document.getElementById('task_paid').textContent = Math.floor(data.paid).toLocaleString();
+		document.getElementById('task_balance').textContent = Math.floor(data.balance).toLocaleString();
+		document.getElementById('task_payment_report').innerHTML = `<b class="themetxt">${Math.floor(data.paid).toLocaleString()}</b> / ${data.cost.toLocaleString()}`;
 
 		// Status badges
 		const statusInfo = statusMap[data.status] || statusMap[0];

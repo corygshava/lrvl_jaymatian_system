@@ -81,29 +81,15 @@ class UserController extends Controller{
 			$res['success'] = true;
 			$res['message'] = "confirming user permissions";
 
-			$user = Auth::user();
-			$savedpermissions = $this->getpermissions();
-			$permissions = $user->myRoles?->role_permissions ?? [];
+			$perms = [];
+			$permissions = $this->getmypermissions();
 
-			if($permissions == []){
-				$roles = userRoles::all()->count();
-
-				// automatically sets up the first user role if there are none set up
-				if($roles === 0){
-					$urole = userRoles::query()->updateOrCreate(
-						['role_name' => "admin"],
-						['role_permissions' => $savedpermissions]
-					);
-
-					// $user->user_role_id = $urole->id;
-					$permissions = $savedpermissions;
-					$user->myRoles()->associate($urole);
-					$user->save();
-				}
+			if(!empty($permissions)){
+				$perms = array_keys($permissions);
 			}
 
-			$res['result'] = !empty($permissions);
-			$res['sendme'] = $permissions;
+			$res['result'] = !empty($perms);
+			$res['sendme'] = $perms;
 
 			// dd($permissions);
 		}

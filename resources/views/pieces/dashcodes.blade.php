@@ -40,6 +40,10 @@
 			'search_clients' : './data/search_clients',
 			'get_task' : './data/get_task',
 			'get_sample' : './data/get_sample',
+			'get_samples' : './data/get_samples',
+			'get_payments' : './data/get_payments',
+			'get_results' : './data/get_results',
+			'get_reports' : './data/get_reports',
 		};
 
 		const pageNames = {
@@ -57,7 +61,15 @@
 		}
 		const variableAtlas = {
 			'task_id' : `cur_task_id`,
+			'client_id' : `cur_client_id`,
+			'task_info_act' : `task_info_next_act`,
+			'task_info_act_args' : 'task_info_next_act',
 		}
+
+		// shortener ops
+			variableAtlas['t_i_act'] = variableAtlas['task_info_act'];
+			variableAtlas['t_i_args'] = variableAtlas['task_info_act_args'];
+
 		let pref_prefix = 'jaymatt_MIS_';
 		let prefsAtlas = {
 			'last_saved_task' : `${pref_prefix}saved_task`,

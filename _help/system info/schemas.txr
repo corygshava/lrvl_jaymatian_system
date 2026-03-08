@@ -71,11 +71,20 @@ biz_data
 	id
 	item_name
 	item_data (json) (can hold both json, text and numbers if required)
+	added_by
+	modified_by
 
+	laravel timestamps
 reports
 	task_id
 	created_by (id of a user)
 	sample_id (id of the samples)
+	client_id (id of client)
+	added_by (links to users.id)
+	gen_report_id
+	gen_report
+
+	laravel timestamp
 reports_gen
 	id
 	company_contact

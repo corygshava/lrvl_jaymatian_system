@@ -166,6 +166,92 @@ class SamplesController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_samples(Request $req) {
+		return $this->get_some($req);
+	}
+
+	public function get_some(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			'sample_id' => ['required','numeric','sometimes'],
+		]);
+		// */
+
+		$task_id = isset($alldata['task_id']) ? $alldata['task_id'] : null;
+		$client_id = isset($alldata['client_id']) ? $alldata['client_id'] : null;
+		$sample_id = isset($alldata['sample_id']) ? $alldata['sample_id'] : null;
+		$added_by = isset($alldata['added_by']) ? $alldata['added_by'] : null;
+
+		$row = 'id';
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching sample information";
+			$reslt = false;
+			$found = false;
+
+			// find a sample
+			$therecs = Sample::where('id','<>',null);
+
+			if($task_id !== null){
+				$therecs = $therecs->where('task_id',$task_id);
+				$res['runlog'][] = 'task_id found';
+				$found = true;
+			}
+			if($client_id !== null){
+				$therecs = $therecs->where('client_id',$client_id);
+				$res['runlog'][] = 'client_id found';
+				$found = true;
+			}
+			if($sample_id !== null){
+				$therecs = $therecs->where('id',$sample_id);
+				$res['runlog'][] = 'sample_id found';
+				$found = true;
+			}
+			if($added_by !== null){
+				$therecs = $therecs->where('added_by',$added_by);
+				$res['runlog'][] = 'added_by found';
+				$found = true;
+			}
+
+			if($found){
+				$therecs = $therecs->where('id','<>',null);
+			}
+
+			$therecs = $therecs
+				->with('results')
+				->withCount('results')
+				->with('mycreator')
+				->with('owner')
+				->with('task')
+				->get()
+			;
+
+			// check if it exists
+			if(count($therecs) == 0){
+				$msg = "sample not found";
+			} else {
+				$reslt = true;
+				$msg = "samples fetched successfully";
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $therecs;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
 	public function add_results(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();

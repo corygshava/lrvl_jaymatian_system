@@ -17,6 +17,9 @@ class Task extends Model{
 		'is_paid',
 		'notes',
 		'passed_task_data',
+		'cost',
+		'paid',
+		'balance',
 	];
 	protected $hidden = [
 		'passed_task_data',

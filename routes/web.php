@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserRoleController;
@@ -66,8 +67,13 @@ Route::prefix('/data')->group(function(){
 
 	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_sample', [SamplesController::class,'get_sample'])->middleware(['auth','verified']);
+	Route::post('/get_samples', [SamplesController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::get('/payments', [PaymentsController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/get_payments', [PaymentsController::class,'get_some'])->middleware(['auth','verified']);
+
+	Route::get('/reports', [ReportsController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/get_reports', [ReportsController::class,'get_some'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){

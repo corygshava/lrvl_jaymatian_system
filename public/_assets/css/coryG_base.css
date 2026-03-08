@@ -259,7 +259,7 @@ a{
 	.distance-md{margin: var(--size-md) 0;}
 	.distance-lg{margin: var(--size-lg) 0;}
 	.distance-mg{margin: var(--size-mg) 0;}
-	
+
 	.btn-group:not(.except) {
 		display: inline-flex;
 		gap: 1rem;
@@ -323,9 +323,13 @@ a{
 
 	.cta-btn{background: linear-gradient(80deg,var(--themecolor),var(--themecolor));}
 	.themegrad{background: linear-gradient(80deg,var(--seccolor),var(--themecolor));color: var(--clr-text);}
+	/*.themegrad {background: linear-gradient(80deg, #885403, #022545);color: var(--clr-text);}*/
 	.themegrad.alt{color: var(--clr-alttext);}
 
 	.is_inactive{
 		pointer-events: none;
 		opacity: 0.3;
+	}
+	.lightshadow{
+		box-shadow: 0 0 12px #dddddd77;
 	}

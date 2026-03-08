@@ -443,7 +443,7 @@
 		<!-- Data Header -->
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Users' information</h5>
+				<h5 class="data-title" id="tableTitle">Task records</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">
@@ -488,14 +488,13 @@
 
 <?php
 	// require_once __DIR__.'/piece_add_client_form.php';
-?>
-
-<?php
 	// require_once __DIR__.'/datatables_code.php';
 ?>
 
 
+{{-- <!-- --}}
 @include('pieces.codes_datatables')
+{{-- --> --}}
 
 <script>
 	// Initialize the data table with your configuration
@@ -511,7 +510,8 @@
 			1 : 'incomplete',
 			2 : 'paid',
 		};
-		let payment_state_filter = state_filter = [];
+		let payment_state_filter = [];
+		let state_filter = [];
 		Object.keys(payment_state_atlas).forEach(k => {
 			let tmp = {value: k, label: payment_state_atlas[k]};
 			payment_state_filter.push(tmp);
@@ -625,8 +625,8 @@
 				// Optional: Filter definitions
 				filters: [
 					{
-						name: 'Payment Status',
-						label: 'payment_status',
+						name: 'payment_status',
+						label: 'Payment Status',
 						rawname: 'Payment Status',
 						options: payment_state_filter
 					},
@@ -638,8 +638,8 @@
 					},
 					{
 						name: 'is_paid',
-						label: 'id_paid',
-						rawname: 'is paid',
+						label: 'fully paid',
+						rawname: 'fully paid',
 						options: [
 							{value: 'true',label: 'paid'},
 							{value: 'false',label: 'not paid'},

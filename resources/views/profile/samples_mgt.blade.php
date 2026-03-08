@@ -113,74 +113,6 @@
 			align-items: center;
 		}
 
-	/* Modern Table */
-		.table-modern {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-		}
-		.table-modern thead th {
-			background: var(--light-gray);
-			padding: 14px 20px;
-			font-size: 12px;
-			font-weight: 600;
-			color: var(--gray);
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			border-bottom: 1px solid var(--clr-border);
-			white-space: nowrap;
-			cursor: pointer;
-			user-select: none;
-			transition: background 0.3s;
-		}
-		.table-modern thead th:hover {
-			background: #e2e8f0;
-		}
-		.table-modern thead th i {
-			margin-left: 5px;
-			font-size: 10px;
-		}
-		.table-modern tbody tr {
-			transition: all 0.3s;
-		}
-		.table-modern tbody tr:hover {
-			background: #f8fafc;
-		}
-		.table-modern tbody td {
-			padding: 16px 20px;
-			border-bottom: 1px solid var(--clr-border);
-			font-size: 14px;
-			vertical-align: middle;
-		}
-		.table-modern tbody tr:last-child td {
-			border-bottom: none;
-		}
-		.checkbox-custom {
-			width: 18px;
-			height: 18px;
-			border: 2px solid var(--border);
-			border-radius: 4px;
-			cursor: pointer;
-			transition: all 0.3s;
-			appearance: none;
-			position: relative;
-		}
-		.checkbox-custom:checked {
-			background: var(--primary);
-			border-color: var(--primary);
-		}
-		.checkbox-custom:checked::after {
-			content: '\f00c';
-			font-family: 'Font Awesome 5 Free';
-			font-weight: 900;
-			color: white;
-			font-size: 10px;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-		}
-
 	/* Action Buttons */
 		.action-btns {
 			display: flex;
@@ -263,6 +195,37 @@
 		.page-link:disabled {
 			opacity: 0.5;
 			cursor: not-allowed;
+		}
+
+	/* Loading Spinner */
+		.loading-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(255, 255, 255, 0.9);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 10;
+		}
+
+		.loading-overlay.show {
+			display: flex;
+		}
+
+		.spinner {
+			width: 50px;
+			height: 50px;
+			border: 4px solid var(--border);
+			border-top-color: var(--primary);
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			to { transform: rotate(360deg); }
 		}
 
 	/* Empty State */
@@ -400,9 +363,7 @@
 
 	<div class="data-container" style="position: relative;">
 		<div class="loading-overlay" id="loadingOverlay">
-			<div>
-				<div class="loader"></div>
-			</div>
+			<div class="spinner"></div>
 		</div>
 
 		<div class="data-header">
@@ -448,9 +409,6 @@
 
 <?php
 	// require_once __DIR__.'/piece_samples_extras.php';
-?>
-
-<?php
 	// require_once __DIR__.'/datatables_code.php';
 ?>
 
@@ -552,7 +510,7 @@
 						}
 					},
 					{
-						title: 'Status',
+						title: 'Processing Status',
 						data: 'status',
 						sortable: true,
 						render: function(value) {

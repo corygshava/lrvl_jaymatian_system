@@ -77,7 +77,8 @@ class TaskController extends Controller{
 
 			// filter for whether or not its paid
 			if($is_paid){
-				$tasks = $tasks->where('status',$is_paid == "true");
+				$paycon = $is_paid == "true";
+				$tasks = $tasks->where('is_paid',$paycon);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
@@ -174,10 +175,10 @@ class TaskController extends Controller{
 
 			$validator = Validator::make($sent,[
 				'paymentStats' => 'required|array',
-				'paymentStats.pays_made' => 'required|integer',
-				'paymentStats.amount_due' => 'required|numeric',
-				'paymentStats.amount_paid' => 'required|numeric',
-				'paymentStats.balance' => 'required|numeric',
+				'paymentStats.pays_made' => 'sometimes|integer',
+				'paymentStats.amount_due' => 'sometimes|numeric',
+				'paymentStats.amount_paid' => 'sometimes|numeric',
+				'paymentStats.balance' => 'sometimes|numeric',
 				'clientData' => 'required|array',
 				'clientData.id' => 'required|integer',
 				'clientData.client_name' => 'required|string',
@@ -195,7 +196,7 @@ class TaskController extends Controller{
 
 			if($validator->fails()){
 				// $msg = "error in the payload";
-				$msg = $validator->messages()[0];
+				$msg = $validator->messages();
 			} else {
 				$client =  Client::find($sent['clientData']['id']);
 
@@ -241,6 +242,9 @@ class TaskController extends Controller{
 
 							$paystate = isset($sent['paymentStats']) ? ($sent['paymentStats']['balance'] == 0 ? 2 : 1) : 0;
 							$safesave = $sent;
+							$paid = $sent['paymentStats']['amount_paid'];
+							$cost = $sent['paymentStats']['amount_due'];
+							$balance = $sent['paymentStats']['balance'];
 
 							if(isset($safesave['admin_password'])){
 								unset($safesave['admin_password']);
@@ -253,11 +257,14 @@ class TaskController extends Controller{
 								'added_by' => $uid,
 								'client_id' => $client->id,
 								'client_name' => $client->client_name,
-								'status' => 0,
+								'status' => $paid == 0 ? 1 : 0,
 								'payment_status' => $paystate,
 								'is_paid' => $paystate == 2,
 								'notes' => $sent['note'] ?? null,
 								'passed_task_data' => $safesave,
+								'paid' => $paid,
+								'cost' => $cost,
+								'balance' => $balance,
 							]);
 
 							$batch = app(Batch::class);
@@ -272,8 +279,6 @@ class TaskController extends Controller{
 									'sample_tag' => $s_info['tag'],
 									'sample_type' => $s_info['typ'],
 									'sample_count' => (int) $s_info['amt'],
-									'results' => null,
-									'deviation_summary' => null,
 								];
 
 								$cols = array_keys($samples[0]);
@@ -282,6 +287,7 @@ class TaskController extends Controller{
 							$batch->insert(new Sample,$cols,$samples);
 
 							$removeFromCredit = 0;
+
 							if($haspaydata){
 								$payments = [];
 

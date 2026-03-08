@@ -655,8 +655,9 @@
 	}
 
 	function viewRecordInfo(who) {
-		view_samples_modal_trig.click();
-		renderSampleData(who);
+		alert_info('wottafag');
+		view_payment_modal_trig.click();
+		renderPayData(who);
 	}
 
 	window['form_afterfx'] = (m) => {

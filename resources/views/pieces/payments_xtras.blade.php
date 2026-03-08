@@ -192,20 +192,20 @@
 	</div>
 </div>
 
-<button class="mybtn primary w3-hide" id="view_samples_modal_trig" data-toggle="modal" data-target="#samples_info_modal">
+<button class="mybtn primary w3-hide" id="view_payment_modal_trig" data-toggle="modal" data-target="#payment_info_modal">
 	<i class="fas fa-plus"></i>
 	View sample details
 </button>
 
-<div class="modal fade" id="samples_info_modal" tabindex="-1" role="dialog" aria-labelledby="samples_info_heading" aria-hidden="true" style="z-index: 102;">
+<div class="modal fade" id="payment_info_modal" tabindex="-1" role="dialog" aria-labelledby="payment_info_heading" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-mg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="samples_info_heading">Payment Record Information</span>
+				<span class="h3 modal-title" id="payment_info_heading">Payment Record Information</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<div id="sampleDataContainer"></div>
+				<div id="paymentDataContainer"></div>
 			</div>
 			<div class="modal-footer w3-hide">
 				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
@@ -264,7 +264,6 @@
 
 <script>
 	let payment = {};
-	let temp_results = [];
 
 	// Render results table
 	function renderResultsTable(results,xtra_results) {
@@ -322,9 +321,8 @@
 		return tableHTML;
 	}
 
-	function renderSampleData(dta) {
+	function renderPayData(dta) {
 		// clear stuff from last session
-		temp_results = [];
 
 		// Validate rectype
 		if (!dta || dta.rectype !== 'payment') {
@@ -333,7 +331,7 @@
 		}
 
 		payment = dta.data;
-		const container = document.getElementById('sampleDataContainer');
+		const container = document.getElementById('paymentDataContainer');
 
 		container.innerHTML = 'loading...';
 
@@ -375,10 +373,10 @@
 				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
 					<i class="fas fa-plus-circle"></i> Add Result
 				</button>
-				<button class="mybtn secondary" onclick="viewTask()">
+				<button class="mybtn secondary" onclick="viewTask_payments(${payment.task.id})" data-openthis="taskinfo">
 					<i class="fas fa-folder"></i> View Task
 				</button>
-				<button class="mybtn secondary" onclick="viewClient()">
+				<button class="mybtn secondary" onclick="viewClient_payments(${payment.owner.id})" data-openthis="clientinfo">
 					<i class="fas fa-users"></i> View Client
 				</button>
 			</div>
@@ -426,7 +424,7 @@
 						<span class="info-value">${formatDate(payment.task.created_at)}</span>
 					</div>
 					<div class="info-row">
-						<button class="mybtn secondary sm" onclick="viewTask()">
+						<button class="mybtn secondary sm" onclick="viewTask_payments()" data-openthis="taskinfo">
 							<i class="fas fa-folder"></i> View Task
 						</button>
 					</div>
@@ -460,7 +458,7 @@
 						<span class="info-value">KES ${parseFloat(payment.owner.credit_balance).toFixed(2).toLocaleString()}</span>
 					</div>
 					<div class="info-row">
-						<button class="mybtn secondary sm" onclick="viewTask()">
+						<button class="mybtn secondary" onclick="viewClient_payments(${payment.owner.id})" data-openthis="clientinfo">
 							<i class="fas fa-users"></i> View Client
 						</button>
 					</div>
@@ -498,7 +496,7 @@
 		// setTimeout(d => {render_results_data();},100);
 	}
 
-	function viewTask() {
+	function viewTask_payments() {
 		alert_info('opening task');
 		window[variableAtlas['task_id']] = payment.task.id;
 
@@ -509,8 +507,15 @@
 		loadPage(payld);
 	}
 
-	function viewClient(clientId) {
-		console.log('View client:', clientId);
+	function viewClient_payments_payments(clientId) {
+		alert_info('opening client Information');
+		window[variableAtlas['client_id']] = payment.owner.id;
+
+		let payld = {
+			template: linkAtlas['client_info'],
+			sidenote: pageNames['client_info'],
+		};
+		loadPage(payld);
 	}
 
 	window['showmodal'] = (f) => {

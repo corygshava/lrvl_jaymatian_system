@@ -556,7 +556,7 @@
 	function init_task_creation_process() {
 		const step2 = () => {
 			if(window['task_client_data'] !== undefined){
-				alert_dark('found task client data');
+				// alert_info('client selected');
 				// return;
 				select_client(window['task_client_data']);
 				window['task_client_data'] = undefined;
@@ -578,7 +578,14 @@
 
 		let last_save = localStorage.getItem(prefsAtlas['last_saved_task']) || undefined;
 		if(last_save !== undefined){
-			if(last_save.clientData !== undefined){
+			let lst = JSON.parse(last_save);
+
+			alert_silent('last saved task data found n logged');
+			alert_silent({'l_save' : lst});
+
+			console.log('last_save: ',last_save,'parsed: ',lst);
+
+			if(lst.clientData !== undefined){
 				confirmAction('<span class="h4">Saved data found</span>','would you like to continue with creating the last task?',() => {
 					// alert_danger('continuing');
 					loadSavedTask();
@@ -589,8 +596,8 @@
 				});
 			} else {
 				pick_step(0);
+				step2();
 			}
-			step2();
 			// pick_step(0);
 		} else {
 			step2();
@@ -614,6 +621,8 @@
 		// console.log("full: ",task_runtime_data,"saved: ",last_save);
 	}
 	function saveTaskData() {
+		alert_dark('initialising task autosave function');
+
 		if(save_inter !== undefined){
 			clearInterval(save_inter);
 		}
@@ -1070,6 +1079,8 @@
 
 	// rendering ops
 	function render_all_data() {
+		alert_dark('rendering everything');
+
 		if(task_runtime_data.clientData !== undefined){
 			render_client_data();
 		}
@@ -1272,7 +1283,7 @@
 		refreshUI(300);
 	}
 	function render_payments_stats() {
-		// alert_info('rendering pay stats');
+		alert_dark('rendering pay stats');
 
 		let viewOverride = undefined;
 		let showthis = [];
@@ -1320,6 +1331,8 @@
 
 				out_d = task_runtime_data.clientData.credit_balance;
 				showthis.push(out_d);
+			} else {
+				// showthis = [0,0,0,0,0];
 			}
 
 			pays_made.querySelector('b').innerHTML = showthis[0] == undefined ? 0 : showthis[0].toLocaleString();
@@ -1354,14 +1367,46 @@
 
 			// render total cost
 			// total_cost.innerHTML = showthis[2] == undefined ? 0 : showthis[2].toLocaleString();
-
-			task_runtime_data.paymentStats = {
-				pays_made : showthis[0],
-				amount_due : showthis[1],
-				amount_paid : showthis[2],
-				balance : showthis[3],
-				client_credit : showthis[4],
-			};
 		}
+
+		if(showthis.length == 0){
+			// defaults in case no payments were recorded
+			showthis.push(0);
+
+			let mres = 0;
+
+			if(task_runtime_data.sampleStats !== undefined){
+				mres = task_runtime_data.sampleStats.cost;
+			}
+			showthis.push(mres);
+			showthis.push(0);
+			showthis.push(mres);
+
+			let n_mres = 0;
+			if(task_runtime_data.clientData !== undefined){
+				n_mres = Math.floor(task_runtime_data.clientData.credit_balance);
+			}
+
+			showthis.push(mres);
+
+			showthis = [
+				0,
+				mres,
+				0,
+				mres,
+				n_mres,
+			];
+
+			alert_dark('showthis set up');
+			console.log('showthis: ',showthis);
+		}
+
+		task_runtime_data.paymentStats = {
+			pays_made : showthis[0],
+			amount_due : showthis[1],
+			amount_paid : showthis[2],
+			balance : showthis[3],
+			client_credit : showthis[4],
+		};
 	}
 </script>

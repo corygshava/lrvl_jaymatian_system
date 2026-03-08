@@ -61,7 +61,7 @@
 
 			// Additional request parameters
 			additionalParams: {},
-			sortDirection: 'desc',
+			sortDirection: 'asc',
 		};
 
 		/**
@@ -151,7 +151,7 @@
 
 				headerHTML += `
 					<th class="${sortClass}"
-						${sortable ? `onclick="sortbyme('${column.data}')"` : ''}
+						${sortable ? `onclick="sortbyme('${column.data}','${column.title}')"` : ''}
 						${column.width ? `width="${column.width}"` : ''}>
 						${column.title} ${sortIcon}
 					</th>
@@ -165,7 +165,6 @@
 		/**
 		 * Generate filters
 		 */
-
 		function generateFilters() {
 			// /*
 				const filterContainer = document.getElementById('filterContainer');
@@ -417,9 +416,11 @@
 		/**
 		 * Sort by column
 		 */
-		function sortBy(column) {
+		function sortBy(column,title) {
 			// alert_info("chosen col: " + column);
 			// return;
+
+			title = title == undefined ? column : title;
 
 			if (sortColumn === column) {
 				sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
@@ -430,7 +431,7 @@
 			currentPage = 1;
 			loadData();
 
-			alert_info("sorting by: " + sortColumn);
+			alert_info("sorting by: " + title);
 		}
 
 		/**

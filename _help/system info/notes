@@ -9,3 +9,14 @@ biz_data
 	stores signature image
 	stores stamp image
 	stores deviation summary object
+
+logs (stored locally to prevent corruption)
+	[every record is saved at storage/runtime/usagelogs/{userid}/[date minus time of day]_logs.json for data backups in case someone takes down the db for some reason]
+	user_id
+	user_name
+	intent
+	payload
+	permission_required
+	extra_details
+
+	laravel timestamp
