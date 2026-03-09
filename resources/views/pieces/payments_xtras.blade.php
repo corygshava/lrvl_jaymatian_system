@@ -504,7 +504,7 @@
 	}
 
 	window['setup_payment_form'] = (t_id,cbk) => {
-		add_payment_form.taskid = t_id;
+		add_payment_form.taskid.value = t_id;
 
 		if(cbk !== undefined){
 			add_payment_form.dataset.lastcallback = cbk;

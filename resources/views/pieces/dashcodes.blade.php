@@ -601,7 +601,6 @@
 			if(udata.id == cur_u.id){
 				cur_user = udata;
 				mypermissions = cur_user.role_permissions;
-
 				updateSessionUI();
 			}
 		}

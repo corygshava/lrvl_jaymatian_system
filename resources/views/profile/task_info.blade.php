@@ -1,8 +1,10 @@
 <?php
-	// require_once __DIR__.'/piece_task_view_styles.php';
-	// require_once __DIR__.'/piece_samples_extras.php';
-	// require_once __DIR__.'/piece_payments_xtras.php';
+	/*
+	require_once __DIR__.'/piece_task_view_styles.php';
+	require_once __DIR__.'/piece_samples_extras.php';
+	require_once __DIR__.'/piece_payments_xtras.php';
 	// require_once __DIR__.'/datatables_refactored.php';
+	// */
 ?>
 
 {{-- <!-- --}}
@@ -205,7 +207,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
-				<button type="button" class="mybtn primary" data-submitme="#add_note_form">Add payment</button>
+				<button type="button" class="mybtn primary" data-submitme="#add_note_form">Add note</button>
 			</div>
 		</div>
 	</div>
@@ -512,6 +514,9 @@
 					<span class="mybadge payment-${task_payment_state_atlas[task.payment_status]} ml-2" id="payment-status-badge">
 						<i class="fas fa-credit-card"></i> ${task_payment_state_atlas[task.payment_status]}
 					</span>
+					<div class="distance-sm">
+						<i>${task.notes}</i>
+					</div>
 				</div>
 			</div>
 			<div class="w3-display-right spacy-md" style="z-index: 102">
@@ -808,13 +813,12 @@
 	}
 
 	// MUST BE LAST
-	window['add_note_form_afterfx'] = () => {
+	window['add_note_form_afterfx'] = (d) => {
 		let el = d.el;
 		let cbk = 'init_task';
 
 		add_note_trig.click();
 		el.reset();
-		el.pay_method.value = '';
 
 		if(cbk !== undefined){
 			window[cbk]();

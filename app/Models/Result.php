@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Result extends Model{
     protected $fillable = [
+		'task_id',
         'sample_id',
         'client_id',
         'added_by',

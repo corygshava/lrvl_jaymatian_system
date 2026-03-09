@@ -135,6 +135,7 @@ class TaskController extends Controller{
 				->where('id',$passed['id'])
 				->withCount('samples')
 				->withCount('payments')
+				->withCount('reports')
 				->with('creator')
 				->with('client')
 				->first()
@@ -337,6 +338,157 @@ class TaskController extends Controller{
 						*/
 					}
 				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $task;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_payment(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			"taskid" => ['required'],
+			"admin_password" => ['required'],
+			"pay_method" => ['required'],
+			"amount" => ['required'],
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$reslt = false;
+			$task = null;
+
+			$wegood = self::verifyPassword($passed['admin_password']);
+
+			if(!$wegood){
+				$msg = "invalid admin password";
+			} else {
+				$task = Task::query()
+					->where('id',$passed['taskid'])
+					->withCount('samples')
+					->withCount('payments')
+					->withCount('reports')
+					->with('creator')
+					->with('client')
+					->first()
+				;
+
+				if($task == null){
+					$msg = "task not found";
+				} else {
+					$bal = $task['balance'];
+					$cost = $task['cost'];
+					$paid = $task['paid'];
+					$amt = $passed['amount'];
+					$user = $this->cur_user();
+
+					// /*
+					Payment::create([
+						'added_by' => $user->id,
+						'task_id' => $task->id,
+						'client_id' => $task->client->id,
+						'method' => $passed['pay_method'],
+						'amount' => $passed['amount'],
+						'status' => 1,
+						'extra_details' => json_encode(['added_via' => 'task_info']),
+						'transaction_time' => Carbon::now(),
+					]);
+					// */
+
+					$newbal = $bal - $amt;
+					$paid += $amt;
+
+					if($newbal < 0){
+						$newbal = 0;
+						// add to client_credit
+						$addme = $paid - $cost;
+						$newcredit = $task->client->credit_balance + $addme;
+
+						Client::where('id',$task->client->id)
+							->update([
+								'credit_balance' => $newcredit,
+							])
+						;
+
+						$msg = "payment was more than required, added to client credit";
+					} else {
+						$msg = "payment added successfully";
+					}
+
+					Task::where('id',$task->id)->update([
+						'balance' => $newbal,
+						'paid' => $paid,
+						'payment_status' => $newbal == 0 ? 2 : 1,
+					]);
+
+					$reslt = true;
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $task;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_note(Request $req){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'taskid' => ['required'],
+			'note' => ['required'],
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$reslt = false;
+
+			$task = Task::query()
+				->where('id',$passed['taskid'])
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->with('creator')
+				->with('client')
+				->first()
+			;
+
+			if($task == null){
+				$msg = "task not found";
+			} else {
+				$task->update(['notes' => strip_tags($passed['note'])]);
+				$task->refresh();
+				$reslt = true;
+				$msg = "notes updated successfully";
 			}
 
 			$res['result'] = $reslt;

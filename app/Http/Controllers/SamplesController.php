@@ -287,6 +287,7 @@ class SamplesController extends Controller{
 
 				foreach($passed['results'] as $rss){
 					$rec = [
+						'task_id' => $thesample->task_id,
 						'sample_id' => $thesample->id,
 						'client_id' => $thesample->client_id,
 						'added_by' => $user->id,

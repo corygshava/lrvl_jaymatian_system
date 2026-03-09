@@ -7,8 +7,11 @@ major remaining stuff
 			or return the task record and redirect to view task ui
 	manage task
 		// modify task (though the idea is that once a task is added it can only be managed not modified)
+		view payments
+			new payments can be added if incomplete
 		manage tasks
 			when you click on a task a modal opens that gives you options to
+				[workaround => task mgt > task info > task summary]
 				view (opens view task page where all task information is displayed)
 				view payments (opens view task but jumps to view payments)
 				view samples (same as above)
@@ -18,19 +21,23 @@ major remaining stuff
 					shows task info
 					has a link to client info (make it that it returns one to task mgt instead of client mgt)
 					can show sample entries
+
+[divider]
 					can show payment records
 					can show reports
 		manage samples
 			create report for individual samples
 			save report for individual samples
 			user cant add samples unless they start another job
-		view payments
-			new payments can be added if incomplete
 		make reports
 			generate image
 			generate scanned pdf
 			generate hash for it
 		view reports
+	business data
+		a page to add samples and respective charges
+		a page to upload and display images to be used at runtime
+		a way to show all deviation summary fields
 	client info
 		basically a page like view task but meant to show client info
 		view tasks (when clicked opens view task UI)

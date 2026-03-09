@@ -63,4 +63,10 @@ class Task extends Model{
 	public function payments(): HasMany{
 		return $this->hasMany(Payment::class,'task_id','id');
 	}
+	public function results(): HasMany{
+		return $this->hasMany(Result::class,'task_id','id');
+	}
+	public function reports(): HasMany{
+		return $this->hasMany(ReportsGen::class,'task_id','id');
+	}
 }
