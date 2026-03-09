@@ -487,8 +487,10 @@
 </div>
 
 <?php
-	// require_once __DIR__.'/piece_add_client_form.php';
-	// require_once __DIR__.'/datatables_code.php';
+	/*
+	require_once __DIR__.'/piece_add_client_form.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
 ?>
 
 
@@ -756,7 +758,6 @@
 
 		// alert_dark('its done editin or addin');
 		window['last_user_Add_Edit_result'] = m;
-		compareUserData(m.data.sendme);
 
 		// window['refresh_stuff']();
 		refreshData();

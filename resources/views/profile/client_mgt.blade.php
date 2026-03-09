@@ -130,7 +130,7 @@
 			border-bottom: 1px solid var(--clr-border);
 			white-space: nowrap;
 			cursor: pointer;
-			Client-select: none;
+			user-select: none;
 			transition: background 0.3s;
 		}
 		.table-modern thead th:hover {
@@ -400,7 +400,6 @@
 		}
 </style>
 
-
 <div class="toast-container" id="toastContainer"></div>
 
 <div class="container-fluid">
@@ -415,6 +414,11 @@
 				Refresh
 			</button>
 			<button class="mybtn primary" data-runme="add_record">
+				<i class="fas fa-plus"></i>
+				Add New
+			</button>
+
+			<button class="mybtn primary w3-hide" id="view_user_btn" data-toggle="modal" data-target="#ViewModal">
 				<i class="fas fa-plus"></i>
 				Add New
 			</button>
@@ -444,11 +448,11 @@
 		<!-- Data Header -->
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Clients' records</h5>
+				<h5 class="data-title" id="tableTitle">Users' information</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">
-					<input type="search" placeholder="Search phone number, name or ID" id="quickSearch">
+					<input type="text" placeholder="Quick search..." id="quickSearch">
 					<button><i class="fas fa-search"></i></button>
 				</div>
 			</div>
@@ -487,25 +491,48 @@
 	</div>
 </div>
 
-@include('pieces.forms_clientops')
+<?php
+	require_once __DIR__.'/piece_add_client_form.php';
+?>
 
 <div class="modal fade" id="ViewModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title">View Record Details</span>
+				<span class="h3 modal-title">View User Details</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 		</div>
 	</div>
 </div>
 
-@include('pieces.codes_datatables')
+<!-- Scripts -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
+
+<?php
+	require_once __DIR__.'/datatables_code.php';
+?>
 
 <script>
+	window['user_roles'] = undefined;
+	window['user_roles_condensed'] = [];
+
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
 		const initstuff = (m) => {
+			user_roles = m.sendme;
+			user_roles_condensed = [];
+
+			m.sendme.forEach(p => {
+				let it = {
+					value: p.id,
+					label: p.role_name
+				};
+
+				user_roles_condensed.push(it);
+			});
+
 			// alert_info('loading details');
 			// return;
 
@@ -603,21 +630,12 @@
 						options: user_roles_condensed
 					},*/
 					{
-						name: 'payment_plan',
+						name: 'Payment plan',
 						label: 'payment_plan',
-						rawname: 'Payment plan',
+						rawname: 'Payment plan_',
 						options: [
 							{ value: 'monthly', label: 'Monthly' },
 							{ value: 'per_visit', label: 'Per visit' }
-						]
-					},
-					{
-						name: 'client_gender',
-						label: 'gender',
-						rawname: 'Gender',
-						options: [
-							{ value: 'male', label: 'Male' },
-							{ value: 'female', label: 'Female' }
 						]
 					}
 				],
@@ -630,7 +648,7 @@
 				onDataLoaded: function(data) {
 					console.log('Data loaded:', data);
 
-					window['curRecordData'] = data.data
+					window['curClientData'] = data.data
 				},
 
 				onError: function(error) {
@@ -650,21 +668,19 @@
 
 			// updateUI();
 			setup_form();
-
-			return true;
 		}
 
-		return initstuff();
-
-		// use to fetch prerequisites (hauhitajiki hapa)
 		window[fetch_bypass]('./data/user_roles',{},'get').then((d) => {
 			responseHandler(d,initstuff,d,true);
+			// alert_info('render this');
 		})
 	};
 
 	// Page-specific action handlers
 	function viewRecord(id) {
-		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == ("" + id).toLowerCase();})[0];
+		// showToast('info', 'View User', `Viewing User ID: ${id}`);
+
+		let myn = window['curClientData'].filter(f => {return f.id.toString().toLowerCase() == ("" + id).toLowerCase();})[0];
 
 		if(myn == undefined){
 			alert_danger('invalid record');
@@ -676,15 +692,18 @@
 		}
 
 		alert_dark(`viewing ${myn.client_name}'s details`);
+
+		// alert_info('set current user: ' + myn.name);
+		// alert_dark('set current userid: ' + myn.id);
 		window['cur_record'] = cur;
 
 		loadPage({template: linkAtlas['view_client'],sidenote: 'Client Information'});
 	}
 
 	function deleteRecord(id) {
-		if (confirmAction('Delete User?','Are you sure you want to delete this Client?')) {
+		if (confirmAction('Delete User?','Are you sure you want to delete this User?')) {
 			// Add your delete logic here
-			showToast('success', 'Deleted', `Client ${id} deleted successfully`);
+			showToast('success', 'Deleted', `User ${id} deleted successfully`);
 			LaravelDataTable.refresh();
 		}
 	}
@@ -695,7 +714,7 @@
 		add_edit_form.reset();
 		add_edit_modal_trig.click();
         // password_field_input.style.display = "block";
-		// add_edit_form.Client_password.removeAttribute('readonly');
+		// add_edit_form.user_password.removeAttribute('readonly');
 		add_edit_title.innerHTML = "Register new Client";
 	}
 
@@ -706,7 +725,7 @@
 		rec_id = e.dataset.myid;
 		add_edit_form.recid.value = rec_id;
 
-		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == rec_id.toLowerCase();})[0];
+		let myn = window['curClientData'].filter(f => {return f.id.toString().toLowerCase() == rec_id.toLowerCase();})[0];
 
 		window['clientBeingEdited'] = myn;
 
@@ -721,20 +740,17 @@
 
 		// alert_info(rec_id);
 		// alert_info(e.textContent);
-		add_edit_title.innerHTML = "Edit Client Details";
-	}
-
-	window['delete_client'] = (e) => {
-		roleop = "edit";
-		rec_id = e.dataset.id;
-
-		confirmAction();
-		alert_info(e.textContent);
+		add_edit_title.innerHTML = "Edit client Details";
 	}
 
 	window['form_afterfx'] = (m) => {
 		// alert_danger('runnin afterfx');
 		add_edit_modal_trig.click();
+
+		// alert_dark('its done editin or addin');
+		window['last_user_Add_Edit_result'] = m;
+
+		// window['refresh_stuff']();
 		refreshData();
 	}
 </script>

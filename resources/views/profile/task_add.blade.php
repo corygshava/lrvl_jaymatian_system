@@ -621,7 +621,7 @@
 		// console.log("full: ",task_runtime_data,"saved: ",last_save);
 	}
 	function saveTaskData() {
-		alert_dark('initialising task autosave function');
+		// alert_dark('initialising task autosave function');
 
 		if(save_inter !== undefined){
 			clearInterval(save_inter);
@@ -1079,7 +1079,7 @@
 
 	// rendering ops
 	function render_all_data() {
-		alert_dark('rendering everything');
+		// alert_dark('rendering everything');
 
 		if(task_runtime_data.clientData !== undefined){
 			render_client_data();
@@ -1283,7 +1283,7 @@
 		refreshUI(300);
 	}
 	function render_payments_stats() {
-		alert_dark('rendering pay stats');
+		// alert_dark('rendering pay stats');
 
 		let viewOverride = undefined;
 		let showthis = [];
@@ -1397,7 +1397,7 @@
 				n_mres,
 			];
 
-			alert_dark('showthis set up');
+			// alert_dark('showthis set up');
 			console.log('showthis: ',showthis);
 		}
 
