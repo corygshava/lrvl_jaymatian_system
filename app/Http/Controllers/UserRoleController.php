@@ -52,6 +52,7 @@ class UserRoleController extends Controller{
 
 			// $op = self::log_payload($alldata,'indata');
 			$perms = explode(',',strip_tags($alldata['permissions']));
+
 			$rname = strip_tags($passed['user_role_name']);
 			$exist = userRoles::where('role_name',$rname)->exists();
 			$changed = null;

@@ -85,7 +85,8 @@ class UserController extends Controller{
 			$permissions = $this->getmypermissions();
 
 			if(!empty($permissions)){
-				$perms = array_keys($permissions);
+				// $perms = array_keys($permissions);
+				$perms = $permissions;
 			}
 
 			$res['result'] = !empty($perms);

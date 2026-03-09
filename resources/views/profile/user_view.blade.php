@@ -35,7 +35,7 @@
 <div id="user-profile-container" class="container-fluid p-0 w3-hide">
 	<div class="profile_card">
 		<div class="card themeround border-0 panelbg shadow-md">
-			<div class="card-header panelbg themegrad flowline overflow left centerline">
+			<div class="card-header panelbg themegrad flowline overflow left centerline w3-display-container">
 				<div class="avatar-circle bg-white text-primary">
 					<span id="user-initials">C</span>
 				</div>
@@ -56,11 +56,14 @@
 								<i class="fas fa-key mr-2 text-muted"></i>Change Password
 							</a>
 							<!-- <div class="dropdown-divider"></div> -->
-							<a class="dropdown-item text-danger border-top spacy-tn" id="deact_user_btn" href="#" onclick="deactivateAccount()">
+							<a class="dropdown-item text-danger border-top spacy-tn" id="deact_user_btn" href="#" data-runme="deactivateAccount">
 								<i class="fas fa-user-slash mr-2"></i>Deactivate
 							</a>
 						</div>
 					</div>
+				</div>
+				<div class="w3-display-topright slide-up" id="account_active_tag">
+					<div class="spacy-tn w3-red">account Inactive</div>
 				</div>
 			</div>
 
@@ -191,13 +194,11 @@
 	window['runOnAwake'] = () => {
 		to_user_mgt_btn.querySelector('a').dataset.link = linkAtlas['view_users'];
 
-		if(!mypermissions.includes('MANAGE_USERS')){
-			to_user_mgt_btn.remove();
-		}
+		let cls = !(mypermissions.includes('MANAGE_USERS')) ? 'add' : 'remove';
+		to_user_mgt_btn.classList[cls]('w3-hide');
 
-		if(!mypermissions.includes('ACTIVATE_USER')){
-			deact_user_btn.remove();
-		}
+		cls = !(mypermissions.includes('ACTIVATE_USER')) ? 'add' : 'remove';
+		deact_user_btn.classList[cls]('w3-hide');
 
 		if(window['cur_record'] !== undefined){
 			if(window['cur_record'].rectype !== "user"){
@@ -216,6 +217,16 @@
 	}
 
 	function initializeUserProfile(data) {
+		let con = (data.is_active)
+		let cls = !con ? 'remove' : 'add';
+		account_active_tag.classList[cls]('w3-hide');
+
+		cls = `dropdown-item border-top spacy-tn ${con ? 'text-danger' : 'text-success'}`;
+		let content = !con ? `<i class="fas fa-check mr-2"></i>Activate account` : `<i class="fas fa-user-slash mr-2"></i>Deactivate`;
+		deact_user_btn.innerHTML = content;
+		deact_user_btn.className = cls;
+		deact_user_btn.dataset.act = con ? 'deactivate' : 'activate';
+
 		// hide placeholders
 		blank.classList.add('w3-hide');
 		document.querySelector('#user-profile-container').classList.remove('w3-hide');
@@ -235,7 +246,8 @@
 
 		document.getElementById('member-since').textContent = formatDate(createdDate);
 		document.getElementById('last-updated').textContent = formatDate(updatedDate);
-		document.getElementById('last-login').textContent = formatDate(loginDate);
+		// document.getElementById('last-login').textContent = loginDate == null ? '--' : formatDate(loginDate);
+		document.getElementById('last-login').textContent = loginDate.getTime() == 0 ? '--' : formatDate(loginDate);
 
 		// Email verification status
 		const verifyBadge = document.getElementById('email-verified-badge');
@@ -332,8 +344,37 @@
 		}, 1000);
 	}
 
-	function deactivateAccount() {
-		confirmAction('Deactivate Account','Are you sure you want to deactivate this user account?');
+	window['deactivateAccount'] = (el) => {
+		if(el == undefined){
+			alert_danger('invalid procedure');
+			return;
+		}
+
+		let con = userData.is_active;
+		let exp = con ?
+			'the user will be unable to log in after this' :
+			'the user will be able to log in after this';
+
+		const deactaccount = (ps) => {
+			const data = {
+				recid: userData.id,
+				...ps
+			};
+
+			const showres = (f) => {
+				initializeUserProfile(f.sendme);
+			}
+
+			window[fetch_bypass](linkAtlas['toggle_account_active'],data,'POST').then((d) => {
+				responseHandler(d,showres,d);
+			})
+		}
+
+		confirmAction(`${el.dataset.act} Account`,`Are you sure you want to <b>${el.dataset.act}</b> this user account?<br></br>${exp}`,() => {
+			setTimeout(() => {
+				awaitConfirmPass(deactaccount);
+			},200)
+		});
 	}
 
 	window['edit_user'] = (e) => {
@@ -389,7 +430,11 @@
 		add_edit_title.innerHTML = "Edit user Details";
 	}
 
-	window['form_afterfx'] = () => {
+	window['form_afterfx'] = (m) => {
+		// alert_dark('data sent back');
+		initializeUserProfile(m.data.sendme);
+		// console.log(m);
+
 		// alert_danger('runnin afterfx');
 		add_edit_modal_trig.click();
 

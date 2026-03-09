@@ -428,8 +428,8 @@
 		// delete(window['cur_record']);
 		delete(window['initializeTaskProfile']);
 		delete(window['openinfo']);
-		delete(window['openclient']);
 		delete(window['updateStatus']);
+		delete(window['openclient']);
 		delete(window['recordPayment']);
 		delete(window['addNotes']);
 		delete(window['cancelTask']);
@@ -531,12 +531,16 @@
 		document.getElementById('load-time').textContent = new Date().toLocaleTimeString();
 	}
 
-	window['openinfo'] = (p) => {
-		window['cur_task_id'] = taskData.id;
+	window['openinfo'] = (p,x) => {
+		window[variableAtlas['task_id']] = taskData.id;
+		window[variableAtlas['t_i_act']] = p || undefined;
+		window[variableAtlas['t_i_args']] = x || undefined;
+
+		// alert_dark(`will run: ${p}`);
+
 		let senddeets = {
 			template: linkAtlas['task_info'],
-			sidenote: 'manage Task',
-			afterfx: p || undefined,
+			sidenote: pageNames['task_info'],
 		};
 
 		loadPage(senddeets);
@@ -560,12 +564,12 @@
 
 	window['recordPayment'] = () => {
 		alert_info('enter details to record payments');
-		openinfo('record_payment');
+		openinfo('add_payment');
 	}
 
 	window['addNotes'] = () => {
-		alert_info('enter the notes you want to add');
-		openinfo('add_note');
+		// alert_info('enter the notes you want to add');
+		openinfo('add_notes');
 	}
 
 	// [vetline] --------------------------------------------------------------------------------------------------
@@ -582,24 +586,24 @@
 
 	window['viewSamples'] = () => {
 		alert_info(`Viewing samples for task ${taskData.task_no}`);
-		openinfo('view_samples');
+		openinfo('showthis','samples');
 		// Navigate to samples view
 	}
 
 	window['viewPayments'] = () => {
 		alert_info(`Viewing payment history for task ${taskData.task_no}`);
-		openinfo('view_payments');
+		openinfo('showthis','payments');
 		// Navigate to payments view
 	}
 
 	window['viewReports'] = () => {
 		alert_info(`Viewing reports for task ${taskData.task_no}`);
-		openinfo('view_reports');
+		openinfo('showthis','reports');
 	}
 
 	window['viewCreator'] = () => {
 		alert_info(`Viewing user profile: ${taskData.creator.name}`);
-		openinfo('view_reports');
+		openinfo('showthis','user');
 	}
 
 	window['viewTaskDetails'] = () => {

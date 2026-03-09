@@ -356,7 +356,7 @@
 	<div class="stats-row w3-hide themeround" id="statsContainer">
 	</div>
 
-	<div class="filter-bar w3-hide_ themeround" id="filterContainer">
+	<div class="filter-bar w3-hide_ w3-display-container themeround" id="filterContainer">
 		<span class="h4">Filters</span>
 		<div class="filter-row"></div>
 	</div>
@@ -424,6 +424,11 @@
 		1 : 'incomplete',
 		2 : 'complete',
 	};
+	let task_pay_state = {
+		0 : 'pending',
+		1 : 'incomplete',
+		2 : 'paid',
+	};
 	let state_classes = [
 		'w3-black',
 		'w3-blue',
@@ -466,14 +471,17 @@
 						title: 'ID',
 						data: 'id',
 						width: '50px',
-						sortable: true
+						sortable: true,
+						render: (v,r,id) => {
+							return `<b>${v}</b>`;
+						}
 					},
 					{
-						title: 'Sample type',
+						title: 'type',
 						data: 'sample_type',
 						sortable: true,
 						render: function(value) {
-							return `<strong>${value}</strong>`;
+							return `<span class="sample-type-badge type-${value}">${value}</span>`;
 						}
 					},
 					{
@@ -498,6 +506,14 @@
 						sortable: true,
 						render: function(value) {
 							return `<strong>${value.client_name}</strong>`;
+						}
+					},
+					{
+						title: 'Payment status',
+						data: 'task',
+						sortable: false,
+						render: function(value) {
+							return `<strong>${task_pay_state[value.payment_status]}</strong>`;
 						}
 					},
 					{
@@ -551,7 +567,7 @@
 				filters: [
 					{
 						name: 'status',
-						label: 'Sample status',
+						label: 'processing status',
 						rawname: 'status',
 						options: state_filter
 					},

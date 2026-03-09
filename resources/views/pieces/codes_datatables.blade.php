@@ -170,6 +170,21 @@
 				const filterContainer = document.getElementById('filterContainer');
 				if (!filterContainer) return;
 
+				filterContainer.classList.add('w3-display-container');
+
+				let reseter = filterContainer.querySelector('[data-subrole="reset"]');
+
+				if(reseter == undefined){
+					let r = document.createElement('div');
+					r.dataset.subrole = "reset";
+					r.className = "w3-display-topright spacy-sm";
+					r.innerHTML = `
+						<button class="btn btn-outline-secondary btn-sm themeround" data-runme="killfilters"><i class="fa fa-filter"></i> clear filters</button>
+					`;
+
+					filterContainer.appendChild(r);
+				}
+
 				const filterRow = filterContainer.querySelector('.filter-row');
 				if (!filterRow) return;
 
@@ -571,7 +586,7 @@
 	/**
 	 * Refresh data helper
 	 */
-	function refreshData() {
+	window['refreshData'] = () => {
 		LaravelDataTable.refresh();
 		showToast('info', 'Refreshing', 'Loading latest data...');
 	}
@@ -607,5 +622,10 @@
 		setTimeout(() => {
 			toast.remove();
 		}, 25000);
+	}
+
+	function killfilters() {
+		alert_info('filters reset');
+		LaravelDataTable.resetFilters();
 	}
 </script>

@@ -169,24 +169,44 @@
 	}
 </style>
 
-<button class="mybtn primary w3-hide" id="add_result_modal_trig" data-toggle="modal" data-target="#add_edit_modal">
+<button class="mybtn primary w3-hide" id="add_payment_trig" data-toggle="modal" data-target="#add_payment_modal">
 	<i class="fas fa-plus"></i>
-	Add result
+	Add payment
 </button>
 
-<div class="modal fade" id="add_edit_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
-	<div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="add_payment_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
+	<div class="modal-dialog modal-md" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="add_edit_title">Add result</span>
+				<span class="h3 modal-title" id="add_edit_title">Add Payment</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
-
+				<form id="add_payment_form" action="defined:add_payment" data-onsubmit="sendform" data-blockdefault="yes" data-callback="add_pay_form_afterfx" method="post">
+					<input type="hidden" name="taskid" value="">
+					<div class="input-group-custom">
+						<div class="form-group">
+							<label class="form-label" for="admin_password">Your Password</label>
+							<input type="password" class="form-control-custom" id="admin_password" name="admin_password" placeholder="enter password for verification" required>
+						</div>
+						<div class="form-group">
+							<label class="form-label" for="pay_method">Payment Method</label>
+							<select class="form-control-custom" id="pay_method" name="pay_method" required>
+								<option disabled value="">select a payment method</option>
+								<option>Mpesa</option>
+								<option>Cash</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="form-label" for="amount">Amount</label>
+							<input type="number" class="form-control-custom" id="amount" name="amount" placeholder="how much was paid" required>
+						</div>
+					</div>
+				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
-				<!-- <button type="button" class="mybtn primary" data-submitme="#add_edit_form">Save</button> -->
+				<button type="button" class="mybtn primary" data-submitme="#add_payment_form">Add payment</button>
 			</div>
 		</div>
 	</div>
@@ -194,14 +214,14 @@
 
 <button class="mybtn primary w3-hide" id="view_payment_modal_trig" data-toggle="modal" data-target="#payment_info_modal">
 	<i class="fas fa-plus"></i>
-	View sample details
+	View Payment details
 </button>
 
 <div class="modal fade" id="payment_info_modal" tabindex="-1" role="dialog" aria-labelledby="payment_info_heading" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-mg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="payment_info_heading">Payment Record Information</span>
+				<span class="h3 modal-title" id="payment_info_heading">Payment Information</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -215,55 +235,15 @@
 	</div>
 </div>
 
-<button class="mybtn primary w3-hide" id="add_result_trig" data-toggle="modal" data-target="#addResultModal">
-	<i class="fas fa-plus"></i>
-	add results
-</button>
-
-<!-- Add Result Modal -->
-<div class="modal fade" id="addResultModal" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content themeround borderless">
-			<div class="modal-header">
-				<span class="h4">Add Result</span>
-				<button type="button" class="close" data-dismiss="modal">
-					<span>&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="themegrad w3-text-white spacy-sm themeround distance-tn" id="sample_brief">
-					<span class="h4">Sample: <b>2340324093284</b></span>
-					<div>
-						<span>Type: <b>Solution</b></span>
-					</div>
-					<div>
-						<span>Status: <b>Pending</b></span>
-					</div>
-				</div>
-				<form id="addResultForm" action="defined:add_result" data-onsubmit="sendform" data-blockdefault="yes" data-callback="refreshData">
-					<input type="hidden" name="sample_id">
-					<div class="input-group-custom">
-						<div class="form-group">
-							<label class="form-label" for="au_ppm">AU ppm</label>
-							<input type="number" step="0.0001" class="form-control-custom" id="au_ppm" name="au_ppm" placeholder="enter Au PPM result" required>
-						</div>
-						<div class="form-group">
-							<label class="form-label" for="cu_ppm">CU ppm</label>
-							<input type="number" step="0.0001" class="form-control-custom" id="cu_ppm" name="cu_ppm" placeholder="enter Au PPM result" required>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="mybtn secondary sm" data-dismiss="modal">Close</button>
-				<button type="button" class="mybtn primary sm" data-submitme="#addResultForm">Save Result</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script>
 	let payment = {};
+
+	window['task_state_atlas'] = [
+		'Pending',
+		'awaiting payment',
+		'Complete',
+		'Cancelled',
+	];
 
 	// Render results table
 	function renderResultsTable(results,xtra_results) {
@@ -413,7 +393,7 @@
 					</div>
 					<div class="info-row">
 						<span class="info-label">Status:</span>
-						<span class="info-value">${getStatusBadge(payment.task.status)}</span>
+						<span class="info-value"><b class="mybadge w3-black">${task_state_atlas[payment.task.status]}</b></span>
 					</div>
 					<div class="info-row">
 						<span class="info-label">Payment Status:</span>
@@ -521,5 +501,26 @@
 	window['showmodal'] = (f) => {
 		let wot = !f ? 'hide' : 'show';
 		$('#samples_info_modal').modal(wot);
+	}
+
+	window['setup_payment_form'] = (t_id,cbk) => {
+		add_payment_form.taskid = t_id;
+
+		if(cbk !== undefined){
+			add_payment_form.dataset.lastcallback = cbk;
+		}
+	}
+
+	window['add_pay_form_afterfx'] = (d) => {
+		let el = d.el;
+		let cbk = el.dataset.lastcallback;
+
+		add_payment_trig.click();
+		el.reset();
+		el.pay_method.value = '';
+
+		if(cbk !== undefined){
+			window[cbk]();
+		}
 	}
 </script>

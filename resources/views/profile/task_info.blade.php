@@ -19,12 +19,12 @@
 
 	/* Custom Tab Navigation */
 	.custom-tabs {
-	    background: transparent;
-	    padding: 12px 20px;
-	    border: 1px solid transparent;
-	    display: flex;
-	    flex-direction: row;
-	    gap: 12px;
+		background: transparent;
+		padding: 12px 20px;
+		border: 1px solid transparent;
+		display: flex;
+		flex-direction: row;
+		gap: 12px;
 	}
 	.custom-tabs .nav-link {
 		border: none;
@@ -65,7 +65,7 @@
 <div class="container-fluid">
 	<div class="page-header">
 		<div class="page-title">
-			<span class="h4">Manage Task</span>
+			<span class="h4">Task Summary</span>
 			<p>Here you can view all information regarding a task. from <b>samples</b>, to <b>payments</b> and to <b>reports</b></p>
 		</div>
 		<div class="header-actions">
@@ -104,17 +104,17 @@
 	<div id="info_stuff" class="w3-hide flow centroid">
 		<ul class="nav nav-tabs custom-tabs" id="myTabs" role="tablist">
 			<li class="nav-item">
-				<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">
+				<a class="nav-link active" id="samples-tab" data-toggle="tab" href="#samples" role="tab">
 					<i class="fas fa-flask"></i> Samples
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab">
+				<a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab">
 					<i class="fas fa-money-bill"></i> Payments
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab">
+				<a class="nav-link" id="reports-tab" data-toggle="tab" href="#reports" role="tab">
 					<i class="fas fa-file-export"></i> Reports
 				</a>
 			</li>
@@ -122,7 +122,7 @@
 
 		<div class="tab-content border in_fullwidth panelbg themeround custom-tab-content container-fluid" id="myTabContent">
 			<!-- Overview Tab -->
-			<div class="tab-pane fade show active" id="overview" role="tabpanel">
+			<div class="tab-pane fade show active" id="samples" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Task Samples</h4>
 					<p>here are the samples brought in with this task</p>
@@ -139,13 +139,13 @@
 			</div>
 
 			<!-- Details Tab -->
-			<div class="tab-pane fade" id="details" role="tabpanel">
+			<div class="tab-pane fade" id="payments" role="tabpanel">
 				<div class="tab-inner-content spacy-sm w3-display-container">
 					<h4>Task Payments</h4>
 					<p>here are the payments made for this task</p>
 
 					<div class="spacy-sm w3-display-topright" id="payment_ops">
-						<button class="mybtn primary" data-runme="add_payment" data-subrole="add_pay_btn"><i class="fa fa-money-bill-wave"></i> add payment</button>
+						<button class="mybtn primary" data-runme="add_payment" data-subrole="add_pay_btn"><i class="fa fa-plus"></i> add payment</button>
 					</div>
 
 					<div class="table-responsive themeround border">
@@ -160,7 +160,7 @@
 			</div>
 
 			<!-- History Tab -->
-			<div class="tab-pane fade" id="settings" role="tabpanel">
+			<div class="tab-pane fade" id="reports" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Generated reports</h4>
 					<p>here are the generated reports for this task</p>
@@ -174,6 +174,38 @@
 						</table>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<button class="mybtn primary w3-hide" id="add_note_trig" data-toggle="modal" data-target="#add_note_modal">
+	<i class="fas fa-plus"></i>
+	Add payment
+</button>
+
+<div class="modal fade" id="add_note_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content themeround borderless">
+			<div class="modal-header">
+				<span class="h3 modal-title" id="add_edit_title">Add Note</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<form id="add_note_form" action="defined:add_task_note" data-onsubmit="sendform" data-blockdefault="yes" data-callback="add_note_form_afterfx" method="post">
+					<input type="hidden" name="taskid" value="">
+					<div class="input-group-custom">
+						<div class="form-group">
+							<label class="form-label" for="note">your Note</label>
+							<textarea class="form-control-custom" id="note" name="note" rows="4" required>
+							</textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="mybtn primary" data-submitme="#add_note_form">Add payment</button>
 			</div>
 		</div>
 	</div>
@@ -203,10 +235,12 @@
 	window['task_info_data'] = {};
 
 	window['runOnAwake'] = () => {
+		delete(window['refreshData']);
+
 		setTimeout(() => {
 			init_task();
 			// alert_info('runing autoload');
-			refreshUI(300);
+			// refreshUI(300);
 		},400);
 	}
 
@@ -221,6 +255,9 @@
 		let nextact_vars = window[variableAtlas['t_i_args']];
 
 		c_pld = {task_id: t_id};
+
+		// if(nextact !== undefined){alert_dark(`afterrun: ${nextact}`,12);}
+		console.log(nextact);
 
 		// prevents issues during reloads
 		delete(window[variableAtlas['t_i_act']]);
@@ -275,7 +312,7 @@
 		}
 
 		const final_step = (d) => {
-			alert_dark('rendering stuff');
+			// alert_dark('rendering stuff');
 			pick_step(0);
 			showstuffUI();
 
@@ -298,8 +335,8 @@
 
 	// navops
 	window['pick_step'] = (n) => {
-		alert_info('loading step: ' + n);
-		refreshUI(300);
+		// alert_info('loading step: ' + n);
+		// refreshUI(300);
 	}
 	window['initUIs'] = (m) => {
 		// ---
@@ -341,7 +378,7 @@
 		let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
 
 		window[fetch_bypass](path,payld,method).then((d) => {
-			responseHandler(d,fn,d);
+			responseHandler(d,fn,d,true);
 		}).catch(d => {
 			hidemainLoader();
 			showError(true,{heading: `Error Getting ${wot}`,text: d.message});
@@ -386,21 +423,57 @@
 		renderPayData(who);
 	}
 
+	window['showthis'] = (wot) => {
+		// alert_dark('showthis called');
+
+		let theid = `#${wot}-tab`;
+		let tabid = `#${wot}`;
+		let btn = document.querySelector(theid);
+
+		if(btn !== undefined){
+			btn.click();
+
+			setTimeout(() => {
+				window.location.assign(btn.href);
+			},200);
+		}
+	}
+
 	window['add_payment'] = (el) => {
 		let task = task_info_data.taskData;
+		let tid = task.id;
 
 		if(task.balance <= 0){
-			alert_danger('all payments were cleared');
+			alert_danger('all payments were completed');
 			return;
 		}
 
 		add_payment_trig.click();
-		setup_payment_form()
+		setup_payment_form(tid,'init_task');
+	}
+	window['add_notes'] = (el) => {
+		let task = task_info_data.taskData;
+		let tid = task.id;
+		let note = task.notes;
+
+		// setup_note_form(tid,'init_task');
+		add_note_form.taskid.value = tid;
+		add_note_form.note.value = note || '';
+
+		add_note_trig.click();
+	}
+
+	window['refreshTaskAssocs'] = () => {
+		showmainLoader();
+		refreshAllData();
+	}
+	window['refreshAllData'] = () => {
+		init_task();
 	}
 
 	// renderers
 	window['render_all_data'] = () => {
-		alert_info('hiding loader');
+		// alert_dark('hiding loader');
 		// hidemainLoader();
 		renderTaskBrief();
 
@@ -413,12 +486,18 @@
 	}
 
 	window['renderTaskBrief'] = () => {
-		alert_info('showing task brief');
+		// alert_info('showing task brief');
 
 		task_brief.classList.remove('w3-hide');
 
 		let panel = task_brief.querySelector('[data-subrole="taskpanel"]');
 		let task = task_info_data.taskData;
+
+		let paylink = task.payment_status == 2 ? '' : `
+			<a class="dropdown-item spacy-tn" href="#" onclick="add_payment()" id="option_payment_btn">
+				<i class="fas fa-money-bill-wave mr-2 text-muted"></i>Record Payment
+			</a>
+		`;
 
 		panel.innerHTML = `
 			<div>
@@ -441,10 +520,8 @@
 						<i class="fas fa-ellipsis-v"></i>
 					</button>
 					<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-						<a class="dropdown-item spacy-tn" href="#" onclick="recordPayment()" id="option_payment_btn">
-							<i class="fas fa-money-bill-wave mr-2 text-muted"></i>Record Payment
-						</a>
-						<a class="dropdown-item spacy-tn" href="#" onclick="addNotes()" id="option_note_btn">
+						${paylink}
+						<a class="dropdown-item spacy-tn" href="#" onclick="add_notes()" id="option_note_btn">
 							<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
 						</a>
 					</div>
@@ -475,10 +552,6 @@
 				<span class="font-weight-bold" id="task-status-text">${task_state_atlas[task.status]}</span>
 			</div>
 			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
-				<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge"></span>
-			</div>
-			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
 				<span class="font-weight-bold" id="samples_count">${samples.length}</span>
 			</div>
@@ -492,28 +565,32 @@
 			</div>
 		`;
 
-		let paybtn = task.balance <= 0 ? '' : `
+		let paybtn = task.payment_status == 2 ? '' : `
 			<div class="stat">
-				<button class="mybtn primary" data-runme="add_payment"><i class="fa fa-money-bill-wave"></i> add payment</button>
+				<button class="mybtn primary" data-runme="add_payment"><i class="fa fa-plus"></i> add payment</button>
 			</div>
 		`;
 
 		xtra_stats.innerHTML = `
 			<div class="stat">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
+				<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge"></span>
+			</div>
+			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
-				<span class="font-weight-bold" id="task_cost">3,000</span>
+				<span class="font-weight-bold" id="task_cost">${Math.floor(task.cost).toLocaleString()}</span>
 			</div>
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
-				<span class="font-weight-bold" id="task_paid">1,250</span>
+				<span class="font-weight-bold" id="task_paid">${Math.floor(task.paid).toLocaleString()}</span>
 			</div>
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
-				<span class="font-weight-bold" id="task_balance">1,750</span>
+				<span class="font-weight-bold" id="task_balance">${Math.floor(task.balance).toLocaleString()}</span>
 			</div>
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
-				<span class="font-weight-bold hideicon" id="task_payment_report"><b>1,250 / 3,000</b></span>
+				<span class="font-weight-bold hideicon" id="task_payment_report"><b class="themetxt">${Math.floor(task.paid).toLocaleString()}</b> / ${Math.floor(task.cost).toLocaleString()}</span>
 			</div>
 			${paybtn}
 		`;
@@ -613,6 +690,8 @@
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="payment"',
 		};
+
+		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = task_info_data.taskData.payment_status == 2 ? 'none' : 'block';
 		renderTable(data);
 	}
 	window['renderReports'] = () => {
@@ -709,11 +788,11 @@
 			tbody.innerHTML = outht;
 
 			let n = data.length;
-			let myreport = `#${dta.tablename}_report`;
-			let rpt = document.querySelector(myreport);
+			let myreport = `${dta.tablename}_report`;
+			let rpt = document.querySelector(`#${myreport}`);
 			let reportht = `showing <b class="themetxt">${n}</b> ${plural('result',n)}`;
 
-			if(rpt !== undefined){
+			if(rpt == undefined){
 				let summary = document.createElement('div');
 				summary.className = "spacy-sm border-top border-secondary";
 				summary.innerHTML = reportht;
@@ -726,5 +805,22 @@
 		} else {
 			alert_danger('no table found',12);
 		}
+	}
+
+	// MUST BE LAST
+	window['add_note_form_afterfx'] = () => {
+		let el = d.el;
+		let cbk = 'init_task';
+
+		add_note_trig.click();
+		el.reset();
+		el.pay_method.value = '';
+
+		if(cbk !== undefined){
+			window[cbk]();
+		}
+	}
+	window['refreshStuff'] = () => {
+		refreshTaskAssocs();
 	}
 </script>

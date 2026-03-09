@@ -61,6 +61,10 @@
 	.status-1 {background-color: #444;color: #fff;}
 	.status-2 {background-color: #28a745;color: white;}
 
+	.status-p-0 {background-color: tomato;color: #fff;}
+	.status-p-1 {background-color: dodgerblue;color: #fff;}
+	.status-p-2 {background-color: mediumseagreen;color: #fff;}
+
 	.status-paid {
 		background-color: #17a2b8;
 		color: white;
@@ -157,40 +161,19 @@
 		background-color: #e3f2fd;
 		color: #1976d2;
 	}
-
 	.type-soil {
 		background-color: #fff3e0;
 		color: #f57c00;
 	}
-
 	.type-carbon {
 		background-color: #f3e5f5;
 		color: #7b1fa2;
 	}
+	.type-rock {
+		background: grey;
+		color: #fff;
+	}
 </style>
-
-<button class="mybtn primary w3-hide" id="add_result_modal_trig" data-toggle="modal" data-target="#add_edit_modal">
-	<i class="fas fa-plus"></i>
-	Add result
-</button>
-
-<div class="modal fade" id="add_edit_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content themeround borderless">
-			<div class="modal-header">
-				<span class="h3 modal-title" id="add_edit_title">Add result</span>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			</div>
-			<div class="modal-body">
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
-				<!-- <button type="button" class="mybtn primary" data-submitme="#add_edit_form">Save</button> -->
-			</div>
-		</div>
-	</div>
-</div>
 
 <button class="mybtn primary w3-hide" id="view_samples_modal_trig" data-toggle="modal" data-target="#samples_info_modal">
 	<i class="fas fa-plus"></i>
@@ -220,51 +203,15 @@
 	add results
 </button>
 
-<!-- Add Result Modal -->
-<div class="modal fade" id="addResultModal" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content themeround borderless">
-			<div class="modal-header">
-				<span class="h4">Add Result</span>
-				<button type="button" class="close" data-dismiss="modal">
-					<span>&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="themegrad w3-text-white spacy-sm themeround distance-tn" id="sample_brief">
-					<span class="h4">Sample: <b>2340324093284</b></span>
-					<div>
-						<span>Type: <b>Solution</b></span>
-					</div>
-					<div>
-						<span>Status: <b>Pending</b></span>
-					</div>
-				</div>
-				<form id="addResultForm" action="defined:add_result" data-onsubmit="sendform" data-blockdefault="yes" data-callback="refreshStuff">
-					<input type="hidden" name="sample_id">
-					<div class="input-group-custom">
-						<div class="form-group">
-							<label class="form-label" for="au_ppm">AU ppm</label>
-							<input type="number" step="0.0001" class="form-control-custom" id="au_ppm" name="au_ppm" placeholder="enter Au PPM result" required>
-						</div>
-						<div class="form-group">
-							<label class="form-label" for="cu_ppm">CU ppm</label>
-							<input type="number" step="0.0001" class="form-control-custom" id="cu_ppm" name="cu_ppm" placeholder="enter Au PPM result" required>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="mybtn secondary sm" data-dismiss="modal">Close</button>
-				<button type="button" class="mybtn primary sm" data-submitme="#addResultForm">Save Result</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script>
 	let sample = {};
 	window['temp_results'] = [];
+
+	let pay_state_atlas = {
+		0 : 'pending',
+		1 : 'incomplete',
+		2 : 'paid',
+	};
 
 	// Render results table
 	function renderResultsTable(results,xtra_results) {
@@ -293,7 +240,7 @@
 						<td>${result.sample_name}</td>
 						<td>${result.au_ppm}</td>
 						<td>${result.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(result.date_added)}</td>
+						<td class="w3-hide">${formatDate0(result.date_added)}</td>
 						<td></td>
 					</tr>
 				`;
@@ -308,7 +255,7 @@
 						<td>${r.sample_id}</td>
 						<td>${r.au_ppm}</td>
 						<td>${r.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(r.date_added)}</td>
+						<td class="w3-hide">${formatDate0(r.date_added)}</td>
 						<td>
 							<button type="button" class="mybtn secondary sm" data-runme="edit_result" data-myid="${n}">edit</button>
 							<button type="button" class="mybtn bg-danger w3-text-white sm" data-runme="delete_result" data-myid="${n}">delete</button>
@@ -339,14 +286,13 @@
 
 		container.innerHTML = 'loading...';
 
-		// Helper function to format dates
-		function formatDate(dateString) {
-			return formatDate0(dateString);
-		}
-
 		// Helper function to get status badge
 		function getStatusBadge(status) {
 			return `<span class="badge-status status-${status}">${sample_state_atlas[status]}</span>`;
+		}
+
+		function getPayStatusBadge(status) {
+			return `<span class="badge-status status-p-${status}">payment ${pay_state_atlas[status]}</span>`;
 		}
 
 		// Helper function to get payment status badge
@@ -365,7 +311,7 @@
 		// return;
 		// Build the interface
 		let genreport = (sample.status == 2) ?
-			`<button type="button" class="mybtn primary sm w3-hide" data-runme="save_results" id="save_results_btn"><i class="fa fa-save"></i> make report</button>` : '';
+			`<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>` : '';
 		const html = `
 			<div class="sample-header themegrad w3-display-container">
 				<div class="d-flex justify-content-between align-items-center">
@@ -383,16 +329,17 @@
 			</div>
 
 			<!-- Action Buttons -->
-			<div class="flowline centerline center spacy-sm w3-hide">
+			<div class="flowline centerline center spacy-sm w3-hide_">
 				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
 					<i class="fas fa-plus-circle"></i> Add Result
 				</button>
-				<button class="mybtn secondary" onclick="viewTask_samples(${sample.task_id})">
+				<button class="mybtn secondary" onclick="viewTask_samples(${sample.task_id})" data-openthis="taskinfo">
 					<i class="fas fa-folder"></i> View Task
 				</button>
 				<button class="mybtn secondary" onclick="viewClient_samples(${sample.owner.id})" data-openthis="clientinfo">
 					<i class="fas fa-users"></i> View Client
 				</button>
+				${genreport}
 			</div>
 
 			<div class="distance-sm border themeround collapser" style="border-color: var(--themecolor) !important;" id="add_section">
@@ -470,11 +417,11 @@
 					</div>
 					<div class="info-row">
 						<span class="info-label">Created:</span>
-						<span class="info-value">${formatDate(sample.created_at)}</span>
+						<span class="info-value">${formatDate0(sample.created_at)}</span>
 					</div>
 					<div class="info-row">
 						<span class="info-label">Updated:</span>
-						<span class="info-value">${formatDate(sample.updated_at)}</span>
+						<span class="info-value">${formatDate0(sample.updated_at)}</span>
 					</div>
 				</div>
 			</div>
@@ -530,11 +477,11 @@
 					</div>
 					<div class="info-row">
 						<span class="info-label">Payment Status:</span>
-						<span class="info-value">${getPaymentBadge(sample.task.is_paid)}</span>
+						<span class="info-value">${getPayStatusBadge(sample.task.payment_status)}</span>
 					</div>
 					<div class="info-row">
 						<span class="info-label">Created:</span>
-						<span class="info-value">${formatDate(sample.task.created_at)}</span>
+						<span class="info-value">${formatDate0(sample.task.created_at)}</span>
 					</div>
 					<div class="info-row">
 						<button class="mybtn secondary sm" onclick="viewTask_samples()" data-openthis="taskinfo">
@@ -564,7 +511,7 @@
 					</div>
 					<div class="info-row">
 						<span class="info-label">Last Login:</span>
-						<span class="info-value">${formatDate(sample.mycreator.last_login_at)}</span>
+						<span class="info-value">${formatDate0(sample.mycreator.last_login_at)}</span>
 					</div>
 				</div>
 			</div>
@@ -803,6 +750,35 @@
 		}, 200);
 
 		// enable the samples entry form
+	}
+
+	window['gen_report'] = (el) => {
+		showmodal(false);
+
+		if(el == undefined){
+			alert_danger('invalid procedure');
+			return;
+		}
+
+		const open_gen_report = () => {
+			alert_info('opening reports section');
+			window[variableAtlas['sample_id']] = sample.id;
+
+			let payld = {
+				template: linkAtlas['gen_report'],
+				sidenote: pageNames['gen_report'],
+			};
+			loadPage(payld);
+		}
+
+		setTimeout(() => {
+			if(sample.task.payment_status == 2){
+				open_gen_report();
+				alert_info('generating report');
+			} else {
+				confirmAction(mekHeading('Incomplete Payment','h4'),'you cant generate a report until the task payment is completed',() => {showmodal(true)},false,() => {showmodal(true)});
+			}
+		}, 200);
 	}
 
 	window['refreshStuff'] = () => {

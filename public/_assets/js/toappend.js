@@ -5,7 +5,7 @@ function copytext1(txt) {
 		let b = document.createElement('textarea');
 		b.value = txt;
 		document.body.appendChild(b);
-		
+
 		b.select()
 		b.setSelectionRange(0,99000);
 
@@ -14,15 +14,10 @@ function copytext1(txt) {
 			console.log(suc ? "text copied" : "copying error occured!")
 		} catch {
 			alert("there was an error copying your text, please try again")
-			return false;
 		}
 
 		document.body.removeChild(b);
-	} else {
-		return false;
 	}
-
-	return true;
 }
 
 // added from Maggy project on 27/02/2025 same day as these ^
@@ -349,7 +344,7 @@ function add_to_storage(key, newObject) {
 	try {
 		const existingData = localStorage.getItem(key);
 		const thelist = existingData ? JSON.parse(existingData) : [];
-		
+
 		// Validate that we have an array
 		if (!Array.isArray(thelist)) {
 			console.warn(`LocalStorage key "${key}" exists but is not an array. Overwriting with new array.`);
@@ -358,7 +353,7 @@ function add_to_storage(key, newObject) {
 
 		thelist.push(newObject);
 		localStorage.setItem(key, JSON.stringify(thelist));
-		
+
 		return thelist;
 	} catch (error) {
 		console.error(`Error appending to localStorage key "${key}":`, error);

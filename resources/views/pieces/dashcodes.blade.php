@@ -29,12 +29,15 @@
 			'view_task' : './ui/view_task',
 			'view_tasks' : './ui/task_mgt',
 			'task_info' : './ui/task_info',
+			'gen_report' : './ui/gen_report',
 
 			// operations
 			'toggle_account_active' : './op/toggle_active',
 			'add_new_task' : './op/add_task',
 			'add_result' : './op/add_result',
 			'submit_results' : './op/add_result',
+			'add_payment' : './op/add_payment',
+			'add_task_note' : './op/add_task_note',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
@@ -58,12 +61,14 @@
 			'view_task' : 'Task Information',
 			'view_tasks' : 'Task management',
 			'task_info' : 'Task Summary',
+			'gen_report' : 'Generate Report',
 		}
 		const variableAtlas = {
 			'task_id' : `cur_task_id`,
 			'client_id' : `cur_client_id`,
+			'sample_id' : `cur_sample_id`,
 			'task_info_act' : `task_info_next_act`,
-			'task_info_act_args' : 'task_info_next_act',
+			'task_info_act_args' : 'task_info_next_act_args',
 		}
 
 		// shortener ops

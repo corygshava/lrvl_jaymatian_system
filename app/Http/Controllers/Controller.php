@@ -25,6 +25,8 @@ abstract class Controller{
 	public static $sitedata = null;
 	public static $permissions = [];
 	public static $mypermissions = [];
+	public static $sitedata_last_update = '2025-11-21 03:25:29';
+	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
 
 	// Api stuff
 	public static $fetchId = 'viaFetch';
@@ -467,7 +469,7 @@ abstract class Controller{
 	// site data
 	public static function defaultSiteData(){
 		$created = Carbon::now()->toDateTimeString();
-		$lastupdate = Carbon::parse('2025-11-21 03:25:29');
+		$lastupdate = Carbon::parse(self::$sitedata_last_update);
 
 		// this is the default site data that is regenerated if the sitedata file is corrupted or deleted
 		// holds website information that can be changed by the admin via myAdmin panel
@@ -574,7 +576,7 @@ abstract class Controller{
 	// system roles subsys
 	public static function sys_permissions(){
 		return [
-			"last_update" => Carbon::parse('2026-03-02 12:44:35'),
+			"last_update" => Carbon::parse(self::$sys_permissions_last_update),
 			"permissions" => [
 				"VIEW_DASHBOARD" => "view the staff dashboard",
 				"VIEW_ANALYTICS" => "view analytics dashboard",

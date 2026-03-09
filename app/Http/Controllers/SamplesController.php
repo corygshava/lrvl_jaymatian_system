@@ -22,7 +22,7 @@ class SamplesController extends Controller{
 			$sortDirection = $req->input('sort_direction', 'desc');
 
 			// filters
-			$task_status = $req->input('Status',null);
+			$status = $req->input('status',null);
 			$with_results = $req->input('with_results',null);
 			$sample_typ = $req->input('sample_type',null);
 
@@ -33,7 +33,7 @@ class SamplesController extends Controller{
 				"search" => $search,
 				"sortBy" => $sortBy,
 				"sortDirection" => $sortDirection,
-				"task_status" => $task_status,
+				"status" => $status,
 				"with_results" => $with_results,
 			];
 
@@ -69,8 +69,9 @@ class SamplesController extends Controller{
 			}
 
 			// filter for task status
-			if($task_status){
-				$records = $records->where('status',$task_status);
+			if($status !== null){
+				$res['runlog'][] = "added status filter";
+				$records = $records->where('status',$status);
 			}
 
 			// filter for whether or not its paid
