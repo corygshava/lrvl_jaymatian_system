@@ -96,7 +96,7 @@ a{
 		li{list-style-type: none;}
 
 	/* ---------- 1. headings -------- */
-		.hedtxt,.h1,.hedtxt2,.h2,.hedtxt3,.h3,.hedtxt4,.h4{
+		.hedtxt,.h1,.hedtxt2,.h2,.hedtxt3,.h3,.hedtxt4,.h4,.hedtxt5,.h5{
 			font-weight: 800;
 			display: block;
 			width: 100%;
