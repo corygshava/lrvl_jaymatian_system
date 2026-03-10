@@ -374,7 +374,9 @@ class TaskController extends Controller{
 			$reslt = false;
 			$task = null;
 
-			$wegood = self::verifyPassword($passed['admin_password']);
+			$wegood = self::verifyPassword($passed['admin_password'],$outps);
+
+			$res['runlog'][] = ['decrypted_pw' => $outps];
 
 			if(!$wegood){
 				$msg = "invalid admin password";
@@ -435,6 +437,8 @@ class TaskController extends Controller{
 						'balance' => $newbal,
 						'paid' => $paid,
 						'payment_status' => $newbal == 0 ? 2 : 1,
+						'status' => 0,
+						'is_paid' => $newbal == 0,
 					]);
 
 					$reslt = true;

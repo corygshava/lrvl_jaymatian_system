@@ -421,7 +421,7 @@
 
 <script>
 	// view specific data
-	let sample_state_atlas = {
+	window['sample_state_atlas'] = {
 		0 : 'pending',
 		1 : 'incomplete',
 		2 : 'complete',
@@ -537,6 +537,18 @@
 							return `<strong class="w3-tag themeround ${cls}">${sample_state_atlas[value]}</strong>`;
 						}
 					},
+					/*
+					{
+						title: 'Has report',
+						data: 'has_report',
+						sortable: true,
+						render: function(value) {
+							let cls = value == true ? "w3-green" : "w3-black";
+							let con = value == true ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+						}
+					},
+					// */
 					{
 						title: 'Actions',
 						data: 'id',

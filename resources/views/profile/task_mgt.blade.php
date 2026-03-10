@@ -604,7 +604,7 @@
 						render: function(value, row) {
 							return `
 								<div class="action-btns">
-									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<button class="mybtn primary sm" onclick="manage_task(${value})" title="View">
 										<i class="fas fa-cog"></i> Manage
 									</button>
 									<button class="btn-action btn-edit w3-hide" data-runme='edit_record' data-myid="${value}" title="Edit">
@@ -709,6 +709,15 @@
 		window['cur_record'] = cur;
 
 		loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
+	}
+
+	window['manage_task'] = (n) => {
+		window[variableAtlas['task_id']] = n;
+
+		loadPage({
+			template: linkAtlas['task_info'],
+			sidenote: pageNames['task_info'],
+		});
 	}
 
 	function deleteRecord(id) {

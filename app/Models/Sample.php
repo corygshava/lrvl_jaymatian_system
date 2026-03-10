@@ -16,15 +16,16 @@ class Sample extends Model
 		'sample_tag',
 		'sample_type',
 		'sample_count',
-		// 'results',
 		'deviation_summary',
 		'status',
+		'has_report',
     ];
 
     protected $casts = [
         'sample_count' => 'integer',
         'results' => 'array',
         'deviation_summary' => 'array',
+        'has_report' => 'boolean',
     ];
 
 	public $state_atlas = [

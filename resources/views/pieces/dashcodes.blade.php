@@ -38,6 +38,7 @@
 			'submit_results' : './op/add_result',
 			'add_payment' : './op/add_payment',
 			'add_task_note' : './op/add_task_note',
+			'update_bizdata' : './op/update_bizdata',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
@@ -48,7 +49,6 @@
 			'get_results' : './data/get_results',
 			'get_reports' : './data/get_reports',
 		};
-
 		const pageNames = {
 			'view_users' : 'user information',
 			'view_user' : 'user information',
@@ -64,6 +64,7 @@
 			'gen_report' : 'Generate Report',
 		}
 		const variableAtlas = {
+			'initstuff' : `sys_init_${mekRandomString(8)}`,
 			'task_id' : `cur_task_id`,
 			'client_id' : `cur_client_id`,
 			'sample_id' : `cur_sample_id`,
@@ -79,6 +80,13 @@
 		let prefsAtlas = {
 			'last_saved_task' : `${pref_prefix}saved_task`,
 		};
+
+		// will be set via server call later
+			let encsetup = {
+				offset: 4,
+				salt: 'cwaizy',
+				chunks: 19
+			};
 
 		/*
 		const confirm_modal = document.querySelector('#confirmerBox');
@@ -158,7 +166,7 @@
 			// alert_info(menubar.dataset.small);
 		};
 
-		function initstuff(){
+		window[variableAtlas['initstuff']] = () => {
 			const step1 = (w) => {
 				// sets permissions
 				permissions = w.sendme;
@@ -187,16 +195,18 @@
 				// mypermissions = w.sendme.role_permissions;
 
 				// initmenu();
-				step4();
+				step4({});
 				return;
 				/*
-				window[fetch_bypass_fyls]('./data/cur_user',{},'GET').then(d => {
+				window[fetch_bypass_fyls]('./data/bizdata',{},'GET').then(d => {
 					responseHandler(d,step4,d);
 				})
 				// */
 			};
 
-			const step4 = () => {
+			const step4 = (d) => {
+				// parseBizdata(d.sendme);
+
 				window['bizdata'] = {
 					pricing_data: {
 						soil: 1000,
@@ -207,6 +217,7 @@
 				};
 
 				initmenu();
+				Object.freeze(encsetup);
 			}
 
 			window[fetch_bypass_fyls]('./data/allpermissions',{},'GET').then(d => {
@@ -518,6 +529,9 @@
 		}
 
 		function sendform(m,callback) {
+			let hasencrypted = false;
+			let ps = '';
+
 			if(m.dataset.submitting === true){
 				alert_danger('already submitting...');
 				return;
@@ -561,6 +575,12 @@
 			m.style.opacity = 0.2;
 			m.dataset.submitting = true;
 
+			if(m.admin_password !== undefined){
+				hasencrypted = true;
+				ps = m.admin_password.value;
+				m.admin_password.value = encryptme(ps,encsetup.offset,encsetup.salt,encsetup.chunks);
+			}
+
 			let fdata = getFormdata(m);
 			let myres = undefined;
 			let myaction = m.action;
@@ -586,13 +606,33 @@
 				m.style.pointerEvents = "all";
 				m.style.opacity = 1;
 				m.dataset.submitting = false;
+
+				if(hasencrypted){
+					m.admin_password.value = ps;
+				}
 			})
 		}
 
 		function killghost(who) {
 			// kills ghost processes and functions
 			// NOTE: this shit is OP as fukari so use it sparingly
-			delete(window[who]);
+			if(window[who] !== undefined){
+				delete(window[who]);
+			} else {
+				alert_danger('invalid killghost pass');
+			}
+		}
+
+		function killghosts(stuff = []) {
+			if(typeof stuff == 'object'){
+				if(stuff.forEach === undefined){
+					alert_danger('invalid killghosts pass')
+					return;
+				}
+				stuff.forEach(s => {killghost(s);})
+			} else {
+				alert_dark('invalid killghosts pass');
+			}
 		}
 
 		function compareUserData(udata) {
@@ -601,6 +641,7 @@
 			if(udata.id == cur_u.id){
 				cur_user = udata;
 				mypermissions = cur_user.role_permissions;
+
 				updateSessionUI();
 			}
 		}
@@ -620,6 +661,8 @@
 			// alert_info('doxing password: ' + m.admin_password.value);
 			password_confo_trig.click();
 
+			let topass = encryptme(m.admin_password.value,encsetup.offset,encsetup.salt,encsetup.chunks);
+
 			window['confirmPasswordCallback']({admin_password: m.admin_password.value});
 			killghost('confirmPasswordCallback');
 		}
@@ -628,6 +671,6 @@
 			killghost('confirmPasswordCallback');
 		}
 
-		callOnDocLoad.push({act: initstuff});
+		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});
 	</script>
 

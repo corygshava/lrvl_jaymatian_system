@@ -33,6 +33,7 @@
 	<script src="_assets/js/anims.js"></script>
 	<script src="_assets/js/coryG_UIOps.js"></script>
 	<script src="_assets/js/customalerter.js"></script>
+	<script src="_assets/js/super_encryptor.js"></script>
 
 	<script src="_assets/js/app.js"></script>
 </head>

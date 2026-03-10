@@ -878,8 +878,10 @@ abstract class Controller{
 		return $fl::safewrite_txt($fpath,$tosave,true,24);
 	}
 
-    public static function verifyPassword($pw){
-        return Hash::check($pw,Auth::user()->password);
+    public static function verifyPassword($pw,&$rl = null){
+		$decrypted_pw = EncController::decryptme($pw,4,'cwaizy',19);
+		$rl = $decrypted_pw;
+        return Hash::check($decrypted_pw,Auth::user()->password);
     }
 
 	// Templates

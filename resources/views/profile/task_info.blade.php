@@ -199,7 +199,7 @@
 					<div class="input-group-custom">
 						<div class="form-group">
 							<label class="form-label" for="note">your Note</label>
-							<textarea class="form-control-custom" id="note" name="note" rows="4" required>
+							<textarea class="form-control-custom" id="note" name="note" rows="4" placeholder="enter the task notes here" required>
 							</textarea>
 						</div>
 					</div>
@@ -460,7 +460,10 @@
 
 		// setup_note_form(tid,'init_task');
 		add_note_form.taskid.value = tid;
-		add_note_form.note.value = note || '';
+
+		if(note !== '' || note !== undefined){
+			add_note_form.note.value = note;
+		}
 
 		add_note_trig.click();
 	}
@@ -515,7 +518,7 @@
 						<i class="fas fa-credit-card"></i> ${task_payment_state_atlas[task.payment_status]}
 					</span>
 					<div class="distance-sm">
-						<i>${task.notes}</i>
+						<i>${task.notes || "--"}</i>
 					</div>
 				</div>
 			</div>

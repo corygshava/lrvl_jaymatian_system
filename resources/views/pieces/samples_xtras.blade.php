@@ -428,7 +428,7 @@
 
 
 			<div class="distance-sm border themeround collapser">
-				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#clientInfo" data-toggle="collapse" data-target="#taskInfo">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#clientInfo" data-toggle="collapse" data-target="#clientInfo">
 					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-users"></i> Client Information</span>
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>

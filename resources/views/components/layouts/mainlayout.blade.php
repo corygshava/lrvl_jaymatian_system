@@ -28,6 +28,7 @@
     <script src="_assets/js/anims.js"></script>
 	<script src="_assets/js/coryG_UIOps.js"></script>
 	<script src="_assets/js/customalerter.js"></script>
+	<script src="_assets/js/super_encryptor.js"></script>
 
 	<script src="_assets/js/app.js"></script>
 </head>
@@ -35,7 +36,9 @@
     {{ $slot }}
 
     @auth
-    	@include('pieces.commons')
+		{{-- load more stuff --}}
+		<!-- only shows up when youre logged in -->
+		@include('pieces.commons')
     @endauth
 </body>
 </html>
