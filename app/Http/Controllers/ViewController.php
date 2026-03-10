@@ -180,6 +180,19 @@ class ViewController extends Controller{
         }
 	}
 
+	public function showbizdata(Request $req){
+		if($this->ili()){
+            $cmdt = self::commondata();
+            $topass = [
+                "cmdt" => $cmdt
+            ];
+
+            return view('profile.bizdata',$topass);
+        } else {
+            return $this->showerror($req,'log in to continue');
+        }
+	}
+
     public function showerror(Request $req,$msg = 'an error occured'){
         $dta = [
             'msg' => $msg,

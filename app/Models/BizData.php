@@ -16,4 +16,8 @@ class BizData extends Model
 	protected $hidden = [
 		// 'id'
 	];
+
+	protected $casts = [
+		'item_data' => 'array',
+	];
 }

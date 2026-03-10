@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BizdataController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
@@ -49,6 +50,8 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/samples_mgt', [ViewController::class,'showsamples']);
 
 	Route::get('/payments_mgt', [ViewController::class,'showpayments']);
+
+	Route::get('/biz_data', [ViewController::class,'showbizdata']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -74,6 +77,8 @@ Route::prefix('/data')->group(function(){
 
 	Route::get('/reports', [ReportsController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_reports', [ReportsController::class,'get_some'])->middleware(['auth','verified']);
+
+	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){
@@ -92,6 +97,8 @@ Route::prefix('/op')->group(function(){
 	Route::post('/add_task_note',[TaskController::class, 'add_note'])->middleware(['auth','verified']);
 
 	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
+
+	Route::post('/update_bizdata',[BizdataController::class, 'update_sth'])->middleware(['auth','verified']);
 });
 
 require __DIR__.'/auth.php';

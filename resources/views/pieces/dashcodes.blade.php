@@ -107,6 +107,7 @@
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
 			{caption: "Sample management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
 			{caption: "Payment management", url: './ui/payments_mgt',icon: 'fa fa-money-bill'},
+			{caption: "Business data", url: './ui/biz_data',icon: 'fa fa-briefcase'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
 			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-code'},
@@ -195,17 +196,17 @@
 				// mypermissions = w.sendme.role_permissions;
 
 				// initmenu();
-				step4({});
-				return;
-				/*
-				window[fetch_bypass_fyls]('./data/bizdata',{},'GET').then(d => {
+				// step4({});
+				// return;
+				// /*
+				window[fetch_bypass_fyls]('./data/bizdata',{},'POST').then(d => {
 					responseHandler(d,step4,d);
 				})
 				// */
 			};
 
 			const step4 = (d) => {
-				// parseBizdata(d.sendme);
+				parseBizdata(d.sendme);
 
 				window['bizdata'] = {
 					pricing_data: {
@@ -224,6 +225,10 @@
 				responseHandler(d,step1,d);
 				// initmenu();
 			})
+		}
+
+		window['parseBizdata'] = (m) => {
+			alert_dark('parsing bizdata');
 		}
 
 		function initmenu() {
@@ -663,7 +668,7 @@
 
 			let topass = encryptme(m.admin_password.value,encsetup.offset,encsetup.salt,encsetup.chunks);
 
-			window['confirmPasswordCallback']({admin_password: m.admin_password.value});
+			window['confirmPasswordCallback']({admin_password: topass});
 			killghost('confirmPasswordCallback');
 		}
 
