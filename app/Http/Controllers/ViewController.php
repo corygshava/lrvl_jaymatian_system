@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ViewController extends Controller{
     // UIs
@@ -199,6 +200,23 @@ class ViewController extends Controller{
         ];
 
         return view('error',$dta);
+    }
+
+	// media
+    public function showimg(Request $req,$fyl = ""){
+		// $alldata = $req->all();
+        $path = storage_path('runtime/bizinfo/'.$fyl);
+
+		// echo $path."<br>";
+		// dd($path);
+
+		if(!File::exists($path)){
+			http_response_code(404);
+			echo 'file not found';
+			// return response()->json('file not found', 404);
+		}
+
+		return response()->file($path);
     }
 
     // data

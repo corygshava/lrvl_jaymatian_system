@@ -39,6 +39,7 @@
 			'add_payment' : './op/add_payment',
 			'add_task_note' : './op/add_task_note',
 			'update_bizdata' : './op/update_bizdata',
+			'update_bizdata_fyls' : './op/update_bizdata_images',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
@@ -48,6 +49,10 @@
 			'get_payments' : './data/get_payments',
 			'get_results' : './data/get_results',
 			'get_reports' : './data/get_reports',
+			'get_bizdata' : './data/bizdata',
+			'get_user' : './data/cur_user',
+			'get_allpermissions' : './data/allpermissions',
+			'get_mypermissions' : './data/my_permissions',
 		};
 		const pageNames = {
 			'view_users' : 'user information',
@@ -172,7 +177,7 @@
 				// sets permissions
 				permissions = w.sendme;
 
-				window[fetch_bypass_fyls]('./data/my_permissions',{},'GET').then(d => {
+				window[fetch_bypass_fyls](linkAtlas['get_mypermissions'],{},'GET').then(d => {
 					responseHandler(d,step2,d);
 				}).catch(err => {
 					dynamic_ui.innerHTML = 'error getting user permissions';
@@ -183,7 +188,7 @@
 				// sets permissions
 				mypermissions = w.sendme;
 
-				window[fetch_bypass_fyls]('./data/cur_user',{},'GET').then(d => {
+				window[fetch_bypass_fyls](linkAtlas['get_user'],{},'GET').then(d => {
 					responseHandler(d,step3,d);
 				}).catch(err => {
 					dynamic_ui.innerHTML = 'error getting user information';
@@ -199,15 +204,16 @@
 				// step4({});
 				// return;
 				// /*
-				window[fetch_bypass_fyls]('./data/bizdata',{},'POST').then(d => {
+				window[fetch_bypass_fyls](linkAtlas['get_bizdata'],{},'POST').then(d => {
 					responseHandler(d,step4,d);
 				})
 				// */
 			};
 
 			const step4 = (d) => {
-				parseBizdata(d.sendme);
+				window['bizdata'] = parseBizdata(d.sendme);
 
+				/*
 				window['bizdata'] = {
 					pricing_data: {
 						soil: 1000,
@@ -216,12 +222,13 @@
 						carbon: 1500,
 					}
 				};
+				*/
 
 				initmenu();
 				Object.freeze(encsetup);
 			}
 
-			window[fetch_bypass_fyls]('./data/allpermissions',{},'GET').then(d => {
+			window[fetch_bypass_fyls](linkAtlas['get_allpermissions'],{},'GET').then(d => {
 				responseHandler(d,step1,d);
 				// initmenu();
 			})
@@ -229,6 +236,27 @@
 
 		window['parseBizdata'] = (m) => {
 			alert_dark('parsing bizdata');
+			window['debug_var_bizdata'] = m;
+
+			let outobj = {};
+
+			m.forEach(el => {
+				let obj = {};
+				let dta = el.item_data;
+
+				if(el.item_name == 'pricing_data'){
+					dta.forEach(d => {
+						let k = Object.keys(d)[0];
+						obj[k] = d[k];
+					})
+				} else {
+					obj = dta;
+				}
+
+				outobj[el.item_name] = obj;
+			})
+
+			return outobj;
 		}
 
 		function initmenu() {
@@ -596,7 +624,6 @@
 
 			// add_edit_form.style.pointerEvents = "all";
 			window[fetch_bypass_fyls](myaction,fdata,'POST',true,true).then(d => {
-				// alert_danger('awkdhawkjdkawj')
 				myres = d;
 
 				responseHandler(d,callback,{'el': m,'data': d});

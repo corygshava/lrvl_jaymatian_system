@@ -28,6 +28,10 @@ abstract class Controller{
 	public static $sitedata_last_update = '2025-11-21 03:25:29';
 	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
 
+	// storage stuff
+	public static $payload_path = "runtime/payloads/";
+	public static $bizfiles_path = "runtime/bizinfo/";
+
 	// Api stuff
 	public static $fetchId = 'viaFetch';
 	public static $exchage_rates_url = 'https://api.exchangerate-api.com/v4/latest/USD';
@@ -96,7 +100,7 @@ abstract class Controller{
 
 	public static function cur_user(){
 		if(self::ili()){
-			return auth()->user();
+			return Auth::user();
 		} else {
 			return null;
 		}
@@ -154,7 +158,7 @@ abstract class Controller{
 		$topass = [
 			'thedata' => $what,
 		];
-		return view('jsondisplay',$topass);
+		dd($topass);
 	}
 
 	public function curlGet(string $url){
@@ -845,11 +849,58 @@ abstract class Controller{
 
 		return response()->json($res);
 	}
-    public static function log_payload($entry = 'empty payload',$fname = null,$usedate = true){
+	public function log_my_payload_fyls(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			'recid' => ['required']
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+
+			$fyls = [];
+			$curdate = now()->format('dmyhis');
+
+			foreach($req->allFiles() as $key => $fyl){
+				if($fyl->isValid()){
+					$myname = pathinfo($fyl->getClientOriginalName(),PATHINFO_FILENAME);
+					$ext = $fyl->getClientOriginalExtension();
+					$rndr = $this->mekRandomString(4);
+					$fname = "[{$curdate}]_{$rndr}_{$myname}.{$ext}";
+					$fyls[] = $fname;
+					$thepath = self::$payload_path;
+					$fyl->move(storage_path("{$thepath}files/",$fname), $fname);
+				}
+			}
+			$alldata['files'] = $fyls;
+
+			$reslt = self::log_payload($alldata,'debug_payload');
+			$msg = "logging payload + files";
+
+			$res['result'] = $reslt;
+			$res['message'] = $msg;
+			$res['sendme'] = $alldata;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+    public static function log_payload($entry = 'empty_purpose',$fname = null,$usedate = true){
 		$fl = new FileopsController();
 		$tdate = $usedate ? date('dmy')."_" : '';
 		$fname = $fname == null ? 'payloads' : $fname;
-		$fstore = "runtime/payloads/{$tdate}_{$fname}.json";
+		$thepath = self::$payload_path;
+		$fstore = "{$thepath}{$tdate}_{$fname}.json";
 		$fpath = storage_path($fstore);
 		$contents = '[]';
 		$curdata = [];

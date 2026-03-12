@@ -26,6 +26,8 @@
 	<script src="_assets/js/jquery-3.6.0.min.js"></script>
 	<script src="_assets/js/popper.min.js"></script>
 	<script src="_assets/_vendor/BS4/js/bootstrap.bundle.min.js"></script>
+	<script src="_assets/_vendor/misc/html2canvas.min.js"></script>
+	<script src="_assets/_vendor/misc/jspdf.umd.min.js"></script>
 	<script src="_assets/js/chart.js"></script>
 	<script src="_assets/js/SuperScript.js"></script>
 	<script src="_assets/js/toappend.js"></script>
