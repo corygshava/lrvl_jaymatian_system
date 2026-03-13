@@ -51,6 +51,8 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/payments_mgt', [ViewController::class,'showpayments']);
 
+	Route::get('/gen_report', [ViewController::class,'showgenreport']);
+
 	Route::get('/biz_data', [ViewController::class,'showbizdata']);
 });
 

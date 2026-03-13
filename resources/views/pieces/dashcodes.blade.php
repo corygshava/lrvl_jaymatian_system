@@ -1,5 +1,21 @@
 
 	<script>
+		// state atlases
+		let pstate_classes = [
+			'w3-text-red',
+			'w3-text-grey',
+			'w3-text-green'
+		];
+		window['sample_state_atlas'] = {
+			0 : 'pending',
+			1 : 'incomplete',
+			2 : 'complete',
+		};
+
+		const min_loadtime = 400;
+	</script>
+
+	<script>
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
 
@@ -30,6 +46,8 @@
 			'view_tasks' : './ui/task_mgt',
 			'task_info' : './ui/task_info',
 			'gen_report' : './ui/gen_report',
+			'biz_data' : './ui/biz_data',
+			'samples_mgt' : './ui/samples_mgt',
 
 			// operations
 			'toggle_account_active' : './op/toggle_active',
@@ -53,6 +71,9 @@
 			'get_user' : './data/cur_user',
 			'get_allpermissions' : './data/allpermissions',
 			'get_mypermissions' : './data/my_permissions',
+
+			// misc
+			'bizimages' : './media/bizimg'
 		};
 		const pageNames = {
 			'view_users' : 'user information',
@@ -365,6 +386,11 @@
 				delete(window['runOnLeave']);
 			}
 
+			if(window['killOnLeave'] !== undefined){
+				killghosts(window['killOnLeave']);
+				delete(window['killOnLeave']);
+			}
+
 			activateSidebar(false);
 			window['toggleSidenav'](menubar_toggle_btn,true);
 			alert_info(`loading ${p.sidenote}`);
@@ -432,6 +458,10 @@
 			if(passme.template.includes('defined:')){
 				let i = passme.template.split(":")[1];
 				passme.template = linkAtlas[i];
+			}
+			if(passme.sidenote.includes('defined:')){
+				let i = passme.sidenote.split(":")[1];
+				passme.sidenote = pageNames[i] || i;
 			}
 
 			window['loadPage'](passme);
@@ -558,6 +588,12 @@
 				if(typeof window['runOnAwake'] == 'function'){
 					window['runOnAwake']();
 				}
+			}
+
+			if(window['killOnLeave'] !== undefined){
+				// prevents killing variables outside
+				// also coincidentally prevents it from being deleted so dont uncomment unless you know a workaround
+				// Object.freeze(window['killOnLeave']);
 			}
 		}
 

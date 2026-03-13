@@ -48,14 +48,10 @@
 	}
 
 	.info-row{
-		display: flex;
-		padding: 12px 0;
-		gap: 12px;
-		/*border-bottom: 1px solid #f3f3f3;*/
+		border: none;
 	}
 	.info-row .info-label{
-		font-weight: 700;
-		width: 120px;
+		width: 170px;
 	}
 </style>
 
@@ -376,6 +372,14 @@
 								<label class="form-label" for="phone">Phone</label>
 								<input type="tel" class="form-control-custom" id="phone" name="phone" placeholder="the front office phone number" required>
 							</div>
+							<div class="form-group">
+								<label class="form-label" for="tech_staff">Technical Staff</label>
+								<input type="tel" class="form-control-custom" id="tech_staff" name="tech_staff" placeholder="the technical staff who will appear in reports" required>
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="auth_staff">Authorizer</label>
+								<input type="tel" class="form-control-custom" id="auth_staff" name="auth_staff" placeholder="the authorizing staff who will appear in reports" required>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -581,6 +585,14 @@
 				<div class="info-row">
 					<span class="info-label">Phone:</span>
 					<span class="info-value slide-up" style="${mekstagger(200,7)}">${b_data.phone || '--[!]--'}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label">Technical Staff Name:</span>
+					<span class="info-value slide-up" style="${mekstagger(200,8)}">${b_data.tech_staff || '--[!]--'}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label">Authorizer Name:</span>
+					<span class="info-value slide-up" style="${mekstagger(200,9)}">${b_data.auth_staff || '--[!]--'}</span>
 				</div>
 			`;
 
@@ -1024,10 +1036,13 @@
 
 			let b_info = temp_bizdata.temp.bizinfo || {};
 
+			add_edit_bizinfo_form.biz_name.value = b_info.biz_name || '';
 			add_edit_bizinfo_form.branch_name.value = b_info.branch_name || '';
 			add_edit_bizinfo_form.location.value = b_info.location || '';
 			add_edit_bizinfo_form.email.value = b_info.email || '';
 			add_edit_bizinfo_form.phone.value = b_info.phone || '';
+			add_edit_bizinfo_form.tech_staff.value = b_info.tech_staff || '';
+			add_edit_bizinfo_form.auth_staff.value = b_info.auth_staff || '';
 		}
 		window['submit_bizinfo'] = (el) => {
 			let b_info = {
@@ -1036,6 +1051,8 @@
 				location : el.location.value || '--!--',
 				email : el.email.value || '--!--',
 				phone : el.phone.value || '--!--',
+				tech_staff : el.tech_staff.value || '--!--',
+				auth_staff : el.auth_staff.value || '--!--',
 			}
 
 			temp_bizdata.temp.bizinfo = b_info;

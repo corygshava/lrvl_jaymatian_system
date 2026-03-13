@@ -4,6 +4,7 @@
 	--syz_2: 60px;
 	--light-gray: #f3f3f3;
 }
+.upbtn{opacity: 0;pointer-events: none;}
 
 /* loader */
 	.loader {
@@ -131,6 +132,7 @@
 	}
 	.menubar.squish a.menulink{
 		/*width: var(--w);*/
+		box-sizing: border-box;
 	}
 	.menubar.squish .menubar-brand{
 		display: none;
@@ -881,12 +883,99 @@
 		margin-bottom: 12px;
 	}
 
+/* Progress Indicator */
+	.progress-indicator {
+		border-radius: 15px;
+		padding: 20px 30px;
+		position: sticky;
+		top: 8px;
+	}
+	.progress-indicator .progress-steps {
+		display: flex;
+		justify-content: space-between;
+		position: relative;
+		--l: 65px;
+	}
+	.progress-indicator .progress-steps::before {
+		content: '';
+		position: absolute;
+		width: calc(96% - var(--l));
+		top: 20px;
+		left: var(--l);
+		right: 0;
+		height: 2px;
+		background-color: var(--clr-border);
+		opacity: 0.3;
+		z-index: 0;
+	}
+	.progress-indicator .progress-line {
+		position: absolute;
+		width: calc(96% - var(--l));
+		top: 20px;
+		left: var(--l);
+		height: 2px;
+		/*background: var(--themecolor);*/
+		z-index: 1;
+		transition: width 0.3s ease;
+	}
+
+	.progress-indicator .step {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		z-index: 2;
+		/*background-color: var(--clr-text-muted);*/
+		padding: 0 10px;
+		cursor: pointer;
+	}
+	.progress-indicator .step-circle {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background-color: var(--clr-fade);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 8px;
+		transition: all 0.3s ease;
+	}
+	.progress-indicator .step.active .step-circle {
+		background: var(--themecolor);
+		color: #fff;
+		scale: 1.4;
+	}
+	.progress-indicator .step.completed .step-circle {
+		background: var(--success);
+		color: #fff;
+	}
+	.progress-indicator .step.completed .step-label {
+		color: var(--success);
+	}
+	.progress-indicator .step-label {
+		font-size: 13px;
+		color: var(--clr-text-muted);
+		font-weight: 500;
+	}
+	.progress-indicator .step.active .step-label {
+		color: var(--themecolor);
+	}
 
 /* reusables */
 	/* collapse */
 		.collapser{--opac:1;}
 		.collapser:has(.collapse.show){--opac:0;}
 		.collapser .myicon{opacity: var(--opac);}
+
+		.info-row{
+			display: flex;
+			padding: 12px 0;
+			gap: 12px;
+			border-bottom: 1px solid #f3f3f3;
+		}
+		.info-row .info-label{
+			font-weight: 700;
+			width: 120px;
+		}
 
 	/* badges */
 		.mybadge {

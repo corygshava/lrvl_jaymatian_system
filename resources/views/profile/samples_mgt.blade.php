@@ -421,11 +421,6 @@
 
 <script>
 	// view specific data
-	window['sample_state_atlas'] = {
-		0 : 'pending',
-		1 : 'incomplete',
-		2 : 'complete',
-	};
 	let task_pay_state = {
 		0 : 'pending',
 		1 : 'incomplete',
@@ -451,6 +446,7 @@
 			let tmp = {value: k, label: sample_state_atlas[k]};
 			state_filter.push(tmp);
 		});
+		sample_types = Object.keys(bizdata.pricing_data);
 		sample_types.forEach(k => {
 			let tmp = {value: k, label: k};
 			samples_filter.push(tmp);
@@ -515,7 +511,10 @@
 						data: 'task',
 						sortable: false,
 						render: function(value) {
-							return `<strong>${task_pay_state[value.payment_status]}</strong>`;
+							let pid = value.payment_status;
+							let pstate = task_pay_state[pid];
+							let cls = pstate_classes[pid];
+							return `<strong class="${cls}">${pstate}</strong>`;
 						}
 					},
 					{

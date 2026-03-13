@@ -6,30 +6,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class ViewController extends Controller{
-    // UIs
+	// UIs
 	public function showdash(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('dashboard',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('dashboard',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function showconsole(Request $req){
-        if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.console',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.console',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function showroles(Request $req){
 		if($this->ili()){
@@ -53,45 +53,45 @@ class ViewController extends Controller{
 
 			return view('profile.datatables_remake',$topass);
 		} else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function showusers(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.user_mgt',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.user_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function showuser(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.user_view',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.user_view',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 
 	public function showclients(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.client_mgt',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.client_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function showclient(Request $req){
 		if($this->ili()){
@@ -108,15 +108,15 @@ class ViewController extends Controller{
 
 	public function showtasks(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.task_mgt',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.task_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 	public function addtask(Request $req){
 		if($this->ili()){
@@ -157,55 +157,80 @@ class ViewController extends Controller{
 
 	public function showsamples(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.samples_mgt',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.samples_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 
 	public function showpayments(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.payments_mgt',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.payments_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
+	public function showgenreport(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.reports_gen',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+	public function showreports(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.reports_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 
 	public function showbizdata(Request $req){
 		if($this->ili()){
-            $cmdt = self::commondata();
-            $topass = [
-                "cmdt" => $cmdt
-            ];
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
 
-            return view('profile.bizdata',$topass);
-        } else {
-            return $this->showerror($req,'log in to continue');
-        }
+			return view('profile.bizdata',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
 	}
 
-    public function showerror(Request $req,$msg = 'an error occured'){
-        $dta = [
-            'msg' => $msg,
-        ];
+	public function showerror(Request $req,$msg = 'an error occured'){
+		$dta = [
+			'msg' => $msg,
+		];
 
-        return view('error',$dta);
-    }
+		return view('error',$dta);
+	}
 
 	// media
-    public function showimg(Request $req,$fyl = ""){
+	public function showimg(Request $req,$fyl = ""){
 		// $alldata = $req->all();
-        $path = storage_path('runtime/bizinfo/'.$fyl);
+		$path = storage_path('runtime/bizinfo/'.$fyl);
 
 		// echo $path."<br>";
 		// dd($path);
@@ -217,10 +242,10 @@ class ViewController extends Controller{
 		}
 
 		return response()->file($path);
-    }
+	}
 
-    // data
-    public function showpermissions(Request $req){
+	// data
+	public function showpermissions(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
