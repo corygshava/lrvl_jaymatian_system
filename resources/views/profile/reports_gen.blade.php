@@ -463,6 +463,23 @@
 
 <script>
 	window['report_runtime_data'] = {};
+	window['killOnLeave'] = [
+		'initstuff',
+		'showerror',
+		'showloader',
+		'render_all_data',
+		'processNumber',
+		'renderCanvas',
+		'generatePdf',
+		'gen_download',
+		'downloadPdf',
+		'printPdf',
+		'generateSerial',
+		'pick_step',
+		'pick_step_2',
+		'pick_step_3',
+		'upload_stuff',
+	];
 
 	/*
 	report_runtime_data = {

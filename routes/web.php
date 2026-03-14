@@ -109,6 +109,8 @@ Route::prefix('/op')->group(function(){
 
 Route::prefix('/media')->group(function(){
 	Route::get('/bizimg/{fyl}',[ViewController::class, 'showimg']);
+	Route::get('/getreport/imgs/{fyl}',[ViewController::class, 'showreport_img']);
+	Route::get('/getreport/pdfs/{fyl}',[ViewController::class, 'showreport_pdf']);
 });
 
 require __DIR__.'/auth.php';

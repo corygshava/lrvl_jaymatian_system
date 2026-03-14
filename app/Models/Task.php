@@ -20,6 +20,8 @@ class Task extends Model{
 		'cost',
 		'paid',
 		'balance',
+		'sample_count',
+		'processed_sample_count',
 	];
 	protected $hidden = [
 		'passed_task_data',

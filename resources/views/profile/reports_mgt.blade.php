@@ -412,29 +412,24 @@
 
 <?php
 	/*
-	require_once __DIR__.'/piece_add_client_form.php';
-	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/piece_reports_xtras.php';
 	require_once __DIR__.'/datatables_code.php';
 	// */
 ?>
 
 {{-- <!-- --}}
 @include('pieces.codes_datatables')
-@include('pieces.payments_xtras')
+@include('pieces.reports_xtras')
 {{-- --> --}}
 
 <script>
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
 		// view specific data
-		let methods = [
-			'Mpesa',
-			'Card',
-			'Cash',
-		];
+		let s_types = Object.keys(bizdata.pricing_data);;
 		let meth_map = [];
 
-		methods.forEach(m => {
+		s_types.forEach((m,id) => {
 			meth_map.push({value: m,label: m});
 		})
 
@@ -500,13 +495,7 @@
 							return `
 								<div class="action-btns">
 									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
-										<i class="fas fa-cog"></i> Manage
-									</button>
-									<button class="btn-action btn-edit w3-hide_" data-runme='edit_record' data-myid="${value}" title="Edit">
-										<i class="fas fa-download"></i> download
-									</button>
-									<button class="btn-action btn-edit w3-hide_" data-runme='edit_record' data-myid="${value}" title="Edit">
-										<i class="fas fa-eye"></i> view report
+										<i class="fas fa-eye"></i> View
 									</button>
 								</div>
 							`;
@@ -525,8 +514,8 @@
 				// Optional: Filter definitions
 				filters: [
 					{
-						name: 'method',
-						label: 'payment Method',
+						name: 'sample_type',
+						label: 'Sample type',
 						rawname: 'method',
 						options: meth_map
 					}
@@ -579,7 +568,7 @@
 		}
 
 		let cur = {
-			rectype: 'payment',
+			rectype: 'report',
 			data: myn,
 		}
 
@@ -588,9 +577,9 @@
 	}
 
 	function viewRecordInfo(who) {
-		alert_info('wottafag');
-		view_payment_modal_trig.click();
-		renderPayData(who);
+		// alert_info('wottafag');
+		view_report_modal_trig.click();
+		renderData(who);
 	}
 
 	window['form_afterfx'] = (m) => {

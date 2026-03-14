@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sample;
 use App\Models\Result;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Mavinoo\Batch\Batch;
 
@@ -276,6 +277,7 @@ class SamplesController extends Controller{
 
 			// confirm sample exists
 			$thesample = Sample::where('id',$passed['sample_id'])
+				->with('task')
 				->withCount('results')
 				->first()
 			;
@@ -302,6 +304,12 @@ class SamplesController extends Controller{
 					$recs[] = $rec;
 					$cols = array_keys($recs[0]);
 				}
+
+				$added = count($recs);
+				$task = Task::where('id',$thesample->task_id)->first();
+				$task->processed_sample_count += $added;
+				$task->status = $task->sample_count >= $task->processed_sample_count ? 2 : 0;
+				$task->save();
 
 				$batch->insert(new Result,$cols,$recs);
 

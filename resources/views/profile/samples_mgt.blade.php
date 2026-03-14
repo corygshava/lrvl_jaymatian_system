@@ -442,7 +442,8 @@
 	let samples_filter = [];
 
 	window['runOnAwake'] = () => {
-		Object.keys(sample_state_atlas).forEach(k => {
+		Object.keys(sample_state_atlas).forEach((k,id) => {
+			// if(id == 0){return;}
 			let tmp = {value: k, label: sample_state_atlas[k]};
 			state_filter.push(tmp);
 		});

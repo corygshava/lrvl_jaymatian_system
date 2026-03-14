@@ -25,7 +25,7 @@ class ReportsController extends Controller{
 
 			// filters
 			// $task_status = $req->input('Status',null);
-			// $sample_typ = $req->input('sample_type',null);
+			$sample_type = $req->input('sample_type',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
@@ -34,6 +34,7 @@ class ReportsController extends Controller{
 				"search" => $search,
 				"sortBy" => $sortBy,
 				"sortDirection" => $sortDirection,
+				"sample_type" => $sample_type,
 			];
 
 			// clean up sortBy to prevent issues
@@ -70,6 +71,9 @@ class ReportsController extends Controller{
 			}
 
 			// place for filters
+			if($sample_type){
+				$records = $records->where('sample_type',$sample_type);
+			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
 			// $sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
@@ -240,9 +244,10 @@ class ReportsController extends Controller{
 						$myname = $file_link;
 						$ext = $fyl->getClientOriginalExtension();
 						$date = date('y_m');
-						$fname = "{$date}/{$myname}.{$ext}";
-						$fyl->move(storage_path(self::$bizfiles_path),$fname);
-						$fyls[$fkey] = $myname;
+						$daname = "{$myname}.{$ext}";
+						$fname = "[{$date}] {$daname}";
+						$fyl->move(storage_path(self::$report_files_path),$fname);
+						$fyls[$fkey] = $fname;
 					};
 
 					$fkey = 'genimage';
@@ -251,9 +256,10 @@ class ReportsController extends Controller{
 						$myname = $img_link;
 						$ext = $fyl->getClientOriginalExtension();
 						$date = date('y_m');
-						$fname = "{$date}/{$myname}.{$ext}";
-						$fyl->move(storage_path(self::$bizfiles_path),$fname);
-						$fyls[$fkey] = $myname;
+						$daname = "{$myname}.{$ext}";
+						$fname = "[{$date}] {$daname}";
+						$fyl->move(storage_path(self::$report_images_path),$fname);
+						$fyls[$fkey] = $fname;
 					};
 
 					// $res['runlog'][] = ['sample' => $sample];
@@ -272,6 +278,8 @@ class ReportsController extends Controller{
 						'date_compiled' => Carbon::now(),
 						'task_no' => $sample->task->task_no,
 						'technical_staff_name' => $b_deets['tech_staff'],
+						'authorizer' => $b_deets['auth_staff'],
+						'attendant' => $user->name,
 						'analytical_report' => $results,
 						'deviation_data' => $bizdata['deviation_data'],
 						'business_logo_img' => $bizdata['business_images']['company_logo'],

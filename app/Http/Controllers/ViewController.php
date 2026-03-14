@@ -243,6 +243,28 @@ class ViewController extends Controller{
 
 		return response()->file($path);
 	}
+	public function showreport_pdf(Request $req,$fyl = ""){
+		$path = storage_path((self::$report_files_path).$fyl);
+		// dd($path);
+
+		if(!File::exists($path)){
+			http_response_code(404);
+			return null;
+		}
+
+		return response()->file($path);
+	}
+	public function showreport_img(Request $req,$fyl = ""){
+		$path = storage_path((self::$report_images_path).$fyl);
+		// dd($path);
+
+		if(!File::exists($path)){
+			http_response_code(404);
+			return null;
+		}
+
+		return response()->file($path);
+	}
 
 	// data
 	public function showpermissions(Request $req){

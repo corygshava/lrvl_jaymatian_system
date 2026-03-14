@@ -23,6 +23,8 @@ class ReportsGen extends Model
 		'date_compiled',
 		'task_no',
 		'technical_staff_name',
+		'authorizer',
+		'attendant',
 		'analytical_report',
 		'deviation_data',
 		'business_logo_img',

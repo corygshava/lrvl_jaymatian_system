@@ -492,7 +492,6 @@
 </div>
 
 <?php
-	require_once __DIR__.'/piece_add_client_form.php';
 ?>
 
 <div class="modal fade" id="ViewModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" style="z-index: 102;">
@@ -511,8 +510,19 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
 
 <?php
-	require_once __DIR__.'/datatables_code.php';
 ?>
+
+<?php
+	/*
+	require_once __DIR__.'/piece_add_client_form.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.forms_clientops')
+{{-- --> --}}
 
 <script>
 	window['user_roles'] = undefined;

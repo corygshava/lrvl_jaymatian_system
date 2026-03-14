@@ -28,7 +28,7 @@ class TaskController extends Controller{
 			$perPage = $req->input('per_page', 10);
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
-			$sortDirection = $req->input('sort_direction', 'desc');
+			$sortDirection = $req->input('sort_direction', 'asc');
 
 			// filters
 			$payment_status = $req->input('payment_status',null);
@@ -240,6 +240,7 @@ class TaskController extends Controller{
 							$newid = Task::whereDate('created_at', today())->count() + 1;
 							$suffix = str_pad($newid,3,'0',STR_PAD_LEFT);
 							$task_serial = 'TSK_' . date('Ymd') . '_' . $suffix;
+							$sample_count = 0;
 
 							$paystate = isset($sent['paymentStats']) ? ($sent['paymentStats']['balance'] == 0 ? 2 : 1) : 0;
 							$safesave = $sent;
@@ -252,6 +253,11 @@ class TaskController extends Controller{
 							}
 
 							DB::beginTransaction();
+
+							foreach($sent['sampleData'] as $ind => $s_info){
+								$cnt = (int) $s_info['amt'];
+								$sample_count += $cnt;
+							}
 
 							$task = Task::create([
 								'task_no' => $task_serial,
@@ -266,12 +272,13 @@ class TaskController extends Controller{
 								'paid' => $paid,
 								'cost' => $cost,
 								'balance' => $balance,
+								'sample_count' => $sample_count,
 							]);
 
-							$batch = app(Batch::class);
 							$samples = [];
 							$cols = [];
 							foreach($sent['sampleData'] as $ind => $s_info){
+								$cnt = (int) $s_info['amt'];
 								$samples[] = [
 									'added_by' => $uid,
 									'task_id' => $task->id,
@@ -279,11 +286,13 @@ class TaskController extends Controller{
 									'sample_no' => $task_serial . "_" . $ind,
 									'sample_tag' => $s_info['tag'],
 									'sample_type' => $s_info['typ'],
-									'sample_count' => (int) $s_info['amt'],
+									'sample_count' => $cnt,
 								];
 
 								$cols = array_keys($samples[0]);
 							}
+
+							$batch = app(Batch::class);
 							// batch insert sample records
 							$batch->insert(new Sample,$cols,$samples);
 
@@ -433,13 +442,16 @@ class TaskController extends Controller{
 						$msg = "payment added successfully";
 					}
 
-					Task::where('id',$task->id)->update([
+					$tochange = [
 						'balance' => $newbal,
 						'paid' => $paid,
 						'payment_status' => $newbal == 0 ? 2 : 1,
-						'status' => 0,
 						'is_paid' => $newbal == 0,
-					]);
+					];
+					if($task->status == 1){
+						$tochange['status'] = 0;
+					}
+					Task::where('id',$task->id)->update($tochange);
 
 					$reslt = true;
 				}

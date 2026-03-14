@@ -1,7 +1,7 @@
 
 	<script>
 		// state atlases
-		let pstate_classes = [
+		window['pstate_classes'] = [
 			'w3-text-red',
 			'w3-text-grey',
 			'w3-text-green'
@@ -10,6 +10,22 @@
 			0 : 'pending',
 			1 : 'incomplete',
 			2 : 'complete',
+		};
+		window['task_state_atlas'] = [
+			'Pending',
+			'awaiting payment',
+			'Complete',
+			'Cancelled',
+		];
+		window['state_atlas'] = {
+			0 : 'pending',
+			1 : 'awaiting_payment',
+			2 : 'complete',
+		};
+		window['payment_state_atlas'] = {
+			0 : 'pending',
+			1 : 'incomplete',
+			2 : 'paid',
 		};
 
 		const min_loadtime = 400;
@@ -75,7 +91,9 @@
 			'get_mypermissions' : './data/my_permissions',
 
 			// misc
-			'bizimages' : './media/bizimg'
+			'bizimages' : './media/bizimg',
+			'getreport_img' : './media/getreport/imgs',
+			'getreport_pdf' : './media/getreport/pdfs',
 		};
 		const pageNames = {
 			'view_users' : 'user information',

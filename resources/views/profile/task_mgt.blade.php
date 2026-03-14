@@ -488,11 +488,9 @@
 
 <?php
 	/*
-	require_once __DIR__.'/piece_add_client_form.php';
 	require_once __DIR__.'/datatables_code.php';
 	// */
 ?>
-
 
 {{-- <!-- --}}
 @include('pieces.codes_datatables')
@@ -502,16 +500,6 @@
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
 		// view specific data
-		let state_atlas = {
-			0 : 'pending',
-			1 : 'awaiting_payment',
-			2 : 'complete',
-		};
-		let payment_state_atlas = {
-			0 : 'pending',
-			1 : 'incomplete',
-			2 : 'paid',
-		};
 		let payment_state_filter = [];
 		let state_filter = [];
 		Object.keys(payment_state_atlas).forEach(k => {
@@ -757,7 +745,7 @@
 		roleop = "edit";
 		rec_id = e.dataset.id;
 
-		confirmAction();
+		// confirmAction();
 		alert_info(e.textContent);
 	}
 
