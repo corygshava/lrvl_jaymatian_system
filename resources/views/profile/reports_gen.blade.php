@@ -97,12 +97,12 @@
 		}
 
 		.signature_image {
-		height: auto;
-		width: 126px;
-		position: absolute;
-		mix-blend-mode: multiply;
-		transform: translate(65px, -20px) scale(0.8);
-	}
+			height: auto;
+			width: 126px;
+			position: absolute;
+			mix-blend-mode: multiply;
+			transform: translate(65px, -20px) scale(0.8);
+		}
 
 	/* collapse */
 		.info-row {
@@ -146,10 +146,10 @@
 		border-radius: var(--roundness);
 		margin-top: 24px;
 	}
-
 	.tab .section-title{
 		font-weight: 700;
 	}
+
 	.mylist b {width: 50px;display: inline-block;}
 </style>
 
@@ -159,6 +159,7 @@
 			<span class="h4">Generate Report</span>
 			<p>Here you can generate a report for a sample that has finished processing</p>
 		</div>
+
 		<div class="header-actions">
 			<button class="mybtn secondary" data-runme="load_page" data-link="defined:biz_data">
 				<i class="fas fa-edit"></i>
@@ -204,7 +205,7 @@
 	<div class="tabs" id="tabs_panel">
 		<div class="tab slide-up">
 			<div class="spacy-sm w3-center text-muted section-title">
-				<i>document preview</i>
+				<span class="h4">document preview</span>
 			</div>
 
 			<div id="document_Holder" class="flow centroid">
@@ -367,10 +368,10 @@
 		<div class="tab slide-up">
 			<div id="canvasHolder">
 				<div class="spacy-sm w3-center text-muted section-title">
-					<i>Generated document</i>
+					<span class="h4">Generated document</span>
 				</div>
 
-				<div class="canvasguy slide-up">
+				<div class="canvasguy slide-up flow centroid">
 				</div>
 
 				<div class="distance-sm border panelbg themeround collapser slide-up">
@@ -392,7 +393,7 @@
 		<div class="tab slide-up">
 			<div>
 				<div class="spacy-sm w3-center text-muted section-title">
-					<i>final steps</i>
+					<span class="h4">final steps</span>
 				</div>
 
 				<div class="spacy-sm panelbg themeround">
@@ -400,9 +401,12 @@
 						<p>Here are the generated files, both image and pdf file. You can check the generated files by navigating to the previous steps.</p>
 						<p>click the button to save the report to the database</p>
 					</div>
-					<form action="./save_report" class="border themeround spacy-sm">
+					<form action="defined:save_report" class="border themeround spacy-sm" data-afterfx="aftersave_ops" data-onsubmit="upload_stuff" data-blockdefault="yes">
 						<div class="notactive">
+							<input type="hidden" name="report_no">
 							<input type="hidden" name="sampleid">
+							<input type="hidden" name="admin_password_mine">
+							<input type="hidden" name="bizdata">
 							<div class="form-group">
 								<label class="form-label" for="client_name">Generated PDF</label>
 								<input type="file" name="genfile" id="genfile" required>
@@ -424,9 +428,23 @@
 		</div>
 
 		<div class="tab slide-up">
-			<div class="spacy-lg w3-center flow centroid gap-md w3-hide" id="loader_render">
-				<div>generating image</div>
+			<div class="spacy-lg w3-center flow centroid gap-sm panelbg themeround mt-4 w3-hide_" id="loader_render">
+				<span class="h4">Uploading Report</span>
+				<div>saving to database</div>
 				<div class="loader"></div>
+			</div>
+		</div>
+
+		<div class="tab slide-up">
+			<div class="spacy-sm panelbg themeround mt-4">
+				<span class="h4">Report Generation successful</span>
+				<p>the report has been generated, pick an option below to proceed</p>
+				<div class="flowline gap-tn left">
+					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:reports_mgt" data-label="defined:reports_mgt"><i class="fa fa-file-export"></i> manage reports</button>
+					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
+					<button class="mybtn secondary sm" data-runme="downloadPdf"><i class="fa fa-download"></i> download report</button>
+					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -470,9 +488,9 @@
 	}
 	*/
 
-	let tabs = document.querySelectorAll('.tabs>.tab');
+	let tabs = document.querySelectorAll('.tabs .tab');
 	let checks = document.querySelectorAll('.progress-steps>.step');
-	let spans = [0,45,88];
+	let spans = [0,45,92];
 
 	const steps = [
 		'do_nothing',
@@ -644,7 +662,7 @@
 			</div>
 		`;
 
-		// the second section
+		// the second section (aka the creditsguy)
 		taskinfo.innerHTML = `
 			<tr>
 				<td>
@@ -652,14 +670,24 @@
 					<span data-subrole="user_name">${cur_user.name}</span>
 				</td>
 				<td>
-					<b>Number of samples: </b>
-					<span>${s_data.sample_count}</span>
+					<b>Report No: </b>
+					<span>${generateSerial(s_data)}</span>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<b>Company contact: </b>
 					<span>${processNumber(bizdeets.phone)}</span>
+				</td>
+				<td>
+					<b>Client: </b>
+					<span>${s_data.owner.client_name}</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Number of samples: </b>
+					<span>${s_data.sample_count}</span>
 				</td>
 				<td>
 					<b>Sample Type: </b>
@@ -866,7 +894,10 @@
 	}
 
 	window['generatePdf'] = async () => {
-		if(report_runtime_data.renderedCanvas == undefined){alert_danger('no document has been rendered yet');return;}
+		if(report_runtime_data.renderedCanvas == undefined){
+			alert_danger('no document has been rendered yet');
+			return;
+		}
 
 		let rcv = report_runtime_data.renderedCanvas;
 		let fwidth = rcv.width;
@@ -914,6 +945,7 @@
 			genfile.files = dtr.files;
 
 			report_runtime_data.filemade = true;
+			report_runtime_data.medFile = pdf;
 
 			// Download the PDF
 			// pdf.save('gen_doc.pdf');
@@ -924,6 +956,79 @@
 		}
 	}
 
+	window['downloadPdf'] = () => {
+		if(report_runtime_data.medFile == undefined){
+			alert_danger('no pdf has been generated yet');
+			return;
+		}
+
+		if(report_runtime_data.sampleData == undefined){
+			alert_danger('sample data missing, refresh the page to fix',4);
+			return;
+		}
+
+		report_runtime_data.medFile.save(`${report_runtime_data.sampleData.task.task_no}_generated_report.pdf`);
+
+		alert_info('downloading generated pdf');
+	}
+	window['printPdf'] = () => {
+		// Get the canvas element
+		// const canvasId = 'mycanvas';
+		// const canvas = document.getElementById(canvasId);
+		const canvas = report_runtime_data.renderedCanvas;
+
+		// Create a new window for printing
+		const printWindow = window.open('', '_blank');
+
+		// Get the canvas as a data URL
+		const dataUrl = canvas.toDataURL();
+
+		// Write HTML to the print window
+		printWindow.document.write(`
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<title>Print Canvas</title>
+					<style>
+						body {
+							margin: 0;
+							padding: 0;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							min-height: 100vh;
+						}
+						img {
+							max-width: 100%;
+							height: auto;
+						}
+						@media print {
+							body {
+								margin: 0;
+							}
+							img {
+								max-width: 100%;
+								height: auto;
+								page-break-inside: avoid;
+							}
+						}
+					</style>
+				</head>
+				<body>
+					<img src="${dataUrl}" onload="window.print(); window.close();" />
+				</body>
+			</html>
+		`);
+
+		printWindow.document.close();
+	}
+	window['generateSerial'] = (b) => {
+		let serial = `${b.sample_no}_${b.reports_count}`;
+		report_runtime_data.report_no = serial;
+		return serial;
+	}
+
+	// navops
 	window['pick_step'] = (n) => {
 		progressLine.style.width = `${spans[n]}%`;
 		// render_all_data();
@@ -949,6 +1054,8 @@
 		let it = tabs[n];
 		if(it !== undefined){
 			it.style.display = 'block';
+		} else {
+			alert('tab doesnt exist');
 		}
 	}
 	window['pick_step_2'] = (g, skipchecks = false) => {
@@ -969,8 +1076,7 @@
 
 		pick_step(n);
 	}
-
-	window['pick_step_3'] = (g) => {
+	window['pick_step_3'] = async (g) => {
 		let n = Number(g.dataset.step);
 		alert_info(g.dataset.msg || 'running operation...');
 		// alert('whaadadadad');
@@ -979,7 +1085,7 @@
 			let mystep = steps[n];
 
 			if(window[mystep] !== undefined){
-				// alert_dark(`running: ${mystep}`);
+				alert_dark(`running: ${mystep}`);
 				// pick_step_2(g,true);
 
 				window[mystep]().then(w => {
@@ -987,5 +1093,36 @@
 				});
 			}
 		}
+	}
+
+	// afterwork stuff
+	window['upload_stuff'] = (el) => {
+		const step2 = (d) => {
+			alert_info('uploading report...');
+			el.report_no.value = report_runtime_data.report_no;
+			el.sampleid.value = report_runtime_data.sampleData.id;
+			el.admin_password_mine.value = d.admin_password;
+			el.bizdata.value = JSON.stringify(bizdata);
+			pick_step(3);
+
+			sendform(el,step3,step2b);
+		}
+
+		const step2b = (d) => {
+			pick_step(2);
+			alert_danger('there was an error uploading the report');
+		}
+
+		const step3 = (d) => {
+			pick_step(4);
+			confirmAction(mekHeading('report generated successfully','h4'),'the report has been generated successfully',() => {});
+			alert_success('report uploaded successfully');
+		}
+
+		const step1 = () => {
+			awaitConfirmPass(step2);
+		}
+
+		step1();
 	}
 </script>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 class Sample extends Model
 {
@@ -53,6 +54,9 @@ class Sample extends Model
 	// /*
 	public function results(): HasMany {
 		return $this->hasMany(Result::class,'sample_id','id');
+	}
+	public function reports(): HasMany {
+		return $this->hasMany(ReportsGen::class,'sample_id','id');
 	}
 	// */
 }

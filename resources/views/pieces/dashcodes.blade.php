@@ -48,6 +48,7 @@
 			'gen_report' : './ui/gen_report',
 			'biz_data' : './ui/biz_data',
 			'samples_mgt' : './ui/samples_mgt',
+			'reports_mgt' : './ui/reports_mgt',
 
 			// operations
 			'toggle_account_active' : './op/toggle_active',
@@ -58,6 +59,7 @@
 			'add_task_note' : './op/add_task_note',
 			'update_bizdata' : './op/update_bizdata',
 			'update_bizdata_fyls' : './op/update_bizdata_images',
+			'save_report' : './op/save_report',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
@@ -88,6 +90,8 @@
 			'view_tasks' : 'Task management',
 			'task_info' : 'Task Summary',
 			'gen_report' : 'Generate Report',
+			'samples_mgt' : 'Samples management',
+			'reports_mgt' : 'reports management',
 		}
 		const variableAtlas = {
 			'initstuff' : `sys_init_${mekRandomString(8)}`,
@@ -133,6 +137,7 @@
 			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
 			{caption: "Sample management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
 			{caption: "Payment management", url: './ui/payments_mgt',icon: 'fa fa-money-bill'},
+			{caption: "Report management", url: './ui/reports_mgt',icon: 'fa fa-file-export'},
 			{caption: "Business data", url: './ui/biz_data',icon: 'fa fa-briefcase'},
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -292,11 +297,11 @@
 			themenu.innerHTML = '';
 			let outht = '';
 
-			menuItems.forEach(m => {
+			menuItems.forEach((m,i) => {
 				outht += `
 					<div>
 						<a href="#" class="menulink" data-runme="menuact" data-template='${m.url}' data-sidenote="${m.caption}">
-							<i class="${m.icon}"></i>
+							<i class="${m.icon} slide-r" style="${mekstagger(200,i)}"></i>
 							<span>${m.caption}</span>
 						</a>
 					</div>
@@ -597,7 +602,7 @@
 			}
 		}
 
-		function sendform(m,callback) {
+		function sendform(m,callback,onfail) {
 			let hasencrypted = false;
 			let ps = '';
 
@@ -608,6 +613,7 @@
 				alert_info('submitting form...')
 			}
 
+			// callback mgt
 			if(callback == undefined){
 				if(m.dataset.callback){
 					console.log('callback: ',m.dataset.callback);
@@ -630,6 +636,38 @@
 				console.log('valid callback')
 				// alert_dark('valid callback')
 			} else {
+				callback = (a) => {
+					alert_success('process successful');
+					console.log('default callback results: ',a);
+				};
+				console.log('not a function')
+				// alert_dark('not a function')
+			}
+
+			// onfail mgt
+			if(onfail == undefined){
+				if(m.dataset.onfail){
+					console.log('onfail: ',m.dataset.onfail);
+					// alert_dark('onfail: ' + m.dataset.onfail);
+
+					onfail = window[m.dataset.onfail.trim()];
+				} else {
+					console.log('no fallback to the onfail');
+					// alert_dark('no fallback to the onfail');
+				}
+			} else {
+				if(typeof onfail != "function"){
+					console.log('trying to read from a window variable');
+					// alert_dark('trying to read from a window variable');
+					onfail = window[onfail];
+				}
+			}
+
+			if(typeof onfail == "function"){
+				console.log('valid onfail')
+				// alert_dark('valid onfail')
+			} else {
+				onfail = (a) => {alert_danger('process failed')};
 				console.log('not a function')
 				// alert_dark('not a function')
 			}
@@ -664,11 +702,18 @@
 
 				responseHandler(d,callback,{'el': m,'data': d});
 
+				if(!d.success || !d.result){
+					onfail(d);
+				}
 				// console.log("finally, the result is: ",myres);
 				// callback(m);
 			})
 			.catch(err => {
 				alert_danger(err.message);
+
+				if(onfail !== undefined){
+					onfail(err);
+				}
 			})
 			.finally(() => {
 				m.style.pointerEvents = "all";

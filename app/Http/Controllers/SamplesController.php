@@ -49,6 +49,7 @@ class SamplesController extends Controller{
 			$records = Sample::query()
 				->with('results')
 				->withCount('results')
+				->withCount('reports')
 				->with('mycreator')
 				->with('owner')
 				->with('task')
@@ -139,6 +140,7 @@ class SamplesController extends Controller{
 			$therec = Sample::where('id',$passed['sample_id'])
 				->with('results')
 				->withCount('results')
+				->withCount('reports')
 				->with('mycreator')
 				->with('owner')
 				->with('task')
@@ -225,6 +227,7 @@ class SamplesController extends Controller{
 			$therecs = $therecs
 				->with('results')
 				->withCount('results')
+				->withCount('reports')
 				->with('mycreator')
 				->with('owner')
 				->with('task')

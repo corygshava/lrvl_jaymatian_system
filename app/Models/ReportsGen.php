@@ -14,6 +14,7 @@ class ReportsGen extends Model
 		'sample_id',
 		'created_by',
 		'client_id',
+		'report_no',
 
 		'company_contact',
 		'sample_type',
@@ -27,9 +28,10 @@ class ReportsGen extends Model
 		'business_logo_img',
 		'pdf_link',
 		'image_link',
-    ];
+	];
 
-    protected $casts = [
+	protected $casts = [
+		'deviation_data' => 'array',
         'analytical_report' => 'array',
         'date_received' => 'date',
         'date_compiled' => 'date',

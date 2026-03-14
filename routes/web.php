@@ -52,6 +52,7 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/payments_mgt', [ViewController::class,'showpayments']);
 
 	Route::get('/gen_report', [ViewController::class,'showgenreport']);
+	Route::get('/reports_mgt', [ViewController::class,'showreports']);
 
 	Route::get('/biz_data', [ViewController::class,'showbizdata']);
 });
@@ -102,6 +103,8 @@ Route::prefix('/op')->group(function(){
 
 	Route::post('/update_bizdata',[BizdataController::class, 'update_sth'])->middleware(['auth','verified']);
 	Route::post('/update_bizdata_images',[BizdataController::class, 'update_sth_2'])->middleware(['auth','verified']);
+
+	Route::post('/save_report', [ReportsController::class,'add_new'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/media')->group(function(){

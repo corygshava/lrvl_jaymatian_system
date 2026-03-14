@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BizData;
 use App\Models\ReportsGen;
+use App\Models\Sample;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ReportsController extends Controller{
     public function get_all(Request $req){
@@ -160,6 +164,131 @@ class ReportsController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $therecs;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_new(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'admin_password_mine' => ['required'],
+			'sampleid' => ['required'],
+			'report_no' => ['required'],
+			'genfile' => ['required','file'],
+			'genimage' => ['required','file'],
+			'bizdata' => ['required'],
+		]);
+		// */
+
+		$admin_password_mine = $passed['admin_password_mine'];
+		$sampleid = $passed['sampleid'];
+		$rno = $passed['report_no'];
+		$bizdata = json_decode($passed['bizdata'],true);
+
+		$b_deets = $bizdata['business_details'];
+
+		// $res['runlog'][] = json_decode($bizdata);
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "business information updated successfully";
+			$reslt = false;
+			$wegood = $this->verifyPassword($passed['admin_password_mine']);
+			$user = $this->cur_user();
+			$showthis = null;
+
+			if(!$wegood){
+				$msg = "invalid admin password";
+			} else {
+				$sample = Sample::where('id',$sampleid)
+					->with('results')
+					->withCount('results')
+					->with('mycreator')
+					->with('owner')
+					->with('task')
+					->first()
+				;
+
+				if($sample == null){
+					$msg = "invalid sample";
+				} else {
+					$smp = $sample->toArray();
+					$results = $smp['results'];
+					// $res['runlog'][] = ['results' => $results];
+
+					$rndr = Str::upper($this->mekRandomString(4));
+					$sno = $sample->sample_no;
+					$rpts = $sample->reports_count;
+					$file_link = "{$sno}_{$rpts}_{$rndr}_pdf";
+					$img_link = "{$sno}_{$rpts}_{$rndr}_img";
+					$fyls = [];
+
+					$fkey = 'genfile';
+					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+						$fyl = $req->file($fkey);
+						$myname = $file_link;
+						$ext = $fyl->getClientOriginalExtension();
+						$date = date('y_m');
+						$fname = "{$date}/{$myname}.{$ext}";
+						$fyl->move(storage_path(self::$bizfiles_path),$fname);
+						$fyls[$fkey] = $myname;
+					};
+
+					$fkey = 'genimage';
+					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+						$fyl = $req->file($fkey);
+						$myname = $img_link;
+						$ext = $fyl->getClientOriginalExtension();
+						$date = date('y_m');
+						$fname = "{$date}/{$myname}.{$ext}";
+						$fyl->move(storage_path(self::$bizfiles_path),$fname);
+						$fyls[$fkey] = $myname;
+					};
+
+					// $res['runlog'][] = ['sample' => $sample];
+
+					$toadd = [
+						'task_id' => $sample->task_id,
+						'sample_id' => $sample->id,
+						'created_by' => $user->id,
+						'client_id' => $sample->client_id,
+						'report_no' => $rno,
+
+						'company_contact' => $b_deets['phone'],
+						'sample_type' => $sample->sample_type,
+						'sample_count' => $sample->sample_count,
+						'date_received' => $sample->created_at,
+						'date_compiled' => Carbon::now(),
+						'task_no' => $sample->task->task_no,
+						'technical_staff_name' => $b_deets['tech_staff'],
+						'analytical_report' => $results,
+						'deviation_data' => $bizdata['deviation_data'],
+						'business_logo_img' => $bizdata['business_images']['company_logo'],
+						'pdf_link' => $fyls['genfile'],
+						'image_link' => $fyls['genimage'],
+					];
+
+					// $res['runlog'][] = ["newrec" => $toadd];
+
+					$report = ReportsGen::create($toadd);
+					$showthis = $report;
+					$reslt = true;
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $showthis;
 			$res['message'] = $msg;
 		}
 

@@ -31,6 +31,8 @@ abstract class Controller{
 	// storage stuff
 	public static $payload_path = "runtime/payloads/";
 	public static $bizfiles_path = "runtime/bizinfo/";
+	public static $report_files_path = "runtime/report_files/";
+	public static $report_images_path = "runtime/report_images/";
 
 	// Api stuff
 	public static $fetchId = 'viaFetch';
@@ -872,14 +874,14 @@ abstract class Controller{
 					$ext = $fyl->getClientOriginalExtension();
 					$rndr = $this->mekRandomString(4);
 					$fname = "[{$curdate}]_{$rndr}_{$myname}.{$ext}";
-					$fyls[] = $fname;
+					$fyls[] = [$key => $fname];
 					$thepath = self::$payload_path;
 					$fyl->move(storage_path("{$thepath}files/",$fname), $fname);
 				}
 			}
 			$alldata['files'] = $fyls;
 
-			$reslt = self::log_payload($alldata,'debug_payload');
+			$reslt = self::log_payload($alldata,'debug_payload_fyls');
 			$msg = "logging payload + files";
 
 			$res['result'] = $reslt;

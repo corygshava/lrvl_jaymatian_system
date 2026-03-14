@@ -352,4 +352,255 @@
 			</button>
 		</div>
 	</div>
+
+
+	<div class="stats-row w3-hide themeround" id="statsContainer">
+	</div>
+
+	<div class="filter-bar w3-hide_ themeround" id="filterContainer">
+		<span class="h4">Filters</span>
+		<div class="filter-row"></div>
+	</div>
+
+	<div class="data-container" style="position: relative;">
+		<div class="loading-overlay flow centroid" id="loadingOverlay">
+			<div>
+				<div class="loader"></div>
+			</div>
+		</div>
+
+		<div class="data-header">
+			<div class="d-flex align-items-center gap-3">
+				<h5 class="data-title" id="tableTitle">Payment Records</h5>
+			</div>
+			<div class="data-actions">
+				<div class="search-box">
+					<input type="text" placeholder="Quick search..." id="quickSearch">
+					<button><i class="fas fa-search"></i></button>
+				</div>
+			</div>
+		</div>
+
+		<div class="table-responsive" id="tableView">
+			<table class="table-modern">
+				<thead id="tableHead">
+				</thead>
+				<tbody id="tableBody">
+				</tbody>
+			</table>
+		</div>
+
+		<div class="empty-state" id="emptyState">
+			<div class="empty-icon">
+				<i class="fas fa-inbox"></i>
+			</div>
+			<h3>No data found</h3>
+			<p>Try adjusting your filters or search query</p>
+		</div>
+
+		<!-- Pagination -->
+		<div class="pagination-container">
+			<div class="pagination-info">
+				Showing <span id="showingStart">0</span> to <span id="showingEnd">0</span> of <span id="totalItems">0</span> entries
+			</div>
+			<ul class="pagination" id="pagination">
+				<!-- Pagination will be generated dynamically -->
+			</ul>
+		</div>
+	</div>
 </div>
+
+<?php
+	/*
+	require_once __DIR__.'/piece_add_client_form.php';
+	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.payments_xtras')
+{{-- --> --}}
+
+<script>
+	// Initialize the data table with your configuration
+	window['runOnAwake'] = () => {
+		// view specific data
+		let methods = [
+			'Mpesa',
+			'Card',
+			'Cash',
+		];
+		let meth_map = [];
+
+		methods.forEach(m => {
+			meth_map.push({value: m,label: m});
+		})
+
+		const initstuff = (m) => {
+			add_record_btn.dataset.link = linkAtlas['add_task'];
+
+			// alert_info('loading details');
+			// return;
+
+			LaravelDataTable.init({
+				// Required: Laravel API endpoint
+				apiEndpoint: './data/reports',
+
+				// Required: Column definitions
+				columns: [
+					{
+						title: 'ID',
+						data: 'id',
+						width: '50px',
+						sortable: true
+					},
+					{
+						title: 'Sample number',
+						data: 'sample',
+						sortable: true,
+						render: function(value) {
+							return `<strong>${value.sample_no}</strong>`;
+						}
+					},
+					{
+						title: 'Client name',
+						data: 'owner',
+						sortable: true,
+						render: function(value) {
+							return `<strong>${value.client_name}</strong>`;
+						}
+					},
+					{
+						title: 'Date added',
+						data: 'created_at',
+						sortable: true,
+						render: function(value) {
+							return formatDate0(value);
+							// return `<span class="badge ${value}">${value}</span>`;
+						}
+					},
+					/*{
+						title: 'Status',
+						data: 'status',
+						sortable: true,
+						render: function(value) {
+							let cls = state_classes[value];
+							// let con = value == 'monthly' ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+						}
+					},*/
+					{
+						title: 'Actions',
+						data: 'id',
+						sortable: false,
+						// width: '200px',
+						render: function(value, row) {
+							return `
+								<div class="action-btns">
+									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+										<i class="fas fa-cog"></i> Manage
+									</button>
+									<button class="btn-action btn-edit w3-hide_" data-runme='edit_record' data-myid="${value}" title="Edit">
+										<i class="fas fa-download"></i> download
+									</button>
+									<button class="btn-action btn-edit w3-hide_" data-runme='edit_record' data-myid="${value}" title="Edit">
+										<i class="fas fa-eye"></i> view report
+									</button>
+								</div>
+							`;
+						}
+					}
+				],
+
+				// Optional: Items per page (max 300)
+				perPage: 10,
+
+				// Optional: Enable features
+				enableSearch: true,
+				enableSort: true,
+				enableFilters: true,
+
+				// Optional: Filter definitions
+				filters: [
+					{
+						name: 'method',
+						label: 'payment Method',
+						rawname: 'method',
+						options: meth_map
+					}
+				],
+
+				// Optional: Enable stats
+				// enableStats: false,
+				// statsEndpoint: '/api/students/stats',
+
+				// Optional: Callbacks
+				onDataLoaded: function(data) {
+					console.log('Data loaded:', data);
+
+					window['curRecordData'] = data.data
+				},
+
+				onError: function(error) {
+					console.error('Error occurred:', error);
+					alert_danger('Error: ' + error.message);
+				},
+
+				onRowClick: function(row, index, e) {
+					window['lastRowClickEvent'] = e;
+
+					if(e.target.closest('.action-btns') == null){
+						console.log('Row clicked:', row);
+
+						viewRecord(row.id);
+					}
+				}
+			});
+
+			// updateUI();
+			// setup_form();
+		}
+
+		window[fetch_bypass]('./data/user_roles',{},'get').then((d) => {
+			responseHandler(d,initstuff,d,true);
+			// alert_info('render this');
+		})
+	};
+
+	// Page-specific action handlers
+	function viewRecord(id) {
+		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == ("" + id).toLowerCase();})[0];
+
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		let cur = {
+			rectype: 'payment',
+			data: myn,
+		}
+
+		// copytext1(JSON.stringify(cur,null,4));
+		viewRecordInfo(cur);
+	}
+
+	function viewRecordInfo(who) {
+		alert_info('wottafag');
+		view_payment_modal_trig.click();
+		renderPayData(who);
+	}
+
+	window['form_afterfx'] = (m) => {
+		// alert_danger('runnin afterfx');
+		add_edit_modal_trig.click();
+
+		// alert_dark('its done editin or addin');
+		window['last_user_Add_Edit_result'] = m;
+
+		// window['refresh_stuff']();
+		refreshData();
+	}
+</script>
