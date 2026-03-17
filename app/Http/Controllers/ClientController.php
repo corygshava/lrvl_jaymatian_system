@@ -264,4 +264,53 @@ class ClientController extends Controller{
 
 		return response()->json($res);
 	}
+
+
+	public function get_one(Request $req){
+		// return $this->log_my_payload($req);
+
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'id' => ['required']
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$reslt = false;
+
+			$task = Client::query()
+				->where('id',$passed['id'])
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->with('mycreator')
+				->first()
+			;
+
+			if($task == null){
+				$msg = "We couldnt find the specified client";
+			} else {
+				$msg = "client loaded";
+				$reslt = true;
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $task;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
 }

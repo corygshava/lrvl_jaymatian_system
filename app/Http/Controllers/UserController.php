@@ -401,4 +401,51 @@ class UserController extends Controller{
 
 		return response()->json($res);
 	}
+
+	public function staff_stats(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching staff stats";
+			$reslt = false;
+			$outdata = [];
+
+			$tp_1 = [
+				'icon' => 'fa-money-bill',
+				'caption' => 'sales',
+				'amt' => 54300,
+			];
+			$tp_2 = [
+				'icon' => 'fa-folder',
+				'caption' => 'tasks',
+				'amt_progress' => 3,
+				'amt_total' => 54300,
+			];
+
+			$outdata[] = $tp_1;
+			$outdata[] = $tp_2;
+			$reslt = true;
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outdata;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
 }

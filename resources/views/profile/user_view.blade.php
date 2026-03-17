@@ -1,3 +1,12 @@
+<?php
+	// require_once __DIR__.'/piece_add_user_form.php';
+?>
+
+{{-- <!-- --}}
+@include('pieces.forms_userops')
+{{-- --> --}}
+
+
 <style>
 	#user-profile-container .avatar-circle {
 		--w: 48px;
@@ -37,7 +46,7 @@
 		<div class="card themeround border-0 panelbg shadow-md">
 			<div class="card-header panelbg themegrad flowline overflow left centerline w3-display-container">
 				<div class="avatar-circle bg-white text-primary">
-					<span id="user-initials">C</span>
+					<span id="user-initials">??</span>
 				</div>
 				<div>
 					<strong class="h3" id="user-name"></strong>
@@ -69,12 +78,12 @@
 
 			<div class="card-body">
 				<div class="flowline overflow w3-center stats">
-					<div class="stat">
+					<div class="stat w3-hide">
 						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">User ID</small>
 						<b class="text-primary font-weight-bold"><span id="user-id">2</span></b>
 					</div>
 					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
+						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Registered Since</small>
 						<span class="text-dark font-weight-bold" id="member-since">--</span>
 					</div>
 					<div class="stat">
@@ -180,16 +189,12 @@
 	</div>
 </div>
 
-<?php
-	// require_once __DIR__.'/piece_add_user_form.php';
-?>
-
-{{-- <!-- --}}
-@include('pieces.forms_userops')
-{{-- --> --}}
-
 <script>
 	let userData = {};
+
+	window['killOnLeave'] = [
+
+	];
 
 	window['runOnAwake'] = () => {
 		to_user_mgt_btn.querySelector('a').dataset.link = linkAtlas['view_users'];
@@ -216,7 +221,7 @@
 		refreshUI(300);
 	}
 
-	function initializeUserProfile(data) {
+	window['initializeUserProfile'] = (data) => {
 		let con = (data.is_active)
 		let cls = !con ? 'remove' : 'add';
 		account_active_tag.classList[cls]('w3-hide');
@@ -246,7 +251,6 @@
 
 		document.getElementById('member-since').textContent = formatDate(createdDate);
 		document.getElementById('last-updated').textContent = formatDate(updatedDate);
-		// document.getElementById('last-login').textContent = loginDate == null ? '--' : formatDate(loginDate);
 		document.getElementById('last-login').textContent = loginDate.getTime() == 0 ? '--' : formatDate(loginDate);
 
 		// Email verification status
@@ -273,8 +277,7 @@
 		// Update load time
 		document.getElementById('load-time').textContent = new Date().toLocaleTimeString();
 	}
-
-	function renderPermissions(perms) {
+	window['renderPermissions'] = (perms) => {
 		const container = document.getElementById('permissions-container');
 		const permissionIcons = {
 			'VIEW_DASHBOARD': 'fa-chart-line',
@@ -298,6 +301,8 @@
 	}
 
 	function formatDate(date) {
+		return formatDate0(date);
+
 		return date.toLocaleDateString('en-US', {
 			month: 'short',
 			day: 'numeric',
@@ -306,6 +311,8 @@
 	}
 
 	function formatDateTime(date) {
+		return formatDate0(date);
+
 		return date.toLocaleString('en-US', {
 			year: 'numeric',
 			month: '2-digit',
@@ -384,7 +391,8 @@
 		rec_id = userData.id;
 		add_edit_form.recid.value = rec_id;
 
-		let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
+		// let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
+		let myn = userData;
 
 		// window['userBeingEdited'] = myn;
 
@@ -413,7 +421,8 @@
 		rec_id = userData.id;
 		maform.recid.value = rec_id;
 
-		let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
+		// let myn = window['curUserData'].filter(f => {return f.id.toString().toLowerCase() == ("" + rec_id).toLowerCase();})[0];
+		let myn = userData;
 
 		// window['userBeingEdited'] = myn;
 
@@ -432,23 +441,17 @@
 
 	window['form_afterfx'] = (m) => {
 		// alert_dark('data sent back');
-		initializeUserProfile(m.data.sendme);
 		// console.log(m);
+		let udata = m.data.sendme;
+		userData = udata;
+		initializeUserProfile(udata);
+		compareUserData(udata);
 
-		// alert_danger('runnin afterfx');
 		add_edit_modal_trig.click();
-
-		// TODO: make it that it sends back the modified data for this page to show again
-		// window['refresh_stuff']();
-		// refreshData();
 	}
 
 	window['form_pw_afterfx'] = () => {
 		// alert_danger('runnin afterfx');
 		change_pw_modal_trig.click();
-
-		// TODO: make it that it sends back the modified data for this page to show again
-		// window['refresh_stuff']();
-		// refreshData();
 	}
 </script>

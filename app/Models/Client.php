@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model {
     protected $fillable = [
@@ -26,5 +27,17 @@ class Client extends Model {
 	// relationships
 	public function mycreator(): BelongsTo {
 		return $this->belongsTo(User::class, 'added_by');
+	}
+	public function tasks(): HasMany {
+		return $this->hasMany(Task::class,'client_id','id');
+	}
+	public function reports(): HasMany {
+		return $this->hasMany(ReportsGen::class,'client_id','id');
+	}
+	public function samples(): HasMany {
+		return $this->hasMany(Sample::class,'client_id','id');
+	}
+	public function payments(): HasMany {
+		return $this->hasMany(Payment::class,'client_id','id');
 	}
 }

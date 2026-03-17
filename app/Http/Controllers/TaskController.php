@@ -17,6 +17,7 @@ class TaskController extends Controller{
 		return $this->log_my_payload($req);
 	}
 
+	// get ops
 	public function get_all(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -50,6 +51,7 @@ class TaskController extends Controller{
 			$tasks = Task::query()
 				->withCount('samples')
 				->withCount('payments')
+				->withCount('reports')
 			;
 
 			if($search){
@@ -162,6 +164,74 @@ class TaskController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_incomplete(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "incomplete tasks retrieved";
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search');
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'asc');
+
+			$tasks = Task::query()
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+			;
+
+			if($search){
+				$tasks = $tasks
+					->whereHas('client', function($q) use ($search){
+						$q->where('client_name','like',"%{$search}%");
+					})
+					->orWhere('task_no', 'like', "%{$search}%")
+					// ->orWhere('client_contact', 'like', "%{$search}%")
+					// ->orWhere('id_number', 'like', "%{$search}%")
+					// ->orWhere('kra_pin', 'like', "%{$search}%");
+				;
+				$res['runlog'][] = "added search filter";
+			}
+
+			$tasks = $tasks
+				->where('status',0)
+				->orWhere('status',1)
+			;
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			// $sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$tasks = $tasks
+				->with('creator')
+				->with('client')
+				->orderBy($sortBy, $sortDirection)
+				->paginate($perPage);
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$res['result'] = true;
+			$res['sendme'] = $tasks;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	// set ops
 	public function add_new_task(Request $req){
 		$res = $this->dftres;
 		$sent = $req->input('sentdata',null);

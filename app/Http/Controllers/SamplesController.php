@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Mavinoo\Batch\Batch;
 
 class SamplesController extends Controller{
+	// getters
 	public function get_all(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
@@ -257,6 +258,80 @@ class SamplesController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_incomplete(Request $req){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "incomplete samples retrieved";
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search');
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
+
+			$records = Sample::query()
+				->with('results')
+				->withCount('results')
+				->withCount('reports')
+				->with('mycreator')
+				->with('owner')
+				->with('task')
+			;
+
+			if($search){
+				$records = $records
+					->whereHas('owner', function($q) use ($search){
+						$q->where('client_name','like',"%{$search}%");
+					})
+					->orWhereHas('task', function($q) use ($search){
+						$q->where('task_no','LIKE',"%{$search}%");
+					})
+					->orWhere('sample_no', 'like', "%{$search}%")
+					->orWhere('sample_tag', 'like', "%{$search}%")
+				;
+				$res['runlog'][] = "added search filter";
+			}
+
+			$records = $records
+				->where('status',0)
+				->orWhere('status',1)
+			;
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			// $sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$records = $records
+				->orderBy($sortBy, $sortDirection)
+				->paginate($perPage);
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	// setters
 	public function add_results(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();

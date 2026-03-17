@@ -54,13 +54,15 @@
 			'view_user' : './ui/view_user',
 			'view_client' : './ui/view_client',
 			'view_clients' : './ui/client_mgt',
-			'client_info' : './ui/client_info',
-			'view_profile' : './ui/view_user',
-			'view_users' : './ui/user_mgt',
-			'add_task' : './ui/add_task',
+			'view_samples' : './ui/samples_mgt',
+			'view_reports' : './ui/reports_mgt',
 			'view_task' : './ui/view_task',
 			'view_tasks' : './ui/task_mgt',
+			'view_profile' : './ui/view_user',
+			'view_users' : './ui/user_mgt',
+			'client_info' : './ui/client_info',
 			'task_info' : './ui/task_info',
+			'add_task' : './ui/add_task',
 			'gen_report' : './ui/gen_report',
 			'biz_data' : './ui/biz_data',
 			'samples_mgt' : './ui/samples_mgt',
@@ -81,6 +83,7 @@
 			'search_clients' : './data/search_clients',
 			'get_task' : './data/get_task',
 			'get_sample' : './data/get_sample',
+			'get_client' : './data/get_client',
 			'get_samples' : './data/get_samples',
 			'get_payments' : './data/get_payments',
 			'get_results' : './data/get_results',
@@ -90,6 +93,10 @@
 			'get_allpermissions' : './data/allpermissions',
 			'get_mypermissions' : './data/my_permissions',
 
+			'get_staff_stats' : './data/staffstats',
+			'get_incomplete_tasks' : './data/tasks/incomplete',
+			'get_incomplete_samples' : './data/samples/incomplete',
+
 			// misc
 			'bizimages' : './media/bizimg',
 			'getreport_img' : './media/getreport/imgs',
@@ -97,19 +104,22 @@
 		};
 		const pageNames = {
 			'view_users' : 'user information',
-			'view_user' : 'user information',
-			'view_client' : 'client information',
+			'view_user' : 'user summary',
+			'view_client' : 'Client summary',
 			'view_clients' : 'Client management',
-			'client_info' : 'Client Summary',
+			'client_info' : 'Client Information',
 			'view_profile' : 'User Profile',
 			'view_users' : 'user management',
 			'add_task' : 'Add task',
 			'view_task' : 'Task Information',
 			'view_tasks' : 'Task management',
-			'task_info' : 'Task Summary',
+			'task_info' : 'Task Information',
 			'gen_report' : 'Generate Report',
 			'samples_mgt' : 'Samples management',
+			'view_samples' : 'Samples management',
 			'reports_mgt' : 'reports management',
+			'view_reports' : 'reports management',
+			'view_payments' : 'payments management',
 		}
 		const variableAtlas = {
 			'initstuff' : `sys_init_${mekRandomString(8)}`,
@@ -157,10 +167,12 @@
 			{caption: "Payment management", url: './ui/payments_mgt',icon: 'fa fa-money-bill'},
 			{caption: "Report management", url: './ui/reports_mgt',icon: 'fa fa-file-export'},
 			{caption: "Business data", url: './ui/biz_data',icon: 'fa fa-briefcase'},
+			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
 			{caption: "am i admin", url: './am_i_admin',icon: 'fa fa-code'},
 			{caption: "get roles", url: './data/user_roles',icon: 'fa fa-code'},
+			*/
 		];
 
 		function setUI() {

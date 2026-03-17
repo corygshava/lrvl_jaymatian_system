@@ -105,6 +105,18 @@ class ViewController extends Controller{
 			return $this->showerror($req,'log in to continue');
 		}
 	}
+	public function showclientinfo(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.client_info',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
 
 	public function showtasks(Request $req){
 		if($this->ili()){

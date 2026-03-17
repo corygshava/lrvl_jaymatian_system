@@ -41,6 +41,7 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/client_mgt', [ViewController::class,'showclients'])->name('client_mgt');
 	Route::get('/view_client', [ViewController::class,'showclient']);
+	Route::get('/client_info', [ViewController::class,'showclientinfo']);
 
 	Route::get('/task_mgt', [ViewController::class,'showtasks']);
 	Route::get('/add_task', [ViewController::class,'addtask']);
@@ -63,17 +64,21 @@ Route::prefix('/data')->group(function(){
 	Route::get('/users', [UserController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);
 	Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth','verified']);
+	Route::post('/staffstats', [UserController::class,'staff_stats'])->middleware(['auth','verified']);
 
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/get_client', [ClientController::class,'get_one'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
 	Route::post('/get_task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
+	Route::post('/tasks/incomplete', [TaskController::class,'get_incomplete'])->middleware(['auth','verified']);
 
 	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_sample', [SamplesController::class,'get_sample'])->middleware(['auth','verified']);
 	Route::post('/get_samples', [SamplesController::class,'get_some'])->middleware(['auth','verified']);
+	Route::post('/samples/incomplete', [SamplesController::class,'get_incomplete'])->middleware(['auth','verified']);
 
 	Route::get('/payments', [PaymentsController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_payments', [PaymentsController::class,'get_some'])->middleware(['auth','verified']);

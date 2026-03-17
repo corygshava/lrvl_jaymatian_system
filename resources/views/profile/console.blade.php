@@ -1,356 +1,327 @@
-<!-- greeting -->
-<div class="distance-md flowline spread overflow">
-	<div>
-		<span class="text-muted h4">Good Evening, <b data-role="userdisplay" class="themetxt">Admin</b></span>
-		<p>information for the day</p>
+<?php
+	/*
+	require_once __DIR__.'/piece_shared_dash_styles.php';
+	require_once __DIR__.'/piece_simple_table.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.dash_styles')
+@include('pieces.codes_simpletables')
+{{-- --> --}}
+
+<div class="container-fluid">
+	<div class="distance-md">
+		<span class="text-muted h4">Welcome <b class="themetxt" data-role="user_name_display">User</b></span>
+		<p>this is your dashboard, you'll be able to view all relevant information at a glance</p>
 	</div>
-	<div class="flow left">
-		<b>Activity scope</b>
-		<div class="btn-group except">
-			<button class="btn btn-outline-primary active">daily</button>
-			<button class="btn btn-outline-primary">weekly</button>
-			<button class="btn btn-outline-primary">monthly</button>
-			<button class="btn btn-outline-primary">lifetime</button>
+
+	<div id="loaderInterface" class="spacy-md flow centroid gap-sm slide-up">
+		<span id="load_txt">loading dashboard information</span>
+		<div class="loader"></div>
+	</div>
+
+	<div id="err_box" class="w3-hide slide-up">
+		<div class="spacy-lg w3-center">
+			<span class="h3" id="err_hed">Info</span>
+			<p id="error_par">loading task record ...</p>
+		</div>
+	</div>
+
+	<div id="dash_stuff" class="w3-hide">
+		<div class="panelbg spacy-sm themeround distance-sm">
+			<div>
+				<span class="h4">Daily summary</span>
+				<p>Here is a brief summary for all relevant information for today</p>
+			</div>
+			<div class="stats-row">
+				<div class="stat-card modern" data-role="dashstat">
+					<div class="myicon" data-subrole="stat_amt">
+						<i class="fa fa-money-bill"></i>
+					</div>
+					<div class="stats">
+						<h3 data-subrole="stat_amt">53,345</h3>
+						<span class="text-muted" data-subrole="stat_cap">Total Sales Today</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panelbg spacy-sm themeround distance-sm">
+			<div>
+				<span class="h4">Quick Actions</span>
+				<p>Here are some quick actions </p>
+			</div>
+			<div class="row mt-3">
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i class="fas fa-folder-plus"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">New Task</h6>
+						<small class="text-muted">Create task</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewClients()">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i class="fas fa-users"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">Manage Clients</h6>
+						<small class="text-muted">View registered clients</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewTasks()">
+						<div class="action-icon bg-success text-white mx-auto">
+							<i class="fas fa-folder"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Tasks</h6>
+						<small class="text-muted">All client Tasks</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
+						<div class="action-icon bg-warning text-white mx-auto">
+							<i class="fas fa-flask"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Samples</h6>
+						<small class="text-muted">Sample history</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewReports()">
+						<div class="action-icon bg-info text-white mx-auto">
+							<i class="fas fa-file-export"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Reports</h6>
+						<small class="text-muted">Client reports</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
+						<div class="action-icon bg-info text-white mx-auto">
+							<i class="fas fa-money-bill"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Payments</h6>
+						<small class="text-muted">All payments made</small>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panelbg spacy-sm themeround distance-sm w3-display-container">
+			<div class="w3-display-topright spacy-sm">
+				<button class="mybtn primary sm" data-runme="viewTasks">view all tasks</button>
+			</div>
+			<div>
+				<span class="h4">Pending tasks</span>
+				<p>Here are some tasks that are not yet complete </p>
+			</div>
+			<div>
+				<i>pending tasks table</i>
+			</div>
+		</div>
+
+		<div class="panelbg spacy-sm themeround distance-sm w3-display-container">
+			<div class="w3-display-topright spacy-sm">
+				<button class="mybtn primary sm" data-runme="viewSamples">view all samples</button>
+			</div>
+			<div>
+				<span class="h4">pending samples</span>
+				<p>Here are some samples that are not yet processed</p>
+			</div>
+			<div>
+				<i>pending samples table</i>
+			</div>
 		</div>
 	</div>
 </div>
-
-<div class="stats-row">
-	<div class="stat-card modern">
-		<div class="icon primary">
-			<i class="fa fa-money-bill"></i>
-		</div>
-		<div class="stats">
-			<h3>53,345</h3>
-			<span class="text-muted">Total Sales Today</span>
-		</div>
-	</div>
-
-	<div class="stat-card modern">
-		<div class="icon primary">
-			<i class="fa fa-flask"></i>
-		</div>
-		<div class="stats">
-			<h3>25</h3>
-			<span class="text-muted">Total Daily Jobs</span>
-		</div>
-	</div>
-
-	<div class="stat-card modern">
-		<div class="icon urgent">
-			<i class="fa fa-clock"></i>
-		</div>
-		<div class="stats">
-			<h3>5</h3>
-			<span class="text-muted">incomplete Jobs</span>
-		</div>
-	</div>
-
-	<div class="stat-card modern">
-		<div class="icon urgent">
-			<i class="fa fa-users"></i>
-		</div>
-		<div class="stats">
-			<h3>3</h3>
-			<span class="text-muted">Unpaid Jobs</span>
-		</div>
-	</div>
-
-	<div class="stat-card modern">
-		<div class="icon primary">
-			<i class="fa fa-file"></i>
-		</div>
-		<div class="stats">
-			<h3>25</h3>
-			<span class="text-muted">Reports made</span>
-		</div>
-	</div>
-</div>
-
-	<!-- Main Content Row -->
-	<div class="row">
-		<!-- Calendar & Attendance -->
-		<div class="col-lg-3 mb-4">
-			<div class="content-card">
-				<div class="card-header-custom">
-					<h5 class="card-title">Sales Calendar</h5>
-				</div>
-
-				<div class="calendar-header">
-					<div class="calendar-nav">
-						<button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
-					</div>
-					<span id="currentMonth" style="font-weight: 600; color: var(--text-dark);">02 October, 2019</span>
-					<div class="calendar-nav">
-						<button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
-					</div>
-				</div>
-
-				<div class="calendar-grid" id="calendar">
-					<div class="calendar-day-header">Sun</div>
-					<div class="calendar-day-header">Mon</div>
-					<div class="calendar-day-header">Tue</div>
-					<div class="calendar-day-header">Wed</div>
-					<div class="calendar-day-header">Thu</div>
-					<div class="calendar-day-header">Fri</div>
-					<div class="calendar-day-header">Sat</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- School Performance Chart -->
-		<div class="col-lg-9 mb-4">
-			<div class="content-card">
-				<div class="card-header-custom">
-					<h5 class="card-title">School Performance</h5>
-					<span style="font-size: 12px; color: var(--text-muted);">All the data in percentage (%)</span>
-				</div>
-
-				<div class="chart-legend">
-					<div class="legend-item">
-						<div class="legend-dot" style="background: #6b5b95;"></div>
-						<span>Govt. School</span>
-					</div>
-					<div class="legend-item">
-						<div class="legend-dot" style="background: #ffa500;"></div>
-						<span>Private School</span>
-					</div>
-					<div class="legend-item">
-						<div class="legend-dot" style="background: #50c878;"></div>
-						<span>Average School</span>
-					</div>
-				</div>
-
-				<div class="chart-container">
-					<canvas id="performanceChart"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Bottom Row -->
-	<div class="row">
-		<!-- Activities Notification -->
-		<div class="col-lg-8 mb-4">
-			<div class="content-card">
-				<div class="card-header-custom">
-					<h5 class="card-title">Activities Notification</h5>
-					<button class="mybtn primary">View All</button>
-				</div>
-
-				<div class="activity-item">
-					<div class="activity-venue">St. Xavier School</div>
-					<div class="activity-date">02 Oct, 2019</div>
-					<div class="activity-desc">We are planning to celebrate Gandhi Jayanti on 2nd October in our school. So it is our humble request to all parents and teachers to join us on this special occasion.</div>
-				</div>
-
-				<div class="activity-item">
-					<div class="activity-venue">Podar International School</div>
-					<div class="activity-date">02 Oct, 2019</div>
-					<div class="activity-desc">We are planning to celebrate Gandhi Jayanti on 2nd October in our school. So it is our humble request to all parents and teachers to join us on this special occasion.</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Schools Fees Structure -->
-		<div class="col-lg-4 mb-4">
-			<div class="content-card">
-				<div class="card-header-custom">
-					<h5 class="card-title">Schools Fees Structure</h5>
-					<span style="font-size: 12px; color: var(--text-muted);">All the data in percentage (%)</span>
-				</div>
-
-				<div class="chart-container" style="height: 200px;">
-					<canvas id="feesChart"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-</main>
 
 <script>
-	// Mobile Sidebar Toggle
-	function toggleSidebar() {
-		document.getElementById('sidebar').classList.toggle('active');
-	}
+	let dash_runtime_data = {};
 
-	// Calendar Generation
-	const months = ["January", "February", "March", "April", "May", "June",
-				   "July", "August", "September", "October", "November", "December"];
-	let currentDate = new Date(2019, 9, 2); // October 2, 2019
-
-	function generateCalendar() {
-		const calendar = document.getElementById('calendar');
-		const year = currentDate.getFullYear();
-		const month = currentDate.getMonth();
-
-		// Update header
-		document.getElementById('currentMonth').textContent =
-			`${String(month + 1).padStart(2, '0')} ${months[month]}, ${year}`;
-
-		// Clear existing days (keep headers)
-		const existingDays = calendar.querySelectorAll('.calendar-day');
-		existingDays.forEach(day => day.remove());
-
-		const firstDay = new Date(year, month, 1).getDay();
-		const daysInMonth = new Date(year, month + 1, 0).getDate();
-		const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-		// Previous month days
-		for (let i = firstDay - 1; i >= 0; i--) {
-			const day = document.createElement('div');
-			day.className = 'calendar-day other-month';
-			day.textContent = daysInPrevMonth - i;
-			calendar.appendChild(day);
-		}
-
-		// Current month days
-		const today = 2; // Highlight October 2nd as in image
-		const activeDays = [27, 28, 29]; // Green highlighted days
-
-		for (let i = 1; i <= daysInMonth; i++) {
-			const day = document.createElement('div');
-			day.className = 'calendar-day';
-			day.textContent = i;
-
-			if (i === today) {
-				day.classList.add('today');
-			}
-			if (activeDays.includes(i)) {
-				day.classList.add('active');
-			}
-			if ([17, 24].includes(i)) {
-				day.classList.add('event');
-			}
-
-			calendar.appendChild(day);
-		}
-
-		// Next month days
-		const remainingCells = 42 - (firstDay + daysInMonth);
-		for (let i = 1; i <= remainingCells; i++) {
-			const day = document.createElement('div');
-			day.className = 'calendar-day other-month';
-			day.textContent = i;
-			calendar.appendChild(day);
-		}
-	}
-
-	function changeMonth(direction) {
-		currentDate.setMonth(currentDate.getMonth() + direction);
-		generateCalendar();
-	}
-
-	// Initialize Calendar
-	generateCalendar();
-
-	// School Performance Chart
-	const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-	const performanceChart = new Chart(performanceCtx, {
-		type: 'bar',
-		data: {
-			labels: ['Govt', 'Private', 'Average'],
-			datasets: [{
-				label: 'Performance',
-				data: [85, 65, 75],
-				backgroundColor: [
-					'#6b5b95',
-					'#ffa500',
-					'#50c878'
-				],
-				borderRadius: 8,
-				borderSkipped: false,
-				barThickness: 40
-			}]
+	/*
+	dash_runtime_data.statsData = [
+		{
+			icon: 'fa-flask',
+			caption: 'sales',
+			amt: 54300,
 		},
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			plugins: {
-				legend: {
-					display: false
-				},
-				tooltip: {
-					callbacks: {
-						label: function(context) {
-							return context.parsed.y + '%';
-						}
-					}
-				}
-			},
-			scales: {
-				y: {
-					beginAtZero: true,
-					max: 100,
-					ticks: {
-						callback: function(value) {
-							return value + '%';
-						},
-						color: '#7f8c8d'
-					},
-					grid: {
-						color: 'rgba(0,0,0,0.05)'
-					}
-				},
-				x: {
-					ticks: {
-						color: '#7f8c8d'
-					},
-					grid: {
-						display: false
-					}
-				}
-			}
-		}
-	});
-
-	// Fees Structure Chart (Doughnut)
-	const feesCtx = document.getElementById('feesChart').getContext('2d');
-	const feesChart = new Chart(feesCtx, {
-		type: 'doughnut',
-		data: {
-			labels: ['Govt. School', 'Private School', 'International'],
-			datasets: [{
-				data: [40, 35, 25],
-				backgroundColor: [
-					'#6b5b95',
-					'#ffa500',
-					'#50c878'
-				],
-				borderWidth: 0,
-				cutout: '70%'
-			}]
+		{
+			icon: 'fa-flask',
+			caption: 'tasks',
+			amt_progress: 3,
+			amt_total: 54300,
 		},
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			plugins: {
-				legend: {
-					position: 'bottom',
-					labels: {
-						usePointStyle: true,
-						padding: 15,
-						font: {
-							size: 11
-						}
-					}
+		...
+	]
+	// */
+
+	window['runOnAwake'] = () => {
+		delete(window['refreshData']);
+		updateSessionUI();
+
+		setTimeout(() => {
+			initdashsetup();
+			// alert_info('runing autoload');
+		},400);
+	}
+
+	window['initdashsetup'] = () => {
+		const step1 = () => {
+			window[fetch_bypass](linkAtlas['get_staff_stats'],{},'POST').then((d) => {
+				responseHandler(d,step2,d);
+
+				if(d.result){
+					showError(false);
+				} else {
+					showError(true,{heading: 'Error getting stats',text: d.message});
 				}
-			}
-		}
-	});
+			}).catch(err => {
+				showError(true,{heading: 'Error getting stats',text: err.message});
+			})
+		};
 
-    /*
-	// Close sidebar when clicking outside on mobile
-	document.addEventListener('click', function(e) {
-		const sidebar = document.getElementById('menubar');
-		const toggle = document.querySelector('.mobile-toggle');
+		const step2 = (d) => {
+			dash_runtime_data.staffStats = d.sendme;
 
-		if (window.innerWidth <= 991 &&
-			!sidebar.contains(e.target) &&
-			!toggle.contains(e.target) &&
-			sidebar.classList.contains('active')) {
-			sidebar.classList.remove('active');
+			// get incomplete tasks
+			window[fetch_bypass](linkAtlas['get_incomplete_tasks'],{},'POST').then((d) => {
+				responseHandler(d,step3,d);
+			}).catch(err => {
+				showError(true,{heading: 'Error getting tasks',text: err.message});
+			});
 		}
-	});
-    // */
+
+		const step3 = (d) => {
+			dash_runtime_data.taskData = d.sendme;
+
+			// get unprocessed samples
+			window[fetch_bypass](linkAtlas['get_incomplete_samples'],{},'POST').then((d) => {
+				responseHandler(d,step4,d);
+			}).catch(err => {
+				showError(true,{heading: 'Error getting samples',text: err.message});
+			});
+		}
+
+		const step4 = (d) => {
+			dash_runtime_data.samplesData = d.sendme;
+
+			final_step();
+		}
+
+		const final_step = () => {
+			alert_info('done fetching');
+		}
+
+		load_txt.innerHTML = 'loading dashboard information';
+		showmainLoader();
+		showError(false);
+
+		setTimeout(() => {
+			step1();
+		},1200);
+	}
+
+	// utilities
+	window['showError'] = (con = true,d) => {
+		let dft = {
+			heading: 'Error',
+			text: 'something went wrong, reload page'
+		};
+		d = {...dft,...d};
+
+		let cl = con ? 'remove' : 'add';
+		err_box.classList[cl]('w3-hide');
+		err_box.querySelector('span').innerHTML = d.heading;
+		err_box.querySelector('p').innerHTML = d.text;
+		loaderInterface.classList[con ? 'add' : 'remove']('w3-hide');
+	}
+	window['showmainLoader'] = () => {
+		loaderInterface.classList.remove('w3-hide');
+		dash_stuff.classList.add('w3-hide');
+	}
+	window['hidemainLoader'] = () => {
+		loaderInterface.classList.add('w3-hide');
+	}
+
+	window['refresh_data'] = () => {
+		alert_info('refreshing information');
+		initdashsetup();
+	}
+	window['loadthispage'] = (p) => {
+		loadPage({
+			template: linkAtlas[p],
+			sidenote: pageNames[p],
+		});
+	}
+
+	// actions
+	window['createNewTask'] = () => {
+		loadthispage('add_task');
+	}
+	window['viewClients'] = () => {
+		loadthispage('view_clients');
+	}
+	window['viewTasks'] = () => {
+		loadthispage('view_tasks');
+	}
+	window['viewSamples'] = () => {
+		loadthispage('view_samples');
+	}
+	window['viewReports'] = () => {
+		loadthispage('view_reports');
+	}
+	window['viewPayments'] = () => {
+		loadthispage('view_payments');
+	}
+
+	// summary tables
+	window['renderTasks'] = () => {
+		const data = {
+			data: dash_runtime_data.taskData,
+			cols: [
+				{
+					field: 'id',
+					cap: '',
+					show: (v,row,n) => {
+						return n + 1;
+					}
+				},
+				{
+					field: 'sample_no',
+					cap: 'sample Number',
+				},
+				{
+					field: 'sample_type',
+					cap: 'sample type',
+					show: (v,r) => {
+						return `
+							<span class="sample-type-badge type-${v}">${v}</span>
+						`;
+					}
+				},
+				{
+					field: 'sample_count',
+					cap: 'processed',
+					show: (v,row) => {
+						return `<b>${row['results_count']} / ${row['sample_count']}</b>`;
+					}
+				},
+				{
+					field: 'status',
+					cap: 'Status',
+					show: (v) => {
+						return `<b>${sample_state_atlas[v]}</b>`;
+					}
+				},
+			],
+			tablename: 'samples_table',
+			caption: 'samples',
+			viewcall: 'view_rec',
+			rowprops: 'data-rectype="sample"',
+		};
+		render_simpleTable(data);
+	}
 </script>
+
