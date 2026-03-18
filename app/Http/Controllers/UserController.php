@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\userRoles;
 use App\Http\Controllers\ViewController;
+use App\Models\Payment;
+use App\Models\Sample;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -402,13 +405,13 @@ class UserController extends Controller{
 		return response()->json($res);
 	}
 
-	public function staff_stats(Request $req){
+	public function admin_stats(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
-		/*
+		// /*
 		$passed = $req->validate([
-			'condition' => ['required']
+			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
 		]);
 		// */
 
@@ -418,7 +421,9 @@ class UserController extends Controller{
 			$msg = "fetching staff stats";
 			$reslt = false;
 			$outdata = [];
+			$timerange = $passed['t_range'];
 
+			// prepare the output shapes
 			$tp_1 = [
 				'icon' => 'fa-money-bill',
 				'caption' => 'sales',
@@ -431,8 +436,121 @@ class UserController extends Controller{
 				'amt_total' => 54300,
 			];
 
-			$outdata[] = $tp_1;
-			$outdata[] = $tp_2;
+			// prepare the data
+				// tasks
+				$tasksmade = Task::TimeRange($timerange)->count();
+				$tmp_box['caption'] = 'Client visits';
+				$tmp_box['icon'] = 'fa-users';
+				$tmp_box['amt'] = $tasksmade;
+				$outdata[] = $tmp_box;
+
+				$s_done = Sample::where('id','<>',null)->where('status',2)->count();
+				$s_all = Sample::where('id','<>',null)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Samples';
+				$tmp_box['icon'] = 'fa-flask';
+				$tmp_box['amt_progress'] = $s_done;
+				$tmp_box['amt_total'] = $s_all;
+				$outdata[] = $tmp_box;
+
+				$s_done = Task::where('id','<>',null)->where('status',2)->count();
+				$s_all = Task::where('id','<>',null)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Complete Tasks';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt_progress'] = $s_done;
+				$tmp_box['amt_total'] = $s_all;
+				$outdata[] = $tmp_box;
+
+				$s_done = Task::where('id','<>',null)->where('status',1)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Unpaid Tasks';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt'] = $s_done;
+				$outdata[] = $tmp_box;
+
+				$s_done = Payment::timeRange($timerange)->where('status',1)->sum('amount');
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Total Income';
+				$tmp_box['icon'] = 'fa-money-bill';
+				$tmp_box['amt'] = $s_done;
+				$outdata[] = $tmp_box;
+
+			$reslt = true;
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outdata;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+	public function staff_stats(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+		]);
+		// */
+
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching staff stats";
+			$reslt = false;
+			$outdata = [];
+			$timerange = 'lifetime';
+
+			// prepare the data
+				// tasks
+				$s_done = Sample::where('id','<>',null)->where('status',2)->count();
+				$s_all = Sample::where('id','<>',null)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Samples';
+				$tmp_box['icon'] = 'fa-flask';
+				$tmp_box['amt_progress'] = $s_done;
+				$tmp_box['amt_total'] = $s_all;
+				$outdata[] = $tmp_box;
+
+				$s_done = Task::where('id','<>',null)->where('status',2)->count();
+				$s_all = Task::where('id','<>',null)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Complete Tasks';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt_progress'] = $s_done;
+				$tmp_box['amt_total'] = $s_all;
+				$outdata[] = $tmp_box;
+
+				$s_done = Task::where('id','<>',null)->where('status',0)->orWhere('status',1)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Pending Tasks';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt'] = $s_done;
+				$outdata[] = $tmp_box;
+
+				$s_done = Task::where('id','<>',null)->where('status',1)->count();
+				$tmp_box = [];
+				$tmp_box['caption'] = 'Unpaid Tasks';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt'] = $s_done;
+				$outdata[] = $tmp_box;
+
+				$s_done = Payment::timeRange('today')->where('status',1)->sum('amount');
+				$tmp_box = [];
+				$tmp_box['prefix'] = '';
+				$tmp_box['caption'] = 'today\'s income';
+				$tmp_box['icon'] = 'fa-folder';
+				$tmp_box['amt'] = $s_done;
+				$outdata[] = $tmp_box;
+
 			$reslt = true;
 
 			$res['result'] = $reslt;

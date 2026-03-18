@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Payment extends Model
-{
+class Payment extends Model{
+	use TimeRangeScope;
+
     protected $fillable = [
         'added_by',
 		'task_id',

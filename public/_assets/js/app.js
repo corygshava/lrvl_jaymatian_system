@@ -15,7 +15,6 @@ const mainhost = ".";
 const imagepath = `${mainhost}/res/images/`;
 
 const pref_auth = 'trybXP_comp_app_access_token';
-
 var curfun = "";
 // var confirm_modal = undefined;
 // var confirm_toggler = undefined;
@@ -922,6 +921,22 @@ function formatDateTime(date) {
 		second: '2-digit',
 		hour12: false
 	}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
+}
+
+function formatNumber(n,dp = 0) {
+	if(Number(n) == NaN){
+		alert_danger('invalid number passed for formatting');
+		return 'NAN';
+	}
+
+	let parts = n.toString().split('.');
+	let p1 = Number(parts[0]).toLocaleString();
+	let p2 = parts[1] || '00';
+
+	p2 = p2.slice(0,dp);
+	res = dp == 0 || !(n.toString().includes('.')) ? p1 : `${p1}.${p2}`;
+
+	return res;
 }
 
 

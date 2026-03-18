@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\UserRoleController;
 
 use Illuminate\Support\Facades\Route;
@@ -66,6 +67,7 @@ Route::prefix('/data')->group(function(){
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);
 	Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth','verified']);
 	Route::post('/staffstats', [UserController::class,'staff_stats'])->middleware(['auth','verified']);
+	Route::post('/adminstats', [UserController::class,'admin_stats'])->middleware(['auth','verified']);
 
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
@@ -88,6 +90,12 @@ Route::prefix('/data')->group(function(){
 	Route::post('/get_reports', [ReportsController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
+
+	// chart datapoints
+	Route::post('/sales_chart_data', [ChartsController::class,'sales'])->middleware(['auth','verified']);
+	Route::post('/samples_chart_data', [ChartsController::class,'samples'])->middleware(['auth','verified']);
+	Route::post('/visits_chart_data', [ChartsController::class,'visits'])->middleware(['auth','verified']);
+	Route::post('/income_chart_data', [ChartsController::class,'income'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/op')->group(function(){

@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class Task extends Model{
+	use TimeRangeScope;
+
 	protected $fillable = [
 		'task_no',
 		'added_by',

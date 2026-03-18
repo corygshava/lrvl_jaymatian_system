@@ -41,10 +41,22 @@
 	</div>
 
 	<div id="dash_stuff" class="w3-hide">
+		<div class="panelbg spacy-sm themeround distance-tn">
+			<div class="flow centroid gap-sm">
+				<b>Activity scope</b>
+				<div class="btn-group except scopebtns">
+					<button class="btn btn-outline-primary active" data-runme="reset_timerange" data-myid="0">daily</button>
+					<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="1">weekly</button>
+					<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="2">monthly</button>
+					<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="3">lifetime</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- stats guy -->
 		<div class="panelbg spacy-sm themeround distance-sm slide-up">
 			<div>
-				<span class="h4" data-role="stats-heading">Daily summary</span>
+				<span class="h4" data-role="stats-heading">System Summary</span>
 				<p>Here is a brief summary for all relevant information for today</p>
 			</div>
 			<div class="stats-row" id="statsholder">
@@ -60,7 +72,7 @@
 			</div>
 		</div>
 
-		<div class="panelbg spacy-sm themeround distance-sm slide-up" style="animation-delay: 200ms;opacity: 0;animation-fill-mode: forwards;">
+		<div class="panelbg spacy-sm themeround distance-sm slide-up w3-hide" style="animation-delay: 200ms;opacity: 0;animation-fill-mode: forwards;">
 			<div>
 				<span class="h4">Quick Actions</span>
 				<p>Here are some quick actions </p>
@@ -132,63 +144,65 @@
 			</div>
 		</div>
 
-		<div class="panelbg spacy-sm themeround distance-sm w3-display-container slide-up" style="animation-delay: 400ms;opacity: 0;animation-fill-mode: forwards;">
-			<div class="w3-display-topright spacy-sm">
-				<button class="mybtn primary sm" data-runme="viewTasks">view all tasks</button>
-			</div>
-			<div>
-				<span class="h4">Pending tasks</span>
-				<p>Here are some tasks that are not yet complete, <b>click</b> on one to start managing it</p>
-			</div>
-			<div>
-				<div class="table-responsive themeround border">
-					<table class="table table-hover mb-0 table-modern" data-role="tasks_table">
-						<thead data-subrole="tableHead" class="thead-light">
-						</thead>
-						<tbody data-subrole="tableBody">
-						</tbody>
-					</table>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panelbg spacy-sm themeround distance-sm slide-up">
+					<div>
+						<span class="h4">Sales Chart</span>
+					</div>
+					<div class="chart-container">
+						<canvas id="salesLineChart"></canvas>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="panelbg spacy-sm themeround distance-sm w3-display-container slide-up w3-hide" style="animation-delay: 200ms;opacity: 0;animation-fill-mode: forwards;">
-			<div class="w3-display-topright spacy-sm">
-				<button class="mybtn primary sm" data-runme="viewSamples">view all samples</button>
-			</div>
-			<div>
-				<span class="h4">pending samples</span>
-				<p>Here are some samples that are not yet processed</p>
-			</div>
-			<div>
-				<div class="table-responsive themeround border">
-					<table class="table table-hover mb-0 table-modern" data-role="samples_table">
-						<thead data-subrole="tableHead" class="thead-light">
-						</thead>
-						<tbody data-subrole="tableBody">
-						</tbody>
-					</table>
+			<div class="col-md-6">
+				<div class="panelbg spacy-sm themeround distance-sm slide-up">
+					<div>
+						<span class="h4">samples Chart</span>
+					</div>
+					<div class="chart-container">
+						<canvas id="samplesLineChart"></canvas>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
 
-	<div>
-		<div class="panelbg spacy-sm themeround">
-			<div>
-				<span class="h4">Sales Chart</span>
+			<div class="col-md-6">
+				<div class="panelbg spacy-sm themeround distance-sm slide-up">
+					<div>
+						<span class="h4">visits Chart</span>
+					</div>
+					<div class="chart-container">
+						<canvas id="visitsLineChart"></canvas>
+					</div>
+				</div>
 			</div>
-			<div class="chart-container">
-				<canvas id="sampleLineChart"></canvas>
+
+			<div class="col-md-6">
+				<div class="panelbg spacy-sm themeround distance-sm slide-up">
+					<div>
+						<span class="h4">income Chart</span>
+					</div>
+					<div class="chart-container">
+						<canvas id="incomeLineChart"></canvas>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <script>
-	let dash_runtime_data = {};
+	let charts = {};
+	let dash_runtime_data = {
+		charts: {}
+	};
+
 	const timerange_atlas = [
 		'today',
+		// 'this_week',
+		// 'this_month',
+		// 'this_year',
 		'last_week',
 		'last_month',
 		'last_year',
@@ -213,127 +227,155 @@
 	]
 	// */
 
-	window['runOnAwake'] = () => {
-		updateSessionUI();
+	// initialiser
+		window['runOnAwake'] = () => {
+			initUIs();
+			updateSessionUI();
 
-		setTimeout(() => {
-			initdashsetup();
-			// alert_info('runing autoload');
-		},400);
-	}
+			setTimeout(() => {
+				initdashsetup();
+				// alert_info('runing autoload');
+			},400);
+		}
+		window['initUIs'] = () => {
+			let bx = document.querySelector('.scopebtns');
+			let outht = ``;
 
-	window['initdashsetup'] = () => {
-		const step1 = () => {
-			window[fetch_bypass](linkAtlas['get_admin_stats'],{t_range: timerange},'POST').then((d) => {
-				responseHandler(d,step2,d);
-
-				if(d.result){
-					showError(false);
-				} else {
-					showError(true,{heading: 'Error getting stats',text: d.message});
-				}
-			}).catch(err => {
-				showError(true,{heading: 'Error getting stats',text: err.message});
+			timerange_atlas.forEach((t,n) => {
+				outht += `
+					<button class="btn btn-outline-primary${n != 0 ? "" : " active"}" data-runme="reset_timerange" data-myid="${n}">${t.split('_').join(" ")}</button>
+				`;
 			})
-		};
 
-		const step2 = (d) => {
-			dash_runtime_data.adminStats = d.sendme;
-
-			// get incomplete tasks
-			window[fetch_bypass](linkAtlas['get_sales_chart_data'],{t_range: timerange},'POST').then((d) => {
-				responseHandler(d,step3,d);
-			}).catch(err => {
-				showError(true,{heading: 'Error getting sales chart data',text: err.message});
-			});
+			bx.innerHTML = outht;
 		}
+		window['initdashsetup'] = () => {
+			const step1 = () => {
+				window[fetch_bypass](linkAtlas['get_admin_stats'],{t_range: timerange},'POST').then((d) => {
+					responseHandler(d,step2,d);
 
-		const step3 = (d) => {
-			dash_runtime_data.charts.salesdata = d.sendme;
+					if(d.result){
+						showError(false);
+					} else {
+						showError(true,{heading: 'Error getting stats',text: d.message});
+					}
+				}).catch(err => {
+					showError(true,{heading: 'Error getting stats',text: err.message});
+				})
+			};
 
-			// get unprocessed samples
-			window[fetch_bypass](linkAtlas['get_samples_chart_data'],{t_range: timerange},'POST').then((d) => {
-				responseHandler(d,step4,d);
-			}).catch(err => {
-				showError(true,{heading: 'Error getting samples',text: err.message});
-			});
+			const step2 = (d) => {
+				dash_runtime_data.adminStats = d.sendme;
+
+				alert_dark('now getting sales chart');
+
+				// get incomplete tasks
+				window[fetch_bypass](linkAtlas['get_sales_chart_data'],{t_range: timerange},'POST').then((d) => {
+					responseHandler(d,step3,d);
+				}).catch(err => {
+					showError(true,{heading: 'Error getting sales chart data',text: err.message});
+				});
+			}
+
+			const step3 = (d) => {
+				dash_runtime_data.charts = {};
+				dash_runtime_data.charts.salesdata = d.sendme;
+
+				// get samples
+				window[fetch_bypass](linkAtlas['get_samples_chart_data'],{t_range: timerange},'POST').then((d) => {
+					responseHandler(d,step4,d);
+				}).catch(err => {
+					showError(true,{heading: 'Error getting samples',text: err.message});
+				});
+			}
+
+			const step4 = (d) => {
+				dash_runtime_data.charts.samplesdata = d.sendme;
+
+				// get unprocessed samples
+				window[fetch_bypass](linkAtlas['get_visits_chart_data'],{t_range: timerange},'POST').then((d) => {
+					responseHandler(d,step5,d);
+				}).catch(err => {
+					showError(true,{heading: 'Error getting samples',text: err.message});
+				});
+			}
+
+			const step5 = (d) => {
+				dash_runtime_data.charts.visitsdata = d.sendme;
+
+				// get unprocessed samples
+				window[fetch_bypass](linkAtlas['get_income_chart_data'],{t_range: timerange},'POST').then((d) => {
+					responseHandler(d,step6,d);
+				}).catch(err => {
+					showError(true,{heading: 'Error getting samples',text: err.message});
+				});
+			}
+
+			const step6 = (d) => {
+				dash_runtime_data.charts.incomedata = d.sendme;
+				final_step();
+			}
+
+			const final_step = () => {
+				alert_dark('done fetching');
+				render_all_stuff();
+			}
+
+			load_txt.innerHTML = 'loading dashboard information';
+			showmainLoader();
+			showError(false);
+
+			setTimeout(() => {
+				step1();
+			},1200);
 		}
+		window['render_all_stuff'] = () => {
+			renderStats();
 
-		const step4 = (d) => {
-			dash_runtime_data.charts.samplesdata = d.sendme;
+			render_sales_chart();
+			render_samples_chart();
+			render_visits_chart();
+			render_income_chart();
 
-			// get unprocessed samples
-			window[fetch_bypass](linkAtlas['get_visits_chart_data'],{t_range: timerange},'POST').then((d) => {
-				responseHandler(d,step5,d);
-			}).catch(err => {
-				showError(true,{heading: 'Error getting samples',text: err.message});
-			});
+			showmainLoader(false);
+			refreshUI(300);
 		}
-
-		const step5 = (d) => {
-			dash_runtime_data.charts.visitsdata = d.sendme;
-			final_step();
-		}
-
-		const final_step = () => {
-			alert_dark('done fetching');
-			render_all_stuff();
-		}
-
-		load_txt.innerHTML = 'loading dashboard information';
-		showmainLoader();
-		showError(false);
-
-		setTimeout(() => {
-			step1();
-		},1200);
-	}
-	window['render_all_stuff'] = () => {
-		renderStats();
-
-		render_sales_chart();
-		render_samples_chart();
-		render_visits_chart();
-
-		showmainLoader(false);
-		refreshUI(300);
-	}
 
 	// utilities
-	window['showError'] = (con = true,d) => {
-		let dft = {
-			heading: 'Error',
-			text: 'something went wrong, reload page'
-		};
-		d = {...dft,...d};
+		window['showError'] = (con = true,d) => {
+			let dft = {
+				heading: 'Error',
+				text: 'something went wrong, reload page'
+			};
+			d = {...dft,...d};
 
-		let cl = con ? 'remove' : 'add';
-		err_box.classList[cl]('w3-hide');
-		err_box.querySelector('span').innerHTML = d.heading;
-		err_box.querySelector('p').innerHTML = d.text;
-		loaderInterface.classList[con ? 'add' : 'remove']('w3-hide');
-	}
-	window['showmainLoader'] = (con = true) => {
-		let cls = con ? 'remove' : 'add';
-		let altcls = !con ? 'remove' : 'add';
+			let cl = con ? 'remove' : 'add';
+			err_box.classList[cl]('w3-hide');
+			err_box.querySelector('span').innerHTML = d.heading;
+			err_box.querySelector('p').innerHTML = d.text;
+			loaderInterface.classList[con ? 'add' : 'remove']('w3-hide');
+		}
+		window['showmainLoader'] = (con = true) => {
+			let cls = con ? 'remove' : 'add';
+			let altcls = !con ? 'remove' : 'add';
 
-		loaderInterface.classList[cls]('w3-hide');
-		dash_stuff.classList[altcls]('w3-hide');
-	}
-	window['hidemainLoader'] = () => {
-		loaderInterface.classList.add('w3-hide');
-	}
+			loaderInterface.classList[cls]('w3-hide');
+			dash_stuff.classList[altcls]('w3-hide');
+		}
+		window['hidemainLoader'] = () => {
+			loaderInterface.classList.add('w3-hide');
+		}
 
-	window['refresh_data'] = () => {
-		alert_info('refreshing information');
-		initdashsetup();
-	}
-	window['loadthispage'] = (p) => {
-		loadPage({
-			template: linkAtlas[p],
-			sidenote: pageNames[p],
-		});
-	}
+		window['refresh_data'] = () => {
+			alert_info('refreshing information');
+			initdashsetup();
+		}
+		window['loadthispage'] = (p) => {
+			loadPage({
+				template: linkAtlas[p],
+				sidenote: pageNames[p],
+			});
+		}
 
 	// actions
 		window['refreshData'] = () => {
@@ -357,6 +399,10 @@
 
 			timerange = timerange_atlas[id];
 			refreshData();
+
+			let btns = document.querySelectorAll('.scopebtns>.btn');
+			btns.forEach(l => {l.classList.remove('active');})
+			el.classList.add('active');
 		}
 
 		// samples ops
@@ -397,15 +443,50 @@
 		}
 
 	// renderers
-	window['render_sample_chart'] = () => {
-		// Get the canvas element
-		let thecanvas = document.getElementById('sampleLineChart');
-		const ctx = thecanvas.getContext('2d');
+		window['render_sales_chart'] = () => {
+			let cid = 'salesLineChart';
+			let data = dash_runtime_data.charts.salesdata;
+			let title = 'Total Sales';
 
-		// Create the line chart
-		const sampleLineChart = new Chart(ctx, {
-			type: 'line',
-			data: {
+			render_line_chart(cid,data,title);
+		};
+		window['render_samples_chart'] = () => {
+			let cid = 'samplesLineChart';
+			let data = dash_runtime_data.charts.samplesdata;
+			let title = 'Total samples delivered';
+
+			render_line_chart(cid,data,title);
+		};
+		window['render_visits_chart'] = () => {
+			let cid = 'visitsLineChart';
+			let data = dash_runtime_data.charts.visitsdata;
+			let title = 'Total client visits';
+
+			render_line_chart(cid,data,title);
+		};
+		window['render_income_chart'] = () => {
+			let cid = 'incomeLineChart';
+			let data = dash_runtime_data.charts.incomedata;
+			let title = 'Total income';
+
+			render_line_chart(cid,data,title);
+		};
+
+		window['render_line_chart'] = (cid,chartdata = {},title='Sample Line Chart') => {
+			if(cid == undefined){
+				alert_danger('invalid chart call');
+				return;
+			}
+
+			// Get the canvas element
+			let thecanvas = document.getElementById(cid);
+			if(thecanvas == undefined){
+				alert_danger(`canvas \`${cid}\` not found`);
+				return;
+			}
+
+			const ctx = thecanvas.getContext('2d');
+			const dft = {
 				labels: ['January', 'February', 'March', 'April', 'May', 'June'],
 				datasets: [{
 					label: 'Sales',
@@ -414,174 +495,134 @@
 					backgroundColor: 'rgba(75, 192, 192, 0.2)',
 					tension: 0.1
 				}]
-			},
-			options: {
-				responsive: true,
-				plugins: {
-					legend: {
-						position: 'top',
-					},
-					title: {
-						display: true,
-						text: 'Sample Line Chart'
-					}
-				},
-				scales: {
-					y: {
-						beginAtZero: true
-					}
-				}
+			};
+
+			chartdata = {...dft,...chartdata};
+
+			if(charts[cid]){
+				charts[cid].destroy();
 			}
-		});
-	}
-	window['renderStats'] = () => {
-		// alert_info('render this stuff');
 
-		let stats = dash_runtime_data.staffStats;
-		let outht = '';
-		statsholder.innerHTML = outht;
-
-		stats.forEach((el,id) => {
-			let prf = el.prefix == undefined ? '' : el.prefix + ' ';
-			let amt_dis = el.amt_progress == undefined ? `
-				${prf}${el.amt.toLocaleString()}
-			` : `
-				${prf}${el.amt_progress} / ${el.amt_total}
-			`;
-			outht += `
-				<div class="stat-card modern" data-role="dashstat">
-					<div class="myicon" data-subrole="stat_amt">
-						<i class="fa ${el.icon}"></i>
-					</div>
-					<div class="stats">
-						<h3 data-subrole="stat_amt">${amt_dis}</h3>
-						<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
-					</div>
-				</div>
-			`;
-		});
-
-		statsholder.innerHTML = outht;
-	}
-	window['renderTasks'] = () => {
-		const data = {
-			data: dash_runtime_data.taskData.data,
-			cols: [
-				{
-					cap: 'ID',
-					field: 'id',
-				},
-				{
-					cap: 'Task number',
-					field: 'task_no',
-					sortable: true,
-					show: function(value) {
-						return `<strong>${value}</strong>`;
-					}
-				},
-				{
-					cap: 'Client name',
-					field: 'client_name',
-					sortable: true,
-					show: function(value) {
-						return `<strong>${value}</strong>`;
-					}
-				},
-				{
-					cap: 'Date added',
-					field: 'created_at',
-					sortable: true,
-					show: function(value) {
-						return formatDate0(value);
-						// return `<span class="badge ${value}">${value}</span>`;
-					}
-				},
-				{
-					cap: 'payment status',
-					field: 'payment_status',
-					sortable: true,
-					show: function(value) {
-						let cls = value == '2' ? "w3-text-green" : "w3-black_";
-						// let con = value == 'monthly' ? "yes" : "no";
-						return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
-					}
-				},
-				{
-					cap: 'Status',
-					field: 'status',
-					sortable: true,
-					show: function(value) {
-						let cls = value == '2' ? "w3-green" : "w3-blue";
-						// let con = value == 'monthly' ? "yes" : "no";
-						return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
-					}
-				},
-				{
-					cap: 'is paid',
-					field: 'is_paid',
-					sortable: true,
-					show: function(value) {
-						let cls = value == true ? "w3-green" : "w3-black";
-						let con = value == true ? "yes" : "no";
-						return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+			charts[cid] = new Chart(ctx, {
+				type: 'line',
+				data: chartdata,
+				options: {
+					responsive: true,
+					plugins: {
+						legend: {
+							position: 'top',
+						},
+						title: {
+							display: true,
+							text: title
+						}
+					},
+					scales: {
+						y: {
+							beginAtZero: true
+						}
 					}
 				}
-			],
-			tablename: 'tasks_table',
-			caption: 'tasks',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="task"',
-		};
-		render_simpleTable(data);
-	}
+			});
+		}
+		window['renderStats'] = () => {
+			// alert_info('render this stuff');
 
-	/*
-	window['renderSamples'] = () => {
-		const data = {
-			data: dash_runtime_data.samplesData.data,
-			cols: [
-				{
-					field: 'id',
-					cap: '',
-					show: (v,row,n) => {
-						return n + 1;
+			let stats = dash_runtime_data.adminStats;
+			let outht = '';
+			statsholder.innerHTML = outht;
+
+			stats.forEach((el,id) => {
+				let prf = el.prefix == undefined ? '' : el.prefix + ' ';
+				let amt_dis = el.amt_progress == undefined ? `
+					${prf}${formatNumber(el.amt,2)}
+				` : `
+					${prf}${el.amt_progress} / ${el.amt_total}
+				`;
+				outht += `
+					<div class="stat-card modern" data-role="dashstat">
+						<div class="myicon" data-subrole="stat_amt">
+							<i class="fa ${el.icon}"></i>
+						</div>
+						<div class="stats">
+							<h3 data-subrole="stat_amt">${amt_dis}</h3>
+							<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
+						</div>
+					</div>
+				`;
+			});
+
+			statsholder.innerHTML = outht;
+		}
+		window['renderTasks'] = () => {
+			const data = {
+				data: dash_runtime_data.taskData.data,
+				cols: [
+					{
+						cap: 'ID',
+						field: 'id',
+					},
+					{
+						cap: 'Task number',
+						field: 'task_no',
+						sortable: true,
+						show: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						cap: 'Client name',
+						field: 'client_name',
+						sortable: true,
+						show: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						cap: 'Date added',
+						field: 'created_at',
+						sortable: true,
+						show: function(value) {
+							return formatDate0(value);
+							// return `<span class="badge ${value}">${value}</span>`;
+						}
+					},
+					{
+						cap: 'payment status',
+						field: 'payment_status',
+						sortable: true,
+						show: function(value) {
+							let cls = value == '2' ? "w3-text-green" : "w3-black_";
+							// let con = value == 'monthly' ? "yes" : "no";
+							return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
+						}
+					},
+					{
+						cap: 'Status',
+						field: 'status',
+						sortable: true,
+						show: function(value) {
+							let cls = value == '2' ? "w3-green" : "w3-blue";
+							// let con = value == 'monthly' ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+						}
+					},
+					{
+						cap: 'is paid',
+						field: 'is_paid',
+						sortable: true,
+						show: function(value) {
+							let cls = value == true ? "w3-green" : "w3-black";
+							let con = value == true ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+						}
 					}
-				},
-				{
-					field: 'sample_no',
-					cap: 'sample Number',
-				},
-				{
-					field: 'sample_type',
-					cap: 'sample type',
-					show: (v,r) => {
-						return `
-							<span class="sample-type-badge type-${v.toLowerCase()}">${v}</span>
-						`;
-					}
-				},
-				{
-					field: 'sample_count',
-					cap: 'processed',
-					show: (v,row) => {
-						return `<b>${row['results_count']} / ${row['sample_count']}</b>`;
-					}
-				},
-				{
-					field: 'status',
-					cap: 'Status',
-					show: (v) => {
-						return `<b>${sample_state_atlas[v]}</b>`;
-					}
-				},
-			],
-			tablename: 'samples_table',
-			caption: 'samples',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="sample"',
-		};
-		render_simpleTable(data);
-	}
-	// */
+				],
+				tablename: 'tasks_table',
+				caption: 'tasks',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="task"',
+			};
+			render_simpleTable(data);
+		}
 </script>
-

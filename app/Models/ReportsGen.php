@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ReportsGen extends Model
-{
+class ReportsGen extends Model{
+	use TimeRangeScope;
+
     protected $table = 'reports_gen';
 
     protected $fillable = [

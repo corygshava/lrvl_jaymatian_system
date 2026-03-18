@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 
-class BizData extends Model
-{
+class BizData extends Model{
+	use TimeRangeScope;
+
     protected $fillable = [
 		'item_name',
 		'item_data',

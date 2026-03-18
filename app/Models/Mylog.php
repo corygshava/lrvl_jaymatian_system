@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Mylog extends Model{
+	use TimeRangeScope;
+
 	protected $table="logs";
 
     protected $fillable = [

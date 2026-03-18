@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
-class Sample extends Model
-{
+class Sample extends Model{
+	use TimeRangeScope;
+
     protected $fillable = [
         'added_by',
 		'task_id',

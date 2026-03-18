@@ -101,6 +101,7 @@
 			'get_sales_chart_data' : './data/sales_chart_data',
 			'get_samples_chart_data' : './data/samples_chart_data',
 			'get_visits_chart_data' : './data/visits_chart_data',
+			'get_income_chart_data' : './data/income_chart_data',
 
 			// misc
 			'bizimages' : './media/bizimg',
