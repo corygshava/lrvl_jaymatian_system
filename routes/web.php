@@ -33,6 +33,7 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/datatables', [ViewController::class,'showdatatable']);
 	Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
 	Route::get('/console', [ViewController::class,'showconsole'])->name('user_console');
+	Route::get('/admin_console', [ViewController::class,'showadminconsole'])->name('user_console');
 
 	// Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
 	Route::get('/user_roles', [ViewController::class,'showroles'])->name('user_roles');

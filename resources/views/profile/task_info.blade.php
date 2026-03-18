@@ -3,7 +3,7 @@
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
-	// require_once __DIR__.'/datatables_refactored.php';
+	require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
 
@@ -11,6 +11,7 @@
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
+@include('pieces.codes_simpletables')
 {{-- --> --}}
 
 <style>
@@ -387,19 +388,6 @@
 		});
 	}
 
-	window['view_rec'] = (el) => {
-		if(el == undefined){
-			alert_danger('invalid view_rec call');
-			return;
-		}
-		let wot = el.dataset.rectype || 'nothing';
-		let n = el.dataset.myid || 0;
-		let callme = `view_${wot}`;
-
-		alert_dark(`viewing record for: ${wot}`);
-
-		window[callme](el,n,wot);
-	}
 	window['view_nothing'] = (el,id,w) => {alert_danger('invalid record procedure!');}
 
 	window['view_sample'] = (el,id,w) => {
@@ -532,6 +520,9 @@
 						<a class="dropdown-item spacy-tn" href="#" onclick="add_notes()" id="option_note_btn">
 							<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
 						</a>
+						<a class="dropdown-item spacy-tn" href="#" data-runme="view_task">
+							<i class="fas fa-info-circle mr-2 text-muted"></i>view all details
+						</a>
 					</div>
 				</div>
 			</div>
@@ -647,7 +638,7 @@
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="sample"',
 		};
-		renderTable(data);
+		render_simpleTable(data);
 	}
 	window['renderPayments'] = () => {
 		const data = {
@@ -700,7 +691,7 @@
 		};
 
 		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = task_info_data.taskData.payment_status == 2 ? 'none' : 'block';
-		renderTable(data);
+		render_simpleTable(data);
 	}
 	window['renderReports'] = () => {
 		const data = {
@@ -737,82 +728,7 @@
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="report"',
 		};
-		renderTable(data);
-	}
-
-	window['renderTable'] = (dta) => {
-		let dft = {
-			data: {},
-			cols: [],
-			tablename: 'items_table',
-			caption: 'items',
-			viewcall: 'view_record',
-			rowprops: 'data-genrecord'
-		};
-
-		dta = {...dft,...dta};
-
-		// alert_info(`showing ${dta.caption}`,12);
-
-		let data = dta.data;
-		let cols = dta.cols;
-		let tablename = dta.tablename;
-		let sel = `[data-role="${tablename}"]`;
-		let table = document.querySelector(sel);
-
-		if(table !== null){
-			let thead = table.querySelector(`[data-subrole="tableHead"]`);
-			let tbody = table.querySelector(`[data-subrole="tableBody"]`);
-
-			outht = '';
-
-			cols.forEach(h => {
-				outht += `<th>${h.cap}</th>`;
-			});
-
-			thead.innerHTML = outht;
-			outht = '';
-
-			data.forEach((s,id) => {
-				outht += `<tr style="cursor:pointer;" data-runme="${dta.viewcall}" data-myid="${id}" ${dta.rowprops}>`;
-
-				cols.forEach(c => {
-					let f = s[c.field];
-					let dta = c.show == undefined ? f : c.show(f,s,id);
-					outht += `<td>${dta}</td>`;
-				})
-				outht += '</tr>';
-			})
-
-			if(data.length == 0){
-				let l = cols.length == 0 ? 1 : cols.length;
-				outht = `
-					<td colspan="${l}" class="spacy-md w3-center">
-						<i>no ${dta.caption} found</i>
-					</td>
-				`;
-			}
-
-			tbody.innerHTML = outht;
-
-			let n = data.length;
-			let myreport = `${dta.tablename}_report`;
-			let rpt = document.querySelector(`#${myreport}`);
-			let reportht = `showing <b class="themetxt">${n}</b> ${plural('result',n)}`;
-
-			if(rpt == undefined){
-				let summary = document.createElement('div');
-				summary.className = "spacy-sm border-top border-secondary";
-				summary.innerHTML = reportht;
-				summary.id = myreport;
-
-				document.querySelector(sel).parentElement.appendChild(summary);
-			} else {
-				rpt.innerHTML = reportht;
-			}
-		} else {
-			alert_danger('no table found',12);
-		}
+		render_simpleTable(data);
 	}
 
 	// MUST BE LAST
@@ -829,5 +745,17 @@
 	}
 	window['refreshStuff'] = () => {
 		refreshTaskAssocs();
+	}
+	window['view_task'] = () => {
+		let cur = {
+			rectype: 'task',
+			data: task_info_data.taskData,
+		}
+
+		window['cur_record'] = cur;
+		loadPage({
+			template: linkAtlas['view_task'],
+			sidenote: pageNames['view_task'],
+		});
 	}
 </script>

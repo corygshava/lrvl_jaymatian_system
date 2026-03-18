@@ -31,6 +31,18 @@ class ViewController extends Controller{
 			return $this->showerror($req,'log in to continue');
 		}
 	}
+	public function showadminconsole(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.console_admin',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
 	public function showroles(Request $req){
 		if($this->ili()){
 			$cmdt = self::commondata();

@@ -487,7 +487,7 @@
 		loadPage(payld);
 	}
 
-	function viewClient_payments_payments(clientId) {
+	function viewClient_payments(clientId) {
 		alert_info('opening client Information');
 		window[variableAtlas['client_id']] = payment.owner.id;
 

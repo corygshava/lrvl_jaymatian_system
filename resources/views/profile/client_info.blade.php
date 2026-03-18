@@ -3,6 +3,7 @@
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/piece_simple_table.php';
 	// require_once __DIR__.'/datatables_refactored.php';
 	// */
 ?>
@@ -11,6 +12,7 @@
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
+@include('pieces.codes_simpletables')
 {{-- --> --}}
 
 <style>
@@ -57,7 +59,7 @@
 		/*overflow: hidden;*/
 	}
 
-	[data-openthis="taskinfo"]{
+	[data-openthis="clientinfo"]{
 		/*display: none !important;*/
 		opacity: 0.3;
 		pointer-events: none;
@@ -78,7 +80,7 @@
 		</div>
 	</div>
 
-	<div class="profile_card themeround panelbg w3-hide slide-up" id="task_brief">
+	<div class="profile_card themeround panelbg w3-hide slide-up" id="the_brief">
 		<div class="card-header panelbg themegrad flowline overflow left centerline themeround w3-display-container" data-subrole="taskpanel">
 		</div>
 
@@ -90,7 +92,7 @@
 	</div>
 
 	<div id="loaderInterface" class="spacy-md flow centroid gap-sm">
-		<span id="load_txt">loading task information</span>
+		<span id="load_txt">loading client information</span>
 		<div class="loader"></div>
 	</div>
 
@@ -215,22 +217,7 @@
 	let task = {};
 	let c_pld = {};
 
-	let task_state_atlas = {
-		0 : 'pending',
-		1 : 'awaiting_payment',
-		2 : 'complete',
-	};
-	let task_payment_state_atlas = {
-		0 : 'pending',
-		1 : 'incomplete',
-		2 : 'paid',
-	};
-
-	let sample_state_atlas = {
-		0 : 'pending',
-		1 : 'incomplete',
-		2 : 'complete',
-	};
+	let task_payment_state_atlas = window['payment_state_atlas'];
 
 	window['client_info_data'] = {};
 
@@ -251,8 +238,8 @@
 	// initialisers
 	window['init_task'] = () => {
 		let c_id = window[variableAtlas['client_id']];
-		let nextact = window[variableAtlas['c_i_act']];
-		let nextact_vars = window[variableAtlas['c_i_args']];
+		let nextact = window[variableAtlas['t_i_act']];
+		let nextact_vars = window[variableAtlas['t_i_args']];
 
 		c_pld = {client_id: c_id};
 
@@ -260,8 +247,8 @@
 		console.log(nextact);
 
 		// prevents issues during reloads
-		delete(window[variableAtlas['c_i_act']]);
-		delete(window[variableAtlas['c_i_args']]);
+		delete(window[variableAtlas['t_i_act']]);
+		delete(window[variableAtlas['t_i_args']]);
 
 		// get task
 		const step1 = () => {
@@ -281,7 +268,7 @@
 			// render task info
 			client_info_data.clientData = d.sendme;
 
-			renderTaskBrief();
+			renderBrief();
 			load_txt.innerHTML = 'loading task samples';
 
 			// alert_info('loading individual stuff');
@@ -321,7 +308,7 @@
 			}
 		}
 
-		load_txt.innerHTML = 'loading task information';
+		load_txt.innerHTML = 'loading client information';
 		showmainLoader();
 		showError(false);
 
@@ -358,7 +345,7 @@
 	window['showmainLoader'] = () => {
 		loaderInterface.classList.remove('w3-hide');
 		info_stuff.classList.add('w3-hide');
-		task_brief.classList.add('w3-hide');
+		the_brief.classList.add('w3-hide');
 	}
 	window['hidemainLoader'] = () => {
 		loaderInterface.classList.add('w3-hide');
@@ -473,12 +460,24 @@
 	window['refreshAllData'] = () => {
 		init_task();
 	}
+	window['view_client'] = () => {
+		let cur = {
+			rectype: 'client',
+			data: client_info_data.clientData,
+		}
+
+		window['cur_record'] = cur;
+		loadPage({
+			template: linkAtlas['view_client'],
+			sidenote: pageNames['view_client'],
+		});
+	}
 
 	// renderers
 	window['render_all_data'] = () => {
 		// alert_dark('hiding loader');
 		// hidemainLoader();
-		renderTaskBrief();
+		renderBrief();
 
 		renderStats();
 		renderSamples();
@@ -488,74 +487,55 @@
 		refreshUI(200);
 	}
 
-	window['renderTaskBrief'] = () => {
+	window['renderBrief'] = () => {
 		// alert_info('showing task brief');
+		the_brief.classList.remove('w3-hide');
 
-		task_brief.classList.remove('w3-hide');
-
-		let panel = task_brief.querySelector('[data-subrole="taskpanel"]');
-		let task = client_info_data.taskData;
-
-		let paylink = task.payment_status == 2 ? '' : `
-			<a class="dropdown-item spacy-tn" href="#" onclick="add_payment()" id="option_payment_btn">
-				<i class="fas fa-money-bill-wave mr-2 text-muted"></i>Record Payment
-			</a>
-		`;
+		let panel = the_brief.querySelector('[data-subrole="taskpanel"]');
+		let client = client_info_data.clientData;
 
 		panel.innerHTML = `
 			<div>
 				<div class="flowline overflow left">
-					<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">${task.task_no}</strong>
-					<button class="mybtn trans border" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
-				</div>
-				<div class="distance-sm">
-					<span class="mybadge status-${task_state_atlas[task.status]}" id="task-status-badge">
-						<i class="fas fa-clock"></i> ${task_state_atlas[task.status]}
-					</span>
-					<span class="mybadge payment-${task_payment_state_atlas[task.payment_status]} ml-2" id="payment-status-badge">
-						<i class="fas fa-credit-card"></i> ${task_payment_state_atlas[task.payment_status]}
-					</span>
-					<div class="distance-sm">
-						<i>${task.notes || "--"}</i>
-					</div>
+					<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">${client.client_name}</strong>
+					<button class="mybtn trans border w3-hide" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
 				</div>
 			</div>
-			<div class="w3-display-right spacy-md" style="z-index: 102">
-				<div class="dropdown">
+			<div class="w3-display-right spacy-md" style="z-index: 0">
+				<div class="dropdown w3-hide_">
 					<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
 						<i class="fas fa-ellipsis-v"></i>
 					</button>
 					<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-						${paylink}
 						<a class="dropdown-item spacy-tn" href="#" onclick="add_notes()" id="option_note_btn">
 							<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
+						</a>
+						<a class="dropdown-item spacy-tn" href="#" data-runme="view_client">
+							<i class="fas fa-info-circle mr-2 text-muted"></i>View all details
 						</a>
 					</div>
 				</div>
 			</div>
 		`;
 
+		return;
+
 		// extra stuff (for convenience planning)
 		payment_ops.style.display = client_info_data.taskData.balance <= 0 ? 'none' : 'block';
 	}
 	window['renderStats'] = () => {
-		let stats = task_brief.querySelector('[data-subrole="stats"]');
-		let xtra_stats = task_brief.querySelector('[data-subrole="xtra_stats"]');
+		let stats = the_brief.querySelector('[data-subrole="stats"]');
+		let xtra_stats = the_brief.querySelector('[data-subrole="xtra_stats"]');
 
-		let task = client_info_data.taskData;
-		let client = task.client.client_name;
+		let client = client_info_data.clientData;
 		let samples = client_info_data.samplesData;
 		let payments = client_info_data.paymentData;
 		let reports = client_info_data.reportData;
 
 		stats.innerHTML = `
 			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client</small>
-				<span class="font-weight-bold" id="client-name">${client}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Status</small>
-				<span class="font-weight-bold" id="task-status-text">${task_state_atlas[task.status]}</span>
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client Credit</small>
+				<span class="font-weight-bold" id="client-name">KES ${(Math.floor(client.credit_balance)).toLocaleString()}</span>
 			</div>
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
@@ -571,12 +551,7 @@
 			</div>
 		`;
 
-		let paybtn = task.payment_status == 2 ? '' : `
-			<div class="stat">
-				<button class="mybtn primary" data-runme="add_payment"><i class="fa fa-plus"></i> add payment</button>
-			</div>
-		`;
-
+		return;
 		xtra_stats.innerHTML = `
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
@@ -645,7 +620,7 @@
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="sample"',
 		};
-		renderTable(data);
+		render_simpleTable(data);
 	}
 	window['renderPayments'] = () => {
 		const data = {
@@ -697,8 +672,11 @@
 			rowprops: 'data-rectype="payment"',
 		};
 
-		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = client_info_data.taskData.payment_status == 2 ? 'none' : 'block';
-		renderTable(data);
+		// /*
+		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = client_info_data.clientData || true ? 'none' : 'block';
+		// */
+
+		render_simpleTable(data);
 	}
 	window['renderReports'] = () => {
 		const data = {
@@ -735,82 +713,7 @@
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="report"',
 		};
-		renderTable(data);
-	}
-
-	window['renderTable'] = (dta) => {
-		let dft = {
-			data: {},
-			cols: [],
-			tablename: 'items_table',
-			caption: 'items',
-			viewcall: 'view_record',
-			rowprops: 'data-genrecord'
-		};
-
-		dta = {...dft,...dta};
-
-		// alert_info(`showing ${dta.caption}`,12);
-
-		let data = dta.data;
-		let cols = dta.cols;
-		let tablename = dta.tablename;
-		let sel = `[data-role="${tablename}"]`;
-		let table = document.querySelector(sel);
-
-		if(table !== null){
-			let thead = table.querySelector(`[data-subrole="tableHead"]`);
-			let tbody = table.querySelector(`[data-subrole="tableBody"]`);
-
-			outht = '';
-
-			cols.forEach(h => {
-				outht += `<th>${h.cap}</th>`;
-			});
-
-			thead.innerHTML = outht;
-			outht = '';
-
-			data.forEach((s,id) => {
-				outht += `<tr style="cursor:pointer;" data-runme="${dta.viewcall}" data-myid="${id}" ${dta.rowprops}>`;
-
-				cols.forEach(c => {
-					let f = s[c.field];
-					let dta = c.show == undefined ? f : c.show(f,s,id);
-					outht += `<td>${dta}</td>`;
-				})
-				outht += '</tr>';
-			})
-
-			if(data.length == 0){
-				let l = cols.length == 0 ? 1 : cols.length;
-				outht = `
-					<td colspan="${l}" class="spacy-md w3-center">
-						<i>no ${dta.caption} found</i>
-					</td>
-				`;
-			}
-
-			tbody.innerHTML = outht;
-
-			let n = data.length;
-			let myreport = `${dta.tablename}_report`;
-			let rpt = document.querySelector(`#${myreport}`);
-			let reportht = `showing <b class="themetxt">${n}</b> ${plural('result',n)}`;
-
-			if(rpt == undefined){
-				let summary = document.createElement('div');
-				summary.className = "spacy-sm border-top border-secondary";
-				summary.innerHTML = reportht;
-				summary.id = myreport;
-
-				document.querySelector(sel).parentElement.appendChild(summary);
-			} else {
-				rpt.innerHTML = reportht;
-			}
-		} else {
-			alert_danger('no table found',12);
-		}
+		render_simpleTable(data);
 	}
 
 	// MUST BE LAST

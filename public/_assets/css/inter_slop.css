@@ -132,7 +132,6 @@
 	}
 	.menubar.squish a.menulink{
 		/*width: var(--w);*/
-		box-sizing: border-box;
 	}
 	.menubar.squish .menubar-brand{
 		display: none;
@@ -298,21 +297,7 @@
 		width: 100%;
 		gap: 20px;
 	}
-	.stat-card {
-		width: 100%;
-		max-width: 300px;
-		flex: 1 0 220px;
-		background: var(--clr-alttext);
-		border-radius: var(--roundness);
-		padding: 12px 24px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		gap: 15px;
-		/*height: 100%;*/
-		border: 1px solid var(--clr-border);
-		cursor: pointer;
-	}
+
 	.stat-card:hover {
 		box-shadow: 0 0 20px var(--lightcolor) !important;
 		border: 1px solid transparent;
@@ -329,6 +314,7 @@
 		font-weight: 700;
 	}
 	.stat-card .icon {
+		/*--c: black;*/
 		width: var(--syz_2);
 		height: var(--syz_2);
 		border-radius: calc(var(--roundness) / 2);
@@ -354,7 +340,7 @@
 	}
 
 	.stat-card .icon.primary{--c: var(--themecolor); }
-	.stat-card .icon.urgent{--c: green; }
+	.stat-card .icon.urgent{--c: green;}
 
 	.stat-info h3 {
 		font-size: 28px;
@@ -862,17 +848,17 @@
 		font-size: 1rem;
 	}
 
-	.profile_card .action-card {
+	.action-card {
 		transition: all 0.3s ease;
 		cursor: pointer;
 		border: 2px solid #fefefe;
 	}
-	.profile_card .action-card:hover {
+	.action-card:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 		border-color: var(--themecolor);
 	}
-	.profile_card .action-card .action-icon {
+	.action-card .action-icon {
 		width: 56px;
 		height: 56px;
 		border-radius: 50%;

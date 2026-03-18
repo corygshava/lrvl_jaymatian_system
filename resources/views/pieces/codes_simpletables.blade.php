@@ -1,4 +1,17 @@
 <script>
+	window['view_rec'] = (el) => {
+		if(el == undefined){
+			alert_danger('invalid view_rec call');
+			return;
+		}
+		let wot = el.dataset.rectype || 'nothing';
+		let n = el.dataset.myid || 0;
+		let callme = `view_${wot}`;
+
+		alert_dark(`viewing record for: ${wot}`);
+		window[callme](el,n,wot);
+	}
+
 	window['render_simpleTable'] = (dta) => {
 		let dft = {
 			data: {},

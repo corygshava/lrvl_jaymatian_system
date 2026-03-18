@@ -64,14 +64,14 @@
 						<div class="col-md-3 col-sm-6 mb-3">
 							<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
 								<div class="action-icon bg-primary text-white mx-auto">
-									<i class="fas fa-plus"></i>
+									<i class="fas fa-folder-plus"></i>
 								</div>
 								<h6 class="mb-0 font-weight-bold">New Task</h6>
 								<small class="text-muted">Create task</small>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewJobs()">
+						<div class="col-md-3 col-sm-6 mb-3 w3-hide">
+							<div class="action-card card themeround text-center p-3" onclick="viewTasks()">
 								<div class="action-icon bg-success text-white mx-auto">
 									<i class="fas fa-folder"></i>
 								</div>
@@ -91,16 +91,16 @@
 						<div class="col-md-3 col-sm-6 mb-3">
 							<div class="action-card card themeround text-center p-3" onclick="viewReports()">
 								<div class="action-icon bg-info text-white mx-auto">
-									<i class="fas fa-chart-bar"></i>
+									<i class="fas fa-file-export"></i>
 								</div>
 								<h6 class="mb-0 font-weight-bold">View Reports</h6>
 								<small class="text-muted">Client reports</small>
 							</div>
 						</div>
 						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewReports()">
+							<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
 								<div class="action-icon bg-info text-white mx-auto">
-									<i class="fas fa-money-check-alt"></i>
+									<i class="fas fa-money-bill"></i>
 								</div>
 								<h6 class="mb-0 font-weight-bold">View Payments</h6>
 								<small class="text-muted">All payments made</small>
@@ -323,25 +323,6 @@
 		confirmAction('Deactivate Client','Are you sure you want to deactivate this client account?');
 	}
 
-	// Quick Action handlers
-	window['createNewTask'] = () => {
-		window['task_client_data'] = clientData;
-
-		loadPage({
-			template: linkAtlas['add_task'],
-			sidenote: 'create new task',
-		});
-	}
-	window['viewJobs'] = () => {
-		alert_info(`Viewing samples for ${clientData.client_name}`);
-	}
-	window['viewSamples'] = () => {
-		alert_info(`Viewing samples for ${clientData.client_name}`);
-	}
-	window['viewReports'] = () => {
-		alert_info(`Viewing reports for ${clientData.client_name}`);
-	}
-
 	window['edit_client'] = (e) => {
 		// if(e === undefined){return;}
 
@@ -387,9 +368,51 @@
 		// window['lastClientEditResult'] = m;
 		clientData = m.data.sendme;
 		initializeClientProfile(clientData);
+	}
 
-		// TODO: make it that it sends back the modified data for this page to show again
-		// window['refresh_stuff']();
-		// refreshData();
+	// Quick Action handlers
+	window['openinfo'] = (p,x) => {
+		window[variableAtlas['client_id']] = clientData.id;
+		window[variableAtlas['t_i_act']] = p || undefined;
+		window[variableAtlas['t_i_args']] = x || undefined;
+
+		// alert_dark(`will run: ${p}`);
+
+		let senddeets = {
+			template: linkAtlas['client_info'],
+			sidenote: pageNames['client_info'],
+		};
+
+		loadPage(senddeets);
+	}
+
+	window['createNewTask'] = () => {
+		window['task_client_data'] = clientData;
+
+		loadPage({
+			template: linkAtlas['add_task'],
+			sidenote: 'create new task',
+		});
+	}
+	window['viewTasks'] = () => {
+		alert_info(`Viewing client's tasks`);
+		openinfo('showthis','tasks');
+		// Navigate to samples view
+	}
+	window['viewSamples'] = () => {
+		alert_info(`Viewing client's samples`);
+		openinfo('showthis','samples');
+		// Navigate to samples view
+	}
+
+	window['viewPayments'] = () => {
+		alert_info(`Viewing client's payment history`);
+		openinfo('showthis','payments');
+		// Navigate to payments view
+	}
+
+	window['viewReports'] = () => {
+		alert_info(`Viewing client's reports`);
+		openinfo('showthis','reports');
 	}
 </script>

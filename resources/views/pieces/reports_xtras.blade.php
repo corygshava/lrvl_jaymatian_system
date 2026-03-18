@@ -352,7 +352,7 @@
 			<div class="flowline centerline center spacy-sm">
 				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-download"></i> download as image</a>
 				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
-				<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+				<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
 			</div>
 
 			<div class="sample-info-card w3-hide_">
@@ -479,7 +479,7 @@
 		loadPage(payld);
 	}
 
-	function viewClient_payments_payments(clientId) {
+	function viewClient_payments(clientId) {
 		alert_info('opening client Information');
 		window[variableAtlas['client_id']] = report.owner.id;
 

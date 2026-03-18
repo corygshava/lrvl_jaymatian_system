@@ -492,6 +492,7 @@
 	// */
 ?>
 
+
 {{-- <!-- --}}
 @include('pieces.codes_datatables')
 {{-- --> --}}

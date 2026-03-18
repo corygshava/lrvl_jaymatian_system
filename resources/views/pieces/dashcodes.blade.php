@@ -50,6 +50,8 @@
 		const crumbDepth = 4;
 
 		const linkAtlas = {
+			'admin_dash' : './ui/admin_console',
+			'staff_dash' : './ui/console',
 			'view_users' : './ui/view_user',
 			'view_user' : './ui/view_user',
 			'view_client' : './ui/view_client',
@@ -92,10 +94,13 @@
 			'get_user' : './data/cur_user',
 			'get_allpermissions' : './data/allpermissions',
 			'get_mypermissions' : './data/my_permissions',
-
 			'get_staff_stats' : './data/staffstats',
 			'get_incomplete_tasks' : './data/tasks/incomplete',
 			'get_incomplete_samples' : './data/samples/incomplete',
+			'get_admin_stats' : './data/adminstats',
+			'get_sales_chart_data' : './data/sales_chart_data',
+			'get_samples_chart_data' : './data/samples_chart_data',
+			'get_visits_chart_data' : './data/visits_chart_data',
 
 			// misc
 			'bizimages' : './media/bizimg',
@@ -111,7 +116,7 @@
 			'view_profile' : 'User Profile',
 			'view_users' : 'user management',
 			'add_task' : 'Add task',
-			'view_task' : 'Task Information',
+			'view_task' : 'Task summary',
 			'view_tasks' : 'Task management',
 			'task_info' : 'Task Information',
 			'gen_report' : 'Generate Report',
@@ -156,7 +161,8 @@
 		const fadein = [{opacity: 1},{opacity: 0}];
 
 		menuItems = [
-			{caption: "dashboard", url: './ui/console',icon: 'fa fa-th-large'},
+			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: 'fa fa-home'},
+			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: 'fa fa-house-user'},
 			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
 			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
 			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user-tie'},

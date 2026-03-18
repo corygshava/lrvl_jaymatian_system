@@ -2,39 +2,51 @@
 	/*
 	require_once __DIR__.'/piece_shared_dash_styles.php';
 	require_once __DIR__.'/piece_simple_table.php';
+	require_once __DIR__.'/piece_samples_extras.php';
 	// */
 ?>
 
 {{-- <!-- --}}
 @include('pieces.dash_styles')
 @include('pieces.codes_simpletables')
+@include('pieces.samples_xtras')
 {{-- --> --}}
 
 <div class="container-fluid">
-	<div class="distance-md">
-		<span class="text-muted h4">Welcome <b class="themetxt" data-role="user_name_display">User</b></span>
-		<p>this is your dashboard, you'll be able to view all relevant information at a glance</p>
+	<div class="page-header slide-r">
+		<div class="page-title">
+			<span class="text-muted h4">Welcome <b class="themetxt" data-role="user_name_display">User</b></span>
+			<p>this is your dashboard, you'll be able to view all relevant information at a glance</p>
+		</div>
+		<div class="header-actions">
+			<button class="mybtn secondary" data-runme="refreshData">
+				<i class="fas fa-sync-alt"></i>
+				Refresh
+			</button>
+		</div>
 	</div>
 
-	<div id="loaderInterface" class="spacy-md flow centroid gap-sm slide-up">
-		<span id="load_txt">loading dashboard information</span>
-		<div class="loader"></div>
-	</div>
+	<div>
+		<div id="loaderInterface" class="spacy-md flow centroid gap-sm slide-up">
+			<span id="load_txt">loading dashboard information</span>
+			<div class="loader"></div>
+		</div>
 
-	<div id="err_box" class="w3-hide slide-up">
-		<div class="spacy-lg w3-center">
-			<span class="h3" id="err_hed">Info</span>
-			<p id="error_par">loading task record ...</p>
+		<div id="err_box" class="w3-hide slide-up">
+			<div class="spacy-lg w3-center">
+				<span class="h3" id="err_hed">Info</span>
+				<p id="error_par">loading task record ...</p>
+			</div>
 		</div>
 	</div>
 
 	<div id="dash_stuff" class="w3-hide">
-		<div class="panelbg spacy-sm themeround distance-sm">
+		<div class="panelbg spacy-sm themeround distance-sm slide-up">
 			<div>
 				<span class="h4">Daily summary</span>
 				<p>Here is a brief summary for all relevant information for today</p>
 			</div>
-			<div class="stats-row">
+			<div class="stats-row" id="statsholder">
 				<div class="stat-card modern" data-role="dashstat">
 					<div class="myicon" data-subrole="stat_amt">
 						<i class="fa fa-money-bill"></i>
@@ -46,7 +58,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="panelbg spacy-sm themeround distance-sm">
+
+		<div class="panelbg spacy-sm themeround distance-sm slide-up" style="animation-delay: 200ms;opacity: 0;animation-fill-mode: forwards;">
 			<div>
 				<span class="h4">Quick Actions</span>
 				<p>Here are some quick actions </p>
@@ -109,20 +122,27 @@
 			</div>
 		</div>
 
-		<div class="panelbg spacy-sm themeround distance-sm w3-display-container">
+		<div class="panelbg spacy-sm themeround distance-sm w3-display-container slide-up" style="animation-delay: 400ms;opacity: 0;animation-fill-mode: forwards;">
 			<div class="w3-display-topright spacy-sm">
 				<button class="mybtn primary sm" data-runme="viewTasks">view all tasks</button>
 			</div>
 			<div>
 				<span class="h4">Pending tasks</span>
-				<p>Here are some tasks that are not yet complete </p>
+				<p>Here are some tasks that are not yet complete, <b>click</b> on one to start managing it</p>
 			</div>
 			<div>
-				<i>pending tasks table</i>
+				<div class="table-responsive themeround border">
+					<table class="table table-hover mb-0 table-modern" data-role="tasks_table">
+						<thead data-subrole="tableHead" class="thead-light">
+						</thead>
+						<tbody data-subrole="tableBody">
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
-		<div class="panelbg spacy-sm themeround distance-sm w3-display-container">
+		<div class="panelbg spacy-sm themeround distance-sm w3-display-container slide-up w3-hide" style="animation-delay: 200ms;opacity: 0;animation-fill-mode: forwards;">
 			<div class="w3-display-topright spacy-sm">
 				<button class="mybtn primary sm" data-runme="viewSamples">view all samples</button>
 			</div>
@@ -131,7 +151,14 @@
 				<p>Here are some samples that are not yet processed</p>
 			</div>
 			<div>
-				<i>pending samples table</i>
+				<div class="table-responsive themeround border">
+					<table class="table table-hover mb-0 table-modern" data-role="samples_table">
+						<thead data-subrole="tableHead" class="thead-light">
+						</thead>
+						<tbody data-subrole="tableBody">
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -158,7 +185,6 @@
 	// */
 
 	window['runOnAwake'] = () => {
-		delete(window['refreshData']);
 		updateSessionUI();
 
 		setTimeout(() => {
@@ -211,7 +237,8 @@
 		}
 
 		const final_step = () => {
-			alert_info('done fetching');
+			alert_dark('done fetching');
+			render_all_stuff();
 		}
 
 		load_txt.innerHTML = 'loading dashboard information';
@@ -221,6 +248,14 @@
 		setTimeout(() => {
 			step1();
 		},1200);
+	}
+	window['render_all_stuff'] = () => {
+		renderStats();
+		renderTasks();
+		renderSamples();
+
+		showmainLoader(false);
+		refreshUI(300);
 	}
 
 	// utilities
@@ -237,9 +272,12 @@
 		err_box.querySelector('p').innerHTML = d.text;
 		loaderInterface.classList[con ? 'add' : 'remove']('w3-hide');
 	}
-	window['showmainLoader'] = () => {
-		loaderInterface.classList.remove('w3-hide');
-		dash_stuff.classList.add('w3-hide');
+	window['showmainLoader'] = (con = true) => {
+		let cls = con ? 'remove' : 'add';
+		let altcls = !con ? 'remove' : 'add';
+
+		loaderInterface.classList[cls]('w3-hide');
+		dash_stuff.classList[altcls]('w3-hide');
 	}
 	window['hidemainLoader'] = () => {
 		loaderInterface.classList.add('w3-hide');
@@ -257,29 +295,169 @@
 	}
 
 	// actions
-	window['createNewTask'] = () => {
-		loadthispage('add_task');
-	}
-	window['viewClients'] = () => {
-		loadthispage('view_clients');
-	}
-	window['viewTasks'] = () => {
-		loadthispage('view_tasks');
-	}
-	window['viewSamples'] = () => {
-		loadthispage('view_samples');
-	}
-	window['viewReports'] = () => {
-		loadthispage('view_reports');
-	}
-	window['viewPayments'] = () => {
-		loadthispage('view_payments');
-	}
+		window['createNewTask'] = () => {
+			loadthispage('add_task');
+		}
+		window['viewClients'] = () => {
+			loadthispage('view_clients');
+		}
+		window['viewTasks'] = () => {
+			loadthispage('view_tasks');
+		}
+		window['viewSamples'] = () => {
+			loadthispage('view_samples');
+		}
+		window['viewReports'] = () => {
+			loadthispage('view_reports');
+		}
+		window['viewPayments'] = () => {
+			loadthispage('view_payments');
+		}
+		window['refreshData'] = () => {
+			initdashsetup();
+		}
 
-	// summary tables
+		// samples ops
+		window['view_sample'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+
+			let rec = dash_runtime_data.samplesData.data[id];
+			who.data = rec;
+
+			view_samples_modal_trig.click();
+			renderSampleData(who);
+		}
+		window['view_task_0'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+			let rec = dash_runtime_data.taskData.data[id];
+			who.data = rec;
+			window['cur_record'] = who;
+
+			loadPage({
+				template: linkAtlas['view_task'],
+				sidenote: pageNames['view_task'],
+			});
+		}
+		window['view_task'] = (el,id,w) => {
+			let rec = dash_runtime_data.taskData.data[id];
+			let theid = rec.id;
+
+			window[variableAtlas['task_id']] = theid;
+
+			loadPage({
+				template: linkAtlas['task_info'],
+				sidenote: pageNames['task_info'],
+			});
+		}
+
+	// renderers
+	window['renderStats'] = () => {
+		// alert_info('render this stuff');
+
+		let stats = dash_runtime_data.staffStats;
+		let outht = '';
+		statsholder.innerHTML = outht;
+
+		stats.forEach((el,id) => {
+			let prf = el.prefix == undefined ? '' : el.prefix + ' ';
+			let amt_dis = el.amt_progress == undefined ? `
+				${prf}${el.amt.toLocaleString()}
+			` : `
+				${prf}${el.amt_progress} / ${el.amt_total}
+			`;
+			outht += `
+				<div class="stat-card modern" data-role="dashstat">
+					<div class="myicon" data-subrole="stat_amt">
+						<i class="fa ${el.icon}"></i>
+					</div>
+					<div class="stats">
+						<h3 data-subrole="stat_amt">${amt_dis}</h3>
+						<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
+					</div>
+				</div>
+			`;
+		});
+
+		statsholder.innerHTML = outht;
+	}
 	window['renderTasks'] = () => {
 		const data = {
-			data: dash_runtime_data.taskData,
+			data: dash_runtime_data.taskData.data,
+			cols: [
+				{
+					cap: 'ID',
+					field: 'id',
+				},
+				{
+					cap: 'Task number',
+					field: 'task_no',
+					sortable: true,
+					show: function(value) {
+						return `<strong>${value}</strong>`;
+					}
+				},
+				{
+					cap: 'Client name',
+					field: 'client_name',
+					sortable: true,
+					show: function(value) {
+						return `<strong>${value}</strong>`;
+					}
+				},
+				{
+					cap: 'Date added',
+					field: 'created_at',
+					sortable: true,
+					show: function(value) {
+						return formatDate0(value);
+						// return `<span class="badge ${value}">${value}</span>`;
+					}
+				},
+				{
+					cap: 'payment status',
+					field: 'payment_status',
+					sortable: true,
+					show: function(value) {
+						let cls = value == '2' ? "w3-text-green" : "w3-black_";
+						// let con = value == 'monthly' ? "yes" : "no";
+						return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
+					}
+				},
+				{
+					cap: 'Status',
+					field: 'status',
+					sortable: true,
+					show: function(value) {
+						let cls = value == '2' ? "w3-green" : "w3-blue";
+						// let con = value == 'monthly' ? "yes" : "no";
+						return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+					}
+				},
+				{
+					cap: 'is paid',
+					field: 'is_paid',
+					sortable: true,
+					show: function(value) {
+						let cls = value == true ? "w3-green" : "w3-black";
+						let con = value == true ? "yes" : "no";
+						return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+					}
+				}
+			],
+			tablename: 'tasks_table',
+			caption: 'tasks',
+			viewcall: 'view_rec',
+			rowprops: 'data-rectype="task"',
+		};
+		render_simpleTable(data);
+	}
+	window['renderSamples'] = () => {
+		const data = {
+			data: dash_runtime_data.samplesData.data,
 			cols: [
 				{
 					field: 'id',
@@ -297,7 +475,7 @@
 					cap: 'sample type',
 					show: (v,r) => {
 						return `
-							<span class="sample-type-badge type-${v}">${v}</span>
+							<span class="sample-type-badge type-${v.toLowerCase()}">${v}</span>
 						`;
 					}
 				},
