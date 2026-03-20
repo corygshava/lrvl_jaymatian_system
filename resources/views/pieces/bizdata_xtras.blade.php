@@ -101,7 +101,7 @@
 		}
 	}
 </style>
-
+<div class="modals">
 	<button class="mybtn primary w3-hide" id="add_edit_photos_trig" data-toggle="modal" data-target="#add_edit_photos_modal">
 		<i class="fas fa-plus"></i>
 		edit photo
@@ -180,6 +180,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 <script>
 	alert_dark('loaded img_processor component');
 
@@ -202,6 +203,10 @@
 		<i class="fas fa-image"></i>
 		<p>No image selected</p>
 	`;
+
+	if(window['killOnLeave'] == undefined){
+		window['killOnLeave'] = [];
+	}
 
 	window['showpreview'] = (e) => {
 		const file = e.files[0];
@@ -312,7 +317,8 @@
 			// Calculate grayscale value
 			const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
 
-			// Apply high contrast threshold (lower threshold for "darken" effect)
+			// Apply high contrast threshold (darker threshold for "darken" effect)
+			// threshold = 89; // Lower threshold = more black
 			const value = gray > threshold ? 255 : 0;
 
 			data[i] = value;     // Red
@@ -332,4 +338,13 @@
 		processedCanvas = canvas;
 		// setProcessedBtn.disabled = false;
 	}
+
+	window['killOnLeave'] = [
+		...killOnLeave,
+		'showpreview',
+		'useimg',
+		'select_photo',
+		'changethreshold',
+		'filterImg',
+	];
 </script>

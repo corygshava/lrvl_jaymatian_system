@@ -8,7 +8,7 @@
 		let n = el.dataset.myid || 0;
 		let callme = `view_${wot}`;
 
-		alert_dark(`viewing record for: ${wot}`);
+		// alert_dark(`viewing record for: ${wot}`);
 		window[callme](el,n,wot);
 	}
 

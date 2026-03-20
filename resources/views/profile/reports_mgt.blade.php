@@ -579,7 +579,7 @@
 	function viewRecordInfo(who) {
 		// alert_info('wottafag');
 		view_report_modal_trig.click();
-		renderData(who);
+		renderReportData(who);
 	}
 
 	window['form_afterfx'] = (m) => {
