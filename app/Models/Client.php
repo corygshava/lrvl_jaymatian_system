@@ -20,11 +20,13 @@ class Client extends Model {
         'kra_pin',
         'id_number',
         'extra_details',
-    ];
+        'payment_data',
+	];
 
-    protected $casts = [
-        'credit_balance' => 'decimal:2',
-        'extra_details' => 'array',
+	protected $casts = [
+		'credit_balance' => 'decimal:2',
+		'extra_details' => 'array',
+		'payment_data' => 'array',
     ];
 
 	// relationships

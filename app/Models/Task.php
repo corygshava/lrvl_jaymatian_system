@@ -22,6 +22,7 @@ class Task extends Model{
 		'notes',
 		'passed_task_data',
 		'cost',
+		'full_cost',
 		'paid',
 		'balance',
 		'sample_count',

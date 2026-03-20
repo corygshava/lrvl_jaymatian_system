@@ -60,9 +60,13 @@ class ClientController extends Controller{
 			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
 
 			$clients = $clients
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
 				->with('mycreator')
 				->orderBy($sortBy, $sortDirection)
-				->paginate($perPage);
+				->paginate($perPage)
+			;
 
 			/*
 			for($i = 0;$i < count($users);$i++){
@@ -100,6 +104,9 @@ class ClientController extends Controller{
 			'payment_plan' => ['required','string'],
 		]);
 		$recid = isset($alldata['recid']) ? $alldata['recid'] : null;
+
+		$praw = $req->input('bizdata_pricing','[]');
+		$pdata = json_decode($praw,true);
 		// */
 
 		if($this->ili()){
@@ -107,7 +114,7 @@ class ClientController extends Controller{
 			$msg = "starting procedure";
 			$reslt = false;
 
-			$user = auth()->user();
+			$user = $this->cur_user();
 			$uid = $user->id;
 			$client_name = strip_tags($passed['client_name']);
 			$client_contact = strip_tags($passed['client_contact']);
@@ -138,6 +145,7 @@ class ClientController extends Controller{
 			if($recid === null){
 				if(!$exist){
 					$tosend['added_by'] = $uid;
+					$tosend['payment_data'] = $pdata;
 					$changed = Client::create($tosend);
 
 					$reslt = true;
@@ -265,7 +273,6 @@ class ClientController extends Controller{
 		return response()->json($res);
 	}
 
-
 	public function get_one(Request $req){
 		// return $this->log_my_payload($req);
 
@@ -302,6 +309,63 @@ class ClientController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $task;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function edit_payment(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'recid' => ['required'],
+			'price_soil' => ['required'],
+			'price_rock' => ['required'],
+			'price_solution' => ['required'],
+			'price_carbon' => ['required'],
+		]);
+		// */
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$reslt = false;
+
+			$client = Client::where('id',$passed['recid'])
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->with('mycreator')
+				->first()
+			;
+
+			if($client == null){
+				$msg = "invalid client";
+			} else {
+				$msg = "client found";
+
+				$client->payment_data = [
+					'Soil' => $passed['price_soil'],
+					'Rock' => $passed['price_rock'],
+					'Solution' => $passed['price_solution'],
+					'Carbon' => $passed['price_carbon'],
+				];
+				$client->save();
+				$reslt = true;
+				$msg = "payment data saved successfully";
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $client;
 			$res['message'] = $msg;
 		}
 

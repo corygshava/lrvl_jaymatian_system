@@ -1,5 +1,15 @@
+<style>
+	.samples_holder{
+		display: flex;
+		justify-content: flex-start;
+	}
+	.samples_holder .samplebox{
+		flex: 1 0 180px;
+	}
+</style>
+
 <div id="to_clients_mgt_btn">
-	<a href="#" class="backbtn" data-runme="load_page" data-label="Client management"><i class="fa fa-arrow-left"></i> back to <b>client management</b></a>
+	<a href="#" class="backbtn" data-runme="load_page" data-label="Client management"><i class="fa fa-arrow-left"></i> to <b>client management</b></a>
 </div>
 
 <!-- Client Profile Card Component -->
@@ -134,6 +144,22 @@
 							<small class="text-muted text-uppercase d-block">Gender</small>
 							<span class="font-weight-medium text-capitalize" id="client-gender">--</span>
 						</div>
+					</div>
+				</div>
+
+				<span class="text-uppercase text-muted font-weight-bold">Pricing Information</span>
+
+				<div class="distance-sm">
+					<div class="samples_holder" id="sampleDataContainer">
+						<div class="samplebox border slide-up" style="animation-delay: 0ms;animation-fill-mode: forwards;opacity: 0;">
+							<div class="info">
+								<b>Soil</b>
+								<span>1,500</span>
+							</div>
+						</div>
+					</div>
+					<div class="spacy-sm">
+						<button class="mybtn primary" data-runme="edit_client_pricing"><i class="fa fa-edit"></i> edit pricing</button>
 					</div>
 				</div>
 
@@ -306,11 +332,29 @@
 
 		// Update load time
 		document.getElementById('load-time').textContent = new Date().toLocaleTimeString();
+
+		// pricing data
+		let pr_dta = bizdata.pricing_data;
+		let pr_use = {...pr_dta,...clientData.payment_data};
+
+		let p_data = document.querySelector('#sampleDataContainer');
+		p_data.innerHTML = '';
+
+		Object.keys(pr_use).forEach((d,n) => {
+			p_data.innerHTML += `
+				<div class="samplebox border slide-up" style="${mekstagger(200,n)}">
+					<div class="info">
+						<b>${d}</b>
+						<span>${formatNumber(pr_use[d],0)}</span>
+					</div>
+				</div>
+			`;
+		})
 	}
 
 	window['changePaymentPlan'] = () => {
 		console.log('Change payment plan clicked');
-		alert_info('payment plan logic not implemented yet')
+		alert_danger('payment plan logic not implemented yet');
 	}
 	window['manageCreditBalance'] = () => {
 		change_credit_form.recid.value = clientData.id;
@@ -350,6 +394,19 @@
 		// alert_info(rec_id);
 		// alert_info(e.textContent);
 		add_edit_title.innerHTML = "Edit Client Details";
+	}
+	window['edit_client_pricing'] = (el) => {
+		edit_paydata_form.recid.value = clientData.id;
+
+		let pr_dta = bizdata.pricing_data;
+		let pr_use = {...pr_dta,...clientData.payment_data};
+
+		edit_paydata_form.price_soil.value = pr_use.Soil;
+		edit_paydata_form.price_rock.value = pr_use.Rock;
+		edit_paydata_form.price_solution.value = pr_use.Solution;
+		edit_paydata_form.price_carbon.value = pr_use.Carbon;
+
+		edit_paydata_trig.click();
 	}
 	window['form_afterfx'] = (m) => {
 		// alert_dark('runnin afterfx');
@@ -391,7 +448,7 @@
 
 		loadPage({
 			template: linkAtlas['add_task'],
-			sidenote: 'create new task',
+			sidenote: pageNames['add_task'],
 		});
 	}
 	window['viewTasks'] = () => {

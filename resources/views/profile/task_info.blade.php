@@ -3,6 +3,7 @@
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/piece_reports_xtras.php';
 	require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
@@ -11,6 +12,7 @@
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
+@include('pieces.reports_xtras')
 @include('pieces.codes_simpletables')
 {{-- --> --}}
 
@@ -19,38 +21,79 @@
 		max-width: 100vw;
 		/*overflow: hidden;*/
 	}
+	/* worksheet styles */
+		.worksheet_doc{
+			--r_border: #999;
+			--w: 824px;
+			width: var(--w);
+			padding: 48px 32px;
+			/*border: 1px solid var(--clr-border);*/
+		}
+		.worksheet_doc .header{
+			border: 1px solid var(--r_border);
+		}
+		.worksheet_doc .header img{
+			/*max-width: calc(var(--w) * 0.25);*/
+		}
+		.worksheet_doc .header .info{
+			width: 100%;
+			/*flex: 1 1 400px;*/
+		}
+
+		.sample_selects{
+			/*overflow: hidden;*/
+		}
+		.sample_selects .mybar{
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+		.sample_selects .tabnav {
+			border: none;
+			border-radius: var(--roundness);
+			padding: 8px 26px;
+			text-align: left;
+		}
+		.sample_selects .tabnav.active{
+			background: var(--themecolor);
+			color: #fff;
+			font-weight: 600;
+		}
 
 	/* Custom Tab Navigation */
-	.custom-tabs {
-		background: transparent;
-		padding: 12px 20px;
-		border: 1px solid transparent;
-		display: flex;
-		flex-direction: row;
-		gap: 12px;
-	}
-	.custom-tabs .nav-link {
-		border: none;
-		padding: 12px 24px;
-		font-weight: 800;
-		font-size: 1.2rem;
-		transition: all 0.3s ease;
-		background: transparent;
-		border-radius: var(--roundness);
-		position: relative;
-	}
-	.custom-tabs .nav-link i {
-		margin-right: 0.5rem;
-		font-size: 14px;
-	}
-	.custom-tabs .nav-link:hover {
-		color: var(--themecolor);
-		background: rgba(102, 126, 234, 0.05);
-	}
-	.custom-tabs .nav-link.active {
-		color: white;
-		background: var(--themecolor);
-	}
+		.custom-tabs {
+			background: transparent;
+			padding: 12px 20px;
+			border: 1px solid transparent;
+			display: flex;
+			flex-direction: row;
+			gap: 12px;
+		}
+		.custom-tabs .nav-link {
+			border: none;
+			padding: 12px 24px;
+			font-weight: 800;
+			font-size: 1.2rem;
+			transition: all 0.3s ease;
+			background: transparent;
+			border-radius: var(--roundness);
+			position: relative;
+		}
+		.custom-tabs .nav-item {
+			flex: 1 0 200px;
+		}
+		.custom-tabs .nav-link i {
+			margin-right: 0.5rem;
+			font-size: 14px;
+		}
+		.custom-tabs .nav-link:hover {
+			color: var(--themecolor);
+			background: rgba(102, 126, 234, 0.05);
+		}
+		.custom-tabs .nav-link.active {
+			color: white;
+			background: var(--themecolor);
+		}
 
 	/*td{border-bottom: 1px solid #eee !important;}*/
 	.table-modern thead{
@@ -68,7 +111,7 @@
 <div class="container-fluid">
 	<div class="page-header">
 		<div class="page-title">
-			<span class="h4">Task Summary</span>
+			<span class="h4">Task Information</span>
 			<p>Here you can view all information regarding a task. from <b>samples</b>, to <b>payments</b> and to <b>reports</b></p>
 		</div>
 		<div class="header-actions">
@@ -81,7 +124,6 @@
 
 	<div class="profile_card themeround panelbg w3-hide slide-up" id="task_brief">
 		<div class="card-header panelbg themegrad flowline overflow left centerline themeround w3-display-container" data-subrole="taskpanel">
-			<!--  -->
 		</div>
 
 		<!-- task brief -->
@@ -107,7 +149,12 @@
 	<div id="info_stuff" class="w3-hide flow centroid">
 		<ul class="nav nav-tabs custom-tabs" id="myTabs" role="tablist">
 			<li class="nav-item">
-				<a class="nav-link active" id="samples-tab" data-toggle="tab" href="#samples" role="tab">
+				<a class="nav-link active" id="worksheet-tab" data-toggle="tab" href="#worksheet" role="tab">
+					<i class="fas fa-file"></i> Worksheets
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="samples-tab" data-toggle="tab" href="#samples" role="tab">
 					<i class="fas fa-flask"></i> Samples
 				</a>
 			</li>
@@ -124,8 +171,128 @@
 		</ul>
 
 		<div class="tab-content border in_fullwidth panelbg themeround custom-tab-content container-fluid" id="myTabContent">
-			<!-- Overview Tab -->
-			<div class="tab-pane fade show active" id="samples" role="tabpanel">
+			<div class="tab-pane fade show active" id="worksheet" role="tabpanel">
+				<div class="tab-inner-content spacy-sm w3-display-container">
+					<div>
+						<h4>Task Worksheets</h4>
+						<p>worksheets for each sample involved in the task</p>
+						<div class="spacy-sm w3-display-topright" id="doc_ops">
+							<button class="mybtn primary" data-runme="print_worksheet" data-subrole="add_pay_btn"><i class="fa fa-print"></i> print current worksheet</button>
+						</div>
+					</div>
+
+					<div class="flowline left overflow">
+						<div class="sample_selects themeround" style="width: 250px;flex: 1 0 120px;">
+							<div class="mybar">
+								<button class="tabnav active" data-runme="change_sample" data-myid="0">
+									Sample 1 <span class="sample-type-badge type-soil">soil</span>
+								</button>
+								<button class="tabnav" data-runme="change_sample" data-myid="1">
+									Sample 2 <span class="sample-type-badge type-rock">rock</span>
+								</button>
+								<button class="tabnav" data-runme="change_sample" data-myid="2">
+									Sample 3 <span class="sample-type-badge type-solution">solution</span>
+								</button>
+								<button class="tabnav" data-runme="change_sample" data-myid="3">
+									Sample 4 <span class="sample-type-badge type-carbon">carbon</span>
+								</button>
+							</div>
+						</div>
+						<div class="table-responsive themeround border" style="width:100%;flex: 1 0 850px;">
+							<div data-role="document_Holder" class="flow centroid">
+								<div data-role="document" class="worksheet_doc">
+									<div class="header flowline left gap-sm w3-center mb-4">
+										<div class="logo">
+											<img src="./media/bizimg/[pkKZt]_company_logo.png" style="max-width: 120px;">
+										</div>
+										<div class="info">
+											<h2>KENYA BRANCH (MIGORI)</h2>
+											<div>
+												<b>Location: </b>
+												<strong>Muhuru road</strong>
+											</div>
+										</div>
+									</div>
+
+									<div class="job_stats border mb-4">
+										<table class="mytable table-border">
+											<tr>
+												<td>
+													<b>Job No: </b>
+													<span>LKDNMWDKN</span>
+												</td>
+												<td>
+													<b>Client Name: </b>
+													<span>Drakis makali</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<b>Sample Type: </b>
+													<span>sandy</span>
+												</td>
+												<td>
+													<b>Phone No: </b>
+													<span>+254800999000</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<b>Payment Status: </b>
+													<span>not paid</span>
+												</td>
+												<td>
+													<b>Recieved Date and time: </b>
+													<span>25/02/2026</span>
+												</td>
+											</tr>
+											<tr>
+												<td style="opacity: 0;">
+													<b>Payment Status: </b>
+													<span>not paid</span>
+												</td>
+												<td>
+													<b>Number Of Samples: </b>
+													<span>0</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+
+									<div class="sample_stats border">
+										<table class="mytable table-border">
+											<thead>
+												<tr>
+													<th>sn</th>
+													<th style="width:75px;">beaker</th>
+													<th>Sample ids</th>
+													<th style="width:98px;">Weight</th>
+													<th style="width:98px;">AU reading</th>
+													<th style="width:98px;">CU reading</th>
+													<th>Remark</th>
+												</tr>
+											</thead>
+											<tbody class="thesamples">
+												<tr>
+													<td>1</td>
+													<td></td>
+													<td>sample 1 (Rock)</td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane fade" id="samples" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Task Samples</h4>
 					<p>here are the samples brought in with this task</p>
@@ -217,6 +384,7 @@
 <script>
 	let task = {};
 	let c_pld = {};
+	let cur_sample_id = 0;
 
 	let task_state_atlas = {
 		0 : 'pending',
@@ -236,9 +404,10 @@
 	};
 
 	window['task_info_data'] = {};
+	window['killOnLeave'] = [];
 
 	window['runOnAwake'] = () => {
-		delete(window['refreshData']);
+		// delete(window['refreshData']);
 
 		setTimeout(() => {
 			init_task();
@@ -332,6 +501,7 @@
 			step1();
 		},1200);
 	}
+	window['refreshData'] = () => {};
 
 	// ops
 	window['load_samples'] = () => {}
@@ -373,88 +543,125 @@
 	}
 
 	// actions
-	window['refresh_data'] = () => {
-		alert_info('refreshing information');
-		init_task();
-	}
-	window['loadMe'] = (wot,path,payld,f,method='post') => {
-		let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
+		window['refresh_data'] = () => {
+			alert_info('refreshing information');
+			init_task();
+		}
+		window['loadMe'] = (wot,path,payld,f,method='post') => {
+			let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
 
-		window[fetch_bypass](path,payld,method).then((d) => {
-			responseHandler(d,fn,d,true);
-		}).catch(d => {
-			hidemainLoader();
-			showError(true,{heading: `Error Getting ${wot}`,text: d.message});
-		});
-	}
-
-	window['view_nothing'] = (el,id,w) => {alert_danger('invalid record procedure!');}
-
-	window['view_sample'] = (el,id,w) => {
-		let who = {
-			rectype: w,
+			window[fetch_bypass](path,payld,method).then((d) => {
+				responseHandler(d,fn,d,true);
+			}).catch(d => {
+				hidemainLoader();
+				showError(true,{heading: `Error Getting ${wot}`,text: d.message});
+			});
 		}
 
-		let rec = task_info_data.samplesData[id];
-		who.data = rec;
+		window['view_nothing'] = (el,id,w) => {alert_danger('invalid record procedure!');}
 
-		view_samples_modal_trig.click();
-		renderSampleData(who);
-	}
-	window['view_payment'] = (el,id,w) => {
-		let who = {
-			rectype: w,
+		window['view_sample'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+
+			let rec = task_info_data.samplesData[id];
+			who.data = rec;
+
+			view_samples_modal_trig.click();
+			renderSampleData(who);
+		}
+		window['view_payment'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+
+			let rec = task_info_data.paymentData[id];
+			who.data = rec;
+
+			view_payment_modal_trig.click();
+			renderPayData(who);
+		}
+		window['view_report'] = (el,id,w) => {
+			let myn = task_info_data.reportData[id];
+
+			let cur = {
+				rectype: 'report',
+				data: myn,
+			}
+
+			// copytext1(JSON.stringify(cur,null,4));
+			view_report_modal_trig.click();
+			renderReportData(cur);
 		}
 
-		let rec = task_info_data.paymentData[id];
-		who.data = rec;
+		window['change_sample'] = (el) => {
+			cur_sample_id = el.dataset.myid || 0;
 
-		view_payment_modal_trig.click();
-		renderPayData(who);
-	}
+			let sels = document.querySelectorAll('.sample_selects .tabnav');
 
-	window['showthis'] = (wot) => {
-		// alert_dark('showthis called');
+			sels.forEach(s => {
+				s.classList.remove('active');
+			})
 
-		let theid = `#${wot}-tab`;
-		let tabid = `#${wot}`;
-		let btn = document.querySelector(theid);
+			el.classList.add('active');
 
-		if(btn !== undefined){
-			btn.click();
+			let ws = document.querySelector('.worksheet_doc');
+			ws.style.opacity = 0;
 
-			setTimeout(() => {
-				window.location.assign(btn.href);
-			},200);
+			setTimeout(d => {
+				renderWorksheet();
+				ws.style.opacity = 1;
+			},400);
 		}
-	}
-
-	window['add_payment'] = (el) => {
-		let task = task_info_data.taskData;
-		let tid = task.id;
-
-		if(task.balance <= 0){
-			alert_danger('all payments were completed');
-			return;
+		window['print_worksheet'] = (el) => {
+			printElement('.worksheet_doc',true).then(w => {
+				alert_info('worksheet printed successfully');
+			})
 		}
 
-		add_payment_trig.click();
-		setup_payment_form(tid,'init_task');
-	}
-	window['add_notes'] = (el) => {
-		let task = task_info_data.taskData;
-		let tid = task.id;
-		let note = task.notes;
+		window['showthis'] = (wot) => {
+			// alert_dark('showthis called');
 
-		// setup_note_form(tid,'init_task');
-		add_note_form.taskid.value = tid;
+			let theid = `#${wot}-tab`;
+			let tabid = `#${wot}`;
+			let btn = document.querySelector(theid);
 
-		if(note !== '' || note !== undefined){
-			add_note_form.note.value = note;
+			if(btn !== undefined){
+				btn.click();
+
+				setTimeout(() => {
+					window.location.assign(btn.href);
+				},200);
+			}
 		}
 
-		add_note_trig.click();
-	}
+		window['add_payment'] = (el) => {
+			let task = task_info_data.taskData;
+			let tid = task.id;
+
+			if(task.balance <= 0){
+				alert_danger('all payments were completed');
+				return;
+			}
+
+			add_payment_trig.click();
+			setup_payment_form(tid,'init_task');
+		}
+		window['add_notes'] = (el) => {
+			let task = task_info_data.taskData;
+			let tid = task.id;
+			let note = task.notes;
+
+			// setup_note_form(tid,'init_task');
+			add_note_form.taskid.value = tid;
+
+			if(note !== '' || note !== undefined){
+				add_note_form.note.value = note;
+			}
+
+			add_note_trig.click();
+		}
 
 	window['refreshTaskAssocs'] = () => {
 		showmainLoader();
@@ -470,6 +677,8 @@
 		// hidemainLoader();
 		renderTaskBrief();
 
+		renderWorksheetXtras();
+		renderWorksheet();
 		renderStats();
 		renderSamples();
 		renderPayments();
@@ -530,6 +739,143 @@
 
 		// extra stuff (for convenience planning)
 		payment_ops.style.display = task_info_data.taskData.balance <= 0 ? 'none' : 'block';
+	}
+	window['renderWorksheetXtras'] = () => {
+		let wsxtras = document.querySelector('.sample_selects');
+		let btns = '';
+		let samples = task_info_data.samplesData;
+
+		samples.forEach((s,x) => {
+			btns += `
+				<button class="tabnav ${x == 0 ? 'active' : ''}" data-runme="change_sample" data-myid="${x}">
+					Sample ${x + 1} <span class="sample-type-badge type-${s.sample_type}">${s.sample_type}</span>
+				</button>
+			`;
+		})
+
+		wsxtras.innerHTML = `
+			<div class="mybar">
+				${btns}
+			</div>
+		`;
+	}
+	window['renderWorksheet'] = () => {
+		let wsheet = document.querySelector('[data-role="document_Holder"] .worksheet_doc');
+
+		if(wsheet == undefined){
+			alert_danger('invalid worksheet display');
+		} else {
+			alert_dark('rendering worksheet');
+		}
+
+		let w_head = wsheet.querySelector('.header');
+		let w_tinfo = wsheet.querySelector('.job_stats .mytable');
+		let w_sinfo = wsheet.querySelector('.sample_stats .mytable');
+
+		let b_data = bizdata;
+		let bizdeets = b_data.business_details;
+		let bizimgs = b_data.business_images;
+		let task = task_info_data.taskData;
+		let thesample = task_info_data.samplesData[cur_sample_id];
+		let outht = '';
+		let maxno = thesample.sample_count > 12 ? thesample.sample_count : 12;
+
+		w_head.innerHTML = `
+			<div class="logo">
+				<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}" style="max-width: 120px;">
+			</div>
+			<div class="info">
+				<h2>${bizdeets.branch_name}</h2>
+				<div>
+					<b>Location: </b>
+					<strong>${bizdeets.location}</strong>
+				</div>
+			</div>
+		`;
+		w_tinfo.innerHTML = `
+			<tr>
+				<td>
+					<b>Job No: </b>
+					<span>${task.task_no}</span>
+				</td>
+				<td>
+					<b>Client Name: </b>
+					<span>${task.client.client_name}</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Sample Type: </b>
+					<span>${thesample.sample_type}</span>
+				</td>
+				<td>
+					<b>Phone No: </b>
+					<span>${task.client.client_contact}</span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Payment Status: </b>
+					<span><b class="text-muted">${pay_state_atlas[task.payment_status]}</b></span>
+				</td>
+				<td>
+					<b>Recieved Date and time: </b>
+					<span>${formatDate0(thesample.created_at)}</span>
+				</td>
+			</tr>
+			<tr>
+				<td style="opacity: 0;">
+					<b>Payment Status: </b>
+					<span>not paid</span>
+				</td>
+				<td>
+					<b>Number Of Samples: </b>
+					<span>${thesample.sample_count}</span>
+				</td>
+			</tr>
+		`;
+		w_sinfo.innerHTML = `
+			<tr>
+				<th>sn</th>
+				<th style="width:75px;">beaker</th>
+				<th>Sample ids</th>
+				<th style="width:98px;">Weight</th>
+				<th style="width:98px;">AU reading</th>
+				<th style="width:98px;">CU reading</th>
+				<th>Remark</th>
+			</tr>
+		`;
+		// for(let x = 0;x<thesample.sample_count;x++){
+		for(let x = 0;x<maxno;x++){
+			if(x < thesample.sample_count){
+				outht += `
+					<tr>
+						<td>${x + 1}</td>
+						<td></td>
+						<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				`;
+			} else {
+				outht += `
+					<tr>
+						<td>${x + 1}</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				`;
+			}
+			// alert_dark(`rendering sample ${x + 1} for worksheet`);
+		}
+
+		w_sinfo.innerHTML += outht;
 	}
 	window['renderStats'] = () => {
 		let stats = task_brief.querySelector('[data-subrole="stats"]');
@@ -698,30 +1044,48 @@
 			data: task_info_data.reportData,
 			cols: [
 				{
+					cap: 'ID',
 					field: 'id',
-					cap: '',
-					show: (v,row,n) => {
-						return n + 1;
+					width: '50px',
+				},
+				{
+					cap: 'Sample number',
+					field: 'sample',
+					show: function(value) {
+						return `<strong>${value.sample_no}</strong>`;
 					}
 				},
 				{
-					field: 'owner',
 					cap: 'Client name',
-					show: (v) => {
-						return v.client_name;
+					field: 'owner',
+					show: function(value) {
+						return `<strong>${value.client_name}</strong>`;
 					}
 				},
 				{
-					field: 'amount',
-					cap: 'Amount',
-				},
-				/*{
-					field: 'status',
-					cap: 'Status',
-					show: (v) => {
-						return `<b>${sample_state_atlas[v]}</b>`;
+					cap: 'Date added',
+					field: 'created_at',
+					show: function(value) {
+						return formatDate0(value);
+						// return `<span class="badge ${value}">${value}</span>`;
 					}
-				},*/
+				},
+				/*
+				{
+					cap: 'Actions',
+					field: 'id',
+					width: '200px',
+					show: function(value, row) {
+						return `
+							<div class="action-btns">
+								<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<i class="fas fa-eye"></i> View
+								</button>
+							</div>
+						`;
+					}
+				}
+				// */
 			],
 			tablename: 'reports_table',
 			caption: 'reports',

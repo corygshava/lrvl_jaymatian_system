@@ -1,3 +1,13 @@
+<?php
+	/*
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+{{-- --> --}}
+
 <style>
 	/* stats (keep here, ill figure them out later) */
 		.stat-card-modern {
@@ -486,17 +496,6 @@
 	</div>
 </div>
 
-<?php
-	/*
-	require_once __DIR__.'/datatables_code.php';
-	// */
-?>
-
-
-{{-- <!-- --}}
-@include('pieces.codes_datatables')
-{{-- --> --}}
-
 <script>
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
@@ -607,6 +606,7 @@
 
 				// Optional: Items per page (max 300)
 				perPage: 10,
+				sortDirection: 'desc',
 
 				// Optional: Enable features
 				enableSearch: true,

@@ -395,3 +395,8 @@ window['objtoquery'] = (obj, prefix = '') => {
 
 	return pairs.join('&');
 }
+
+// new from Jaymatt [19/03/26]
+function reverseLerp(min,max,val) {
+	return (val - min) / (max - min);
+}

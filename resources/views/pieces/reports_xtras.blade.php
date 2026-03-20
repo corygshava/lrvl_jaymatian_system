@@ -178,7 +178,7 @@
 	<div class="modal-dialog modal-mg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="report_info_heading">Payment Information</span>
+				<span class="h3 modal-title" id="report_info_heading">Report Information</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -251,7 +251,7 @@
 		return tableHTML;
 	}
 
-	function renderData(dta) {
+	function renderReportData(dta) {
 		let rectype = 'report';
 
 		// Validate rectype
@@ -465,7 +465,7 @@
 		container.innerHTML = html;
 
 		// setTimeout(d => {render_results_data();},100);
-		refreshData(300);
+		refreshUI(300);
 	}
 
 	function viewTask_payments() {

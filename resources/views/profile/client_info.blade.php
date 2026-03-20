@@ -3,8 +3,8 @@
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/piece_reports_xtras.php';
 	require_once __DIR__.'/piece_simple_table.php';
-	// require_once __DIR__.'/datatables_refactored.php';
 	// */
 ?>
 
@@ -12,6 +12,7 @@
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
+@include('pieces.reports_xtras')
 @include('pieces.codes_simpletables')
 {{-- --> --}}
 
@@ -22,36 +23,39 @@
 	}
 
 	/* Custom Tab Navigation */
-	.custom-tabs {
-		background: transparent;
-		padding: 12px 20px;
-		border: 1px solid transparent;
-		display: flex;
-		flex-direction: row;
-		gap: 12px;
-	}
-	.custom-tabs .nav-link {
-		border: none;
-		padding: 12px 24px;
-		font-weight: 800;
-		font-size: 1.2rem;
-		transition: all 0.3s ease;
-		background: transparent;
-		border-radius: var(--roundness);
-		position: relative;
-	}
-	.custom-tabs .nav-link i {
-		margin-right: 0.5rem;
-		font-size: 14px;
-	}
-	.custom-tabs .nav-link:hover {
-		color: var(--themecolor);
-		background: rgba(102, 126, 234, 0.05);
-	}
-	.custom-tabs .nav-link.active {
-		color: white;
-		background: var(--themecolor);
-	}
+		.custom-tabs {
+			background: transparent;
+			padding: 12px 20px;
+			border: 1px solid transparent;
+			display: flex;
+			flex-direction: row;
+			gap: 12px;
+		}
+		.custom-tabs .nav-link {
+			border: none;
+			padding: 12px 24px;
+			font-weight: 800;
+			font-size: 1.2rem;
+			transition: all 0.3s ease;
+			background: transparent;
+			border-radius: var(--roundness);
+			position: relative;
+		}
+		.custom-tabs .nav-item {
+			flex: 1 0 200px;
+		}
+		.custom-tabs .nav-link i {
+			margin-right: 0.5rem;
+			font-size: 14px;
+		}
+		.custom-tabs .nav-link:hover {
+			color: var(--themecolor);
+			background: rgba(102, 126, 234, 0.05);
+		}
+		.custom-tabs .nav-link.active {
+			color: white;
+			background: var(--themecolor);
+		}
 
 	/*td{border-bottom: 1px solid #eee !important;}*/
 	.table-modern thead{
@@ -69,7 +73,7 @@
 <div class="container-fluid">
 	<div class="page-header">
 		<div class="page-title">
-			<span class="h4">Client Summary</span>
+			<span class="h4">Client Information</span>
 			<p>Here you can view all information regarding a client. from <b>samples</b>, to <b>payments</b> and to <b>reports</b></p>
 		</div>
 		<div class="header-actions">
@@ -409,6 +413,18 @@
 		view_payment_modal_trig.click();
 		renderPayData(who);
 	}
+	window['view_report'] = (el,id,w) => {
+		let myn = task_info_data.reportData[id];
+
+		let cur = {
+			rectype: 'report',
+			data: myn,
+		}
+
+		// copytext1(JSON.stringify(cur,null,4));
+		view_report_modal_trig.click();
+		renderReportData(cur);
+	}
 
 	window['showthis'] = (wot) => {
 		// alert_dark('showthis called');
@@ -680,33 +696,51 @@
 	}
 	window['renderReports'] = () => {
 		const data = {
-			data: client_info_data.reportData,
+			data: task_info_data.reportData,
 			cols: [
 				{
+					cap: 'ID',
 					field: 'id',
-					cap: '',
-					show: (v,row,n) => {
-						return n + 1;
+					width: '50px',
+				},
+				{
+					cap: 'Sample number',
+					field: 'sample',
+					show: function(value) {
+						return `<strong>${value.sample_no}</strong>`;
 					}
 				},
 				{
-					field: 'owner',
 					cap: 'Client name',
-					show: (v) => {
-						return v.client_name;
+					field: 'owner',
+					show: function(value) {
+						return `<strong>${value.client_name}</strong>`;
 					}
 				},
 				{
-					field: 'amount',
-					cap: 'Amount',
-				},
-				/*{
-					field: 'status',
-					cap: 'Status',
-					show: (v) => {
-						return `<b>${sample_state_atlas[v]}</b>`;
+					cap: 'Date added',
+					field: 'created_at',
+					show: function(value) {
+						return formatDate0(value);
+						// return `<span class="badge ${value}">${value}</span>`;
 					}
-				},*/
+				},
+				/*
+				{
+					cap: 'Actions',
+					field: 'id',
+					width: '200px',
+					show: function(value, row) {
+						return `
+							<div class="action-btns">
+								<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<i class="fas fa-eye"></i> View
+								</button>
+							</div>
+						`;
+					}
+				}
+				// */
 			],
 			tablename: 'reports_table',
 			caption: 'reports',

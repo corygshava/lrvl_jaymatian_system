@@ -80,6 +80,7 @@
 			'update_bizdata' : './op/update_bizdata',
 			'update_bizdata_fyls' : './op/update_bizdata_images',
 			'save_report' : './op/save_report',
+			'update_payment' : './op/update_client_payment',
 
 			// datalinks
 			'search_clients' : './data/search_clients',
@@ -796,30 +797,77 @@
 			}
 		}
 
-		function awaitConfirmPass(callback) {
-			if(typeof callback !== "function"){
-				alert_danger('invalid callback');
-				return;
+		// confirm password subsys
+			function awaitConfirmPass(callback) {
+				if(typeof callback !== "function"){
+					alert_danger('invalid callback');
+					return;
+				}
+
+				// create a ghost process to call when password is confirmed
+				window['confirmPasswordCallback'] = callback;
+				password_confo_trig.click();
+			}
+			function confirmPassword(m){
+				// alert_info('doxing password: ' + m.admin_password.value);
+				password_confo_trig.click();
+
+				let topass = encryptme(m.admin_password.value,encsetup.offset,encsetup.salt,encsetup.chunks);
+
+				window['confirmPasswordCallback']({admin_password: topass});
+				killghost('confirmPasswordCallback');
+			}
+			window['password_confo_clearghost'] = () => {
+				killghost('confirmPasswordCallback');
 			}
 
-			// create a ghost process to call when password is confirmed
-			window['confirmPasswordCallback'] = callback;
-			password_confo_trig.click();
-		}
+		// reusables (this project only)
+			async function printElement(selector,printImmediately = false) {
+				const element = document.querySelector(selector);
 
-		function confirmPassword(m){
-			// alert_info('doxing password: ' + m.admin_password.value);
-			password_confo_trig.click();
+				if (!element) {
+					console.error(`Element not found: ${selector}`);
+					return;
+				}
 
-			let topass = encryptme(m.admin_password.value,encsetup.offset,encsetup.salt,encsetup.chunks);
+				try {
+					let printtxt = printImmediately ? `
+						onload="window.print()"
+					` : ``;
+					const options = {
+						allowTaint: true,
+						backgroundColor: null,
+						logging: false,
+						scale: 2,
+						useCORS: false
+					};
+					const canvas = await html2canvas(element,options);
 
-			window['confirmPasswordCallback']({admin_password: topass});
-			killghost('confirmPasswordCallback');
-		}
+					// Convert canvas to data URL
+					const imageDataUrl = canvas.toDataURL('image/png');
 
-		window['password_confo_clearghost'] = () => {
-			killghost('confirmPasswordCallback');
-		}
+					// Open in new tab
+					const newTab = window.open();
+					newTab.document.write(`
+						<html>
+							<head>
+								<title>Printed Element</title>
+								<style>
+									body { margin: 0;}
+									img { max-width: 100%; height: auto;}
+								</style>
+							</head>
+							<body>
+								<img src="${imageDataUrl}" alt="Captured element" ${printtxt}/>
+							</body>
+						</html>
+					`);
+					newTab.document.close();
+				} catch (error) {
+					console.error('Error capturing element:', error);
+				}
+			}
+
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});
 	</script>

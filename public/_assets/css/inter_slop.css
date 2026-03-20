@@ -946,6 +946,90 @@
 		color: var(--themecolor);
 	}
 
+/* report_setup */
+	[data-role="report_setup"]{
+		padding: 96px;
+		background: #fff;
+		--r_border: #999;
+		--w: 824px;
+		width: var(--w);
+		/*height: 1056px;*/
+		font-size: 0.7rem;
+	}
+	[data-role="report_setup"]>div{
+	}
+	[data-role="report_setup"] .page-section{
+		margin-bottom: 16px;
+		position: relative;
+		/*background: red;*/
+	}
+	[data-role="report_setup"] .page-section.header{
+		border: 1px solid var(--r_border);
+		padding: 12px 0;
+	}
+	[data-role="report_setup"] .heading{
+		color: var(--themecolor);
+		font-weight: 700;
+	}
+	[data-role="report_setup"] .thelogo{
+		padding: 0 16px;
+	}
+	[data-role="report_setup"] .thelogo img{
+		width: 120px;
+		aspect-ratio: 1;
+		/*object-fit: cover;*/
+	}
+	[data-role="report_setup"] .thelogo + div{
+		width: 100%;
+	}
+
+/* table styles */
+	.mytable{
+		width: 100%;
+	}
+	.mytable td,.mytable th{
+		border: 1px solid var(--r_border);
+		padding: 5px;
+	}
+	.mytable.last td,.mytable.last th{
+		/*border: none;*/
+		/*padding: 0;*/
+	}
+
+/* sample price holders */
+	.samples_holder{
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		flex-direction: row;
+		padding: 12px;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	.samples_holder .samplebox{
+		flex: 1 0 235px;
+		max-width: 300px;
+		/*display: flex;*/
+		/*box-shadow: 0 0 12px rgba(122, 122, 122, 0.3);*/
+		border-radius: var(--roundness);
+		padding: 12px;
+		position: relative;
+	}
+	.samples_holder .samplebox b{
+		font-size: 1.6rem;
+		display: block;
+		color: var(--themecolor);
+	}
+	.samples_holder .samplebox span{
+		font-size: 1.8rem;
+	}
+	.samples_holder .samplebox .info{
+		padding: 8px 0;
+	}
+	.samples_holder .samplebox .actions{
+		padding: 8px 0;
+	}
+
 /* reusables */
 	/* collapse */
 		.collapser{--opac:1;}

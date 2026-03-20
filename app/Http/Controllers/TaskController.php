@@ -306,16 +306,18 @@ class TaskController extends Controller{
 					if(!$cango){
 						$reslt = false;
 					} else {
-						// try{
-							$newid = Task::whereDate('created_at', today())->count() + 1;
-							$suffix = str_pad($newid,3,'0',STR_PAD_LEFT);
-							$task_serial = 'TSK_' . date('Ymd') . '_' . $suffix;
+						try{
+							// $newid = Task::whereDate('created_at', today())->count() + 1;
+							$newid = Task::where('id','<>',null)->count() + 1;
+							$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
+							$task_serial = 'JML_' . $suffix;
 							$sample_count = 0;
 
 							$paystate = isset($sent['paymentStats']) ? ($sent['paymentStats']['balance'] == 0 ? 2 : 1) : 0;
 							$safesave = $sent;
 							$paid = $sent['paymentStats']['amount_paid'];
 							$cost = $sent['paymentStats']['amount_due'];
+							$f_cost = $sent['paymentStats']['full_amount_due'];
 							$balance = $sent['paymentStats']['balance'];
 
 							if(isset($safesave['admin_password'])){
@@ -341,6 +343,7 @@ class TaskController extends Controller{
 								'passed_task_data' => $safesave,
 								'paid' => $paid,
 								'cost' => $cost,
+								'full_cost' => $f_cost,
 								'balance' => $balance,
 								'sample_count' => $sample_count,
 							]);
@@ -405,16 +408,17 @@ class TaskController extends Controller{
 								$res['runlog'][] = "deducted from credit balance";
 							}
 
+							$msg = "task added successfully";
 							$reslt = true;
 							DB::commit();
-						/*
+						// /*
 						}catch (\Exception $e){
 							// DB::rollBack();
 
 							$res['runlog'][] = $e;
 							$msg = 'task creation failed: '.$e->getMessage();
 						}
-						*/
+						// */
 					}
 				}
 			}
