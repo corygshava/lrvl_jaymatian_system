@@ -1,3 +1,11 @@
+<?php
+	// require_once __DIR__.'/piece_add_client_form.php';
+?>
+
+{{-- <!-- --}}
+@include('pieces.forms_clientops')
+{{-- --> --}}
+
 <style>
 	.samples_holder{
 		display: flex;
@@ -213,14 +221,6 @@
 		<p>loading client record ...</p>
 	</div>
 </div>
-
-<?php
-	require_once __DIR__.'/piece_add_client_form.php';
-?>
-
-<!--
-@include('pieces.forms_clientops')
--->
 
 <script>
 	let clientData = {

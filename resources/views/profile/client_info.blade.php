@@ -414,7 +414,7 @@
 		renderPayData(who);
 	}
 	window['view_report'] = (el,id,w) => {
-		let myn = task_info_data.reportData[id];
+		let myn = client_info_data.reportData[id];
 
 		let cur = {
 			rectype: 'report',
@@ -696,7 +696,7 @@
 	}
 	window['renderReports'] = () => {
 		const data = {
-			data: task_info_data.reportData,
+			data: client_info_data.reportData,
 			cols: [
 				{
 					cap: 'ID',

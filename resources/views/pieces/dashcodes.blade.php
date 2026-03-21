@@ -117,7 +117,7 @@
 			'client_info' : 'Client Information',
 			'view_profile' : 'User Profile',
 			'view_users' : 'user management',
-			'add_task' : 'Add task',
+			'add_task' : 'Add new task',
 			'view_task' : 'Task summary',
 			'view_tasks' : 'Task management',
 			'task_info' : 'Task Information',
@@ -871,4 +871,3 @@
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});
 	</script>
-

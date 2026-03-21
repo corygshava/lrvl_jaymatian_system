@@ -1,13 +1,13 @@
 <?php
-	// require_once __DIR__.'/piece_task_view_styles.php';
+	/*
+	require_once __DIR__.'/piece_task_view_styles.php';
 	// require_once __DIR__.'/view_task_0.php';
-	// exit();
+	// */
 ?>
 
 {{-- <!-- --}}
 @include('pieces.task_view_styles')
 {{-- --> --}}
-
 
 <div id="to_tasks_mgt_btn">
 	<a href="#" class="backbtn" data-runme="load_page" data-label="Tasks management"><i class="fa fa-arrow-left"></i> back to <b>tasks management</b></a>
@@ -550,7 +550,7 @@
 
 		let senddeets = {
 			template: linkAtlas['client_info'],
-			sidenote: 'View Client Info',
+			sidenote: pageNames['client_info'],
 			// afterfx: p || undefined,
 		};
 

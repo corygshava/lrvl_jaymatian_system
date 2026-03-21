@@ -1001,12 +1001,12 @@
 			let the_price = task_runtime_data.sampleStats !== undefined ? task_runtime_data.sampleStats.cost : 0;
 
 			if(el.type == 'range'){
-				alert_danger('is range');
+				// alert_danger('is range');
 				f = (Number(el.value) / 100);
 				num = the_price * f;
 				new_discount_amount.value = Math.floor(num);
 			} else if(el.type == "number"){
-				alert_danger('is number');
+				// alert_danger('is number');
 				num = Number(el.value);
 				f = (num / the_price);
 				let finum = f * 100;
@@ -1220,8 +1220,16 @@
 						sidenote: pageNames['task_info'],
 					};
 					loadPage(senddeets);
+					localStorage.removeItem(prefsAtlas['last_saved_task']);
 				},false,() => {
 					alert_info('you are adding another task');
+					localStorage.removeItem(prefsAtlas['last_saved_task']);
+
+					let senddeets = {
+						template: linkAtlas['add_task'],
+						sidenote: pageNames['add_task'],
+					};
+					loadPage(senddeets);
 				});
 
 				task_runtime_data.sampleData = [];
