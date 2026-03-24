@@ -34,7 +34,7 @@
 					<i class="fa fa-user-tie"></i>
 					<span>View profile</span>
 				</button>
-				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#">
+				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#" data-submitme="#logoutform">
 					<i class="fa fa-user-slash"></i>
 					<span>Logout</span>
 				</button>

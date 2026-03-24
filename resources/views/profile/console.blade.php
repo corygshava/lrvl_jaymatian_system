@@ -66,15 +66,6 @@
 			</div>
 			<div class="row mt-3">
 				<div class="col-md-2 col-sm-6 mb-3">
-					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
-						<div class="action-icon bg-primary text-white mx-auto">
-							<i class="fas fa-folder-plus"></i>
-						</div>
-						<h6 class="mb-0 font-weight-bold">New Task</h6>
-						<small class="text-muted">Create task</small>
-					</div>
-				</div>
-				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewClients()">
 						<div class="action-icon bg-primary text-white mx-auto">
 							<i class="fas fa-users"></i>
@@ -117,6 +108,15 @@
 						</div>
 						<h6 class="mb-0 font-weight-bold">View Payments</h6>
 						<small class="text-muted">All payments made</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i class="fas fa-folder-plus"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">New Task</h6>
+						<small class="text-muted">Create task</small>
 					</div>
 				</div>
 			</div>

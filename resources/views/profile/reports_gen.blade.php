@@ -20,8 +20,11 @@
 			height: 300px;
 			width: 100%;
 			/*background: red;*/
-			position: relative;
-			transform: rotate(12deg);
+			position: absolute;
+			top: 0;
+			right: 0;
+			transform: translate(61%,-68px) scale(0.7);
+			/* transform: rotate(12deg); */
 		}
 		.stamp_image {
 			height: 178px;
@@ -41,7 +44,7 @@
 			left: 35px;
 			background: #fff;
 			padding: 1px 1px;
-			transform: rotate(10deg) scale(0.8);
+			/* transform: rotate(10deg) scale(0.8); */
 			font-size: 1.2rem;
 			border-radius: 5px;
 		}
@@ -100,7 +103,18 @@
 		font-weight: 700;
 	}
 
+	h3.heading{
+		text-align: left;
+		text-transform: uppercase;
+		font-size: 1.2rem;
+	}
+
 	.mylist b {width: 50px;display: inline-block;}
+	.smallerCells{font-size: 0.8rem;}
+	.smallerCells td{font-size: 0.8rem;padding: 1px 3px;}
+
+	tr td{padding: 1px 3px !important;}
+	tr td>*{transform: translateY(1px);}
 </style>
 
 <div class="container-fluid">
@@ -160,7 +174,7 @@
 
 			<div id="document_Holder" class="flow centroid">
 				<div data-role="report_setup">
-					<div class="page-section header">
+					<div class="page-section header" style="padding: 0 !important;">
 						<h1 class="w3-center themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
 							<div class="thelogo">
@@ -236,12 +250,12 @@
 					<div class="page-section">
 						<h3 class="heading">Analytical report</h3>
 						<div>
-							<table class="mytable">
+							<table class="mytable" style="width: 80%;">
 								<tr>
 									<th style="width: 40px;">SN</th>
-									<th>Sample ID</th>
-									<th style="width: 140px;">Au ppm</th>
-									<th style="width: 140px;">Cu ppm</th>
+									<th style="width: 400px;">SAMPLE ID</th>
+									<th style="width: 90px;">Au ppm</th>
+									<th style="width: 90px;">Cu ppm</th>
 								</tr>
 								<tbody id="resultsguy"></tbody>
 							</table>
@@ -253,9 +267,9 @@
 						<div>
 							<table class="mytable">
 								<tr>
-									<th style="width: 177px;">Sample type</th>
-									<th>Analytical method</th>
-									<th style="width: 140px;">Tolerance limit</th>
+									<td style="width: 177px;">Sample type</td>
+									<td>Analytical method</td>
+									<td style="width: 140px;">Tolerance limit</td>
 								</tr>
 								<tbody id="deviationguy"></tbody>
 							</table>
@@ -299,13 +313,11 @@
 								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="page-section">
 						<div class="stamp_space" id="stamp">
 							<img src="./_assets/img/stamp_1.png" class="stamp_image">
 						</div>
 					</div>
+
 				</div>
 			</div>
 
@@ -595,12 +607,12 @@
 
 		// header
 		header.innerHTML = `
-			<h1 class="w3-center themetxt">${bizdeets.biz_name}</h1>
-			<div class="flowline gap-sm">
+			<h1 class="w3-center themetxt" style="font-size:2rem;">${bizdeets.biz_name}</h1>
+			<div class="flowline" style="gap: 10px !important;">
 				<div class="thelogo">
-					<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}">
+					<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}" style="width: 102px;">
 				</div>
-				<div class="flow gap-tn mylist">
+				<div class="flow gap-tn mylist" style="gap: 2px !important;font-size:0.8rem;">
 					<div>
 						<b>Branch</b>
 						<strong data-subrole="branch" class="text-uppercase">
@@ -613,7 +625,7 @@
 							${bizdeets.location}
 						</span>
 					</div>
-					<div>
+					<div style="color: orange;">
 						<b>Email:</b>
 						<span data-subrole="email">
 							${bizdeets.email}
@@ -630,31 +642,23 @@
 		`;
 
 		// the second section (aka the creditsguy)
+		taskinfo.style.textTransform = "uppercase";
+		taskinfo.classList.add('smallerCells');
 		taskinfo.innerHTML = `
 			<tr>
-				<td>
-					<b>Attending Technician: </b>
-					<span data-subrole="user_name">${cur_user.name}</span>
+				<td style="padding: 2px !important;">
+					<b>Client \\ Company name: </b>
+					<span data-subrole="user_name">${s_data.owner.client_name}</span>
 				</td>
-				<td>
-					<b>Report No: </b>
-					<span>${generateSerial(s_data)}</span>
+				<td style="padding: 2px !important;">
+					<b>Number of samples: </b>
+					<span>${s_data.sample_count}</span>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<b>Company contact: </b>
 					<span>${processNumber(bizdeets.phone)}</span>
-				</td>
-				<td>
-					<b>Client: </b>
-					<span>${s_data.owner.client_name}</span>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b>Number of samples: </b>
-					<span>${s_data.sample_count}</span>
 				</td>
 				<td>
 					<b>Sample Type: </b>
@@ -692,8 +696,8 @@
 				<tr>
 					<td>${i + 1}</td>
 					<td>${r.sample_name}</td>
-					<td>${r.au_ppm}</td>
-					<td>${r.cu_ppm}</td>
+					<td class="text-right">${r.au_ppm}</td>
+					<td class="text-right">${r.cu_ppm}</td>
 				</tr>
 			`;
 		})
@@ -763,7 +767,7 @@
 
 		outht = `
 			<img src="${linkAtlas['bizimages']}/${bizimgs.official_stamp}" class="stamp_image">
-			<div id="dateguy">${('<?php echo date("d M Y")?>').toUpperCase()}</div>
+			<div id="dateguy" class="w3-text-red">${('<?php echo date("d M Y")?>').toUpperCase()}</div>
 		`;
 		stamp.innerHTML = outht;
 	}
@@ -1082,7 +1086,7 @@
 
 		const step3 = (d) => {
 			pick_step(4);
-			confirmAction(mekHeading('report generated successfully','h4'),'the report has been generated successfully',() => {});
+			// confirmAction(mekHeading('report generated successfully','h4'),'the report has been generated successfully',() => {});
 			alert_success('report uploaded successfully');
 		}
 

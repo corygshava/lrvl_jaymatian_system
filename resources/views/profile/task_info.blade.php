@@ -106,6 +106,8 @@
 		opacity: 0.3;
 		pointer-events: none;
 	}
+
+	.worksheet_doc tr td{padding: 1px 2px !important;}
 </style>
 
 <div class="container-fluid">
@@ -263,13 +265,13 @@
 										<table class="mytable table-border">
 											<thead>
 												<tr>
-													<th>sn</th>
-													<th style="width:75px;">beaker</th>
+													<th style="width:35px;">sn</th>
+													<th style="width:60px;">beaker</th>
 													<th>Sample ids</th>
-													<th style="width:98px;">Weight</th>
-													<th style="width:98px;">AU reading</th>
-													<th style="width:98px;">CU reading</th>
-													<th>Remark</th>
+													<th style="width:78px;">Weight</th>
+													<th style="width:78px;">AU reading</th>
+													<th style="width:78px;">CU reading</th>
+													<th style="width:96px;">Remark</th>
 												</tr>
 											</thead>
 											<tbody class="thesamples">
@@ -836,30 +838,102 @@
 		`;
 		w_sinfo.innerHTML = `
 			<tr>
-				<th>sn</th>
-				<th style="width:75px;">beaker</th>
+				<th style="width:35px;">sn</th>
+				<th style="width:60px;">beaker</th>
 				<th>Sample ids</th>
-				<th style="width:98px;">Weight</th>
-				<th style="width:98px;">AU reading</th>
-				<th style="width:98px;">CU reading</th>
-				<th>Remark</th>
+				<th style="width:78px;">Weight</th>
+				<th style="width:92px;">AU reading</th>
+				<th style="width:92px;">CU reading</th>
+				<th style="width:96px;">Remark</th>
 			</tr>
 		`;
 		// for(let x = 0;x<thesample.sample_count;x++){
+		let lno = 0;
 		for(let x = 0;x<maxno;x++){
 			if(x < thesample.sample_count){
-				outht += `
-					<tr>
-						<td>${x + 1}</td>
-						<td></td>
-						<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				`;
+
+				if(thesample.sample_type.toLowerCase() == 'soil' || thesample.sample_type.toLowerCase() == 'rock'){
+					let ln_1 = 0,ln_2 = 0;
+
+					lno += 1;
+					ln_1 = lno;
+					lno += 1;
+					ln_2 = lno;
+
+					outht += `
+						<tr>
+							<td>${ln_1}</td>
+							<td></td>
+							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>${ln_2}</td>
+							<td></td>
+							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					`;
+				} else if(thesample.sample_type.toLowerCase() == 'carbon') {
+					let ln_1 = 0,ln_2 = 0,ln_3 = 0;
+
+					lno += 1;
+					ln_1 = lno;
+					lno += 1;
+					ln_2 = lno;
+					lno += 1;
+					ln_3 = lno;
+
+					outht += `
+						<tr>
+							<td>${ln_1}</td>
+							<td></td>
+							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>${ln_2}</td>
+							<td></td>
+							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>${ln_3}</td>
+							<td></td>
+							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					`;
+				} else {
+					outht += `
+						<tr>
+							<td>${x + 1}</td>
+							<td></td>
+							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					`;
+				}
 			} else {
+				continue;
 				outht += `
 					<tr>
 						<td>${x + 1}</td>
@@ -873,6 +947,32 @@
 				`;
 			}
 			// alert_dark(`rendering sample ${x + 1} for worksheet`);
+		}
+
+		if(thesample.sample_type.toLowerCase() == 'soil' || thesample.sample_type.toLowerCase() == 'rock'){
+			outht += `
+				<tr>
+					<td>STD</td>
+					<td></td>
+					<td><b>reference material</b></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			`;
+		} else if(thesample.sample_type.toLowerCase() == 'carbon') {
+			outht += `
+				<tr>
+					<td>STD</td>
+					<td></td>
+					<td><b>Carbon Standard solution</b></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			`;
 		}
 
 		w_sinfo.innerHTML += outht;
