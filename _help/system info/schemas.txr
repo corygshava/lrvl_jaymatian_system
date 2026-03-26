@@ -103,7 +103,7 @@ reports_gen
 
 	laravel timestamps
 
-worksheet
+worksheets
 	task_id
 	created_by (id of a user)
 	sample_id (id of the samples)

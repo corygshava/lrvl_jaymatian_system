@@ -60,5 +60,8 @@ class Sample extends Model{
 	public function reports(): HasMany {
 		return $this->hasMany(ReportsGen::class,'sample_id','id');
 	}
+	public function worksheets(): HasMany{
+		return $this->hasMany(Worksheet::class,'sample_id','id');
+	}
 	// */
 }

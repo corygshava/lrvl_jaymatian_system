@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use App\Traits\TimeRangeScope;
+use App\Traits\TrackLastUpdater;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Result extends Model{
-	use TimeRangeScope;
-
     protected $fillable = [
 		'task_id',
         'sample_id',
         'client_id',
         'added_by',
+		'worksheet_id',
+		'last_updated_by',
 
 		'sample_name',
         'sample_type',
@@ -25,6 +26,10 @@ class Result extends Model{
         'au_ppm' => 'decimal:4',
         'cu_ppm' => 'decimal:4',
     ];
+
+	// traits
+	use TimeRangeScope;
+	use TrackLastUpdater;
 
 	// relationships
 	public function sample(): BelongsTo {
