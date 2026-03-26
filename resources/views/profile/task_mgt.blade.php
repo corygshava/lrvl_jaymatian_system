@@ -697,7 +697,7 @@
 		// alert_dark('set current userid: ' + myn.id);
 		window['cur_record'] = cur;
 
-		loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
+		loadPage({template: linkAtlas['view_task'],sidenote: pageNames['view_task']});
 	}
 
 	window['manage_task'] = (n) => {

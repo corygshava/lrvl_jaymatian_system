@@ -102,6 +102,26 @@ reports_gen
 	image_link
 
 	laravel timestamps
+
+worksheet
+	task_id
+	created_by (id of a user)
+	sample_id (id of the samples)
+	client_id (id of client)
+	created_by (links to users.id)
+
+	sample_data (json to hold sample info)
+
+	laravel_timestamps
+invoices
+	client_id
+	created_by
+	status
+
+	invoice_data (json to hold invoice info)
+
+	laravel_timestamps
+
 reports_gen_images
 	task_id
 	reports_gen_id

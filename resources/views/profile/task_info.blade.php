@@ -217,7 +217,7 @@
 									</div>
 
 									<div class="job_stats border mb-4">
-										<table class="mytable table-border">
+										<table class="mytable ">
 											<tr>
 												<td>
 													<b>Job No: </b>
@@ -262,7 +262,7 @@
 									</div>
 
 									<div class="sample_stats border">
-										<table class="mytable table-border">
+										<table class="mytable ">
 											<thead>
 												<tr>
 													<th style="width:35px;">sn</th>
@@ -786,7 +786,7 @@
 			<div class="logo">
 				<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}" style="max-width: 120px;">
 			</div>
-			<div class="info">
+			<div class="info rendercorrect">
 				<h2>${bizdeets.branch_name}</h2>
 				<div>
 					<b>Location: </b>
@@ -838,20 +838,19 @@
 		`;
 		w_sinfo.innerHTML = `
 			<tr>
-				<th style="width:35px;">sn</th>
-				<th style="width:60px;">beaker</th>
-				<th>Sample ids</th>
-				<th style="width:78px;">Weight</th>
-				<th style="width:92px;">AU reading</th>
-				<th style="width:92px;">CU reading</th>
-				<th style="width:96px;">Remark</th>
+				<th style="width:35px;">${mekSpan('sn')}</th>
+				<th style="width:60px;">${mekSpan('beaker')}</th>
+				<th>${mekSpan('Sample ids')}</th>
+				<th style="width:78px;">${mekSpan('Weight')}</th>
+				<th style="width:92px;">${mekSpan('AU reading')}</th>
+				<th style="width:92px;">${mekSpan('CU reading')}</th>
+				<th style="width:96px;">${mekSpan('Remark')}</th>
 			</tr>
 		`;
 		// for(let x = 0;x<thesample.sample_count;x++){
 		let lno = 0;
 		for(let x = 0;x<maxno;x++){
 			if(x < thesample.sample_count){
-
 				if(thesample.sample_type.toLowerCase() == 'soil' || thesample.sample_type.toLowerCase() == 'rock'){
 					let ln_1 = 0,ln_2 = 0;
 
@@ -862,18 +861,18 @@
 
 					outht += `
 						<tr>
-							<td>${ln_1}</td>
+							<td><span>${ln_1}</span></td>
 							<td></td>
-							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td><span>sample ${(x + 10).toString(36).toUpperCase()}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
 						</tr>
 						<tr>
-							<td>${ln_2}</td>
+							<td>${mekSpan(ln_2)}</td>
 							<td></td>
-							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td><span><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -892,27 +891,27 @@
 
 					outht += `
 						<tr>
-							<td>${ln_1}</td>
+							<td><span>${ln_1}</span></td>
 							<td></td>
-							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>${ln_2}</td>
-							<td></td>
-							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td><span>sample ${(x + 10).toString(36).toUpperCase()}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
 						</tr>
 						<tr>
-							<td>${ln_3}</td>
+							<td><span>${ln_2}</span></td>
 							<td></td>
-							<td><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td><span><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</span></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><span>${ln_3}</span></td>
+							<td></td>
+							<td><span><b>RPT</b> sample ${(x + 10).toString(36).toUpperCase()}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -922,9 +921,9 @@
 				} else {
 					outht += `
 						<tr>
-							<td>${x + 1}</td>
+							<td><span>${x + 1}</span></td>
 							<td></td>
-							<td>sample ${(x + 10).toString(36).toUpperCase()}</td>
+							<td><span>sample ${(x + 10).toString(36).toUpperCase()}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -936,7 +935,7 @@
 				continue;
 				outht += `
 					<tr>
-						<td>${x + 1}</td>
+						<td><span>${x + 1}</span></td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -949,24 +948,20 @@
 			// alert_dark(`rendering sample ${x + 1} for worksheet`);
 		}
 
+		let xtra = '<td></td>';
+
 		if(thesample.sample_type.toLowerCase() == 'soil' || thesample.sample_type.toLowerCase() == 'rock'){
-			outht += `
-				<tr>
-					<td>STD</td>
-					<td></td>
-					<td><b>reference material</b></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-			`;
+			xtra = `<td><span><b>reference material</b></span></td>`;
 		} else if(thesample.sample_type.toLowerCase() == 'carbon') {
+			xtra = `<td><b>Carbon Standard solution</b></td>`;
+		}
+
+		if(['soil','rock','carbon'].includes(thesample.sample_type.toLowerCase())){
 			outht += `
 				<tr>
-					<td>STD</td>
+					<td><span>STD</span></td>
 					<td></td>
-					<td><b>Carbon Standard solution</b></td>
+					${xtra}
 					<td></td>
 					<td></td>
 					<td></td>

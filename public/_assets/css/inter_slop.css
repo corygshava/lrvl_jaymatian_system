@@ -989,12 +989,13 @@
 	}
 	.mytable td,.mytable th{
 		border: 1px solid var(--r_border);
-		padding: 5px;
+		padding: 1px 3px;
 	}
 	.mytable.last td,.mytable.last th{
 		/*border: none;*/
 		/*padding: 0;*/
 	}
+	.mytable tr td>*,.mytable tr th>*,.rendercorrect>*{transform: translateY(-7px);}
 
 /* sample price holders */
 	.samples_holder{

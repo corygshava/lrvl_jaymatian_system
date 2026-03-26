@@ -168,6 +168,7 @@
 			<span class="h4">Add task</span>
 			<p>Use this page to add a new task to the database</p>
 		</div>
+		<button class="mybtn primary" data-runme="preserve_details">preserve details</button>
 	</div>
 
 	<div class="panelbg themeround distance-tn" id="progress_panel">
@@ -719,6 +720,10 @@
 			localStorage.setItem(prefsAtlas['last_saved_task'],JSON.stringify(task_runtime_data));
 			// alert_dark('running autosave');
 		},autosave_delay);
+	}
+	function preserve_details() {
+		saveTaskData();
+		alert_success('details preserved');
 	}
 	function continueFromLast() {
 		// alert_info('continuing from last');

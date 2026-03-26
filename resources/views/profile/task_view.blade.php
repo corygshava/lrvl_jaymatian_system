@@ -602,8 +602,8 @@
 	}
 
 	window['viewCreator'] = () => {
-		alert_info(`Viewing user profile: ${taskData.creator.name}`);
-		openinfo('showthis','user');
+		// alert_info(`Viewing user profile: ${taskData.creator.name}`);
+		// openinfo('showthis','user');
 	}
 
 	window['viewTaskDetails'] = () => {

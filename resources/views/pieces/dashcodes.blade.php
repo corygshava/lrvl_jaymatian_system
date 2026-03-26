@@ -244,7 +244,7 @@
 				window[fetch_bypass_fyls](linkAtlas['get_mypermissions'],{},'GET').then(d => {
 					responseHandler(d,step2,d);
 				}).catch(err => {
-					dynamic_ui.innerHTML = 'error getting user permissions';
+					dynamic_ui.innerHTML = mekError('Error',`error getting user permissions: ${err.message}`,true);
 				})
 			};
 
@@ -255,7 +255,7 @@
 				window[fetch_bypass_fyls](linkAtlas['get_user'],{},'GET').then(d => {
 					responseHandler(d,step3,d);
 				}).catch(err => {
-					dynamic_ui.innerHTML = 'error getting user information';
+					dynamic_ui.innerHTML = mekError('Error',`error getting user information: ${err.message}`,true);
 				})
 			};
 
@@ -455,6 +455,10 @@
 					maincon.innerHTML = dt;
 					maincon.style.pointerEvents = "all";
 					maincon.animate([...fadein].reverse(),{duration: 400, easing: "ease-out",fill: "forwards"});
+
+					// reset run on awake
+					window['runOnAwake'] = () => {};
+
 					ParseMyJS(maincon);
 					refreshUI(300);
 
@@ -821,7 +825,21 @@
 				killghost('confirmPasswordCallback');
 			}
 
+		// logout operations
+			window['logout'] = (el) => {
+				logoutform.submit();
+			}
+			window['logout_fail'] = (d) => {
+				alert_danger('logout fail');
+			}
+			window['run_post_logout'] = (d) => {
+				alert_danger('run post logout');
+				window.location.reload();
+			}
+
 		// reusables (this project only)
+
+		// print ops
 			async function printElement(selector,printImmediately = false) {
 				const element = document.querySelector(selector);
 
@@ -867,7 +885,18 @@
 					console.error('Error capturing element:', error);
 				}
 			}
+			window['print_me'] = (el) => {
+				if(el == undefined){alert_danger('invalid call');return;}
+				if(el.dataset.target == undefined){alert_danger('invalid target');return;}
 
+				let sel = el.dataset.target;
+				let con = el.dataset.immediate == "yes" || el.dataset.immediate == "true";
+
+				printElement(sel,con).then(e => {
+					alert_success('document printed successfully');
+				});
+			}
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});
 	</script>
+

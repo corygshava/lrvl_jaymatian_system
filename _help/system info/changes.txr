@@ -1,0 +1,35 @@
+	main heading: 2rem
+center for all headings in the report
+make the stamp straight and right next to the signature
+
+fix the report look
+	do the html2canvas fix for tables
+		make a custom component for tables
+
+make a button to save data temporarily in add_task
+
+other major changes
+
+	make clients have a button for reconciling price back to system defaults
+		make it that you can do a batch update in business data
+
+	make it that all clients have a summary of how much cash they are owed
+		make the worksheet editable (make it that the sample ids can be modified by user)
+			(worksheet: the idea is that the worksheet can be modified with custom sample ids, (they will be duplicated depending on the specifications you gave per sample type), then this worksheet can be printed so that the rest of the sample operations can happen)
+			(calculator: when the sample operations are done the user will go to the samples management page pick the sample based on job_no then they willl enter the readings (just like you specified, 3 times for carbon, 2 times for rocks and soil and once for solutions), then the calculator will figure out the results (ill use the calculator excel you gave me as a guide) and record the information as the sample's results. then from there a report can be created)
+			make it that the user can enter the details from the worksheet
+			make it that there is a calculator for samples
+
+		make it that an invoice can be generated
+			(credit: so the idea is that there are those who pay monthly and there are those who pay per visit, so my design is actually backwards, what needs to happen is that with every task their credit (how much they are owed) increases and if it increases enough then an invoice is created, when they have an unpaid invoice, they cant get any reports until the invoice is cleared)
+			make it that the system can send report if they are monthly
+		show all unpaid tasks plus the total unpaid info
+
+		reduce decimal places to 2
+		make it that the report can be generated even without finishing payment
+
+		make it that we can work with the worksheet to add results via that and that the user can choose what to select for the report
+			make it that ive integrated the calculator setup for results
+
+		add carbon_activity as a sample type
+			has a special kind of report

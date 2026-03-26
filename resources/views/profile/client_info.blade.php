@@ -369,7 +369,7 @@
 		let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
 
 		window[fetch_bypass](path,payld,method).then((d) => {
-			responseHandler(d,fn,d,true);
+			responseHandler(d,fn,d,true,true);
 		}).catch(d => {
 			hidemainLoader();
 			showError(true,{heading: `Error Getting ${wot}`,text: d.message});

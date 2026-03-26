@@ -697,7 +697,7 @@
 		// alert_dark('set current userid: ' + myn.id);
 		window['cur_record'] = cur;
 
-		loadPage({template: linkAtlas['view_client'],sidenote: 'Client Information'});
+		loadPage({template: linkAtlas['view_client'],sidenote: pageNames['view_client']});
 	}
 
 	function deleteRecord(id) {

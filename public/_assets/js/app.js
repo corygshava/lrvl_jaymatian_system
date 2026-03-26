@@ -498,10 +498,16 @@ function mekstagger(delay,count) {
 	return `animation-delay: ${del}ms;animation-fill-mode: forwards;opacity: 0;`;
 }
 
-function mekError(demo='an error happened'){
+function mekError(hed= 'Error',demo='an error happened',serious = false){
+	let sertxt = serious ? `<button class="mybtn primary sm" onclick="window.location.reload()">reload page</button>` : '';
+
 	return `
-		<div class="spacy-mg w3-center slide-up">
+		<div class="spacy-mg w3-center slide-up flow gap-sm">
+			${mekHeading(hed,'h4')}
 			<b><i class="w3-text-red">${demo}</i></b>
+			<div>
+				${sertxt}
+			</div>
 		</div>
 	`;
 }
@@ -792,6 +798,9 @@ const mekModal = (d) => {
 
 function mekHeading(content,type){
 	return `<span class="${type || 'h2'}">${content || 'heading'}</span>`;
+}
+function mekSpan(w) {
+	return `<span>${w}</span>`;
 }
 
 // [end of generators]_____________________________________________________________
