@@ -111,17 +111,17 @@
 		<ul class="nav nav-tabs custom-tabs" id="myTabs" role="tablist">
 			<li class="nav-item">
 				<a class="nav-link active" id="samples-tab" data-toggle="tab" href="#samples" role="tab">
-					<i class="fas fa-flask"></i> Samples
+					<i data-myicon="Samples"></i> Samples
 				</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab">
-					<i class="fas fa-money-bill"></i> Payments
+					<i data-myicon="Payments"></i> Payments
 				</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="reports-tab" data-toggle="tab" href="#reports" role="tab">
-					<i class="fas fa-file-export"></i> Reports
+					<i data-myicon="Reports"></i> Reports
 				</a>
 			</li>
 		</ul>
@@ -523,9 +523,6 @@
 						<i class="fas fa-ellipsis-v"></i>
 					</button>
 					<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-						<a class="dropdown-item spacy-tn" href="#" onclick="add_notes()" id="option_note_btn">
-							<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
-						</a>
 						<a class="dropdown-item spacy-tn" href="#" data-runme="view_client">
 							<i class="fas fa-info-circle mr-2 text-muted"></i>View all details
 						</a>

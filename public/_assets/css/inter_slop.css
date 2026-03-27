@@ -409,6 +409,10 @@
 		width: 100%;
 		border-collapse: separate;
 		border-spacing: 0;
+
+		--w_sm: 48px;
+		--w: 128px;
+		--w_m: calc(var(--w) * 2);
 	}
 	.table-modern thead th {
 		background: var(--light-gray);

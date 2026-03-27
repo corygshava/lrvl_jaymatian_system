@@ -69,45 +69,47 @@
 			'biz_data' : './ui/biz_data',
 			'samples_mgt' : './ui/samples_mgt',
 			'reports_mgt' : './ui/reports_mgt',
+			'ui_tester' : './ui/_ui_creat0r',
 
 			// operations
-			'toggle_account_active' : './op/toggle_active',
-			'add_new_task' : './op/add_task',
-			'add_result' : './op/add_result',
-			'submit_results' : './op/add_result',
-			'add_payment' : './op/add_payment',
-			'add_task_note' : './op/add_task_note',
-			'update_bizdata' : './op/update_bizdata',
-			'update_bizdata_fyls' : './op/update_bizdata_images',
-			'save_report' : './op/save_report',
-			'update_payment' : './op/update_client_payment',
+				'toggle_account_active' : './op/toggle_active',
+				'add_new_task' : './op/add_task',
+				'add_result' : './op/add_result',
+				'submit_results' : './op/add_result',
+				'add_payment' : './op/add_payment',
+				'add_task_note' : './op/add_task_note',
+				'update_bizdata' : './op/update_bizdata',
+				'update_bizdata_fyls' : './op/update_bizdata_images',
+				'save_report' : './op/save_report',
+				'update_payment' : './op/update_client_payment',
+				'save_worksheet' : './op/save_worksheet',
 
 			// datalinks
-			'search_clients' : './data/search_clients',
-			'get_task' : './data/get_task',
-			'get_sample' : './data/get_sample',
-			'get_client' : './data/get_client',
-			'get_samples' : './data/get_samples',
-			'get_payments' : './data/get_payments',
-			'get_results' : './data/get_results',
-			'get_reports' : './data/get_reports',
-			'get_bizdata' : './data/bizdata',
-			'get_user' : './data/cur_user',
-			'get_allpermissions' : './data/allpermissions',
-			'get_mypermissions' : './data/my_permissions',
-			'get_staff_stats' : './data/staffstats',
-			'get_incomplete_tasks' : './data/tasks/incomplete',
-			'get_incomplete_samples' : './data/samples/incomplete',
-			'get_admin_stats' : './data/adminstats',
-			'get_sales_chart_data' : './data/sales_chart_data',
-			'get_samples_chart_data' : './data/samples_chart_data',
-			'get_visits_chart_data' : './data/visits_chart_data',
-			'get_income_chart_data' : './data/income_chart_data',
+				'search_clients' : './data/search_clients',
+				'get_task' : './data/get_task',
+				'get_sample' : './data/get_sample',
+				'get_client' : './data/get_client',
+				'get_samples' : './data/get_samples',
+				'get_payments' : './data/get_payments',
+				'get_results' : './data/get_results',
+				'get_reports' : './data/get_reports',
+				'get_bizdata' : './data/bizdata',
+				'get_user' : './data/cur_user',
+				'get_allpermissions' : './data/allpermissions',
+				'get_mypermissions' : './data/my_permissions',
+				'get_staff_stats' : './data/staffstats',
+				'get_incomplete_tasks' : './data/tasks/incomplete',
+				'get_incomplete_samples' : './data/samples/incomplete',
+				'get_admin_stats' : './data/adminstats',
+				'get_sales_chart_data' : './data/sales_chart_data',
+				'get_samples_chart_data' : './data/samples_chart_data',
+				'get_visits_chart_data' : './data/visits_chart_data',
+				'get_income_chart_data' : './data/income_chart_data',
 
 			// misc
-			'bizimages' : './media/bizimg',
-			'getreport_img' : './media/getreport/imgs',
-			'getreport_pdf' : './media/getreport/pdfs',
+				'bizimages' : './media/bizimg',
+				'getreport_img' : './media/getreport/imgs',
+				'getreport_pdf' : './media/getreport/pdfs',
 		};
 		const pageNames = {
 			'view_users' : 'user information',
@@ -127,6 +129,8 @@
 			'reports_mgt' : 'reports management',
 			'view_reports' : 'reports management',
 			'view_payments' : 'payments management',
+
+			'ui_tester' : 'UI testing grounds',
 		}
 		const variableAtlas = {
 			'initstuff' : `sys_init_${mekRandomString(8)}`,
@@ -146,6 +150,26 @@
 			'last_saved_task' : `${pref_prefix}saved_task`,
 		};
 
+		const iconAtlas = {
+			'admin_dash' : 'fa fa-home',
+			'staff_dash' : 'fa fa-house-user',
+			'user_roles' : 'fa fa-user-lock',
+			'user_mgt' : 'fa fa-user-cog',
+			'user_profile' : 'fa fa-user-tie',
+			'clients' : 'fa fa-users',
+			'client' : 'fa fa-user',
+			'tasks' : 'fa fa-folder',
+			'add_task' : 'fa fa-folder-plus',
+			'samples' : 'fa fa-flask',
+			'payments' : 'fa fa-dollar-sign',
+			'reports' : 'fa fa-file-contract',
+			'bizdata' : 'fa fa-briefcase',
+			'xtras' : 'fa fa-file-code',
+			'xtras_2' : 'fa fa-file-excel',
+			'worksheets' : 'fa fa-file-signature',
+			'invoices' : 'fa fa-file-invoice',
+		};
+
 		// will be set via server call later
 			let encsetup = {
 				offset: 4,
@@ -163,18 +187,18 @@
 		const fadein = [{opacity: 1},{opacity: 0}];
 
 		menuItems = [
-			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: 'fa fa-home'},
-			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: 'fa fa-house-user'},
-			{caption: "User Roles", url: './ui/user_roles',icon: 'fa fa-user-lock'},
-			{caption: "User Management", url: './ui/user_mgt',icon: 'fa fa-user-cog'},
-			{caption: "View Profile", url: './ui/view_user',icon: 'fa fa-user-tie'},
-			{caption: "client management", url: './ui/client_mgt',icon: 'fa fa-users'},
-			{caption: "Task Management", url: './ui/task_mgt',icon: 'fa fa-folder'},
-			{caption: "Add new task", url: './ui/add_task',icon: 'fa fa-folder-plus'},
-			{caption: "Sample management", url: './ui/samples_mgt',icon: 'fa fa-flask'},
-			{caption: "Payment management", url: './ui/payments_mgt',icon: 'fa fa-money-bill'},
-			{caption: "Report management", url: './ui/reports_mgt',icon: 'fa fa-file-export'},
-			{caption: "Business data", url: './ui/biz_data',icon: 'fa fa-briefcase'},
+			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: iconAtlas['admin_dash']},
+			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: iconAtlas['staff_dash']},
+			{caption: "User Roles", url: './ui/user_roles',icon: iconAtlas['user_roles']},
+			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt']},
+			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile']},
+			{caption: "client management", url: './ui/client_mgt',icon: iconAtlas['clients']},
+			{caption: "Task Management", url: './ui/task_mgt',icon: iconAtlas['tasks']},
+			{caption: "Add new task", url: './ui/add_task',icon: iconAtlas['add_task']},
+			{caption: "Sample management", url: './ui/samples_mgt',icon: iconAtlas['samples']},
+			{caption: "Payment management", url: './ui/payments_mgt',icon: iconAtlas['payments']},
+			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports']},
+			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -194,16 +218,32 @@
 			updateSessionUI();
 		}
 
-		function updateSessionUI(){
+		function updateSessionUI(p = undefined){
 			let namedisplays = document.querySelectorAll('[data-role="user_name_display"]');
 
 			if(namedisplays.length == 0){
 				// alert_danger('no name displays found');
 			}
-
 			namedisplays.forEach(e => {
 				e.innerHTML = cur_user.name || "??";
 			})
+
+			// setup all icons where needed
+			let _icons = document.querySelectorAll('[data-myicon]');
+			_icons.forEach(_i => {
+				let iclass = iconAtlas[_i.dataset.myicon.toLowerCase()];
+				// let iclass = iconAtlas[_i.dataset.myicon.toLowerCase()] || 'fa-question';
+				_i.classList.add('fa');
+				_i.classList.add(iclass.split(" ")[1]);
+			})
+
+			if(p == undefined){
+				return;
+			}
+
+			// render all pagenames where needed
+			let pnames = document.querySelectorAll('[data-role="pagename"]');
+			pnames.forEach(pn => {pn.innerHTML = p.sidenote;});
 
 			// alert_warning('updating user');
 			// console.log(cur_user);
@@ -460,6 +500,7 @@
 					window['runOnAwake'] = () => {};
 
 					ParseMyJS(maincon);
+					updateSessionUI(p);
 					refreshUI(300);
 
 					if(p.afterfx !== undefined || p.afterfx !== null){
@@ -493,7 +534,6 @@
 				});
 			},400);
 		}
-
 		window['load_page'] = (el,topass) => {
 			// let fun = el.dataset.afterfx !== undefined ? window[el.dataset.afterfx] : undefined;
 			let passme = {
@@ -513,6 +553,7 @@
 
 			window['loadPage'](passme);
 		}
+		window['refresh_']
 
 		window['view_profile'] = () => {
 			alert_info('loading full profile')
@@ -644,7 +685,7 @@
 			}
 		}
 
-		function sendform(m,callback,onfail) {
+		function sendform(m,callback,onfail,tosend = undefined) {
 			let hasencrypted = false;
 			let ps = '';
 
@@ -730,16 +771,19 @@
 				m.admin_password.value = encryptme(ps,encsetup.offset,encsetup.salt,encsetup.chunks);
 			}
 
-			let fdata = getFormdata(m);
+			let fdata = tosend == undefined ? getFormdata(m) : tosend;
+			const sender = tosend == undefined ? window[fetch_bypass_fyls] : window[fetch_bypass];
+			const as_is = tosend == undefined;
 			let myres = undefined;
 			let myaction = m.action;
+			// console.log('fdata: ',fdata,'use as is: ',as_is);
 
 			if(myaction.includes('defined:')){
 				myaction = linkAtlas[myaction.split(':')[1]];
 			}
 
 			// add_edit_form.style.pointerEvents = "all";
-			window[fetch_bypass_fyls](myaction,fdata,'POST',true,true).then(d => {
+			sender(myaction,fdata,'POST',true,as_is).then(d => {
 				myres = d;
 
 				responseHandler(d,callback,{'el': m,'data': d});

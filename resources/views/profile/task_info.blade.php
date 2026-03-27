@@ -152,22 +152,22 @@
 		<ul class="nav nav-tabs custom-tabs" id="myTabs" role="tablist">
 			<li class="nav-item">
 				<a class="nav-link active" id="worksheet-tab" data-toggle="tab" href="#worksheet" role="tab">
-					<i class="fas fa-file"></i> Worksheets
+					<i data-myicon="worksheets"></i> Worksheets
 				</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="samples-tab" data-toggle="tab" href="#samples" role="tab">
-					<i class="fas fa-flask"></i> Samples
+					<i data-myicon="Samples"></i> Samples
 				</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab">
-					<i class="fas fa-money-bill"></i> Payments
+					<i data-myicon="Payments"></i> Payments
 				</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="reports-tab" data-toggle="tab" href="#reports" role="tab">
-					<i class="fas fa-file-export"></i> Reports
+					<i data-myicon="Reports"></i> Reports
 				</a>
 			</li>
 		</ul>
@@ -200,94 +200,141 @@
 								</button>
 							</div>
 						</div>
-						<div class="table-responsive themeround border" style="width:100%;flex: 1 0 850px;">
-							<div data-role="document_Holder" class="flow centroid">
-								<div data-role="document" class="worksheet_doc">
-									<div class="header flowline left gap-sm w3-center mb-4">
-										<div class="logo">
-											<img src="./media/bizimg/[pkKZt]_company_logo.png" style="max-width: 120px;">
-										</div>
-										<div class="info">
-											<h2>KENYA BRANCH (MIGORI)</h2>
-											<div>
-												<b>Location: </b>
-												<strong>Muhuru road</strong>
+						<div data-role="worksheet_display" style="width:100%;flex: 1 0 850px;">
+							<div class="table-responsive themeround border">
+								<div data-role="document_Holder" class="flow centroid">
+									<div data-role="document" class="worksheet_doc">
+										<div class="header flowline left gap-sm w3-center mb-4">
+											<div class="logo">
+												<img src="./media/bizimg/[pkKZt]_company_logo.png" style="max-width: 120px;">
+											</div>
+											<div class="info">
+												<h2>KENYA BRANCH (MIGORI)</h2>
+												<div>
+													<b>Location: </b>
+													<strong>Muhuru road</strong>
+												</div>
 											</div>
 										</div>
-									</div>
 
-									<div class="job_stats border mb-4">
-										<table class="mytable ">
-											<tr>
-												<td>
-													<b>Job No: </b>
-													<span>LKDNMWDKN</span>
-												</td>
-												<td>
-													<b>Client Name: </b>
-													<span>Drakis makali</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<b>Sample Type: </b>
-													<span>sandy</span>
-												</td>
-												<td>
-													<b>Phone No: </b>
-													<span>+254800999000</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<b>Payment Status: </b>
-													<span>not paid</span>
-												</td>
-												<td>
-													<b>Recieved Date and time: </b>
-													<span>25/02/2026</span>
-												</td>
-											</tr>
-											<tr>
-												<td style="opacity: 0;">
-													<b>Payment Status: </b>
-													<span>not paid</span>
-												</td>
-												<td>
-													<b>Number Of Samples: </b>
-													<span>0</span>
-												</td>
-											</tr>
-										</table>
-									</div>
+										<div class="job_stats border mb-4">
+											<table class="mytable ">
+												<tr>
+													<td>
+														<b>Job No: </b>
+														<span>LKDNMWDKN</span>
+													</td>
+													<td>
+														<b>Client Name: </b>
+														<span>Drakis makali</span>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b>Sample Type: </b>
+														<span>sandy</span>
+													</td>
+													<td>
+														<b>Phone No: </b>
+														<span>+254800999000</span>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b>Payment Status: </b>
+														<span>not paid</span>
+													</td>
+													<td>
+														<b>Recieved Date and time: </b>
+														<span>25/02/2026</span>
+													</td>
+												</tr>
+												<tr>
+													<td style="opacity: 0;">
+														<b>Payment Status: </b>
+														<span>not paid</span>
+													</td>
+													<td>
+														<b>Number Of Samples: </b>
+														<span>0</span>
+													</td>
+												</tr>
+											</table>
+										</div>
 
-									<div class="sample_stats border">
-										<table class="mytable ">
-											<thead>
-												<tr>
-													<th style="width:35px;">sn</th>
-													<th style="width:60px;">beaker</th>
-													<th>Sample ids</th>
-													<th style="width:78px;">Weight</th>
-													<th style="width:78px;">AU reading</th>
-													<th style="width:78px;">CU reading</th>
-													<th style="width:96px;">Remark</th>
-												</tr>
-											</thead>
-											<tbody class="thesamples">
-												<tr>
-													<td>1</td>
-													<td></td>
-													<td>sample 1 (Rock)</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</tbody>
-										</table>
+										<div class="sample_stats border">
+											<table class="mytable ">
+												<thead>
+													<tr>
+														<th style="width:35px;">sn</th>
+														<th style="width:60px;">beaker</th>
+														<th>Sample ids</th>
+														<th style="width:78px;">Weight</th>
+														<th style="width:78px;">AU reading</th>
+														<th style="width:78px;">CU reading</th>
+														<th style="width:96px;">Remark</th>
+													</tr>
+												</thead>
+												<tbody class="thesamples">
+													<tr>
+														<td>1</td>
+														<td></td>
+														<td>sample 1 (Rock)</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table table-hover mb-0 table-modern">
+									<thead data-subrole="tableHead">
+										<tr class="text-uppercase">
+											<td><span>no</span></td>
+											<td><span>sample id</span></td>
+											<td style="width: var(--w);"><span>weight (g)</span></td>
+											<td style="width: var(--w);"><span>Au Reading</span></td>
+											<td style="width: var(--w);"><span>Cu Reading</span></td>
+											<td style="width: var(--w_m);"><span>Remarks</span></td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>
+												<div>
+													<input type="text" class="form-control-custom" name="sample_txt" data-subrole="sample_no" data-myid="0" placeholder="sample 1">
+												</div>
+											</td>
+											<td>
+												<div>
+													<input type="text" class="form-control-custom" name="sample_txt" data-subrole="sample_no" data-myid="0" placeholder="sample 1">
+												</div>
+											</td>
+											<td>
+												<div>
+													<input type="text" class="form-control-custom" name="sample_txt" data-subrole="sample_no" data-myid="0" placeholder="sample 1">
+												</div>
+											</td>
+											<td>
+												<div>
+													<input type="text" class="form-control-custom" name="sample_txt" data-subrole="sample_no" data-myid="0" placeholder="sample 1">
+												</div>
+											</td>
+											<td>
+												<div>
+													<input type="text" class="form-control-custom" name="sample_txt" data-subrole="sample_no" data-myid="0" placeholder="sample 1">
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>

@@ -165,10 +165,10 @@
 <div class="container-fluid">
 	<div class="page-header">
 		<div class="page-title">
-			<span class="h4">Add task</span>
+			<span class="h4" data-role="pagename">--</span>
 			<p>Use this page to add a new task to the database</p>
 		</div>
-		<button class="mybtn primary" data-runme="preserve_details">preserve details</button>
+		<button class="mybtn primary" data-runme="preserve_details"><i class="fa fa-save"></i> preserve details</button>
 	</div>
 
 	<div class="panelbg themeround distance-tn" id="progress_panel">
@@ -180,11 +180,11 @@
 					<div class="step-label">Client Selection</div>
 				</div>
 				<div class="step" data-step="1" data-runme="pick_step_2">
-					<div class="step-circle"><i class="fas fa-flask"></i></div>
+					<div class="step-circle"><i data-myicon="samples"></i></div>
 					<div class="step-label">Samples</div>
 				</div>
 				<div class="step" data-step="2" data-runme="pick_step_2">
-					<div class="step-circle"><i class="fas fa-money-bill"></i></div>
+					<div class="step-circle"><i data-myicon="payments"></i></div>
 					<div class="step-label">Payment</div>
 				</div>
 				<div class="step" data-step="3" data-runme="pick_step_2">
@@ -673,7 +673,7 @@
 			console.log('last_save: ',last_save,'parsed: ',lst);
 
 			if(lst.clientData !== undefined){
-				confirmAction('<span class="h4">Saved data found</span>','would you like to continue with creating the last task?',() => {
+				confirmAction('<span class="h4">Preserved data found</span>','would you like to continue with creating the last task?',() => {
 					// alert_danger('continuing');
 					loadSavedTask();
 					last_step();
@@ -693,28 +693,30 @@
 	function loadSavedTask(){
 		let last_save = localStorage.getItem(prefsAtlas['last_saved_task']) || undefined;
 
-		if(last_save === undefined){
+		if(last_save === undefined || last_save == null){
 			console.log(last_save);
-			alert_danger('saved data corrupted');
+			alert_danger('preserved data corrupted');
 			pick_step(0);
 			return;
 		}
 
 		task_runtime_data = JSON.parse(last_save);
 		localStorage.removeItem(prefsAtlas['last_saved_task']);
-		alert_success('saved data loaded');
+		alert_success('preserved data loaded');
 		continueFromLast();
 
 		// console.log("full: ",task_runtime_data,"saved: ",last_save);
 	}
-	function saveTaskData() {
+	function saveTaskData(imm = false) {
 		// alert_dark('initialising task autosave function');
 
 		if(save_inter !== undefined){
 			clearInterval(save_inter);
 		}
 
-		// localStorage.setItem(prefsAtlas['last_saved_task'],JSON.stringify(task_runtime_data));
+		if(imm){
+			localStorage.setItem(prefsAtlas['last_saved_task'],JSON.stringify(task_runtime_data));
+		}
 
 		save_inter = setInterval(() => {
 			localStorage.setItem(prefsAtlas['last_saved_task'],JSON.stringify(task_runtime_data));
@@ -722,7 +724,7 @@
 		},autosave_delay);
 	}
 	function preserve_details() {
-		saveTaskData();
+		saveTaskData(true);
 		alert_success('details preserved');
 	}
 	function continueFromLast() {

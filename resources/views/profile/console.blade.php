@@ -68,7 +68,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewClients()">
 						<div class="action-icon bg-primary text-white mx-auto">
-							<i class="fas fa-users"></i>
+							<i data-myicon="clients"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">Manage Clients</h6>
 						<small class="text-muted">View registered clients</small>
@@ -77,7 +77,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewTasks()">
 						<div class="action-icon bg-success text-white mx-auto">
-							<i class="fas fa-folder"></i>
+							<i data-myicon="tasks"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">View Tasks</h6>
 						<small class="text-muted">All client Tasks</small>
@@ -86,7 +86,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
 						<div class="action-icon bg-warning text-white mx-auto">
-							<i class="fas fa-flask"></i>
+							<i data-myicon="samples"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">View Samples</h6>
 						<small class="text-muted">Sample history</small>
@@ -95,7 +95,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewReports()">
 						<div class="action-icon bg-info text-white mx-auto">
-							<i class="fas fa-file-export"></i>
+							<i data-myicon="reports"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">View Reports</h6>
 						<small class="text-muted">Client reports</small>
@@ -104,7 +104,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
 						<div class="action-icon bg-info text-white mx-auto">
-							<i class="fas fa-money-bill"></i>
+							<i data-myicon="payments"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">View Payments</h6>
 						<small class="text-muted">All payments made</small>
@@ -113,7 +113,7 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
 						<div class="action-icon bg-primary text-white mx-auto">
-							<i class="fas fa-folder-plus"></i>
+							<i data-myicon="add_task"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">New Task</h6>
 						<small class="text-muted">Create task</small>

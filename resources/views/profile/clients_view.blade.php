@@ -16,209 +16,220 @@
 	}
 </style>
 
-<div id="to_clients_mgt_btn">
-	<a href="#" class="backbtn" data-runme="load_page" data-label="Client management"><i class="fa fa-arrow-left"></i> to <b>client management</b></a>
-</div>
+<div class="container-fluid">
+	<div class="page-header">
+		<div class="page-title">
+			<span class="h4" data-role="pagename">--</span>
+			<p>Use this page to add a new task to the database</p>
+		</div>
+		<div id="to_clients_mgt_btn">
+			<a href="#" class="mybtn primary" data-runme="load_page" data-label="Client management"><i data-myicon="clients"></i> client management</a>
+		</div>
+	</div>
 
-<!-- Client Profile Card Component -->
-<div id="client-profile-container" class="container-fluid p-0 w3-hide">
-	<div class="profile_card">
-		<div class="card themeround border-0 panelbg shadow-md">
-			<div class="card-header panelbg themegrad flowline overflow left centerline">
-				<div class="avatar-circle bg-white text-primary">
-					<span id="client-initials">M</span>
-				</div>
-				<div>
-					<strong class="h3" id="client-name"></strong>
+	<!-- Client Profile Card Component -->
+	<div id="client-profile-container" class="container-fluid p-0 w3-hide">
+		<div class="profile_card">
+			<div class="card themeround border-0 panelbg shadow-md">
+				<div class="card-header panelbg themegrad flowline overflow left centerline">
+					<div class="avatar-circle bg-white text-primary">
+						<span id="client-initials">M</span>
+					</div>
 					<div>
-						<span class="badge badge-light" id="client-gender-badge">Male</span>
-						<span class="badge badge-info ml-2" id="payment-plan-badge">Per Visit</span>
-					</div>
-				</div>
-				<div class="w3-display-right spacy-md" style="z-index: 102">
-					<div class="dropdown">
-						<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
-							<i class="fas fa-ellipsis-v"></i>
-						</button>
-						<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-							<a class="dropdown-item spacy-tn" href="#" onclick="edit_client()">
-								<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
-							</a>
-							<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan()">
-								<i class="fas fa-money-check-alt mr-2 text-muted"></i>Change Payment Plan
-							</a>
-							<a class="dropdown-item spacy-tn" id="credit_mgt_btn" href="#" onclick="manageCreditBalance()">
-								<i class="fas fa-wallet mr-2 text-muted"></i>Manage Credit
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="card-body">
-				<div class="flowline overflow w3-center stats">
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client ID</small>
-						<b class="text-primary font-weight-bold"><span id="client-id">2</span></b>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Credit Balance</small>
-						<span class="text-success font-weight-bold">KES <span id="credit-balance">0.00</span></span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
-						<span class="text-dark font-weight-bold" id="member-since">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
-						<span class="text-dark font-weight-bold" id="last-updated">--</span>
-					</div>
-				</div>
-
-				<!-- Quick Actions Section -->
-				<div class="distance-sm">
-					<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
-					<div class="row mt-3">
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
-								<div class="action-icon bg-primary text-white mx-auto">
-									<i class="fas fa-folder-plus"></i>
-								</div>
-								<h6 class="mb-0 font-weight-bold">New Task</h6>
-								<small class="text-muted">Create task</small>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6 mb-3 w3-hide">
-							<div class="action-card card themeround text-center p-3" onclick="viewTasks()">
-								<div class="action-icon bg-success text-white mx-auto">
-									<i class="fas fa-folder"></i>
-								</div>
-								<h6 class="mb-0 font-weight-bold">View Tasks</h6>
-								<small class="text-muted">All client Tasks</small>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
-								<div class="action-icon bg-warning text-white mx-auto">
-									<i class="fas fa-flask"></i>
-								</div>
-								<h6 class="mb-0 font-weight-bold">View Samples</h6>
-								<small class="text-muted">Sample history</small>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewReports()">
-								<div class="action-icon bg-info text-white mx-auto">
-									<i class="fas fa-file-export"></i>
-								</div>
-								<h6 class="mb-0 font-weight-bold">View Reports</h6>
-								<small class="text-muted">Client reports</small>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
-								<div class="action-icon bg-info text-white mx-auto">
-									<i class="fas fa-money-bill"></i>
-								</div>
-								<h6 class="mb-0 font-weight-bold">View Payments</h6>
-								<small class="text-muted">All payments made</small>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">Contact Information</span>
-
-				<div class="flowline gap-sm overflow distance-sm">
-					<div class="media gap-sm">
+						<strong class="h3" id="client-name"></strong>
 						<div>
-							<div class="icon-circle">
-								<i class="fa fa-phone"></i>
-							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Phone Number</small>
-							<span class="font-weight-medium" id="client-phone">--</span>
+							<span class="badge badge-light" id="client-gender-badge">Male</span>
+							<span class="badge badge-info ml-2" id="payment-plan-badge">Per Visit</span>
 						</div>
 					</div>
-
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-venus-mars"></i>
-							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Gender</small>
-							<span class="font-weight-medium text-capitalize" id="client-gender">--</span>
-						</div>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">Pricing Information</span>
-
-				<div class="distance-sm">
-					<div class="samples_holder" id="sampleDataContainer">
-						<div class="samplebox border slide-up" style="animation-delay: 0ms;animation-fill-mode: forwards;opacity: 0;">
-							<div class="info">
-								<b>Soil</b>
-								<span>1,500</span>
-							</div>
-						</div>
-					</div>
-					<div class="spacy-sm">
-						<button class="mybtn primary" data-runme="edit_client_pricing"><i class="fa fa-edit"></i> edit pricing</button>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">Additional Information</span>
-
-				<div class="distance-sm border themeround">
-					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#additionalInfo" data-toggle="collapse" data-target="#additionalInfo">
-						<span class="text-uppercase text-muted font-weight-bold">Tax & ID Details</span>
-						<i class="fa fa-chevron-down"></i>
-					</a>
-					<div class="collapse panelbg distance-sm spacy-sm" id="additionalInfo">
-						<div class="row">
-							<div class="col-md-6">
-								<small class="text-muted">KRA PIN</small>
-								<p class="font-weight-bold mb-2" id="kra-pin-detail">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">ID Number</small>
-								<p class="font-weight-bold mb-2" id="id-number-detail">--</p>
-							</div>
-						</div>
-						<div class="row mt-2">
-							<div class="col-md-6">
-								<small class="text-muted">Added By</small>
-								<p class="mb-0" id="added-by">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Payment Plan</small>
-								<p class="mb-0 text-capitalize" id="payment-plan-detail">--</p>
+					<div class="w3-display-right spacy-md" style="z-index: 102">
+						<div class="dropdown">
+							<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
+								<i class="fas fa-ellipsis-v"></i>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
+								<a class="dropdown-item spacy-tn" href="#" onclick="edit_client()">
+									<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
+								</a>
+								<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan()">
+									<i class="fas fa-money-check-alt mr-2 text-muted"></i>Change Payment Plan
+								</a>
+								<a class="dropdown-item spacy-tn w3-hide" id="credit_mgt_btn" href="#" onclick="manageCreditBalance()">
+									<i class="fas fa-wallet mr-2 text-muted"></i>Manage Credit
+								</a>
+								<a class="dropdown-item spacy-tn" href="#" onclick="alert_danger('feature not ready yet')">
+									<i class="fa fa-file-invoice mr-2 text-muted"></i>make invoice
+								</a>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div>
-					<div class="spacy-sm w3-center">
-						<small class="text-muted">
-							<i class="fas fa-clock mr-1"></i>
-							Profile loaded at <b id="load-time" class="themetxt">--</b>
-						</small>
+				<div class="card-body">
+					<div class="flowline overflow w3-center stats">
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client ID</small>
+							<b class="text-primary font-weight-bold"><span id="client-id">2</span></b>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Credit Balance</small>
+							<span class="text-success font-weight-bold">KES <span id="credit-balance">0.00</span></span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
+							<span class="text-dark font-weight-bold" id="member-since">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
+							<span class="text-dark font-weight-bold" id="last-updated">--</span>
+						</div>
+					</div>
+
+					<!-- Quick Actions Section -->
+					<div class="distance-sm">
+						<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
+						<div class="row mt-3">
+							<div class="col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+									<div class="action-icon bg-primary text-white mx-auto">
+										<i data-myicon="add_task"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">New Task</h6>
+									<small class="text-muted">Create task</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6 mb-3 w3-hide">
+								<div class="action-card card themeround text-center p-3" onclick="viewTasks()">
+									<div class="action-icon bg-success text-white mx-auto">
+										<i data-myicon="tasks"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">View Tasks</h6>
+									<small class="text-muted">All client Tasks</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
+									<div class="action-icon bg-warning text-white mx-auto">
+										<i data-myicon="samples"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">View Samples</h6>
+									<small class="text-muted">Sample history</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewReports()">
+									<div class="action-icon bg-info text-white mx-auto">
+										<i data-myicon="reports"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">View Reports</h6>
+									<small class="text-muted">Client reports</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
+									<div class="action-icon bg-info text-white mx-auto">
+										<i data-myicon="payments"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">View Payments</h6>
+									<small class="text-muted">All payments made</small>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<span class="text-uppercase text-muted font-weight-bold">Contact Information</span>
+
+					<div class="flowline gap-sm overflow distance-sm">
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-phone"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Phone Number</small>
+								<span class="font-weight-medium" id="client-phone">--</span>
+							</div>
+						</div>
+
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-venus-mars"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Gender</small>
+								<span class="font-weight-medium text-capitalize" id="client-gender">--</span>
+							</div>
+						</div>
+					</div>
+
+					<span class="text-uppercase text-muted font-weight-bold">Pricing Information</span>
+
+					<div class="distance-sm">
+						<div class="samples_holder" id="sampleDataContainer">
+							<div class="samplebox border slide-up" style="animation-delay: 0ms;animation-fill-mode: forwards;opacity: 0;">
+								<div class="info">
+									<b>Soil</b>
+									<span>1,500</span>
+								</div>
+							</div>
+						</div>
+						<div class="spacy-sm">
+							<button class="mybtn primary" data-runme="edit_client_pricing"><i class="fa fa-edit"></i> edit pricing</button>
+						</div>
+					</div>
+
+					<span class="text-uppercase text-muted font-weight-bold">Additional Information</span>
+
+					<div class="distance-sm border themeround">
+						<a class="text-decoration-none spacy-sm flowline spread centerline" href="#additionalInfo" data-toggle="collapse" data-target="#additionalInfo">
+							<span class="text-uppercase text-muted font-weight-bold">Tax & ID Details</span>
+							<i class="fa fa-chevron-down"></i>
+						</a>
+						<div class="collapse panelbg distance-sm spacy-sm" id="additionalInfo">
+							<div class="row">
+								<div class="col-md-6">
+									<small class="text-muted">KRA PIN</small>
+									<p class="font-weight-bold mb-2" id="kra-pin-detail">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">ID Number</small>
+									<p class="font-weight-bold mb-2" id="id-number-detail">--</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<small class="text-muted">Added By</small>
+									<p class="mb-0" id="added-by">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Payment Plan</small>
+									<p class="mb-0 text-capitalize" id="payment-plan-detail">--</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<div class="spacy-sm w3-center">
+							<small class="text-muted">
+								<i class="fas fa-clock mr-1"></i>
+								Profile loaded at <b id="load-time" class="themetxt">--</b>
+							</small>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div id="blank">
-	<div class="spacy-lg w3-center">
-		<span class="h3">Info</span>
-		<p>loading client record ...</p>
+	<div id="blank">
+		<div class="spacy-lg w3-center">
+			<span class="h3">Info</span>
+			<p>loading client record ...</p>
+		</div>
 	</div>
 </div>
 

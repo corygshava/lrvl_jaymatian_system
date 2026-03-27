@@ -62,8 +62,12 @@ if(window[curfun] == undefined){
 
 			let body = mt == "GET" || mt == 'HEAD' ? null : (use_as_is ? dta : JSON.stringify(dta));
 
+			// await alert_dark('sending info');
+
 			// alert_info(JSON.stringify(headers));
-			// console.log(`${fetch_bypass}: `,dta);
+			// console.log(`[${fetch_bypass}] passed_data: `,dta);
+			// console.log(`[${fetch_bypass}] headers: `,headers);
+			// console.log(`[${fetch_bypass}] request body: `,body);
 
 			let s_data = {
 				method: mt.toUpperCase(),
