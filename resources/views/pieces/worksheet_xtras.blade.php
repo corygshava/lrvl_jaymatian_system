@@ -61,13 +61,15 @@
 		}
 		const _mekrow_entries = (x) => {
 			let n = x + 1;
+			let entries = cur_sheet.sample_data;
+			let entry = entries[x];
 
 			return `
 				<tr>
 					<td>${n}</td>
 					<td>
 						<div>
-							<input type="text" class="form-control-custom" data-subrole="sample_id" name="sample_id_${x}" data-myid="${x}" placeholder="sample ${n}" value="sample ${n}" required>
+							<input type="text" class="form-control-custom" data-subrole="sample_id" name="sample_id_${x}" data-myid="${x}" placeholder="sample ${n}" value="${entry.sample_id}" required>
 						</div>
 					</td>
 				</tr>

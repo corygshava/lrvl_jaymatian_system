@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sample;
 use App\Models\Worksheet;
 use Illuminate\Http\Request;
 
 class WorksheetsController extends Controller{
+	// get ops
     public function get_all(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
@@ -90,7 +92,6 @@ class WorksheetsController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_one(Request $req) {
 		$res = $this->dftres;
 		// $alldata = $req->all();
@@ -137,20 +138,12 @@ class WorksheetsController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_worksheets(Request $req) {
 		return $this->get_some($req);
 	}
-
 	public function get_some(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
-
-		/*
-		$passed = $req->validate([
-			'sample_id' => ['required','numeric','sometimes'],
-		]);
-		// */
 
 		$task_id = isset($alldata['task_id']) ? $alldata['task_id'] : null;
 		$client_id = isset($alldata['client_id']) ? $alldata['client_id'] : null;
@@ -184,7 +177,7 @@ class WorksheetsController extends Controller{
 				$found = true;
 			}
 			if($added_by !== null){
-				$therecs = $therecs->where('added_by',$added_by);
+				$therecs = $therecs->where('created_by',$added_by);
 				$res['runlog'][] = 'added_by found';
 				$found = true;
 			}
@@ -214,6 +207,111 @@ class WorksheetsController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $therecs;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	// set ops
+	public function add_edit(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			's_data' => ['required','array'],
+			'sample_id' => ['required','numeric'],
+		]);
+		// */
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "saving worksheet";
+			$reslt = false;
+			$w_sheet = null;
+			$user = $this->cur_user();
+
+			$s_id = $passed['sample_id'];
+			$s_data = $passed['s_data'];
+
+			// check sample
+			$thesample = Sample::where('id',$s_id)->first();
+
+			if($thesample == null){
+				$msg = "invalid sample id";
+				$res['runlog'][] = $msg;
+			} else {
+				$msg = "sample found";
+				$res['runlog'][] = $msg;
+
+				$taskid = $thesample->task_id;
+				$clientid = $thesample->client_id;
+				$s_type = $thesample->sample_type;
+				$s_count = $thesample->sample_count;
+
+				$toadd = [
+					'task_id' => $taskid,
+					'client_id' => $clientid,
+					'sample_id' => $s_id,
+					'sample_data' => $s_data,
+					'sample_type' => $s_type,
+					'sample_count' => $s_count,
+				];
+
+				$sheet = Worksheet::where('sample_id',$s_id)->first();
+
+				if($sheet == null){
+					$msg = "no worksheet found, creating";
+					$res['runlog'][] = $msg;
+
+					$toadd['created_by'] = $user->id;
+					$toadd['last_updated_by'] = $user->id;
+
+					$w_sheet = Worksheet::create($toadd);
+					$reslt = true;
+					$msg = "worksheet created successfully";
+					$res['runlog'][] = $msg;
+				} else {
+					$msg = "worksheet found, running black magic to update";
+					$res['runlog'][] = $msg;
+					$i = 0;
+					$new_data = [];
+
+					if(count($sheet->sample_data) != count($s_data)){
+						$msg = "wrong sample id";
+						$res['runlog'][] = $msg;
+					} else {
+						foreach ($s_data as $entry) {
+							$rec = $sheet[$i];
+							$rec['sample_id'] = $entry['sample_id'];
+
+							$new_data[] = $rec;
+							$i += 1;
+						}
+
+						$sheet->sample_data = $new_data;
+						$sheet->save();
+						$sheet->refresh();
+
+						$w_sheet = $sheet;
+						$reslt = true;
+						$msg = "worksheet updated successfully";
+						$res['runlog'][] = $msg;
+					}
+				}
+
+				$res['runlog'][] = $toadd;
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $w_sheet;
 			$res['message'] = $msg;
 		}
 

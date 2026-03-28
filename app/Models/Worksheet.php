@@ -15,7 +15,10 @@ class Worksheet extends Model{
         'created_by',
         'sample_id',
         'last_updated_by',
+
         'sample_data',
+        'sample_type',
+        'sample_count',
     ];
 
     protected $casts = [
