@@ -11,7 +11,7 @@ use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\UserRoleController;
-
+use App\Http\Controllers\WorksheetsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class,'index']);
@@ -77,6 +77,7 @@ Route::prefix('/data')->group(function(){
 	Route::post('/task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
 	Route::post('/get_task', [TaskController::class,'get_one'])->middleware(['auth','verified']);
 	Route::post('/tasks/incomplete', [TaskController::class,'get_incomplete'])->middleware(['auth','verified']);
+	Route::post('/get_worksheets', [WorksheetsController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::get('/samples', [SamplesController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_sample', [SamplesController::class,'get_sample'])->middleware(['auth','verified']);
@@ -113,6 +114,7 @@ Route::prefix('/op')->group(function(){
 	Route::post('/add_task',[TaskController::class, 'add_new_task'])->middleware(['auth','verified']);
 	Route::post('/add_payment',[TaskController::class, 'add_payment'])->middleware(['auth','verified']);
 	Route::post('/add_task_note',[TaskController::class, 'add_note'])->middleware(['auth','verified']);
+	Route::post('/save_worksheet',[WorksheetsController::class, 'log_my_payload'])->middleware(['auth','verified']);
 
 	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 

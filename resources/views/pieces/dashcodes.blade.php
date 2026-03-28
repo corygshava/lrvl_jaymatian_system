@@ -50,26 +50,27 @@
 		const crumbDepth = 4;
 
 		const linkAtlas = {
-			'admin_dash' : './ui/admin_console',
-			'staff_dash' : './ui/console',
-			'view_users' : './ui/view_user',
-			'view_user' : './ui/view_user',
-			'view_client' : './ui/view_client',
-			'view_clients' : './ui/client_mgt',
-			'view_samples' : './ui/samples_mgt',
-			'view_reports' : './ui/reports_mgt',
-			'view_task' : './ui/view_task',
-			'view_tasks' : './ui/task_mgt',
-			'view_profile' : './ui/view_user',
-			'view_users' : './ui/user_mgt',
-			'client_info' : './ui/client_info',
-			'task_info' : './ui/task_info',
-			'add_task' : './ui/add_task',
-			'gen_report' : './ui/gen_report',
-			'biz_data' : './ui/biz_data',
-			'samples_mgt' : './ui/samples_mgt',
-			'reports_mgt' : './ui/reports_mgt',
-			'ui_tester' : './ui/_ui_creat0r',
+			// SSR ui stuff
+				'admin_dash' : './ui/admin_console',
+				'staff_dash' : './ui/console',
+				'view_users' : './ui/view_user',
+				'view_user' : './ui/view_user',
+				'view_client' : './ui/view_client',
+				'view_clients' : './ui/client_mgt',
+				'view_samples' : './ui/samples_mgt',
+				'view_reports' : './ui/reports_mgt',
+				'view_task' : './ui/view_task',
+				'view_tasks' : './ui/task_mgt',
+				'view_profile' : './ui/view_user',
+				'view_users' : './ui/user_mgt',
+				'client_info' : './ui/client_info',
+				'task_info' : './ui/task_info',
+				'add_task' : './ui/add_task',
+				'gen_report' : './ui/gen_report',
+				'biz_data' : './ui/biz_data',
+				'samples_mgt' : './ui/samples_mgt',
+				'reports_mgt' : './ui/reports_mgt',
+				'ui_tester' : './ui/_ui_creat0r',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -105,6 +106,7 @@
 				'get_samples_chart_data' : './data/samples_chart_data',
 				'get_visits_chart_data' : './data/visits_chart_data',
 				'get_income_chart_data' : './data/income_chart_data',
+				'get_worksheets' : './data/get_worksheets',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -131,7 +133,7 @@
 			'view_payments' : 'payments management',
 
 			'ui_tester' : 'UI testing grounds',
-		}
+		};
 		const variableAtlas = {
 			'initstuff' : `sys_init_${mekRandomString(8)}`,
 			'task_id' : `cur_task_id`,
@@ -139,7 +141,7 @@
 			'sample_id' : `cur_sample_id`,
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
-		}
+		};
 
 		// shortener ops
 			variableAtlas['t_i_act'] = variableAtlas['task_info_act'];

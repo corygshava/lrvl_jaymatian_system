@@ -188,21 +188,25 @@
 		background: var(--themecolor);
 		scale: 1.1;
 	}
+	[data-notifications]{
+		--w: 24px;
+		position: relative;
+	}
 	[data-notifications]:not([data-notifications="0"])::before {
 		content: attr(data-notifications);
 		position: absolute;
 		top: -2px;
 		right: -2px;
-		background: var(--danger); /* First stylesheet priority */
+		background: var(--danger);
 		color: white;
-		font-size: 10px;
-		width: 18px;
-		height: 18px;
+		font-size: 0.97rem;
+		width: var(--w);
+		height: var(--w);
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-weight: 600; /* Added from second stylesheet */
+		font-weight: 900;
 	}
 
 /* user profile widget */

@@ -939,7 +939,7 @@ function formatDateTime(date) {
 function formatNumber(n,dp = 0) {
 	if(Number(n) == NaN){
 		alert_danger('invalid number passed for formatting');
-		return 'NAN';
+		return 'NaN';
 	}
 
 	let parts = n.toString().split('.');

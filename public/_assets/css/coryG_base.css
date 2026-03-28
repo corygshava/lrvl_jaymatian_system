@@ -60,10 +60,8 @@
 }
 
 /**:not(.fa):not(.fas):not(.fab):not(.far)
-:not(h1):not(h2):not(h3):not(h4):not(.h1):not(.h2):not(.h3):not(.h4){*/
-body{
-	font-family: 'Inter_24pt',-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
+:not(h1):not(h2):not(h3):not(h4):not(.h1):not(.h2):not(.h3):not(.h4){}*/
+
 html{
 	scroll-behavior: smooth !important;
 }
@@ -329,6 +327,10 @@ a{
 	.is_inactive{
 		pointer-events: none;
 		opacity: 0.3;
+	}
+	.is_ghost{
+		pointer-events: none;
+		opacity: 0;
 	}
 	.lightshadow{
 		box-shadow: 0 0 12px #dddddd77;
