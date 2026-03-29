@@ -6,7 +6,6 @@
 @include('pieces.forms_userops')
 {{-- --> --}}
 
-
 <style>
 	#user-profile-container .avatar-circle {
 		--w: 48px;
@@ -36,156 +35,166 @@
 	}
 </style>
 
-<div id="to_user_mgt_btn">
-	<a href="#" class="backbtn" data-runme="load_page" data-label="User management"><i class="fa fa-arrow-left"></i> back to <b>user management</b></a>
-</div>
+<div class="container-fluid">
+	<div class="page-header">
+		<div class="page-title">
+			<span class="h4" data-role="pagename">--</span>
+			<p>This page shows a user's saved profile details</p>
+		</div>
+		<div id="to_user_mgt_btn">
+			<a href="#" class="mybtn primary sm" data-runme="load_page" data-label="defined:user_mgt">
+				<i data-myicon="clients"></i> user management
+			</a>
+		</div>
+	</div>
 
-<!-- User Profile Card Component -->
-<div id="user-profile-container" class="container-fluid p-0 w3-hide">
-	<div class="profile_card">
-		<div class="card themeround border-0 panelbg shadow-md">
-			<div class="card-header panelbg themegrad flowline overflow left centerline w3-display-container">
-				<div class="avatar-circle bg-white text-primary">
-					<span id="user-initials">??</span>
-				</div>
-				<div>
-					<strong class="h3" id="user-name"></strong>
-					<b>Role: </b><span id="user-role-badge">test</span>
-				</div>
-				<div class="w3-display-right spacy-md" style="z-index: 102">
-					<div class="dropdown">
-						<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
-							<i class="fas fa-ellipsis-v"></i>
-						</button>
-						<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-							<a class="dropdown-item spacy-tn" href="#" onclick="editProfile()">
-								<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
-							</a>
-							<a class="dropdown-item spacy-tn" href="#" onclick="changePassword()">
-								<i class="fas fa-key mr-2 text-muted"></i>Change Password
-							</a>
-							<!-- <div class="dropdown-divider"></div> -->
-							<a class="dropdown-item text-danger border-top spacy-tn" id="deact_user_btn" href="#" data-runme="deactivateAccount">
-								<i class="fas fa-user-slash mr-2"></i>Deactivate
-							</a>
-						</div>
+	<!-- User Profile Card Component -->
+	<div id="user-profile-container" class="container-fluid p-0 w3-hide">
+		<div class="profile_card">
+			<div class="card themeround border-0 panelbg shadow-md">
+				<div class="card-header panelbg themegrad flowline overflow left centerline w3-display-container">
+					<div class="avatar-circle bg-white text-primary">
+						<span id="user-initials">??</span>
 					</div>
-				</div>
-				<div class="w3-display-topright slide-up" id="account_active_tag">
-					<div class="spacy-tn w3-red">account Inactive</div>
-				</div>
-			</div>
-
-			<div class="card-body">
-				<div class="flowline overflow w3-center stats">
-					<div class="stat w3-hide">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">User ID</small>
-						<b class="text-primary font-weight-bold"><span id="user-id">2</span></b>
+					<div>
+						<strong class="h3" id="user-name"></strong>
+						<b>Role: </b><span id="user-role-badge">test</span>
 					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Registered Since</small>
-						<span class="text-dark font-weight-bold" id="member-since">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Login</small>
-						<span class="text-dark font-weight-bold" id="last-login">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
-						<span class="text-dark font-weight-bold" id="last-updated">--</span>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">Contact information</span>
-
-				<div class="flowline gap-sm overflow distance-sm">
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-envelope"></i>
-							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Email Address</small>
-							<span class="font-weight-medium" id="user-email">--</span>
-							<span id="email-verified-badge" class="w3-hide badge badge-warning badge-pill ml-2" style="font-size: 0.65rem;">
-								<i class="fas fa-exclamation-circle mr-1"></i>--
-							</span>
-						</div>
-					</div>
-
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-phone"></i>
-							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Phone number</small>
-							<span class="font-weight-medium" id="user-phone">--</span>
-							<span id="email-verified-badge" class="w3-hide badge badge-warning badge-pill ml-2" style="font-size: 0.65rem;">
-								<i class="fas fa-exclamation-circle mr-1"></i>--
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">User permissions</span>
-
-				<div class="distance-sm">
-					<div class="d-flex justify-content-between align-items-center mb-3 w3-hide">
-						<span class="badge badge-primary badge-pill" id="permission-count">0</span>
-					</div>
-
-					<div class="permissions">
-						<ul id="permissions-container"></ul>
-					</div>
-				</div>
-
-				<!-- <span class="text-uppercase text-muted font-weight-bold">User permissions</span> -->
-
-				<div class="distance-sm border themeround">
-					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#roleDetails" data-toggle="collapse" data-target="#roleDetails">
-						<span class="text-uppercase text-muted font-weight-bold">Role details</span>
-						<i class="fa fa-chevron-down"></i>
-					</a>
-					<div class="collapse panelbg distance-sm spacy-sm" id="roleDetails">
-						<div class="row">
-							<div class="col-md-12">
-								<small class="text-muted">Role Name</small>
-								<p class="font-weight-bold mb-2" id="role-name-detail">test</p>
-							</div>
-						</div>
-						<div class="row mt-2">
-							<div class="col-md-6">
-								<small class="text-muted">Created</small>
-								<p class="mb-0 text-monospace small" id="role-created">2026-02-14 13:33:46</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Last Modified</small>
-								<p class="mb-0 text-monospace small" id="role-updated">2026-02-14 13:44:18</p>
+					<div class="w3-display-right spacy-md" style="z-index: 102">
+						<div class="dropdown">
+							<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
+								<i class="fas fa-ellipsis-v"></i>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
+								<a class="dropdown-item spacy-tn" href="#" onclick="editProfile()">
+									<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
+								</a>
+								<a class="dropdown-item spacy-tn" href="#" onclick="changePassword()">
+									<i class="fas fa-key mr-2 text-muted"></i>Change Password
+								</a>
+								<!-- <div class="dropdown-divider"></div> -->
+								<a class="dropdown-item text-danger border-top spacy-tn" id="deact_user_btn" href="#" data-runme="deactivateAccount">
+									<i class="fas fa-user-slash mr-2"></i>Deactivate
+								</a>
 							</div>
 						</div>
 					</div>
+					<div class="w3-display-topright slide-up" id="account_active_tag">
+						<div class="spacy-tn w3-red">account Inactive</div>
+					</div>
 				</div>
 
-				<div>
-					<div class="spacy-sm w3-center">
-						<small class="text-muted">
-							<i class="fas fa-clock mr-1"></i>
-							Profile loaded at <b id="load-time" class="themetxt">--</b>
-						</small>
+				<div class="card-body">
+					<div class="flowline overflow w3-center stats">
+						<div class="stat w3-hide">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">User ID</small>
+							<b class="text-primary font-weight-bold"><span id="user-id">2</span></b>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Registered Since</small>
+							<span class="text-dark font-weight-bold" id="member-since">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Login</small>
+							<span class="text-dark font-weight-bold" id="last-login">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
+							<span class="text-dark font-weight-bold" id="last-updated">--</span>
+						</div>
+					</div>
+
+					<span class="text-uppercase text-muted font-weight-bold">Contact information</span>
+
+					<div class="flowline gap-sm overflow distance-sm">
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-envelope"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Email Address</small>
+								<span class="font-weight-medium" id="user-email">--</span>
+								<span id="email-verified-badge" class="w3-hide badge badge-warning badge-pill ml-2" style="font-size: 0.65rem;">
+									<i class="fas fa-exclamation-circle mr-1"></i>--
+								</span>
+							</div>
+						</div>
+
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-phone"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Phone number</small>
+								<span class="font-weight-medium" id="user-phone">--</span>
+								<span id="email-verified-badge" class="w3-hide badge badge-warning badge-pill ml-2" style="font-size: 0.65rem;">
+									<i class="fas fa-exclamation-circle mr-1"></i>--
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<span class="text-uppercase text-muted font-weight-bold">User permissions</span>
+
+					<div class="distance-sm">
+						<div class="d-flex justify-content-between align-items-center mb-3 w3-hide">
+							<span class="badge badge-primary badge-pill" id="permission-count">0</span>
+						</div>
+
+						<div class="permissions">
+							<ul id="permissions-container"></ul>
+						</div>
+					</div>
+
+					<!-- <span class="text-uppercase text-muted font-weight-bold">User permissions</span> -->
+
+					<div class="distance-sm border themeround">
+						<a class="text-decoration-none spacy-sm flowline spread centerline" href="#roleDetails" data-toggle="collapse" data-target="#roleDetails">
+							<span class="text-uppercase text-muted font-weight-bold">Role details</span>
+							<i class="fa fa-chevron-down"></i>
+						</a>
+						<div class="collapse panelbg distance-sm spacy-sm" id="roleDetails">
+							<div class="row">
+								<div class="col-md-12">
+									<small class="text-muted">Role Name</small>
+									<p class="font-weight-bold mb-2" id="role-name-detail">test</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<small class="text-muted">Created</small>
+									<p class="mb-0 text-monospace small" id="role-created">2026-02-14 13:33:46</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Last Modified</small>
+									<p class="mb-0 text-monospace small" id="role-updated">2026-02-14 13:44:18</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<div class="spacy-sm w3-center">
+							<small class="text-muted">
+								<i class="fas fa-clock mr-1"></i>
+								Profile loaded at <b id="load-time" class="themetxt">--</b>
+							</small>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div id="blank">
-	<div class="spacy-lg w3-center">
-		<span class="h3">Info</span>
-		<p>loading user record ...</p>
+	<div id="blank">
+		<div class="spacy-lg w3-center">
+			<span class="h3">Info</span>
+			<p>loading user record ...</p>
+		</div>
 	</div>
 </div>
 

@@ -1,6 +1,8 @@
 // added from Faith project on 27/02/2025 same day as these ^
 
 function copytext1(txt) {
+	let has_error = true;
+
 	if(txt != "" || txt != undefined){
 		let b = document.createElement('textarea');
 		b.value = txt;
@@ -12,12 +14,15 @@ function copytext1(txt) {
 		try{
 			let suc = document.execCommand('copy');
 			console.log(suc ? "text copied" : "copying error occured!")
+			has_error = false;
 		} catch {
 			alert("there was an error copying your text, please try again")
 		}
 
 		document.body.removeChild(b);
 	}
+
+	return !has_error;
 }
 
 // added from Maggy project on 27/02/2025 same day as these ^

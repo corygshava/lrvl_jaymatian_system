@@ -84,6 +84,7 @@
 				'save_report' : './op/save_report',
 				'update_payment' : './op/update_client_payment',
 				'save_worksheet' : './op/save_worksheet',
+				'save_readings' : './op/save_worksheet_readings',
 
 			// datalinks
 				'search_clients' : './data/search_clients',
@@ -170,6 +171,7 @@
 			'xtras_2' : 'fa fa-file-excel',
 			'worksheets' : 'fa fa-file-signature',
 			'invoices' : 'fa fa-file-invoice',
+			'results' : 'fas fa-chart-line',
 		};
 
 		// will be set via server call later
@@ -233,8 +235,13 @@
 			// setup all icons where needed
 			let _icons = document.querySelectorAll('[data-myicon]');
 			_icons.forEach(_i => {
-				let iclass = iconAtlas[_i.dataset.myicon.toLowerCase()];
+				let iclass = iconAtlas[_i.dataset.myicon.toLowerCase()] || 'fa fa-question';
 				// let iclass = iconAtlas[_i.dataset.myicon.toLowerCase()] || 'fa-question';
+
+				if(iclass == undefined){
+					return;
+				}
+
 				_i.classList.add('fa');
 				_i.classList.add(iclass.split(" ")[1]);
 			})
@@ -788,6 +795,8 @@
 			sender(myaction,fdata,'POST',true,as_is).then(d => {
 				myres = d;
 
+				// console.log(callback);
+				// return;
 				responseHandler(d,callback,{'el': m,'data': d});
 
 				if(!d.success || !d.result){
@@ -798,6 +807,7 @@
 			})
 			.catch(err => {
 				alert_danger(err.message);
+				console.error(err);
 
 				if(onfail !== undefined){
 					onfail(err);

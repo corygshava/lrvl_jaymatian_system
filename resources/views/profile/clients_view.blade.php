@@ -20,7 +20,7 @@
 	<div class="page-header">
 		<div class="page-title">
 			<span class="h4" data-role="pagename">--</span>
-			<p>Use this page to add a new task to the database</p>
+			<p>This page shows a client's saved details</p>
 		</div>
 		<div id="to_clients_mgt_btn">
 			<a href="#" class="mybtn primary" data-runme="load_page" data-label="Client management"><i data-myicon="clients"></i> client management</a>
@@ -261,7 +261,7 @@
 
 		if(window['cur_record'] !== undefined){
 			if(window['cur_record'].rectype !== "client"){
-				alert_danger('invalid action, try again');
+				alert_danger('invalid action, go to client management first',7);
 				return;
 			} else {
 				clientData = window['cur_record'].data;
@@ -270,7 +270,7 @@
 			if(clientData !== {}){
 				alert_info('loading dummy data')
 			} else {
-				alert_danger('invalid request method, try again');
+				alert_danger('invalid request method, go to client management first',7);
 			}
 		}
 

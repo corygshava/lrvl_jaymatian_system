@@ -515,7 +515,13 @@ function mekError(hed= 'Error',demo='an error happened',serious = false){
 		</div>
 	`;
 }
-
+function mekUiAlert(msg,typ='danger',icon='fa fa-info') {
+	return `
+		<article class="spacy-sm border-${typ} uialert alert-${typ} text-${typ} slide-up" style="border-left: 3px solid;">
+			<i class="${icon} mr-2"></i><b>${msg}</b>
+		</article>
+	`;
+}
 function mekStandin(demo='an error happened',class_ovr = 'w3-text-black',cta_link = undefined,cta_text = undefined){
 	let cta = '';
 

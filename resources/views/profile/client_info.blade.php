@@ -224,9 +224,11 @@
 	let task_payment_state_atlas = window['payment_state_atlas'];
 
 	window['client_info_data'] = {};
+	window['killOnLeave'] = [];
 
 	window['runOnAwake'] = () => {
 		delete(window['refreshData']);
+		killOnLeave.push('showthis');
 
 		setTimeout(() => {
 			init_task();

@@ -49,6 +49,7 @@ class SamplesController extends Controller{
 			// return response()->json($res);
 
 			$records = Sample::query()
+				->with('worksheets')
 				->with('results')
 				->withCount('results')
 				->withCount('reports')
@@ -140,6 +141,7 @@ class SamplesController extends Controller{
 
 			// find a sample
 			$therec = Sample::where('id',$passed['sample_id'])
+				->with('worksheets')
 				->with('results')
 				->withCount('results')
 				->withCount('reports')
@@ -227,6 +229,7 @@ class SamplesController extends Controller{
 			}
 
 			$therecs = $therecs
+				->with('worksheets')
 				->with('results')
 				->withCount('results')
 				->withCount('reports')
@@ -274,6 +277,7 @@ class SamplesController extends Controller{
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
 			$records = Sample::query()
+				->with('worksheets')
 				->with('results')
 				->withCount('results')
 				->withCount('reports')
@@ -352,6 +356,7 @@ class SamplesController extends Controller{
 
 			// confirm sample exists
 			$thesample = Sample::where('id',$passed['sample_id'])
+				->with('worksheets')
 				->with('task')
 				->withCount('results')
 				->first()

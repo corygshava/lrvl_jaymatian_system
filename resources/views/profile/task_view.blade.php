@@ -9,323 +9,333 @@
 @include('pieces.task_view_styles')
 {{-- --> --}}
 
-<div id="to_tasks_mgt_btn">
-	<a href="#" class="backbtn" data-runme="load_page" data-label="Tasks management"><i class="fa fa-arrow-left"></i> back to <b>tasks management</b></a>
-</div>
+<div class="container-fluid">
+	<div class="page-header">
+		<div class="page-title">
+			<span class="h4" data-role="pagename">--</span>
+			<p>This page shows a summary of a saved task (job)</p>
+		</div>
+		<div id="to_tasks_mgt_btn">
+			<a href="#tasks_mgt" class="mybtn primary sm" data-runme="load_page" data-label="defined:user_mgt">
+				<i data-myicon="tasks"></i> tasks management
+			</a>
+		</div>
+	</div>
 
-<!-- Task Profile Card Component -->
-<div id="task-profile-container" class="container-fluid p-0 w3-hide">
-	<div class="profile_card">
-		<div class="card themeround border-0 panelbg shadow-md">
-			<div class="card-header panelbg themegrad flowline overflow left centerline">
-				<div>
-					<div class="flowline overflow left">
-						<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">--</strong>
-						<button class="mybtn trans border" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
+	<!-- Task Profile Card Component -->
+	<div id="task-profile-container" class="container-fluid p-0 w3-hide">
+		<div class="profile_card">
+			<div class="card themeround border-0 panelbg shadow-md">
+				<div class="card-header panelbg themegrad flowline overflow left centerline">
+					<div>
+						<div class="flowline overflow left">
+							<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">--</strong>
+							<button class="mybtn trans border" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
+						</div>
+						<div class="distance-sm">
+							<span class="badge status-pending" id="task-status-badge">
+								<i class="fas fa-clock"></i> Pending
+							</span>
+							<span class="badge payment-unpaid ml-2" id="payment-status-badge">
+								<i class="fas fa-credit-card"></i> Unpaid
+							</span>
+						</div>
 					</div>
+					<div class="w3-display-right spacy-md" style="z-index: 102">
+						<div class="dropdown">
+							<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
+								<i class="fas fa-ellipsis-v"></i>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
+								<a class="dropdown-item spacy-tn" href="#" onclick="recordPayment()" id="option_payment_btn">
+									<i class="fas fa-money-bill-wave mr-2 text-muted"></i>Record Payment
+								</a>
+								<a class="dropdown-item spacy-tn" href="#" onclick="addNotes()" id="option_note_btn">
+									<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
+								</a>
+								<!-- <div class="dropdown-divider"></div> -->
+								<a class="dropdown-item text-danger spacy-tn" id="cancel_task_btn" href="#" onclick="cancelTask()">
+									<i class="fas fa-ban mr-2"></i>Cancel Task
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-body">
+					<div class="flowline overflow w3-center stats">
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client</small>
+							<span class="font-weight-bold" data-copyme="#client-name">--</span>
+						</div>
+						<div class="stat w3-hide">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Task ID</small>
+							<b class="text-primary font-weight-bold"><span id="task-id">--</span></b>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Created</small>
+							<span class="text-dark font-weight-bold" id="task-created">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
+							<span class="text-dark font-weight-bold" id="task-updated">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Status</small>
+							<span class="font-weight-bold" id="task-status-text">--</span>
+						</div>
+					</div>
+
+					<!-- task based stats -->
+					<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16">
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
+							<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
+							<span class="font-weight-bold" id="samples_count">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payments</small>
+							<span class="font-weight-bold" id="payments_count">--</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Reports</small>
+							<span class="font-weight-bold" id="reports_count">--</span>
+						</div>
+					</div>
+
+					<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16">
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
+							<span class="font-weight-bold" id="task_cost">3,000</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
+							<span class="font-weight-bold" id="task_paid">1,250</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
+							<span class="font-weight-bold" id="task_balance">1,750</span>
+						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
+							<span class="font-weight-bold hideicon" id="task_payment_report"><b>1,250 / 3,000</b></span>
+						</div>
+					</div>
+
+					<!-- Quick Actions Section -->
 					<div class="distance-sm">
-						<span class="badge status-pending" id="task-status-badge">
-							<i class="fas fa-clock"></i> Pending
-						</span>
-						<span class="badge payment-unpaid ml-2" id="payment-status-badge">
-							<i class="fas fa-credit-card"></i> Unpaid
-						</span>
-					</div>
-				</div>
-				<div class="w3-display-right spacy-md" style="z-index: 102">
-					<div class="dropdown">
-						<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
-							<i class="fas fa-ellipsis-v"></i>
-						</button>
-						<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-							<a class="dropdown-item spacy-tn" href="#" onclick="recordPayment()" id="option_payment_btn">
-								<i class="fas fa-money-bill-wave mr-2 text-muted"></i>Record Payment
-							</a>
-							<a class="dropdown-item spacy-tn" href="#" onclick="addNotes()" id="option_note_btn">
-								<i class="fas fa-sticky-note mr-2 text-muted"></i>Add Notes
-							</a>
-							<!-- <div class="dropdown-divider"></div> -->
-							<a class="dropdown-item text-danger spacy-tn" id="cancel_task_btn" href="#" onclick="cancelTask()">
-								<i class="fas fa-ban mr-2"></i>Cancel Task
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="card-body">
-				<div class="flowline overflow w3-center stats">
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client</small>
-						<span class="font-weight-bold" data-copyme="#client-name">--</span>
-					</div>
-					<div class="stat w3-hide">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Task ID</small>
-						<b class="text-primary font-weight-bold"><span id="task-id">--</span></b>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Created</small>
-						<span class="text-dark font-weight-bold" id="task-created">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
-						<span class="text-dark font-weight-bold" id="task-updated">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Status</small>
-						<span class="font-weight-bold" id="task-status-text">--</span>
-					</div>
-				</div>
-
-				<!-- task based stats -->
-				<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16">
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
-						<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
-						<span class="font-weight-bold" id="samples_count">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payments</small>
-						<span class="font-weight-bold" id="payments_count">--</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Reports</small>
-						<span class="font-weight-bold" id="reports_count">--</span>
-					</div>
-				</div>
-
-				<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16">
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
-						<span class="font-weight-bold" id="task_cost">3,000</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
-						<span class="font-weight-bold" id="task_paid">1,250</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
-						<span class="font-weight-bold" id="task_balance">1,750</span>
-					</div>
-					<div class="stat">
-						<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
-						<span class="font-weight-bold hideicon" id="task_payment_report"><b>1,250 / 3,000</b></span>
-					</div>
-				</div>
-
-				<!-- Quick Actions Section -->
-				<div class="distance-sm">
-					<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
-					<div class="row mt-3">
-						<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
-								<div class="action-icon bg-warning text-white mx-auto">
-									<i class="fas fa-flask"></i>
+						<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
+						<div class="row mt-3">
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
+									<div class="action-icon bg-warning text-white mx-auto">
+										<i class="fas fa-flask"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">Samples</h6>
+									<small class="text-muted">View samples</small>
 								</div>
-								<h6 class="mb-0 font-weight-bold">Samples</h6>
-								<small class="text-muted">View samples</small>
 							</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
-								<div class="action-icon bg-success text-white mx-auto">
-									<i class="fas fa-dollar-sign"></i>
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
+									<div class="action-icon bg-success text-white mx-auto">
+										<i class="fas fa-dollar-sign"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">Payments</h6>
+									<small class="text-muted">Payment history</small>
 								</div>
-								<h6 class="mb-0 font-weight-bold">Payments</h6>
-								<small class="text-muted">Payment history</small>
 							</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewReports()">
-								<div class="action-icon bg-info text-white mx-auto">
-									<i class="fas fa-file-alt"></i>
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewReports()">
+									<div class="action-icon bg-info text-white mx-auto">
+										<i class="fas fa-file-alt"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">Reports</h6>
+									<small class="text-muted">View reports</small>
 								</div>
-								<h6 class="mb-0 font-weight-bold">Reports</h6>
-								<small class="text-muted">View reports</small>
 							</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
-							<div class="action-card card themeround text-center p-3" onclick="viewClient()">
-								<div class="action-icon bg-primary text-white mx-auto">
-									<i class="fas fa-user"></i>
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewClient()">
+									<div class="action-icon bg-primary text-white mx-auto">
+										<i class="fas fa-user"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">Client</h6>
+									<small class="text-muted">View details</small>
 								</div>
-								<h6 class="mb-0 font-weight-bold">Client</h6>
-								<small class="text-muted">View details</small>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<span class="text-uppercase text-muted font-weight-bold">Client Information</span>
+					<span class="text-uppercase text-muted font-weight-bold">Client Information</span>
 
-				<div class="flowline gap-sm overflow distance-sm">
-					<div class="media gap-sm" style="cursor: pointer;" onclick="viewClient()">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-user"></i>
+					<div class="flowline gap-sm overflow distance-sm">
+						<div class="media gap-sm" style="cursor: pointer;" onclick="viewClient()">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-user"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Client Name</small>
+								<span class="font-weight-medium" id="client-name">--</span>
+								<a href="#" class="ml-2 small">
+									<i class="fas fa-external-link-alt"></i>
+								</a>
 							</div>
 						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Client Name</small>
-							<span class="font-weight-medium" id="client-name">--</span>
-							<a href="#" class="ml-2 small">
-								<i class="fas fa-external-link-alt"></i>
-							</a>
+
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-phone"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Client Contact</small>
+								<span class="font-weight-medium" id="client-contact">--</span>
+							</div>
+						</div>
+
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-credit-card"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Payment Plan</small>
+								<span class="font-weight-medium text-capitalize" id="payment-plan">--</span>
+							</div>
+						</div>
+
+						<div class="media gap-sm">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-money-bill"></i>
+								</div>
+							</div>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Credit balance</small>
+								<span class="font-weight-medium text-capitalize" id="credit-balance">--</span>
+							</div>
 						</div>
 					</div>
 
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-phone"></i>
+					<span class="text-uppercase text-muted font-weight-bold">Task Creator</span>
+
+					<div class="distance-sm">
+						<div class="media gap-sm" style="cursor: pointer;" onclick="viewCreator()">
+							<div>
+								<div class="icon-circle">
+									<i class="fa fa-user-tie"></i>
+								</div>
 							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Client Contact</small>
-							<span class="font-weight-medium" id="client-contact">--</span>
+							<div class="media-body">
+								<small class="text-muted text-uppercase d-block">Created By</small>
+								<span class="font-weight-medium" id="creator-name">--</span>
+								<a href="#" class="ml-2 small" onclick="viewCreator(); return false;">
+									<i class="fas fa-external-link-alt"></i>
+								</a>
+								<div class="distance-sm w3-hide">
+									<small class="text-muted">
+										<i class="fas fa-envelope mr-1"></i><span id="creator-email">--</span>
+									</small>
+									<small class="text-muted ml-3">
+										<i class="fas fa-phone mr-1"></i><span id="creator-phone">--</span>
+									</small>
+								</div>
+							</div>
 						</div>
 					</div>
 
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-credit-card"></i>
+					<!-- Task Notes Section -->
+					<div class="distance-sm border themeround">
+						<a class="text-decoration-none spacy-sm flowline spread centerline" href="#taskNotes" data-toggle="collapse" data-target="#taskNotes">
+							<span class="text-uppercase text-muted font-weight-bold">Task Notes</span>
+							<i class="fa fa-chevron-down"></i>
+						</a>
+						<div class="collapse panelbg distance-sm spacy-sm" id="taskNotes">
+							<div id="notes-content" class="p-2">
+								<p class="text-muted mb-0" id="task-notes">No notes added yet</p>
 							</div>
+							<button class="btn btn-sm btn-outline-primary mt-2" onclick="addNotes()">
+								<i class="fas fa-plus mr-1"></i> Add/Edit Notes
+							</button>
 						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Payment Plan</small>
-							<span class="font-weight-medium text-capitalize" id="payment-plan">--</span>
+					</div>
+
+					<!-- Additional Details Section -->
+					<div class="distance-sm border themeround">
+						<a class="text-decoration-none spacy-sm flowline spread centerline" href="#additionalDetails" data-toggle="collapse" data-target="#additionalDetails">
+							<span class="text-uppercase text-muted font-weight-bold">Additional Details</span>
+							<i class="fa fa-chevron-down"></i>
+						</a>
+						<div class="collapse panelbg distance-sm spacy-sm" id="additionalDetails">
+							<div class="row">
+								<div class="col-md-6">
+									<small class="text-muted">Task Number</small>
+									<p class="font-weight-bold mb-2 font-monospace" id="task-no-detail">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Added By (User ID)</small>
+									<p class="font-weight-bold mb-2" id="added-by">--</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<small class="text-muted">Client ID</small>
+									<p class="mb-0" id="client-id-detail">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Payment Status Code</small>
+									<p class="mb-0" id="payment-status-code">--</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<small class="text-muted">Status Code</small>
+									<p class="mb-0" id="status-code">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Is Paid</small>
+									<p class="mb-0">
+										<span class="badge" id="is-paid-badge">--</span>
+									</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<small class="text-muted">Date created</small>
+									<p class="mb-0" data-copyme="#task-created">--</p>
+								</div>
+								<div class="col-md-6">
+									<small class="text-muted">Date updated</small>
+									<p class="mb-0" data-copyme="#task-updated">--</p>
+								</div>
+							</div>
 						</div>
 					</div>
 
-					<div class="media gap-sm">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-money-bill"></i>
-							</div>
+					<div>
+						<div class="spacy-sm w3-center">
+							<small class="text-muted">
+								<i class="fas fa-clock mr-1"></i>
+								Task loaded at <b id="load-time" class="themetxt">--</b>
+							</small>
 						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Credit balance</small>
-							<span class="font-weight-medium text-capitalize" id="credit-balance">--</span>
-						</div>
-					</div>
-				</div>
-
-				<span class="text-uppercase text-muted font-weight-bold">Task Creator</span>
-
-				<div class="distance-sm">
-					<div class="media gap-sm" style="cursor: pointer;" onclick="viewCreator()">
-						<div>
-							<div class="icon-circle">
-								<i class="fa fa-user-tie"></i>
-							</div>
-						</div>
-						<div class="media-body">
-							<small class="text-muted text-uppercase d-block">Created By</small>
-							<span class="font-weight-medium" id="creator-name">--</span>
-							<a href="#" class="ml-2 small" onclick="viewCreator(); return false;">
-								<i class="fas fa-external-link-alt"></i>
-							</a>
-							<div class="distance-sm w3-hide">
-								<small class="text-muted">
-									<i class="fas fa-envelope mr-1"></i><span id="creator-email">--</span>
-								</small>
-								<small class="text-muted ml-3">
-									<i class="fas fa-phone mr-1"></i><span id="creator-phone">--</span>
-								</small>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Task Notes Section -->
-				<div class="distance-sm border themeround">
-					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#taskNotes" data-toggle="collapse" data-target="#taskNotes">
-						<span class="text-uppercase text-muted font-weight-bold">Task Notes</span>
-						<i class="fa fa-chevron-down"></i>
-					</a>
-					<div class="collapse panelbg distance-sm spacy-sm" id="taskNotes">
-						<div id="notes-content" class="p-2">
-							<p class="text-muted mb-0" id="task-notes">No notes added yet</p>
-						</div>
-						<button class="btn btn-sm btn-outline-primary mt-2" onclick="addNotes()">
-							<i class="fas fa-plus mr-1"></i> Add/Edit Notes
-						</button>
-					</div>
-				</div>
-
-				<!-- Additional Details Section -->
-				<div class="distance-sm border themeround">
-					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#additionalDetails" data-toggle="collapse" data-target="#additionalDetails">
-						<span class="text-uppercase text-muted font-weight-bold">Additional Details</span>
-						<i class="fa fa-chevron-down"></i>
-					</a>
-					<div class="collapse panelbg distance-sm spacy-sm" id="additionalDetails">
-						<div class="row">
-							<div class="col-md-6">
-								<small class="text-muted">Task Number</small>
-								<p class="font-weight-bold mb-2 font-monospace" id="task-no-detail">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Added By (User ID)</small>
-								<p class="font-weight-bold mb-2" id="added-by">--</p>
-							</div>
-						</div>
-						<div class="row mt-2">
-							<div class="col-md-6">
-								<small class="text-muted">Client ID</small>
-								<p class="mb-0" id="client-id-detail">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Payment Status Code</small>
-								<p class="mb-0" id="payment-status-code">--</p>
-							</div>
-						</div>
-						<div class="row mt-2">
-							<div class="col-md-6">
-								<small class="text-muted">Status Code</small>
-								<p class="mb-0" id="status-code">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Is Paid</small>
-								<p class="mb-0">
-									<span class="badge" id="is-paid-badge">--</span>
-								</p>
-							</div>
-						</div>
-						<div class="row mt-2">
-							<div class="col-md-6">
-								<small class="text-muted">Date created</small>
-								<p class="mb-0" data-copyme="#task-created">--</p>
-							</div>
-							<div class="col-md-6">
-								<small class="text-muted">Date updated</small>
-								<p class="mb-0" data-copyme="#task-updated">--</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div>
-					<div class="spacy-sm w3-center">
-						<small class="text-muted">
-							<i class="fas fa-clock mr-1"></i>
-							Task loaded at <b id="load-time" class="themetxt">--</b>
-						</small>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div id="blank">
-	<div class="spacy-lg w3-center">
-		<span class="h3" id="err_hed">Info</span>
-		<p id="error_par">loading task record ...</p>
+	<div id="blank">
+		<div class="spacy-lg w3-center">
+			<span class="h3" id="err_hed">Info</span>
+			<p id="error_par">loading task record ...</p>
+		</div>
 	</div>
 </div>
 
@@ -506,9 +516,11 @@
 		document.querySelector('#reports_count').textContent = data.reports_count || 0;
 
 		// Task notes
-		if(data.notes) {
+		if(data.notes != null && data.notes !== undefined) {
 			document.getElementById('task-notes').textContent = data.notes;
 			document.getElementById('task-notes').classList.remove('text-muted');
+		} else {
+			document.getElementById('task-notes').textContent = 'no notes attached';
 		}
 
 		// Additional details

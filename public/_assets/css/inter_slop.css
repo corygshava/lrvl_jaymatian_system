@@ -415,7 +415,7 @@
 		border-spacing: 0;
 
 		--w_sm: 48px;
-		--w: 128px;
+		--w: 115px;
 		--w_m: calc(var(--w) * 2);
 	}
 	.table-modern thead th {
@@ -1145,7 +1145,8 @@
 			display: none;
 		}
 		.modal-mg{
-			width: 82vw;
-			max-width: 980px;
+			--w: 1080px;
+			width: min(var(--w),96vw);
+			max-width: var(--w);
 		}
 		.hideicon i{display: none;}

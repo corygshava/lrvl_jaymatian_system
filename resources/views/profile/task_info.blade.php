@@ -72,6 +72,9 @@
 		.job_deets>div{
 			flex: 0 1 300px;
 		}
+		.job_deets>.uialert{
+			flex: 1 1 100%;
+		}
 
 	/* Custom Tab Navigation */
 		.custom-tabs {
@@ -426,6 +429,7 @@
 
 	window['runOnAwake'] = () => {
 		// delete(window['refreshData']);
+		killOnLeave.push('showthis');
 
 		setTimeout(() => {
 			init_task();
@@ -748,7 +752,7 @@
 			let sheets = task_info_data.worksheets;
 			let _f_sheets = sheets.filter(s => {return s.sample_id == sid;});
 			let has_sheet = _f_sheets.length > 0;
-			let thesheet = !has_sheet ? {} : _f_sheets[0];
+			let thesheet = !has_sheet ? {was_autogen: true} : _f_sheets[0];
 
 			res = thesheet;
 
@@ -941,6 +945,7 @@
 			let task = task_info_data.taskData;
 			let thesample = task_info_data.samplesData[cur_sample_id];
 			let outht = '';
+			let alertht = mekUiAlert('this sample doesnt have a worksheet yet');
 			let maxno = thesample.sample_count > 12 ? thesample.sample_count : 12;
 
 			const mek_my_row = (x,prefix='',_data) => {
@@ -959,10 +964,24 @@
 
 			cur_sample = thesample;
 			cur_rec_sample_id = cur_sample.id;
+			cur_sheet = getmysheet(thesample);
 
 			// render stats
 			e_jinfo.innerHTML = '';
+
+			if(!cur_sheet.was_autogen){
+				alertht = '';
+
+				if(cur_sheet.has_readings) {
+					alertht += mekUiAlert('this sample has results so it cant be edited','warning');
+				}
+
+				if(cur_sheet.is_published){
+					alertht += mekUiAlert('this sample has already been processed','success','fa fa-check');
+				}
+			}
 			outht = `
+				${alertht}
 				<div>
 					<b>Job No:</b>
 					<span>${task.task_no}</span>
@@ -994,7 +1013,6 @@
 			`;
 			e_jinfo.innerHTML = outht;
 
-			cur_sheet = getmysheet(thesample);
 			mekmyTable('create','[data-role="worksheet_edidor"]');
 			// mekResultsTable(cur_sheet);
 

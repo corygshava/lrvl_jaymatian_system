@@ -207,6 +207,10 @@
 	let sample = {};
 	window['temp_results'] = [];
 
+	if(window['cur_sheet'] == undefined){
+		window['cur_sheet'] = {};
+	}
+
 	let pay_state_atlas = {
 		0 : 'pending',
 		1 : 'incomplete',
@@ -308,10 +312,68 @@
 			return `<span class="sample-type-badge ${typeClass}">${type}</span>`;
 		}
 
+		/*
+			let res_addht = `
+				<div class="distance-sm border themeround collapser w3-hide" style="border-color: var(--themecolor) !important;" id="add_section">
+					<a class="text-decoration-none spacy-sm flowline spread centerline themetxt" href="#add_result_form" data-toggle="collapse" data-target="#add_result_form">
+						<span class="text-uppercase themetxt font-weight-bold"><i class="fas fa-plus-circle"></i> Add result</span>
+						<i class="fa fa-chevron-down myicon"></i>
+					</a>
+					<div class="collapse spacy-sm" id="add_result_form">
+						<form id="addNewResultForm" data-onsubmit="add_result" data-blockdefault="yes">
+							<div class="input-group-custom row">
+								<div class="form-group col-md-4 col-sm-6">
+									<label class="form-label" for="sample_id">Sample id (optional)</label>
+									<input type="text" class="form-control-custom" id="sample_id" name="sample_id" placeholder="(will be auto generated if blank)">
+								</div>
+								<div class="form-group col-md-4 col-sm-6">
+									<label class="form-label" for="au_ppm">AU ppm</label>
+									<input type="number" step="0.0001" class="form-control-custom" id="au_ppm" name="au_ppm" placeholder="enter Au PPM result" required>
+								</div>
+								<div class="form-group col-md-4 col-sm-6">
+									<label class="form-label" for="cu_ppm">CU ppm</label>
+									<input type="number" step="0.0001" class="form-control-custom" id="cu_ppm" name="cu_ppm" placeholder="enter Cu PPM result" required>
+								</div>
+							</div>
+							<div>
+								<button type="button" class="mybtn secondary sm w3-hide" data-toggle="collapse" data-target="#add_result_form">Close</button>
+								<button type="button" class="mybtn primary sm" data-submitme="#addNewResultForm"><i class="fa fa-plus"></i> Add result</button>
+							</div>
+						</form>
+					</div>
+				</div>`;
+		// */
+
 		// return;
 		// Build the interface
 		let genreport = (sample.status == 2) ?
 			`<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>` : '';
+		let has_sheets = sample.worksheets.length > 0;
+		let sheetht = has_sheets ? `
+			<form id="worksheetreadings" action="defined:save_readings" data-onsubmit="readings_saver_inter" data-callback="refreshStuff" data-blockdefault="yes">
+				<table class="table table-hover mb-0 table-modern border themeround">
+					<thead data-subrole="tableHead">
+						<tr class="text-uppercase">
+							<td><span>no -- </span></td>
+							<td><span>sample id</span></td>
+							<td style="width: var(--w);"><span>weight (g)</span></td>
+							<td style="width: var(--w);"><span>Au Reading</span></td>
+							<td style="width: var(--w);"><span>Cu Reading</span></td>
+							<td style="width: var(--w_m);"><span>Remarks</span></td>
+						</tr>
+					</thead>
+					<tbody data-subrole="tableBody"></tbody>
+				</table>
+			</form>
+			<div class="distance-sm">
+				<button class="mybtn primary" data-submitme="#worksheetreadings">save readings</button>
+			</div>
+		` : `
+			${mekUiAlert('no worksheet has been created for this sample','danger','fa fa-info-circle')}
+			<div class="distance-sm">
+				<button class="mybtn primary" data-runme="mekworksheet"><i data-myicon="worksheets"></i> create worksheet</button>
+			</div>
+		`;
 		const html = `
 			<div class="sample-header themegrad w3-display-container">
 				<div class="d-flex justify-content-between align-items-center">
@@ -342,50 +404,35 @@
 				${genreport}
 			</div>
 
-			<div class="distance-sm border themeround collapser" style="border-color: var(--themecolor) !important;" id="add_section">
-				<a class="text-decoration-none spacy-sm flowline spread centerline themetxt" href="#add_result_form" data-toggle="collapse" data-target="#add_result_form">
-					<span class="text-uppercase themetxt font-weight-bold"><i class="fas fa-plus-circle"></i> Add result</span>
+			<div class="distance-sm spacy-sm border themeround collapser">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#worksheetInfo" data-toggle="collapse" data-target="#worksheetInfo">
+					<span class="text-uppercase text-muted font-weight-bold"><i data-myicon="worksheets"></i> My worksheet</span>
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>
-				<div class="collapse spacy-sm" id="add_result_form">
-					<form id="addNewResultForm" data-onsubmit="add_result" data-blockdefault="yes">
-						<div class="input-group-custom row">
-							<div class="form-group col-md-4 col-sm-6">
-								<label class="form-label" for="sample_id">Sample id (optional)</label>
-								<input type="text" class="form-control-custom" id="sample_id" name="sample_id" placeholder="(will be auto generated if blank)">
-							</div>
-							<div class="form-group col-md-4 col-sm-6">
-								<label class="form-label" for="au_ppm">AU ppm</label>
-								<input type="number" step="0.0001" class="form-control-custom" id="au_ppm" name="au_ppm" placeholder="enter Au PPM result" required>
-							</div>
-							<div class="form-group col-md-4 col-sm-6">
-								<label class="form-label" for="cu_ppm">CU ppm</label>
-								<input type="number" step="0.0001" class="form-control-custom" id="cu_ppm" name="cu_ppm" placeholder="enter Cu PPM result" required>
-							</div>
-						</div>
-						<div>
-							<button type="button" class="mybtn secondary sm w3-hide" data-toggle="collapse" data-target="#add_result_form">Close</button>
-							<button type="button" class="mybtn primary sm" data-submitme="#addNewResultForm"><i class="fa fa-plus"></i> Add result</button>
-						</div>
-					</form>
+				<div class="collapse panelbg distance-sm show table-responsive ${has_sheets ? 'themeround' : ''}" id="worksheetInfo">
+					${sheetht}
 				</div>
 			</div>
 
-			<!-- Results Section -->
-			<div class="sample-info-card">
-				<h5><i class="fas fa-chart-line"></i> Test Results</h5>
-				<div id="results_summary">
-					<span><b>${sample.results ? sample.results.length : 0} / ${sample.sample_count} </b> sample results saved</span>
-				</div>
-				<div id="resultsTable">
-					${renderResultsTable(sample.results,temp_results)}
-				</div>
-				<div>
-					<div class="distance-tn">
-						<span><b>NOTE: </b> once results are <b>saved</b> they cannot be edited, ensure you enter accurate Information</span>
+			<div class="distance-sm border themeround collapser" style="border-color: var(--themecolor) !important;">
+				<a class="text-decoration-none spacy-sm flowline spread centerline themetxt" href="#resultsInfo" data-toggle="collapse" data-target="#resultsInfo">
+					<span class="text-uppercase font-weight-bold"><i data-myicon="results"></i> Sample results</span>
+					<i class="fa fa-chevron-down myicon"></i>
+				</a>
+				<div class="collapse spacy-sm" id="resultsInfo">
+					<div id="results_summary">
+						<span><b>${sample.results ? sample.results.length : 0} / ${sample.sample_count} </b> sample results saved</span>
 					</div>
-					<button type="button" class="mybtn primary sm w3-hide" data-runme="save_results" id="save_results_btn"><i class="fa fa-save"></i> save results</button>
-					${genreport}
+					<div id="resultsTable">
+						${renderResultsTable(sample.results,temp_results)}
+					</div>
+					<div>
+						<div class="distance-tn w3-hide">
+							<span><b>NOTE: </b> once results are <b>saved</b> they cannot be edited, ensure you enter accurate Information</span>
+						</div>
+						<button type="button" class="mybtn primary sm w3-hide" data-runme="save_results" id="save_results_btn"><i class="fa fa-save"></i> save results</button>
+						${genreport}
+					</div>
 				</div>
 			</div>
 
@@ -425,7 +472,6 @@
 					</div>
 				</div>
 			</div>
-
 
 			<div class="distance-sm border themeround collapser">
 				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#clientInfo" data-toggle="collapse" data-target="#clientInfo">
@@ -519,7 +565,15 @@
 
 		container.innerHTML = html;
 
-		setTimeout(d => {render_results_data();},100);
+		setTimeout(d => {
+			updateSessionUI();
+			if(has_sheets){
+				cur_sheet = sample.worksheets[0];
+				mekmyTable('enter_readings','#worksheetInfo');
+			}
+
+			render_results_data();
+		},100);
 	}
 
 	// Toggle collapsible sections
@@ -594,7 +648,7 @@
 		let meth = (results + added) >= samples ? 'add' : 'remove';
 		let save_btn_meth = added == 0 ? 'add' : 'remove';
 
-		add_section.classList[meth]('is_inactive');
+		// add_section.classList[meth]('is_inactive');
 		save_results_btn.classList[save_btn_meth]('w3-hide');
 		results_summary.innerHTML = `
 			<span><b>${sample.results ? sample.results.length : 0} / ${sample.sample_count} </b> sample results saved</span><br>
@@ -607,149 +661,158 @@
 		refreshUI();
 	}
 
-	window['add_result'] = (f) => {
-		alert_info('adding sample');
+	<?php /*
+		window['add_result'] = (f) => {
+			alert_info('adding sample');
 
-		let n = temp_results.length + 1;
-		let date = new Date();
-		// let dadate = date.toISOString();
+			let n = temp_results.length + 1;
+			let date = new Date();
+			// let dadate = date.toISOString();
 
-		if(sample.results){
-			n += sample.results.length;
-		}
+			if(sample.results){
+				n += sample.results.length;
+			}
 
-		let sample_n = f.sample_id.value == '' ? `sample ${n}` : f.sample_id.value
+			let sample_n = f.sample_id.value == '' ? `sample ${n}` : f.sample_id.value
 
-		let newrec = {
-			id : n,
-			sample_id : sample_n,
-			au_ppm : f.au_ppm.value,
-			cu_ppm : f.cu_ppm.value,
-			date_added : date,
-		};
-
-		// console.log("rec: ",newrec,"sample id: ",f.sample_id.value);
-		temp_results.push(newrec);
-
-		f.reset();
-		render_results_data();
-	}
-
-	window['delete_result'] = (el) => {
-		let recid = el.dataset.myid || -1;
-
-		if(recid == -1){alert_danger('invalid procedure method');return;}
-		if(recid >= temp_results.length){alert_danger('invalid result id');return;}
-		if(temp_results[recid] == undefined){alert_danger('invalid result');return;}
-
-		showmodal(false);
-
-		const reshowmodal = () => {
-			setTimeout(() => {
-				showmodal(true);
-			},300);
-		}
-
-		setTimeout(() => {
-			confirmAction(mekHeading('delete Result','h4'),'are you sure you want to remove this result entry?',() => {
-				ridme(recid);
-				reshowmodal();
-			},false,() => {
-				reshowmodal();
-			})
-		}, 300);
-	}
-
-	window['ridme'] = (n) => {
-		let target = temp_results[n] || undefined;
-
-		if(target == undefined){
-			alert_danger('invalid target for ridme');
-			return;
-		}
-		let newarr = [...temp_results].filter(f => {return f.id !== target.id});
-		temp_results = newarr;
-		render_results_data();
-	}
-
-	window['edit_result'] = (el) => {
-		let sel = '#add_result_form';
-		let f = document.querySelector(sel).querySelector('form');
-		let recid = el.dataset.myid || -1;
-
-		if(recid == -1){alert_danger('invalid procedure method');return;}
-		if(recid >= temp_results.length){alert_danger('invalid result id');return;}
-		if(temp_results[recid] == undefined){alert_danger('invalid result');return;}
-
-		// toggle the collapse
-		$(sel).collapse('show');
-
-		// assign the inputs the appropriate values
-		f.au_ppm.value = temp_results[recid].au_ppm;
-		f.cu_ppm.value = temp_results[recid].cu_ppm;
-		f.sample_id.value = temp_results[recid].sample_id;
-
-		// delete from the array
-		ridme(recid);
-	}
-
-	window['save_results'] = (el) => {
-		showmodal(false);
-
-		// confirm sending as it is undoable
-		const reshowmodal = () => {
-			setTimeout(() => {
-				showmodal(true);
-			},200);
-		}
-
-		const errguy = (err) => {
-			alert_danger(err || 'an error happened');
-			reshowmodal();
-		}
-
-		// send the temp array
-		const step2 = () => {
-			window[fetch_bypass](linkAtlas['submit_results'],{sample_id: sample.id,results: temp_results},'POST').then(d => {
-				responseHandler(d,step3,d);
-			})
-			.catch((e) => {
-				errguy('there was an error saving the records');
-			})
-		}
-
-		// if it worked get the latest sample data
-		const step3 = (dta) => {
-			refreshStuff();
-
-			window[fetch_bypass](linkAtlas['get_sample'],{sample_id: sample.id},'POST').then(d => {
-				responseHandler(d,step4,d);
-			})
-			.catch((e) => {
-				errguy('there was an error getting updated sample details');
-			})
-		}
-
-		// refresh ui using the fresh sample details
-		const step4 = (dta) => {
-			let cur = {
-				rectype: "sample",
-				data: dta.sendme
+			let newrec = {
+				id : n,
+				sample_id : sample_n,
+				au_ppm : f.au_ppm.value,
+				cu_ppm : f.cu_ppm.value,
+				date_added : date,
 			};
 
-			renderSampleData(cur);
-			reshowmodal();
-		}
+			// console.log("rec: ",newrec,"sample id: ",f.sample_id.value);
+			temp_results.push(newrec);
 
-		setTimeout(() => {
-			confirmAction(mekHeading('Save Results','h4'),'are you sure you want to save the entered results?<br><br>Once saved you wont be able to edit the results',() => {
-				step2();
-			},false,() => {
+			f.reset();
+			render_results_data();
+		}
+		window['delete_result'] = (el) => {
+			let recid = el.dataset.myid || -1;
+
+			if(recid == -1){alert_danger('invalid procedure method');return;}
+			if(recid >= temp_results.length){alert_danger('invalid result id');return;}
+			if(temp_results[recid] == undefined){alert_danger('invalid result');return;}
+
+			showmodal(false);
+
+			const reshowmodal = () => {
+				setTimeout(() => {
+					showmodal(true);
+				},300);
+			}
+
+			setTimeout(() => {
+				confirmAction(mekHeading('delete Result','h4'),'are you sure you want to remove this result entry?',() => {
+					ridme(recid);
+					reshowmodal();
+				},false,() => {
+					reshowmodal();
+				})
+			}, 300);
+		}
+		window['ridme'] = (n) => {
+			let target = temp_results[n] || undefined;
+
+			if(target == undefined){
+				alert_danger('invalid target for ridme');
+				return;
+			}
+			let newarr = [...temp_results].filter(f => {return f.id !== target.id});
+			temp_results = newarr;
+			render_results_data();
+		}
+		window['edit_result'] = (el) => {
+			let sel = '#add_result_form';
+			let f = document.querySelector(sel).querySelector('form');
+			let recid = el.dataset.myid || -1;
+
+			if(recid == -1){alert_danger('invalid procedure method');return;}
+			if(recid >= temp_results.length){alert_danger('invalid result id');return;}
+			if(temp_results[recid] == undefined){alert_danger('invalid result');return;}
+
+			// toggle the collapse
+			$(sel).collapse('show');
+
+			// assign the inputs the appropriate values
+			f.au_ppm.value = temp_results[recid].au_ppm;
+			f.cu_ppm.value = temp_results[recid].cu_ppm;
+			f.sample_id.value = temp_results[recid].sample_id;
+
+			// delete from the array
+			ridme(recid);
+		}
+		window['save_results'] = (el) => {
+			showmodal(false);
+
+			// confirm sending as it is undoable
+			const reshowmodal = () => {
+				setTimeout(() => {
+					showmodal(true);
+				},200);
+			}
+
+			const errguy = (err) => {
+				alert_danger(err || 'an error happened');
 				reshowmodal();
+			}
+
+			// send the temp array
+			const step2 = () => {
+				window[fetch_bypass](linkAtlas['submit_results'],{sample_id: sample.id,results: temp_results},'POST').then(d => {
+					responseHandler(d,step3,d);
+				})
+				.catch((e) => {
+					errguy('there was an error saving the records');
+				})
+			}
+
+			// if it worked get the latest sample data
+			const step3 = (dta) => {
+				refreshStuff();
+
+				window[fetch_bypass](linkAtlas['get_sample'],{sample_id: sample.id},'POST').then(d => {
+					responseHandler(d,step4,d);
+				})
+				.catch((e) => {
+					errguy('there was an error getting updated sample details');
+				})
+			}
+
+			// refresh ui using the fresh sample details
+			const step4 = (dta) => {
+				let cur = {
+					rectype: "sample",
+					data: dta.sendme
+				};
+
+				renderSampleData(cur);
+				reshowmodal();
+			}
+
+			setTimeout(() => {
+				confirmAction(mekHeading('Save Results','h4'),'are you sure you want to save the entered results?<br><br>Once saved you wont be able to edit the results',() => {
+					step2();
+				},false,() => {
+					reshowmodal();
+				})
+			}, 200);
+
+			// enable the samples entry form
+		}
+	*/?>
+
+	window['readings_saver_inter'] = (f) => {
+		showmodal(false);
+		setTimeout(() => {
+			confirmAction(mekHeading('Save Readings','h4'),'are you sure you want to save the entered readings?',() => {
+				save_worksheet_readings(f);
+			},false,() => {
+				showmodal(true);
 			})
 		}, 200);
-
-		// enable the samples entry form
 	}
 
 	window['gen_report'] = (el) => {
@@ -772,40 +835,54 @@
 		}
 
 		setTimeout(() => {
-			if(sample.task.payment_status == 2){
+			const keepon = () => {
 				open_gen_report();
 				alert_info('generating report');
+			}
+
+			if(sample.task.payment_status == 2){
+				keepon();
+			} else if(sample.owner.payment_plan == 'monthly'){
+				keepon();
 			} else {
-				confirmAction(mekHeading('Incomplete Payment','h4'),'you cant generate a report until the task payment is completed',() => {showmodal(true)},false,() => {showmodal(true)});
+				confirmAction(mekHeading('Incomplete Payment','h4'),'The client is not on a <b>monthly</b> payment plan so you cant generate a report until the task payment is completed',() => {showmodal(true)},false,() => {showmodal(true)});
 			}
 		}, 200);
 	}
+	window['mekworksheet'] = (el) => {
+		if(el == undefined){
+			alert_danger('invalid procedure call');
+			return;
+		}
+
+
+		if(window['showthis'] !== undefined){
+			alert_dark('opening worksheet section');
+			showthis('worksheet');
+			showmodal(false);
+			return;
+		}
+
+		window[variableAtlas['task_id']] = sample.task_id;
+		window[variableAtlas['t_i_act']] = 'showthis';
+		window[variableAtlas['t_i_args']] = 'worksheet';
+
+		// alert_dark(`will run: ${p}`);
+
+		let senddeets = {
+			template: linkAtlas['task_info'],
+			sidenote: pageNames['task_info'],
+		};
+
+		loadPage(senddeets);
+	}
 
 	window['refreshStuff'] = () => {
+		if(window['task_info_data'] !== undefined){
+			alert_dark('currently in task info');
+		}
 		if(window['refreshData'] !== null){
 			refreshData();
 		}
 	}
-
-	/*
-	// Save result handler
-	document.addEventListener('DOMContentLoaded', function() {
-		const saveButton = document.getElementById('saveResult');
-		if (saveButton) {
-			saveButton.addEventListener('click', function() {
-				const auPpm = document.getElementById('au_ppm').value;
-				const cuPpm = document.getElementById('cu_ppm').value;
-
-				console.log('Saving result:', { au_ppm: auPpm, cu_ppm: cuPpm });
-				// Implement your save logic here
-
-				$('#addResultModal').modal('hide');
-				document.getElementById('addResultForm').reset();
-			});
-		}
-	});
-	*/
-
-	// Usage example:
-	// renderSampleData(yourDataObject);
 </script>

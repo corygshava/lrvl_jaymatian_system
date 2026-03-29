@@ -1,3 +1,18 @@
+
+<?php
+	/*
+	require_once __DIR__.'/piece_worksheet_xtras.php';
+	require_once __DIR__.'/piece_samples_extras.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.worksheet_xtras')
+@include('pieces.samples_xtras')
+{{-- --> --}}
+
 <style>
 	/* stats (keep here, ill figure them out later) */
 		.stat-card-modern {
@@ -407,18 +422,6 @@
 	</div>
 </div>
 
-<?php
-	/*
-	require_once __DIR__.'/piece_samples_extras.php';
-	require_once __DIR__.'/datatables_code.php';
-	// */
-?>
-
-{{-- <!-- --}}
-@include('pieces.codes_datatables')
-@include('pieces.samples_xtras')
-{{-- --> --}}
-
 <script>
 	// view specific data
 	let task_pay_state = {
@@ -480,7 +483,7 @@
 						data: 'sample_type',
 						sortable: true,
 						render: function(value) {
-							return `<span class="sample-type-badge type-${value}">${value}</span>`;
+							return `<span class="sample-type-badge type-${("" + value).toLowerCase()}">${value}</span>`;
 						}
 					},
 					{

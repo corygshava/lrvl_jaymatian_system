@@ -19,10 +19,16 @@ class Worksheet extends Model{
         'sample_data',
         'sample_type',
         'sample_count',
+		'readings',
+		'has_readings',
+		'is_published',
     ];
 
     protected $casts = [
         'sample_data' => 'array',
+		'readings' => 'array',
+		'has_readings' => 'boolean',
+		'is_published' => 'boolean',
     ];
 
 	// traits
