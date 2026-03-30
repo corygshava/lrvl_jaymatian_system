@@ -114,7 +114,7 @@
 	.smallerCells td{font-size: 0.8rem;padding: 1px 3px;}
 
 	tr td{padding: 1px 3px !important;}
-	tr td>*{transform: translateY(1px);}
+	tr td>*{transform: translateY(-7px);}
 </style>
 
 <div class="container-fluid">
@@ -174,7 +174,7 @@
 
 			<div id="document_Holder" class="flow centroid">
 				<div data-role="report_setup">
-					<div class="page-section header" style="padding: 0 !important;">
+					<div class="page-section header rendercorrect" style="padding: 0 !important;">
 						<h1 class="w3-center themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
 							<div class="thelogo">
@@ -252,10 +252,10 @@
 						<div>
 							<table class="mytable" style="width: 80%;">
 								<tr>
-									<th style="width: 40px;">SN</th>
-									<th style="width: 400px;">SAMPLE ID</th>
-									<th style="width: 90px;">Au ppm</th>
-									<th style="width: 90px;">Cu ppm</th>
+									<th style="width: 40px;"><span>SN</span></th>
+									<th style="width: 400px;"><span>SAMPLE ID</span></th>
+									<th style="width: 90px;"><span>Au ppm</span></th>
+									<th style="width: 90px;"><span>Cu ppm</span></th>
 								</tr>
 								<tbody id="resultsguy"></tbody>
 							</table>
@@ -267,9 +267,9 @@
 						<div>
 							<table class="mytable">
 								<tr>
-									<td style="width: 177px;">Sample type</td>
-									<td>Analytical method</td>
-									<td style="width: 140px;">Tolerance limit</td>
+									<td style="width: 177px;"><span>Sample type</span></td>
+									<td><span>Analytical method</span></td>
+									<td style="width: 140px;"><span>Tolerance limit</span></td>
 								</tr>
 								<tbody id="deviationguy"></tbody>
 							</table>
@@ -518,7 +518,7 @@
 		// validate and save sample data
 		const step2 = (d) => {
 			if(d.sendme.task.payment_status !== 2){
-				throw new Error('task payment has not been completed');
+				// throw new Error('task payment has not been completed');
 			}
 
 			if(d.sendme.status !== 2){
@@ -694,10 +694,10 @@
 		s_data.results.forEach((r,i) => {
 			outht += `
 				<tr>
-					<td>${i + 1}</td>
-					<td>${r.sample_name}</td>
-					<td class="text-right">${r.au_ppm}</td>
-					<td class="text-right">${r.cu_ppm}</td>
+					<td><span>${i + 1}</span></td>
+					<td><span>${r.sample_name}</span></td>
+					<td class="text-right"><span>${r.au_ppm}</span></td>
+					<td class="text-right"><span>${r.cu_ppm}</span></td>
 				</tr>
 			`;
 		})
@@ -711,9 +711,9 @@
 		b_data.deviation_data.forEach(d => {
 			outht += `
 				<tr>
-					<td>${d.type}</td>
-					<td>${d.method}</td>
-					<td>${d.tolerance}</td>
+					<td><span>${d.type}</span></td>
+					<td><span>${d.method}</span></td>
+					<td><span>${d.tolerance}</span></td>
 				</tr>
 			`;
 		})

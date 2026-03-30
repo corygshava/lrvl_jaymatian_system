@@ -286,6 +286,10 @@
 		// alert_info('rendering sample info');
 
 		sample = dta.data;
+		cur_rec_sample_id = sample.id;
+		cur_sheet = sample.worksheets[0] || {};
+
+		console.log('sample: ',sample,'cur_sheet: ',cur_sheet);
 		const container = document.getElementById('sampleDataContainer');
 
 		container.innerHTML = 'loading...';
@@ -347,10 +351,20 @@
 		// return;
 		// Build the interface
 		let genreport = (sample.status == 2) ?
-			`<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>` : '';
+			`
+				<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>
+			` : '';
 		let has_sheets = sample.worksheets.length > 0;
+		let publish_btn = '';
+
+		if(has_sheets){
+			publish_btn = cur_sheet.has_readings && !cur_sheet.is_published ?
+				'<button class="mybtn secondary ml-2" data-runme="publish_worksheet"><i class="fa fa-stamp"></i> publish worksheet</button>' :
+				''
+			;
+		}
 		let sheetht = has_sheets ? `
-			<form id="worksheetreadings" action="defined:save_readings" data-onsubmit="readings_saver_inter" data-callback="refreshStuff" data-blockdefault="yes">
+			<form id="worksheetreadings" action="defined:save_readings" data-onsubmit="readings_saver_inter" data-callback="worksheets_aftermath" data-blockdefault="yes">
 				<table class="table table-hover mb-0 table-modern border themeround">
 					<thead data-subrole="tableHead">
 						<tr class="text-uppercase">
@@ -366,7 +380,8 @@
 				</table>
 			</form>
 			<div class="distance-sm">
-				<button class="mybtn primary" data-submitme="#worksheetreadings">save readings</button>
+				<button class="mybtn primary" data-submitme="#worksheetreadings"><i class="fa fa-save"></i> save readings</button>
+				${publish_btn}
 			</div>
 		` : `
 			${mekUiAlert('no worksheet has been created for this sample','danger','fa fa-info-circle')}
@@ -805,7 +820,10 @@
 	*/?>
 
 	window['readings_saver_inter'] = (f) => {
-		showmodal(false);
+		// showmodal(false);
+		save_worksheet_readings(f);
+		return;
+
 		setTimeout(() => {
 			confirmAction(mekHeading('Save Readings','h4'),'are you sure you want to save the entered readings?',() => {
 				save_worksheet_readings(f);
@@ -845,7 +863,8 @@
 			} else if(sample.owner.payment_plan == 'monthly'){
 				keepon();
 			} else {
-				confirmAction(mekHeading('Incomplete Payment','h4'),'The client is not on a <b>monthly</b> payment plan so you cant generate a report until the task payment is completed',() => {showmodal(true)},false,() => {showmodal(true)});
+				keepon();
+				// confirmAction(mekHeading('Incomplete Payment','h4'),'The client is not on a <b>monthly</b> payment plan so you cant generate a report until the task payment is completed',() => {showmodal(true)},false,() => {showmodal(true)});
 			}
 		}, 200);
 	}
@@ -878,11 +897,58 @@
 	}
 
 	window['refreshStuff'] = () => {
+		// alert_dark('saving shid');
 		if(window['task_info_data'] !== undefined){
 			alert_dark('currently in task info');
 		}
 		if(window['refreshData'] !== null){
 			refreshData();
 		}
+	}
+
+	window['publish_worksheet'] = (btn) => {
+		const publish_it = () => {
+			alert_info('publishing worksheet');
+
+			window[fetch_bypass](linkAtlas['publish_worksheet'],{sample_id: sample.id},'POST').then((w) => {
+				responseHandler(w,finalize,w);
+			})
+		};
+
+		const finalize = (d) => {
+			let cur = {
+				rectype: "sample",
+				data: d.sendme
+			};
+
+			renderSampleData(cur);
+		}
+
+		showmodal(false);
+
+		confirmAction(mekHeading('Publish Worksheet','h4'),'this will prevent you from editing the worksheet, it <b>cannot</b> be reversed.<br><br>Are you sure?',() => {
+			showmodal(true);
+			publish_it();
+		},false,() => {
+			showmodal(true);
+		})
+	}
+	window['worksheets_aftermath'] = (m) => {
+		// alert_dark('saving shid');
+
+		if(window['task_info_data'] !== undefined){
+			alert_dark('currently in task info');
+		}
+
+		if(window['refreshData'] !== null){
+			refreshData();
+		}
+
+		console.log('w_sheets aftermath: ',m);
+		let cur = {
+			rectype: "sample",
+			data: m.sendme
+		};
+		renderSampleData(cur);
 	}
 </script>

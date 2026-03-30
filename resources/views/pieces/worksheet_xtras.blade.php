@@ -32,6 +32,7 @@
 		has_readings: false,
 		is_published: true,
 	};
+	let readings_divider = 'RPT';
 
 	window['mekmyTable'] = (m = 'create',sel='') => {
 		let tableguy = document.querySelector(sel);
@@ -86,9 +87,9 @@
 				</tr>
 			`;
 		};
-		const _mekrow_readings = (x,prefix='',_data,edit_sample = false,is_final = false) => {
+		const _mekrow_readings = (x,prefix='',_data,edit_sample = false,is_final = false,show_radio=true) => {
 			// let prtxt = prefix == '' ? '' : `<b></b>`;
-			let n = x + 1;
+			let n = typeof x == 'number' ? x + 1 : x;
 			let _dft = {
 				sample_id : "sample "+x,
 				weight: null,
@@ -96,7 +97,14 @@
 				cu_reading: null,
 				remarks: "",
 			};
+			let _sid = _data.sample_id;
+			let givenid = _sid.startsWith(readings_divider) ? _sid.substring(readings_divider.length).trim() : _data.sample_id;
+
 			_data = {..._dft,..._data};
+
+			if(cur_sheet.has_readings){
+				is_final = _data.is_final;
+			}
 
 			let editht = edit_sample ?
 				`<div class="w3-hide">
@@ -106,11 +114,24 @@
 					<span data-subrole="sample_id"><b>${prefix}</b> ${_data.sample_id}</span>
 				</div>`
 			;
+			let toggle_radio = show_radio ? `<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}">` : '';
+			let show_weight = !cur_sheet.is_published ?
+				`<input type="text" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
+				` : `<span>${_data.weight || "!!"}</span>`;
+			let show_au_reading = !cur_sheet.is_published ?
+				`<input type="text" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="au_reading ${n}" value="${_data.au_reading || ""}" required>
+				` : `<span>${_data.au_reading || "!!"}</span>`;
+			let show_cu_reading = !cur_sheet.is_published ?
+				`<input type="text" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
+				` : `<span>${_data.cu_reading || "!!"}</span>`;
+			let show_remarks = !cur_sheet.is_published ?
+				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" value="${_data.remarks || ""}">
+				` : `<span>${_data.remarks || "--"}</span>`;
 
 			return `
 				<tr>
 					<td>
-						<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${_data.sample_id}" name="radio_${_data.sample_id}" value="${x}">
+						${toggle_radio}
 					</td>
 					<td>${n}</td>
 					<td>
@@ -118,22 +139,22 @@
 					</td>
 					<td>
 						<div>
-							<input type="text" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
+							${show_weight}
 						</div>
 					</td>
 					<td>
 						<div>
-							<input type="text" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="au_reading ${n}" value="${_data.au_reading || ""}" required>
+							${show_au_reading}
 						</div>
 					</td>
 					<td>
 						<div>
-							<input type="text" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
+							${show_cu_reading}
 						</div>
 					</td>
 					<td>
 						<div>
-							<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" value="${_data.remarks || ""}">
+							${show_remarks}
 						</div>
 					</td>
 				</tr>
@@ -166,27 +187,40 @@
 			let outht = '';
 			let count = 0;
 
-			for(let x = 0;x < amt;x++){
-				let n = x + 1;
-				let rpt = 0;
-				let mydata = w_data.sample_data[x];
+			if(w_data.has_readings){
+				w_data.readings.forEach((r,id) => {
+					outht += _mekrow_readings(id,'',r,false,true);
+				})
+			}
+			else {
+				for(let x = 0;x < amt;x++){
+					let n = x + 1;
+					let rpt = 0;
+					let mydata = w_data.sample_data[x];
 
-				console.log('count: ',count);
-				outht += _mekrow_readings(count,'',mydata,false,true);
-
-				if(cur_sheet.sample_type == 'soil' || cur_sheet.sample_type == 'rock'){
-					rpt = 2;
-				} else if(cur_sheet.sample_type == 'carbon'){
-					rpt = 3;
-				}
-
-				for(let c = 1; c < rpt;c++){
-					count += 1;
 					console.log('count: ',count);
-					outht += _mekrow_readings(count,'RPT',mydata,false);
+					outht += _mekrow_readings(count,'',mydata,false,true);
+
+					if(cur_sheet.sample_type.toLowerCase() == 'soil' || cur_sheet.sample_type.toLowerCase() == 'rock'){
+						rpt = 2;
+					} else if(cur_sheet.sample_type.toLowerCase() == 'carbon' || cur_sheet.sample_type.toLowerCase() == 'carbon activity'){
+						rpt = 3;
+					}
+
+					for(let c = 1; c < rpt;c++){
+						count += 1;
+						console.log('count: ',count);
+						outht += _mekrow_readings(count,readings_divider,mydata,false);
+					}
+
+					count += 1;
 				}
 
-				count += 1;
+				let myref = sample_ref_atlas[w_data.sample_type.toLowerCase()];
+
+				if(myref !== null){
+					outht += _mekrow_readings('REF','',{sample_id: myref},false,false,false);
+				}
 			}
 
 			table_body.innerHTML = outht;

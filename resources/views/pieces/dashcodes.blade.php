@@ -27,6 +27,12 @@
 			1 : 'incomplete',
 			2 : 'paid',
 		};
+		window['sample_ref_atlas'] = {
+			'carbon' : 'carbon reference solution',
+			'solution' : null,
+			'rock' : 'reference material',
+			'soil' : 'reference material',
+		}
 
 		const min_loadtime = 400;
 	</script>
@@ -85,6 +91,7 @@
 				'update_payment' : './op/update_client_payment',
 				'save_worksheet' : './op/save_worksheet',
 				'save_readings' : './op/save_worksheet_readings',
+				'publish_worksheet' : './op/publish_worksheet',
 
 			// datalinks
 				'search_clients' : './data/search_clients',

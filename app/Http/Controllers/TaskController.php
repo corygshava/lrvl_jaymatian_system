@@ -413,7 +413,7 @@ class TaskController extends Controller{
 							DB::commit();
 						// /*
 						}catch (\Exception $e){
-							// DB::rollBack();
+							DB::rollBack();
 
 							$res['runlog'][] = $e;
 							$msg = 'task creation failed: '.$e->getMessage();

@@ -948,10 +948,14 @@ abstract class Controller{
 		]);
 		// */
 
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
 
 		if($this->ili()){
 			$res['success'] = true;
 			$msg = "fetching permissions";
+			$update_runlog($msg);
 			$reslt = false;
 
 			$cmdt = self::commondata();

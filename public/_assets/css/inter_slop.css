@@ -4,7 +4,16 @@
 	--syz_2: 60px;
 	--light-gray: #f3f3f3;
 }
-.upbtn{opacity: 0;pointer-events: none;}
+.upbtn{
+	opacity: 0;
+	pointer-events: none;
+}
+input[type="radio"]:checked{
+	scale: 1.5;
+}
+tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
+	background: var(--lightcolor2);
+}
 
 /* loader */
 	.loader {
@@ -34,6 +43,11 @@
 	}
 
 /* Sidebar */
+	body.modal-open .menubar{
+		translate: -20px 0;
+		opacity: 0;
+		pointer-events: none;
+	}
 	.menubar {
 		position: fixed;
 		left: 0;
@@ -1150,3 +1164,5 @@
 			max-width: var(--w);
 		}
 		.hideicon i{display: none;}
+
+/* end of styles */

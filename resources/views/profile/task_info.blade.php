@@ -973,7 +973,7 @@
 				alertht = '';
 
 				if(cur_sheet.has_readings) {
-					alertht += mekUiAlert('this sample has results so it cant be edited','warning');
+					alertht += mekUiAlert('this sample has readings so it cant be edited','warning');
 				}
 
 				if(cur_sheet.is_published){
@@ -1062,9 +1062,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="opacity: 0;">
-						<b>Payment Status: </b>
-						<span>not paid</span>
+					<td style="opacity: 0.7;">
+						<b>Sample No: </b>
+						<span>${thesample.sample_no}</span>
 					</td>
 					<td>
 						<b>Number Of Samples: </b>

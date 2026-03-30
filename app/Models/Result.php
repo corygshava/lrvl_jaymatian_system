@@ -23,8 +23,8 @@ class Result extends Model{
     ];
 
     protected $casts = [
-        'au_ppm' => 'decimal:4',
-        'cu_ppm' => 'decimal:4',
+        'au_ppm' => 'decimal:2',
+        'cu_ppm' => 'decimal:2',
     ];
 
 	// traits
