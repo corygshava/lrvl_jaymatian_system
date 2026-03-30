@@ -181,6 +181,12 @@
 							<input type="number" class="form-control-custom" id="price_carbon" name="price_carbon" placeholder="enter client name" required>
 						</div>
 					</div>
+					<div class="input-group-custom">
+						<div class="form-group">
+							<label class="form-label" for="price_carbon_activity">Carbon Activity</label>
+							<input type="number" class="form-control-custom" id="price_carbon_activity" name="price_carbon_activity" placeholder="enter client name" required>
+						</div>
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">

@@ -630,8 +630,8 @@
 						options: user_roles_condensed
 					},*/
 					{
-						name: 'Payment plan',
-						label: 'payment_plan',
+						name: 'payment_plan',
+						label: 'payment plan',
 						rawname: 'Payment plan_',
 						options: [
 							{ value: 'monthly', label: 'Monthly' },

@@ -1,3 +1,15 @@
+<?php
+	/*
+	require_once __DIR__.'/piece_img_processor.php';
+	require_once __DIR__.'/piece_bizdata_xtras.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.bizdata_xtras')
+@include('pieces.bizdata_xtras_2')
+{{-- --> --}}
+
 <style>
 	.previewCards_holder{
 		display: flex;
@@ -67,6 +79,9 @@
 				<div class="spacy-sm mt-3 flowline overflow gap-sm left">
 					<button type="button" class="mybtn secondary" data-runme="add_sample">
 						<i class="fa fa-plus mr-2"></i>Add Sample Type
+					</button>
+					<button type="button" class="mybtn secondary" data-runme="standardize_sample_charges">
+						<i data-myicon="bizdata" class="mr-2"></i>standardize all clients
 					</button>
 					<button type="button" class="mybtn bg-success w3-text-white" id="save_samples_btn" data-runme="save_changes" data-section="samples">
 						<i class="fa fa-save mr-2"></i>Save samples info
@@ -228,18 +243,6 @@
 		</div>
 	</div>
 </div>
-
-<?php
-	/*
-	require_once __DIR__.'/piece_img_processor.php';
-	require_once __DIR__.'/piece_bizdata_xtras.php';
-	// */
-?>
-
-{{-- <!-- --}}
-@include('pieces.bizdata_xtras');
-@include('pieces.bizdata_xtras_2');
-{{-- --> --}}
 
 <script>
 	window['killOnLeave'] = [
@@ -482,6 +485,29 @@
 			add_edit_samples_trig.click();
 			add_edit_samples_title.innerHTML = "add Sample type";
 			add_edit_samples_submitbtn.innerHTML = "add Sample type";
+		}
+		window['standardize_sample_charges'] = () => {
+			let pr_dta = bizdata.pricing_data;
+
+			const step1 = (ps) => {
+				window[fetch_bypass](linkAtlas['standardize_sample_charges'],{paydata: pr_dta,...ps},'POST').then(w => {
+					responseHandler(w,step2,w);
+				});
+			}
+
+			const step2 = (m) => {
+				alert_success('all client payment details have been standardized');
+			}
+
+			confirmAction(
+				mekHeading('standardize Client Charges','h4'),
+				'this will make all clients have the same charges as the ones entered here.',
+				() => {
+					setTimeout(() => {
+						awaitConfirmPass(step1);
+					},300);
+				}
+			);
 		}
 		window['add_edit_sample'] = (el) => {
 			let myid = el.theid.value;

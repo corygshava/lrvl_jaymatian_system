@@ -356,12 +356,16 @@
 			` : '';
 		let has_sheets = sample.worksheets.length > 0;
 		let publish_btn = '';
+		let save_readings_btn = '';
 
 		if(has_sheets){
 			publish_btn = cur_sheet.has_readings && !cur_sheet.is_published ?
 				'<button class="mybtn secondary ml-2" data-runme="publish_worksheet"><i class="fa fa-stamp"></i> publish worksheet</button>' :
 				''
 			;
+			save_readings_btn = !cur_sheet.is_published ? `
+				<button class="mybtn primary" data-submitme="#worksheetreadings"><i class="fa fa-save"></i> save readings</button>
+			` : ``;
 		}
 		let sheetht = has_sheets ? `
 			<form id="worksheetreadings" action="defined:save_readings" data-onsubmit="readings_saver_inter" data-callback="worksheets_aftermath" data-blockdefault="yes">
@@ -380,7 +384,7 @@
 				</table>
 			</form>
 			<div class="distance-sm">
-				<button class="mybtn primary" data-submitme="#worksheetreadings"><i class="fa fa-save"></i> save readings</button>
+				${save_readings_btn}
 				${publish_btn}
 			</div>
 		` : `
@@ -667,7 +671,7 @@
 		save_results_btn.classList[save_btn_meth]('w3-hide');
 		results_summary.innerHTML = `
 			<span><b>${sample.results ? sample.results.length : 0} / ${sample.sample_count} </b> sample results saved</span><br>
-			<span><b>${temp_results.length}</b> results added</span>
+			<!--<span><b>${temp_results.length}</b> results added</span>-->
 		`;
 
 		if(meth == 'add'){
@@ -901,7 +905,7 @@
 		if(window['task_info_data'] !== undefined){
 			alert_dark('currently in task info');
 		}
-		if(window['refreshData'] !== null){
+		if(window['refreshData'] != undefined){
 			refreshData();
 		}
 	}
@@ -940,7 +944,7 @@
 			alert_dark('currently in task info');
 		}
 
-		if(window['refreshData'] !== null){
+		if(window['refreshData'] != undefined){
 			refreshData();
 		}
 

@@ -77,6 +77,7 @@
 				'samples_mgt' : './ui/samples_mgt',
 				'reports_mgt' : './ui/reports_mgt',
 				'ui_tester' : './ui/_ui_creat0r',
+				'mek_invoice' : './ui/gen_invoice',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -92,6 +93,7 @@
 				'save_worksheet' : './op/save_worksheet',
 				'save_readings' : './op/save_worksheet_readings',
 				'publish_worksheet' : './op/publish_worksheet',
+				'standardize_sample_charges' : './op/standardize_charges',
 
 			// datalinks
 				'search_clients' : './data/search_clients',
@@ -139,6 +141,7 @@
 			'reports_mgt' : 'reports management',
 			'view_reports' : 'reports management',
 			'view_payments' : 'payments management',
+			'mek_invoice' : 'Generate Invoice',
 
 			'ui_tester' : 'UI testing grounds',
 		};

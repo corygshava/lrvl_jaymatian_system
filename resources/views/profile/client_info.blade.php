@@ -4,6 +4,7 @@
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
 	require_once __DIR__.'/piece_reports_xtras.php';
+	require_once __DIR__.'/piece_worksheet_xtras.php';
 	require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
@@ -13,6 +14,7 @@
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
 @include('pieces.reports_xtras')
+@include('pieces.worksheet_xtras')
 @include('pieces.codes_simpletables')
 {{-- --> --}}
 

@@ -87,7 +87,7 @@
 				</tr>
 			`;
 		};
-		const _mekrow_readings = (x,prefix='',_data,edit_sample = false,is_final = false,show_radio=true) => {
+		const _mekrow_readings = (x,prefix='',_data,edit_sample = false,is_final = false,show_radio=true,is_reference = false) => {
 			// let prtxt = prefix == '' ? '' : `<b></b>`;
 			let n = typeof x == 'number' ? x + 1 : x;
 			let _dft = {
@@ -95,26 +95,36 @@
 				weight: null,
 				au_reading: null,
 				cu_reading: null,
+				is_reference: false,
 				remarks: "",
 			};
-			let _sid = _data.sample_id;
+			let refname = sample_ref_atlas[cur_sheet.sample_type.toLowerCase()];
+			let _sid = _data.sample_id == undefined ? (refname == undefined ? '??' : refname) : _data.sample_id;
 			let givenid = _sid.startsWith(readings_divider) ? _sid.substring(readings_divider.length).trim() : _data.sample_id;
 
 			_data = {..._dft,..._data};
 
 			if(cur_sheet.has_readings){
 				is_final = _data.is_final;
+				show_radio = !_data.is_reference;
+				n = show_radio ? n : 'REF';
+				is_reference = _dft.is_reference;
 			}
+
+			let mgg = is_reference ? 'w3-text-red' : 'w3-text-orange';
+			mgg = '';
 
 			let editht = edit_sample ?
 				`<div class="w3-hide">
 					<input type="text" class="form-control-custom" data-subrole="sample_id" name="sample_id_${x}" data-myid="${x}" placeholder="sample ${x + 1}" value="${_data.sample_id}" required>
 				</div>` :
 				`<div>
-					<span data-subrole="sample_id"><b>${prefix}</b> ${_data.sample_id}</span>
+					<span class="${mgg}" data-subrole="sample_id"><b>${prefix}</b> ${givenid || '??'}</span>
 				</div>`
 			;
-			let toggle_radio = show_radio ? `<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}">` : '';
+			let toggle_radio = !show_radio ? `opacity: 0;` : '';
+			let toggle_editable = cur_sheet.is_published ? 'pointer-events: none;' : '';
+
 			let show_weight = !cur_sheet.is_published ?
 				`<input type="text" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
 				` : `<span>${_data.weight || "!!"}</span>`;
@@ -129,9 +139,9 @@
 				` : `<span>${_data.remarks || "--"}</span>`;
 
 			return `
-				<tr>
+				<tr ${is_reference ? 'data-refcol' : ''}>
 					<td>
-						${toggle_radio}
+						<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}" style="${toggle_radio}${toggle_editable}">
 					</td>
 					<td>${n}</td>
 					<td>
@@ -219,7 +229,7 @@
 				let myref = sample_ref_atlas[w_data.sample_type.toLowerCase()];
 
 				if(myref !== null){
-					outht += _mekrow_readings('REF','',{sample_id: myref},false,false,false);
+					outht += _mekrow_readings('REF','',{sample_id: myref},false,false,false,true);
 				}
 			}
 
@@ -335,7 +345,13 @@
 					</tr>
 				*/
 
-				let marker = r.querySelector('[data-subrole="final_marker"]').checked;
+				let is_ref = false;
+
+				if(r.dataset.refcol !== undefined){
+					is_ref = true;
+				}
+				let mymarker = r.querySelector('[data-subrole="final_marker"]');
+				let marker = mymarker == undefined ? false : mymarker.checked;
 				let weight = r.querySelector('[data-subrole="weight"]').value;
 				let au_reading = r.querySelector('[data-subrole="au_reading"]').value;
 				let cu_reading = r.querySelector('[data-subrole="cu_reading"]').value;
@@ -356,6 +372,7 @@
 					au_reading: au_reading,
 					cu_reading: cu_reading,
 					remarks: rmks,
+					is_reference: is_ref,
 				};
 
 				// let val = npt.value;

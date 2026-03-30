@@ -332,6 +332,7 @@ class ClientController extends Controller{
 			'price_rock' => ['required'],
 			'price_solution' => ['required'],
 			'price_carbon' => ['required'],
+			'price_carbon_activity' => ['required'],
 		]);
 		// */
 
@@ -358,6 +359,7 @@ class ClientController extends Controller{
 					'Rock' => $passed['price_rock'],
 					'Solution' => $passed['price_solution'],
 					'Carbon' => $passed['price_carbon'],
+					'Carbon activity' => $passed['price_carbon_activity'],
 				];
 				$client->save();
 				$reslt = true;
@@ -366,6 +368,60 @@ class ClientController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $client;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function standardize_all(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'admin_password' => ['required'],
+			'paydata' => ['required','array'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching permissions";
+			$update_runlog($msg);
+			$reslt = false;
+
+			$pw = $passed['admin_password'];
+			$pdata = $passed['paydata'];
+
+			if(!($this->verifyPassword($pw))){
+				$msg = "invalid admin password";
+				$update_runlog($msg);
+			} else {
+				$msg = "valid password";
+				$update_runlog($msg);
+
+				Client::where('id','<>',null)->update([
+					'payment_data' => $pdata,
+				]);
+
+				$msg = "clients standardized";
+				$update_runlog($msg);
+				$reslt = true;
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = true;
 			$res['message'] = $msg;
 		}
 

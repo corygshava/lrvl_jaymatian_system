@@ -54,10 +54,7 @@
 								<a class="dropdown-item spacy-tn w3-hide" href="#" onclick="changePaymentPlan()">
 									<i class="fas fa-money-check-alt mr-2 text-muted"></i>Change Payment Plan
 								</a>
-								<a class="dropdown-item spacy-tn w3-hide" id="credit_mgt_btn" href="#" onclick="manageCreditBalance()">
-									<i class="fas fa-wallet mr-2 text-muted"></i>Manage Credit
-								</a>
-								<a class="dropdown-item spacy-tn" href="#" onclick="alert_danger('feature not ready yet')">
+								<a class="dropdown-item spacy-tn" href="#" data-runme="generateInvoice">
 									<i class="fa fa-file-invoice mr-2 text-muted"></i>make invoice
 								</a>
 							</div>
@@ -177,6 +174,7 @@
 							</div>
 						</div>
 						<div class="spacy-sm">
+							<button class="mybtn secondary mr-2" data-runme="revert_client_pricing"><i data-myicon="bizdata"></i> standardize charges</button>
 							<button class="mybtn primary" data-runme="edit_client_pricing"><i class="fa fa-edit"></i> edit pricing</button>
 						</div>
 					</div>
@@ -300,14 +298,14 @@
 		// Set badges
 		document.getElementById('client-gender-badge').textContent = data.client_gender.charAt(0).toUpperCase() + data.client_gender.slice(1);
 		const paymentBadge = document.getElementById('payment-plan-badge');
-		credit_mgt_btn.classList.add('w3-hide');
+		// credit_mgt_btn.classList.add('w3-hide');
 
 		if(data.payment_plan === 'monthly') {
 			paymentBadge.textContent = 'Monthly';
 			paymentBadge.className = 'badge w3-green ml-2';
 
 			if(mypermissions.includes('MANAGE_CLIENT_CREDIT')){
-				credit_mgt_btn.classList.remove('w3-hide');
+				// credit_mgt_btn.classList.remove('w3-hide');
 			}
 		} else {
 			paymentBadge.textContent = 'Per Visit';
@@ -416,8 +414,37 @@
 		edit_paydata_form.price_rock.value = pr_use.Rock;
 		edit_paydata_form.price_solution.value = pr_use.Solution;
 		edit_paydata_form.price_carbon.value = pr_use.Carbon;
+		edit_paydata_form.price_carbon_activity.value = pr_use['Carbon activity'];
 
 		edit_paydata_trig.click();
+	}
+	window['revert_client_pricing'] = (el) => {
+		const step1 = () => {
+			alert_info('attempting to reconcile');
+
+			let pr_dta = bizdata.pricing_data;
+			let pr_use = {...pr_dta};
+
+			edit_paydata_form.recid.value = clientData.id;
+			edit_paydata_form.price_soil.value = pr_use.Soil;
+			edit_paydata_form.price_rock.value = pr_use.Rock;
+			edit_paydata_form.price_solution.value = pr_use.Solution;
+			edit_paydata_form.price_carbon.value = pr_use.Carbon;
+			edit_paydata_form.price_carbon_activity.value = pr_use['Carbon activity'];
+
+			sendform(edit_paydata_form,step2,step2b);
+		}
+
+		const step2 = (m) => {
+			alert_info('updated');
+			clientData = m.data.sendme;
+			initializeClientProfile(clientData);
+		}
+		const step2b = (m) => {
+			alert_danger('error reconciling payment data, try again later');
+		}
+
+		step1();
 	}
 	window['form_afterfx'] = (m) => {
 		// alert_dark('runnin afterfx');
@@ -482,5 +509,11 @@
 	window['viewReports'] = () => {
 		alert_info(`Viewing client's reports`);
 		openinfo('showthis','reports');
+	}
+
+	window['generateInvoice'] = () => {
+		window[variableAtlas['client_id']] = clientData.id;
+
+		loadPage({template: linkAtlas['mek_invoice'],sidenote: pageNames['mek_invoice']});
 	}
 </script>

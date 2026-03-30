@@ -110,6 +110,7 @@ Route::prefix('/op')->group(function(){
 	Route::post('/clients',[ClientController::class, 'add_edit'])->middleware(['auth','verified']);
 	Route::post('/change_credit',[ClientController::class, 'change_credit'])->middleware(['auth','verified']);
 	Route::post('/update_client_payment',[ClientController::class, 'edit_payment'])->middleware(['auth','verified']);
+	Route::post('/standardize_charges',[ClientController::class, 'standardize_all'])->middleware(['auth','verified']);
 
 	Route::post('/add_task',[TaskController::class, 'add_new_task'])->middleware(['auth','verified']);
 	Route::post('/add_payment',[TaskController::class, 'add_payment'])->middleware(['auth','verified']);
