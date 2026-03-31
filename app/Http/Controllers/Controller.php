@@ -899,10 +899,10 @@ abstract class Controller{
 	}
     public static function log_payload($entry = 'empty_purpose',$fname = null,$usedate = true){
 		$fl = new FileopsController();
-		$tdate = $usedate ? date('dmy')."_" : '';
+		$tdate = $usedate ? "[".date('y_m_d')."] " : '';
 		$fname = $fname == null ? 'payloads' : $fname;
 		$thepath = self::$payload_path;
-		$fstore = "{$thepath}{$tdate}_{$fname}.json";
+		$fstore = "{$thepath}{$tdate}{$fname}.json";
 		$fpath = storage_path($fstore);
 		$contents = '[]';
 		$curdata = [];
