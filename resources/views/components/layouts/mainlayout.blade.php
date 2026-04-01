@@ -35,10 +35,10 @@
 <body>
     {{ $slot }}
 
+	@include('pieces.commons')
     @auth
-		{{-- load more stuff --}}
+		{{-- load more auth based stuff --}}
 		<!-- only shows up when youre logged in -->
-		@include('pieces.commons')
     @endauth
 </body>
 </html>

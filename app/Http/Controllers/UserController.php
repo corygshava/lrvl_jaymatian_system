@@ -82,7 +82,8 @@ class UserController extends Controller{
 
 		if($this->ili()){
 			$res['success'] = true;
-			$res['message'] = "confirming user permissions";
+			$reslt = false;
+			$msg = "confirming your permissions";
 
 			$perms = [];
 			$permissions = $this->getmypermissions();
@@ -90,10 +91,15 @@ class UserController extends Controller{
 			if(!empty($permissions)){
 				// $perms = array_keys($permissions);
 				$perms = $permissions;
+				$msg = "permissions found";
+				$reslt = true;
+			} else {
+				$msg = "no permissions found";
 			}
 
-			$res['result'] = !empty($perms);
+			$res['result'] = $reslt;
 			$res['sendme'] = $perms;
+			$res['message'] = $msg;
 
 			// dd($permissions);
 		}

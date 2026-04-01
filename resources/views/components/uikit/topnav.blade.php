@@ -1,6 +1,6 @@
 <div class="topnav slide-down">
-	<div>
-		<b>LOGO</b>
+	<div class="logo_part">
+		<img src="./_assets/img/logo_txts.png">
 	</div>
 
 	<div class="title">

@@ -367,7 +367,7 @@
 					</div>
 					<div class="col-md-12 flowline gap-sm centerline left">
 						<button class="mybtn primary"><i class="fa fa-plus"></i> add payment</button>
-						<button class="mybtn secondary" type="button" id="deduct_from_credit_btn" data-runme="deduct_from_credit">deduct from credit</button>
+						<!-- <button class="mybtn secondary" type="button" id="deduct_from_credit_btn" data-runme="deduct_from_credit">deduct from credit</button> -->
 					</div>
 				</form>
 			</div>
@@ -628,6 +628,9 @@
 				run_search_listener(e);
 			})
 			client_search.addEventListener('keydown',(e) => {
+				if(e.key == undefined){
+					return;
+				}
 				if(e.key.toLowerCase() == 'enter'){
 					run_search_listener(e);
 				}
@@ -1534,7 +1537,7 @@
 				client_credit.style.display = is_monthly ? 'block' : 'none';
 				balance.querySelector('b').classList.add(bal_class_add);
 				balance.querySelector('b').classList.remove(bal_class_remove);
-				deduct_from_credit_btn.style.display = is_monthly ? 'inline-flex' : 'none';
+				// deduct_from_credit_btn.style.display = is_monthly ? 'inline-flex' : 'none';
 
 				if(balcon && showthis[3] !== undefined){
 					add_payment_form.classList.add('is_inactive');

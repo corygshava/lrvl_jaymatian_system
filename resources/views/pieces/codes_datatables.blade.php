@@ -110,6 +110,13 @@
 		function setupEventListeners() {
 			const searchstuff = (e) => {
 				clearTimeout(debounceTimer);
+
+				let tosearch = e.target.value;
+
+				if(tosearch == ''){
+					return;
+				}
+
 				debounceTimer = setTimeout(() => {
 					searchQuery = e.target.value;
 					currentPage = 1;

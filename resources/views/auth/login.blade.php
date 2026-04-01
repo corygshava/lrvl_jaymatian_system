@@ -1,15 +1,34 @@
+<!-- dont forget to activate the form csrf region -->
+
 <x-layouts.mainlayout>
-	<div>
-		<div class="loginHolder fullcon flow centroid">
-			<div class="panelbg spacy-md formholder mycon sm themeround slide-up">
-				<div class="w3-center">
-					<span class="h3">JMATT</span>
-					<p>management system</p>
-					<hr>
-					<p>enter your details to log in</p>
+	<style>
+		.logo_img_ img {
+			/* aspect-ratio: auto; */
+			height: 150px;
+			width: auto;
+		}
+	</style>
+
+	<div class="loginHolder fullcon flow centroid">
+		<div class="panelbg spacy-md formholder mycon sm themeround slide-up">
+			<div class="w3-center">
+				<div class="border-bottom pb-2">
+					<div class="logo_img_ flow centroid">
+						<img src="./_assets/img/logo_full.png">
+					</div>
+					<!-- <span>Internal Operations management system</span> -->
 				</div>
+				<!-- <hr> -->
+				<div class="spacy-sm">
+					<span>enter your details to begin your session</span>
+				</div>
+			</div>
+
+			<div>
 				<form method="post" action="./login">
-                    @csrf
+					{{-- <!-- --}}
+					@csrf
+					{{-- --> --}}
 					<div class="input-group-custom">
 						<div class="form-group">
 							<label class="form-label" for="email">Email Address</label>
@@ -22,7 +41,7 @@
 							<input type="password" class="form-control-custom" id="password" name="password" placeholder="enter password" required>
 						</div>
 					</div>
-                    <div class="distance-sm">
+					<div class="distance-sm">
 						<div class="custom-control custom-switch">
 							<input type="checkbox" class="custom-control-input" id="remember" name="Remember">
 							<label class="custom-control-label" for="remember">Remember me</label>

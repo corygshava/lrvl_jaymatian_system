@@ -184,6 +184,9 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		align-items: center;
 		gap: 20px;
 	}
+	.topnav .logo_part img{
+		height: 32px;
+	}
 	.navops .nav-icon {
 		position: relative;
 		width: var(--syz);

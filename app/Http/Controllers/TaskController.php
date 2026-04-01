@@ -114,7 +114,6 @@ class TaskController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_one(Request $req){
 		// return $this->log_my_payload($req);
 
@@ -163,7 +162,6 @@ class TaskController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_incomplete(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -236,6 +234,10 @@ class TaskController extends Controller{
 		$res = $this->dftres;
 		$sent = $req->input('sentdata',null);
 
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+
 		if($this->ili()){
 			$res['success'] = true;
 			$msg = "fetching permissions";
@@ -277,6 +279,7 @@ class TaskController extends Controller{
 					$haspaydata = isset($sent['paymentData']) && !empty($sent['paymentData']);
 					$msg = "problem verifying payment data, try again";
 					$cango = false;
+					$client_balance = $sent['paymentStats']['balance'];
 
 					if(!$haspaydata){
 						if(!isset($sent['admin_password'])){
@@ -288,7 +291,7 @@ class TaskController extends Controller{
 							$msg = $wegood ? "valid admin password" : "invalid admin password";
 						}
 					} else {
-						if($sent['paymentStats']['balance'] > 0){
+						if($client_balance > 0){
 							if(!isset($sent['admin_password'])){
 								$msg = "pass an admin password first";
 							} else {
@@ -377,7 +380,8 @@ class TaskController extends Controller{
 								foreach($sent['paymentData'] as $pd){
 									if(strtolower($pd['method']) == 'client credit'){
 										// $tempclient = Client::find($sent['clientData']);
-										$removeFromCredit += (int) $pd['amt'];
+										// disabled due to rework of client credit subsystem
+										// $removeFromCredit += (int) $pd['amt'];
 									}
 
 									$payments[] = [
@@ -399,10 +403,12 @@ class TaskController extends Controller{
 								$batch->insert(new Payment,$cols,$payments);
 							}
 
-							$res['runlog'][] = "remove from credit: $removeFromCredit";
+							$update_runlog ("remove from credit: $removeFromCredit");
+							$update_runlog ("add to client credit: $client_balance");
 
-							if($removeFromCredit > 0){
-								$client->credit_balance = $client->credit_balance - $removeFromCredit;
+							if($client_balance > 0){
+								// $client->credit_balance = $client->credit_balance - $removeFromCredit;
+								$client->credit_balance = $client->credit_balance + $client_balance;
 								$client->save();
 
 								$res['runlog'][] = "deducted from credit balance";
@@ -436,7 +442,6 @@ class TaskController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function add_payment(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -483,51 +488,67 @@ class TaskController extends Controller{
 					$amt = $passed['amount'];
 					$user = $this->cur_user();
 
-					// /*
-					Payment::create([
-						'added_by' => $user->id,
-						'task_id' => $task->id,
-						'client_id' => $task->client->id,
-						'method' => $passed['pay_method'],
-						'amount' => $passed['amount'],
-						'status' => 1,
-						'extra_details' => json_encode(['added_via' => 'task_info']),
-						'transaction_time' => Carbon::now(),
-					]);
-					// */
+					$c_id = $task->client_id;
+					$client = Client::where('id',$c_id)->first();
 
-					$newbal = $bal - $amt;
-					$paid += $amt;
-
-					if($newbal < 0){
-						$newbal = 0;
-						// add to client_credit
-						$addme = $paid - $cost;
-						$newcredit = $task->client->credit_balance + $addme;
-
-						Client::where('id',$task->client->id)
-							->update([
-								'credit_balance' => $newcredit,
-							])
-						;
-
-						$msg = "payment was more than required, added to client credit";
+					if($client == null){
+						$msg = "invalid client details";
 					} else {
-						$msg = "payment added successfully";
-					}
+						$payamt = $passed['amount'];
 
-					$tochange = [
-						'balance' => $newbal,
-						'paid' => $paid,
-						'payment_status' => $newbal == 0 ? 2 : 1,
-						'is_paid' => $newbal == 0,
-					];
-					if($task->status == 1){
-						$tochange['status'] = 0;
-					}
-					Task::where('id',$task->id)->update($tochange);
+						// /*
+						Payment::create([
+							'added_by' => $user->id,
+							'task_id' => $task->id,
+							'client_id' => $task->client->id,
+							'method' => $passed['pay_method'],
+							'amount' => $payamt,
+							'status' => 1,
+							'extra_details' => json_encode(['added_via' => 'task_info']),
+							'transaction_time' => Carbon::now(),
+						]);
+						// */
 
-					$reslt = true;
+						$newbal = $bal - $amt;
+						$paid += $amt;
+
+						if($client->client_credit > 0){
+							$client->client_credit = $client->client_credit - $payamt;
+							$client->client_credit = $client->client_credit < 0 ? 0 : $client->client_credit;
+
+							$msg = "client credit updated";
+						}
+
+						if($newbal < 0){
+							$newbal = 0;
+
+							// remove from client_credit
+							$addme = $paid - $cost;
+							// $newcredit = $client->credit_balance - $addme;
+							// $client->client_credit = $client->client_credit < 0 ? 0 : $client->client_credit;
+
+							// $client->credit_balance = $newcredit;
+
+							// $msg = "payment was more than required, added to client credit";
+						} else {
+							$msg = "payment added successfully";
+						}
+
+						$client->save();
+
+						$tochange = [
+							'balance' => $newbal,
+							'paid' => $paid,
+							'payment_status' => $newbal == 0 ? 2 : 1,
+							'is_paid' => $newbal == 0,
+						];
+						if($task->status == 1){
+							$tochange['status'] = 0;
+						}
+						Task::where('id',$task->id)->update($tochange);
+
+						$reslt = true;
+					}
 				}
 			}
 
@@ -544,7 +565,6 @@ class TaskController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function add_note(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
