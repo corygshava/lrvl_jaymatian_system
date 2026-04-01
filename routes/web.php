@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\WorksheetsController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,9 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/gen_report', [ViewController::class,'showgenreport']);
 	Route::get('/reports_mgt', [ViewController::class,'showreports']);
 
+	Route::get('/gen_invoice', [ViewController::class,'showgeninvoice']);
+	Route::get('/invoices_mgt', [ViewController::class,'showinvoices']);
+
 	Route::get('/biz_data', [ViewController::class,'showbizdata']);
 });
 
@@ -89,6 +93,9 @@ Route::prefix('/data')->group(function(){
 
 	Route::get('/reports', [ReportsController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_reports', [ReportsController::class,'get_some'])->middleware(['auth','verified']);
+
+	Route::post('/get_invoice_info', [InvoiceController::class,'get_my_info'])->middleware(['auth','verified']);
+	Route::get('/invoices', [InvoiceController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 
@@ -123,6 +130,8 @@ Route::prefix('/op')->group(function(){
 
 	Route::post('/update_bizdata',[BizdataController::class, 'update_sth'])->middleware(['auth','verified']);
 	Route::post('/update_bizdata_images',[BizdataController::class, 'update_sth_2'])->middleware(['auth','verified']);
+
+	Route::post('/save_invoice', [InvoiceController::class,'add_new'])->middleware(['auth','verified']);
 
 	Route::post('/save_report', [ReportsController::class,'add_new'])->middleware(['auth','verified']);
 });

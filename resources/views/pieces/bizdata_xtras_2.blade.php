@@ -117,6 +117,10 @@
 								<label class="form-label" for="auth_staff">Authorizer</label>
 								<input type="tel" class="form-control-custom" id="auth_staff" name="auth_staff" placeholder="the authorizing staff who will appear in reports" required>
 							</div>
+							<div class="form-group">
+								<label class="form-label" for="mpesa">Mpesa Details</label>
+								<input type="tel" class="form-control-custom" id="mpesa" name="mpesa" placeholder="the phone number or till number to send money to" required>
+							</div>
 						</div>
 					</form>
 				</div>

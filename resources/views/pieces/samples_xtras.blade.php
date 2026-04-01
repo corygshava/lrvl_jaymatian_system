@@ -274,6 +274,8 @@
 	}
 
 	function renderSampleData(dta) {
+		// console.log(dta);
+
 		// clear stuff from last session
 		temp_results = [];
 
@@ -878,8 +880,7 @@
 			return;
 		}
 
-
-		if(window['showthis'] !== undefined){
+		if(window['showthis'] !== undefined && window['task_info_data'] !== undefined){
 			alert_dark('opening worksheet section');
 			showthis('worksheet');
 			showmodal(false);
@@ -915,17 +916,34 @@
 			alert_info('publishing worksheet');
 
 			window[fetch_bypass](linkAtlas['publish_worksheet'],{sample_id: sample.id},'POST').then((w) => {
-				responseHandler(w,finalize,w);
+				responseHandler(w,then_wot,w);
 			})
 		};
 
-		const finalize = (d) => {
+		const then_wot = (d) => {
 			let cur = {
 				rectype: "sample",
 				data: d.sendme
 			};
 
-			renderSampleData(cur);
+			alert_info('sample updated, rerendering...');
+			// showmodal(false);
+
+			setTimeout(() => {
+				try{
+					// alert_info('rendering');
+					renderSampleData(cur);
+
+					if(window['refreshData'] != undefined){
+						refreshData();
+					} else if(window['refresh_data'] != undefined){
+						refresh_data();
+					}
+					// showmodal(true);
+				} catch(err) {
+					console.error(err);
+				}
+			},300);
 		}
 
 		showmodal(false);
@@ -941,11 +959,13 @@
 		// alert_dark('saving shid');
 
 		if(window['task_info_data'] !== undefined){
-			alert_dark('currently in task info');
+			// alert_dark('currently in task info');
 		}
 
 		if(window['refreshData'] != undefined){
 			refreshData();
+		} else if(window['refresh_data'] != undefined){
+			refresh_data();
 		}
 
 		console.log('w_sheets aftermath: ',m);

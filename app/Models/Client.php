@@ -45,4 +45,7 @@ class Client extends Model {
 	public function payments(): HasMany {
 		return $this->hasMany(Payment::class,'client_id','id');
 	}
+	public function invoices(): HasMany {
+		return $this->hasMany(Invoice::class,'client_id','id');
+	}
 }

@@ -226,11 +226,13 @@
 	let task_payment_state_atlas = window['payment_state_atlas'];
 
 	window['client_info_data'] = {};
-	window['killOnLeave'] = [];
+	window['killOnLeave'] = [
+		'showthis',
+		'client_info_data',
+	];
 
 	window['runOnAwake'] = () => {
 		delete(window['refreshData']);
-		killOnLeave.push('showthis');
 
 		setTimeout(() => {
 			init_task();
@@ -527,6 +529,9 @@
 						<i class="fas fa-ellipsis-v"></i>
 					</button>
 					<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
+						<a class="dropdown-item spacy-tn" href="#" data-runme="generateInvoice">
+							<i class="fa fa-file-invoice mr-2 text-muted"></i>make invoice
+						</a>
 						<a class="dropdown-item spacy-tn" href="#" data-runme="view_client">
 							<i class="fas fa-info-circle mr-2 text-muted"></i>View all details
 						</a>
@@ -765,5 +770,11 @@
 	}
 	window['refreshStuff'] = () => {
 		refreshTaskAssocs();
+	}
+
+	window['generateInvoice'] = () => {
+		window[variableAtlas['client_id']] = client_info_data.clientData.id;
+
+		loadPage({template: linkAtlas['mek_invoice'],sidenote: pageNames['mek_invoice']});
 	}
 </script>

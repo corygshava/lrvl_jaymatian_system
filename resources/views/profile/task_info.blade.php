@@ -211,7 +211,7 @@
 									</div>
 
 									<div class="table-responsive distance-sm themeround border" data-subrole="thetable">
-										<form id="worksheetform" action="defined:save_worksheet" data-onsubmit="save_worksheet_sampleids" data-callback="init_task" data-blockdefault="yes">
+										<form id="worksheetform" action="defined:save_worksheet" data-onsubmit="save_worksheet_sampleids" data-callback="worksheet_update_callback" data-blockdefault="yes">
 											<table class="table table-hover mb-0 table-modern">
 												<thead data-subrole="tableHead">
 												</thead>
@@ -429,7 +429,6 @@
 
 	window['runOnAwake'] = () => {
 		// delete(window['refreshData']);
-		killOnLeave.push('showthis');
 
 		setTimeout(() => {
 			init_task();
@@ -440,6 +439,8 @@
 
 	window['runOnLeave'] = () => {
 		// alert_danger('leaving the pages');
+		killghost('showthis');
+		killghost('task_info_data');
 	}
 
 	// initialisers
@@ -1348,7 +1349,8 @@
 			render_simpleTable(data);
 		}
 
-	// MUST BE LAST
+	// MUST BE LAST (utilities all functions call at some point, put last for easy access)
+		// form aftereffects
 		window['add_note_form_afterfx'] = (d) => {
 			let el = d.el;
 			let cbk = 'init_task';
@@ -1360,6 +1362,13 @@
 				window[cbk]();
 			}
 		}
+		window['worksheet_update_callback'] = (d) => {
+			window[variableAtlas['t_i_act']] = 'showthis';
+			window[variableAtlas['t_i_args']] = 'worksheet';
+
+			init_task();
+		}
+
 		window['refreshStuff'] = () => {
 			refreshTaskAssocs();
 		}

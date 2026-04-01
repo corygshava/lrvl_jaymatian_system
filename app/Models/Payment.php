@@ -13,11 +13,14 @@ class Payment extends Model{
         'added_by',
 		'task_id',
 		'client_id',
+		'invoice_id',
+
 		'method',
 		'amount',
 		'status',
 		'extra_details',
 		'transaction_time',
+		'payment_type',
     ];
 
     protected $casts = [

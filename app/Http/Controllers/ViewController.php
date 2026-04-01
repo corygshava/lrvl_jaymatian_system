@@ -230,6 +230,31 @@ class ViewController extends Controller{
 		}
 	}
 
+	public function showgeninvoice(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.invoices_gen',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+	public function showinvoices(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.invoices_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
 	public function showbizdata(Request $req){
 		if($this->ili()){
 			$cmdt = self::commondata();

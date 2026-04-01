@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Task extends Model{
 	use TimeRangeScope;
@@ -62,6 +63,9 @@ class Task extends Model{
 	}
 	public function client(): BelongsTo{
 		return $this->belongsTo(Client::class,'client_id');
+	}
+	public function invoices(): BelongsToMany{
+		return $this->belongsToMany(Invoice::class,'invoice_tasks','invoice_id','task_id');
 	}
 
 	public function samples(): HasMany{

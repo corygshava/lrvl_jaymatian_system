@@ -36,6 +36,7 @@
     {{ $slot }}
 
 	@include('pieces.commons')
+
     @auth
 		{{-- load more auth based stuff --}}
 		<!-- only shows up when youre logged in -->

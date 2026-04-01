@@ -33,6 +33,11 @@
 			'rock' : 'reference material',
 			'soil' : 'reference material',
 		}
+		window['invoice_state_atlas'] = {
+			0 : 'pending',
+			1 : 'incomplete',
+			2 : 'paid',
+		};
 
 		const min_loadtime = 400;
 	</script>
@@ -76,6 +81,7 @@
 				'biz_data' : './ui/biz_data',
 				'samples_mgt' : './ui/samples_mgt',
 				'reports_mgt' : './ui/reports_mgt',
+				'invoices_mgt' : './ui/invoices_mgt',
 				'ui_tester' : './ui/_ui_creat0r',
 				'mek_invoice' : './ui/gen_invoice',
 
@@ -89,6 +95,7 @@
 				'update_bizdata' : './op/update_bizdata',
 				'update_bizdata_fyls' : './op/update_bizdata_images',
 				'save_report' : './op/save_report',
+				'save_invoice' : './op/save_invoice',
 				'update_payment' : './op/update_client_payment',
 				'save_worksheet' : './op/save_worksheet',
 				'save_readings' : './op/save_worksheet_readings',
@@ -117,6 +124,8 @@
 				'get_visits_chart_data' : './data/visits_chart_data',
 				'get_income_chart_data' : './data/income_chart_data',
 				'get_worksheets' : './data/get_worksheets',
+				'get_invoice_data' : './data/get_invoice_info',
+				'get_invoices' : './data/invoices',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -128,6 +137,7 @@
 			'view_user' : 'user summary',
 			'view_client' : 'Client summary',
 			'view_clients' : 'Client management',
+			'client_mgt' : 'Client management',
 			'client_info' : 'Client Information',
 			'view_profile' : 'User Profile',
 			'view_users' : 'user management',
@@ -142,6 +152,7 @@
 			'view_reports' : 'reports management',
 			'view_payments' : 'payments management',
 			'mek_invoice' : 'Generate Invoice',
+			'invoices_mgt' : 'Invoice management',
 
 			'ui_tester' : 'UI testing grounds',
 		};
@@ -212,6 +223,7 @@
 			{caption: "Sample management", url: './ui/samples_mgt',icon: iconAtlas['samples']},
 			{caption: "Payment management", url: './ui/payments_mgt',icon: iconAtlas['payments']},
 			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports']},
+			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices']},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
@@ -302,6 +314,10 @@
 
 				window[fetch_bypass_fyls](linkAtlas['get_mypermissions'],{},'GET').then(d => {
 					responseHandler(d,step2,d);
+
+					if(!d.result || !d.success){
+						throw new Error(d.message);
+					}
 				}).catch(err => {
 					dynamic_ui.innerHTML = mekError('Error',`error getting user permissions: ${err.message}`,true);
 				})
@@ -313,6 +329,10 @@
 
 				window[fetch_bypass_fyls](linkAtlas['get_user'],{},'GET').then(d => {
 					responseHandler(d,step3,d);
+
+					if(!d.result || !d.success){
+						throw new Error(d.message);
+					}
 				}).catch(err => {
 					dynamic_ui.innerHTML = mekError('Error',`error getting user information: ${err.message}`,true);
 				})
@@ -329,6 +349,12 @@
 				// /*
 				window[fetch_bypass_fyls](linkAtlas['get_bizdata'],{},'POST').then(d => {
 					responseHandler(d,step4,d);
+
+					if(!d.result || !d.success){
+						throw new Error(d.message);
+					}
+				}).catch(err => {
+					dynamic_ui.innerHTML = mekError('Error',`error getting business information: ${err.message}`,true);
 				})
 				// */
 			};

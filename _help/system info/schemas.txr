@@ -116,9 +116,14 @@ worksheets
 invoices
 	client_id
 	created_by
-	status
 
+	total
+	total_paid
+	balance
+	tasks_count
+	task_ids (json array)
 	invoice_data (json to hold invoice info)
+	status
 
 	laravel_timestamps
 

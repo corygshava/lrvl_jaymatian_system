@@ -22,6 +22,8 @@ class Worksheet extends Model{
 		'readings',
 		'has_readings',
 		'is_published',
+		'is_published',
+		'published_at',
     ];
 
     protected $casts = [
@@ -29,6 +31,7 @@ class Worksheet extends Model{
 		'readings' => 'array',
 		'has_readings' => 'boolean',
 		'is_published' => 'boolean',
+		'published_at' => 'datetime',
     ];
 
 	// traits

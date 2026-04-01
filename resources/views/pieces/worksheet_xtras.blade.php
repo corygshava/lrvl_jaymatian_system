@@ -103,6 +103,7 @@
 			let givenid = _sid.startsWith(readings_divider) ? _sid.substring(readings_divider.length).trim() : _data.sample_id;
 
 			_data = {..._dft,..._data};
+			console.log('current row data: ',_data)
 
 			if(cur_sheet.has_readings){
 				is_final = _data.is_final;
@@ -135,7 +136,7 @@
 				`<input type="text" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
 				` : `<span>${_data.cu_reading || "!!"}</span>`;
 			let show_remarks = !cur_sheet.is_published ?
-				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" value="${_data.remarks || ""}">
+				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
 				` : `<span>${_data.remarks || "--"}</span>`;
 
 			return `
@@ -364,7 +365,7 @@
 					return;
 				}
 
-				let rmks = remarks == '' ? remarks : null;
+				let rmks = remarks !== '' ? remarks : null;
 				let outdata = {
 					is_final: marker,
 					sample_id: sample_id,

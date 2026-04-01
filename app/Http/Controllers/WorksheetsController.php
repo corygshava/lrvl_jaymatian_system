@@ -7,6 +7,7 @@ use App\Models\Sample;
 use App\Models\Worksheet;
 use App\Models\Result;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mavinoo\Batch\Batch;
@@ -345,7 +346,6 @@ class WorksheetsController extends Controller{
 			$res['runlog'][] = $wot;
 		};
 
-
 		if($this->ili()){
 			$res['success'] = true;
 			$user = $this->cur_user();
@@ -510,7 +510,9 @@ class WorksheetsController extends Controller{
 				}
 			}
 
-			$thesample->refresh();
+			if($thesample !== null){
+				$thesample->refresh();
+			}
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $thesample;
@@ -539,7 +541,6 @@ class WorksheetsController extends Controller{
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
 		};
-
 
 		if($this->ili()){
 			$res['success'] = true;
@@ -574,15 +575,24 @@ class WorksheetsController extends Controller{
 
 					if($sheet->has_readings === false){
 						$msg = "you cant publish a worksheet without readings";
+						$update_runlog($msg);
 					} else {
 						$msg = "publishing worksheet";
+						$update_runlog($msg);
 
 						$sheet->is_published = true;
+						$sheet->published_at = Carbon::now();
 						$sheet->save();
+
 						$reslt = true;
 						$msg = "worksheet published successfully";
+						$update_runlog($msg);
 					}
 				}
+			}
+
+			if($thesample !== null){
+				$thesample->refresh();
 			}
 
 			$res['result'] = $reslt;

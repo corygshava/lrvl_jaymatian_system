@@ -101,6 +101,7 @@
 		}
 	}
 </style>
+
 <div class="modals">
 	<button class="mybtn primary w3-hide" id="add_edit_photos_trig" data-toggle="modal" data-target="#add_edit_photos_modal">
 		<i class="fas fa-plus"></i>
@@ -181,6 +182,7 @@
 		</div>
 	</div>
 </div>
+
 <script>
 	alert_dark('loaded img_processor component');
 

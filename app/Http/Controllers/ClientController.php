@@ -17,13 +17,15 @@ class ClientController extends Controller{
 			$res['message'] = "all clients retrieved";
 
 			$perPage = $req->input('per_page', 10);
-			$search = $req->input('search');
+			$search = $req->input('search',null);
 			$sortBy = $req->input('sort_by', 'created_at');
 			$sortDirection = $req->input('sort_direction', 'desc');
 
 			// filters
 			$payment_plan = $req->input('payment_plan',null);
 			$client_gender = $req->input('client_gender',null);
+
+			$search = $search == '*' ? null : $search;
 
 			$res['runlog'][] = [
 				"perPage" => $perPage,

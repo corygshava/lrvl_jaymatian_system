@@ -1225,10 +1225,14 @@
 					// alert_info('going to task management UI');
 					window['cur_task_id'] = dta.sendme.id;
 
+					window[variableAtlas['t_i_act']] = 'showthis';
+					window[variableAtlas['t_i_args']] = 'worksheet';
+
 					let senddeets = {
 						template: linkAtlas['task_info'],
 						sidenote: pageNames['task_info'],
 					};
+
 					loadPage(senddeets);
 					localStorage.removeItem(prefsAtlas['last_saved_task']);
 				},false,() => {

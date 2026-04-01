@@ -33,6 +33,8 @@ abstract class Controller{
 	public static $bizfiles_path = "runtime/bizinfo/";
 	public static $report_files_path = "runtime/report_files/";
 	public static $report_images_path = "runtime/report_images/";
+	public static $invoice_files_path = "runtime/invoice_files/";
+	public static $invoice_images_path = "runtime/invoice_images/";
 
 	// Api stuff
 	public static $fetchId = 'viaFetch';
@@ -951,11 +953,16 @@ abstract class Controller{
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
 		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
 
 		if($this->ili()){
 			$res['success'] = true;
-			$msg = "fetching permissions";
-			$update_runlog($msg);
+			$update_msg('starting the procedure');
 			$reslt = false;
 
 			$cmdt = self::commondata();

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Result extends Model{
+	// traits
+	use TimeRangeScope;
+	use TrackLastUpdater;
+
     protected $fillable = [
 		'task_id',
         'sample_id',
@@ -26,10 +30,6 @@ class Result extends Model{
         'au_ppm' => 'decimal:2',
         'cu_ppm' => 'decimal:2',
     ];
-
-	// traits
-	use TimeRangeScope;
-	use TrackLastUpdater;
 
 	// relationships
 	public function sample(): BelongsTo {

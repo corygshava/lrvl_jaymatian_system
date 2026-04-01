@@ -178,8 +178,7 @@
 						<h1 class="w3-center themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
 							<div class="thelogo">
-								<!-- <img src="./_assets/img/logo.png"> -->
-								<img src="./_assets/img/logo.jpg">
+								<img src="">
 							</div>
 							<div class="flow gap-tn">
 								<div>
@@ -279,7 +278,7 @@
 					<div class="page-section">
 						<div id="signs">
 							<div class="flowline in_fullwidth signsection">
-								<img src="./_assets/img/sign_2.png" class="signature_image">
+								<img src="" class="signature_image">
 								<div class="anc">
 									<b>Technical Staff</b>
 								</div>
@@ -296,7 +295,7 @@
 								</div>
 							</div>
 							<div class="flowline in_fullwidth signsection">
-								<img src="./_assets/img/sign_1.png" class="signature_image">
+								<img src="" class="signature_image">
 								<div class="anc">
 									<b>Authorizer</b>
 								</div>
@@ -314,7 +313,7 @@
 							</div>
 						</div>
 						<div class="stamp_space" id="stamp">
-							<img src="./_assets/img/stamp_1.png" class="stamp_image">
+							<img src="" class="stamp_image">
 						</div>
 					</div>
 

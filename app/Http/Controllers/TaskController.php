@@ -455,19 +455,24 @@ class TaskController extends Controller{
 		]);
 		// */
 
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
 
 		if($this->ili()){
 			$res['success'] = true;
 			$msg = "fetching permissions";
+			$update_runlog($msg);
 			$reslt = false;
 			$task = null;
 
 			$wegood = self::verifyPassword($passed['admin_password'],$outps);
 
-			$res['runlog'][] = ['decrypted_pw' => $outps];
+			// $res['runlog'][] = ['decrypted_pw' => $outps];
 
 			if(!$wegood){
 				$msg = "invalid admin password";
+				$update_runlog($msg);
 			} else {
 				$task = Task::query()
 					->where('id',$passed['taskid'])
@@ -481,7 +486,11 @@ class TaskController extends Controller{
 
 				if($task == null){
 					$msg = "task not found";
+					$update_runlog($msg);
 				} else {
+					$msg = "task found";
+					$update_runlog($msg);
+
 					$bal = $task['balance'];
 					$cost = $task['cost'];
 					$paid = $task['paid'];
@@ -493,8 +502,12 @@ class TaskController extends Controller{
 
 					if($client == null){
 						$msg = "invalid client details";
+						$update_runlog($msg);
 					} else {
-						$payamt = $passed['amount'];
+						$msg = "client found";
+						$update_runlog($msg);
+
+						$payamt = (float) $passed['amount'];
 
 						// /*
 						Payment::create([
@@ -504,7 +517,7 @@ class TaskController extends Controller{
 							'method' => $passed['pay_method'],
 							'amount' => $payamt,
 							'status' => 1,
-							'extra_details' => json_encode(['added_via' => 'task_info']),
+							'extra_details' => ['added_via' => 'task_info'],
 							'transaction_time' => Carbon::now(),
 						]);
 						// */
@@ -512,14 +525,24 @@ class TaskController extends Controller{
 						$newbal = $bal - $amt;
 						$paid += $amt;
 
-						if($client->client_credit > 0){
-							$client->client_credit = $client->client_credit - $payamt;
-							$client->client_credit = $client->client_credit < 0 ? 0 : $client->client_credit;
+						$update_runlog("client credit: ".$client->credit_balance);
+
+						if($client->credit_balance > 0){
+							$client->credit_balance = $client->credit_balance - $payamt;
+							$client->credit_balance = $client->credit_balance < 0 ? 0 : $client->credit_balance;
+							$client->save();
 
 							$msg = "client credit updated";
+							$update_runlog($msg);
+						} else {
+							$msg = "client credit not updated";
+							$update_runlog($msg);
 						}
 
 						if($newbal < 0){
+							$msg = "client overpaid";
+							$update_runlog($msg);
+
 							$newbal = 0;
 
 							// remove from client_credit
@@ -533,8 +556,6 @@ class TaskController extends Controller{
 						} else {
 							$msg = "payment added successfully";
 						}
-
-						$client->save();
 
 						$tochange = [
 							'balance' => $newbal,

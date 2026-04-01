@@ -973,12 +973,12 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 
 /* report_setup */
 	[data-role="report_setup"]{
-		padding: 96px;
+		padding: 64px 48px;
 		background: #fff;
 		--r_border: #999;
 		--w: 824px;
 		width: var(--w);
-		/*height: 1056px;*/
+		min-height: 1056px;
 		font-size: 0.7rem;
 	}
 	[data-role="report_setup"]>div{

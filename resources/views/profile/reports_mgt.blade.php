@@ -1,3 +1,15 @@
+<?php
+	/*
+	require_once __DIR__.'/piece_reports_xtras.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.reports_xtras')
+{{-- --> --}}
+
 <style>
 	/* stats (keep here, ill figure them out later) */
 		.stat-card-modern {
@@ -371,7 +383,7 @@
 
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Payment Records</h5>
+				<h5 class="data-title" id="tableTitle">Report Records</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">
@@ -409,18 +421,6 @@
 		</div>
 	</div>
 </div>
-
-<?php
-	/*
-	require_once __DIR__.'/piece_reports_xtras.php';
-	require_once __DIR__.'/datatables_code.php';
-	// */
-?>
-
-{{-- <!-- --}}
-@include('pieces.codes_datatables')
-@include('pieces.reports_xtras')
-{{-- --> --}}
 
 <script>
 	// Initialize the data table with your configuration

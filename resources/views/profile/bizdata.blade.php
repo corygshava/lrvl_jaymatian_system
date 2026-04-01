@@ -435,6 +435,10 @@
 					<span class="info-label">Authorizer Name:</span>
 					<span class="info-value slide-up" style="${mekstagger(200,9)}">${b_data.auth_staff || '--[!]--'}</span>
 				</div>
+				<div class="info-row">
+					<span class="info-label">Mpesa Details:</span>
+					<span class="info-value slide-up" style="${mekstagger(200,9)}">${b_data.mpesa || '--[!]--'}</span>
+				</div>
 			`;
 
 			bizinfoDataDisplay.innerHTML = outht;
@@ -907,6 +911,7 @@
 			add_edit_bizinfo_form.phone.value = b_info.phone || '';
 			add_edit_bizinfo_form.tech_staff.value = b_info.tech_staff || '';
 			add_edit_bizinfo_form.auth_staff.value = b_info.auth_staff || '';
+			add_edit_bizinfo_form.mpesa.value = b_info.mpesa || '';
 		}
 		window['submit_bizinfo'] = (el) => {
 			let b_info = {
@@ -917,6 +922,7 @@
 				phone : el.phone.value || '--!--',
 				tech_staff : el.tech_staff.value || '--!--',
 				auth_staff : el.auth_staff.value || '--!--',
+				mpesa : el.mpesa.value || '--!--',
 			}
 
 			temp_bizdata.temp.bizinfo = b_info;
