@@ -254,6 +254,8 @@
 	function renderReportData(dta) {
 		let rectype = 'report';
 
+		// console.log('report: ',dta);
+
 		// Validate rectype
 		if (!dta || dta.rectype !== rectype) {
 			alert_danger(`Invalid data: rectype must be ${rectype}`);

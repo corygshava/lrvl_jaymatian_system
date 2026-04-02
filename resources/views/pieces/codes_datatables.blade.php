@@ -18,7 +18,7 @@
 		let currentFilters = {};
 		let searchQuery = '';
 		let sortColumn = '';
-		let sortDirection = 'asc';
+		let sortDirection = 'desc';
 		let debounceTimer = null;
 
 		/**
@@ -62,7 +62,7 @@
 
 			// Additional request parameters
 			additionalParams: {},
-			sortDirection: 'asc',
+			sortDirection: 'desc',
 		};
 
 		/**

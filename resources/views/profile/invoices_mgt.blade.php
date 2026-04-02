@@ -620,7 +620,7 @@
 
 	function viewRecordInfo(who) {
 		// alert_info('wottafag');
-		view_report_modal_trig.click();
+		view_invoice_modal_trig.click();
 		renderInvoiceData(who);
 	}
 

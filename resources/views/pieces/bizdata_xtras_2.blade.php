@@ -1,5 +1,4 @@
 <div>
-
 	<button class="mybtn primary w3-hide" id="add_edit_samples_trig" data-toggle="modal" data-target="#add_edit_samples_modal">
 		<i class="fas fa-plus"></i>
 		Add sample type

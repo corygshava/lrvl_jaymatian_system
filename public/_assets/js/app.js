@@ -812,6 +812,12 @@ function mekHeading(content,type){
 function mekSpan(w) {
 	return `<span>${w}</span>`;
 }
+function mekStrong(w) {
+	return `<strong>${w}</strong>`;
+}
+function mekBold(w) {
+	return mekStrong(w);
+}
 
 // [end of generators]_____________________________________________________________
 
@@ -946,6 +952,8 @@ function formatNumber(n,dp = 0) {
 	if(Number(n) == NaN){
 		alert_danger('invalid number passed for formatting');
 		return 'NaN';
+	} else {
+		n = Number(n);
 	}
 
 	let parts = n.toString().split('.');

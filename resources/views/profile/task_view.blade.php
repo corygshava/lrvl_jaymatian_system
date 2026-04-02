@@ -130,9 +130,18 @@
 						<span class="text-uppercase text-muted font-weight-bold">Quick Actions</span>
 						<div class="row mt-3">
 							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+								<div class="action-card card themeround text-center p-3" onclick="viewWorksheets()">
+									<div class="action-icon bg-warning text-white mx-auto">
+										<i data-myicon="worksheets"></i>
+									</div>
+									<h6 class="mb-0 font-weight-bold">Worksheets</h6>
+									<small class="text-muted">View Worksheets</small>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
 								<div class="action-card card themeround text-center p-3" onclick="viewSamples()">
 									<div class="action-icon bg-warning text-white mx-auto">
-										<i class="fas fa-flask"></i>
+										<i data-myicon="samples"></i>
 									</div>
 									<h6 class="mb-0 font-weight-bold">Samples</h6>
 									<small class="text-muted">View samples</small>
@@ -141,7 +150,7 @@
 							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
 								<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
 									<div class="action-icon bg-success text-white mx-auto">
-										<i class="fas fa-dollar-sign"></i>
+										<i data-myicon="payments"></i>
 									</div>
 									<h6 class="mb-0 font-weight-bold">Payments</h6>
 									<small class="text-muted">Payment history</small>
@@ -150,13 +159,13 @@
 							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
 								<div class="action-card card themeround text-center p-3" onclick="viewReports()">
 									<div class="action-icon bg-info text-white mx-auto">
-										<i class="fas fa-file-alt"></i>
+										<i data-myicon="reports"></i>
 									</div>
 									<h6 class="mb-0 font-weight-bold">Reports</h6>
 									<small class="text-muted">View reports</small>
 								</div>
 							</div>
-							<div class="col-lg-3 col-md-3 col-sm-6 mb-3">
+							<div class="col-lg-3 col-md-3 col-sm-6 mb-3 w3-hide">
 								<div class="action-card card themeround text-center p-3" onclick="viewClient()">
 									<div class="action-icon bg-primary text-white mx-auto">
 										<i class="fas fa-user"></i>
@@ -599,6 +608,12 @@
 	window['viewSamples'] = () => {
 		alert_info(`Viewing samples for task ${taskData.task_no}`);
 		openinfo('showthis','samples');
+		// Navigate to samples view
+	}
+
+	window['viewWorksheets'] = () => {
+		alert_info(`Viewing samples for task ${taskData.task_no}`);
+		openinfo('showthis','worksheet');
 		// Navigate to samples view
 	}
 
