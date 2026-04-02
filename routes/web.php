@@ -140,6 +140,8 @@ Route::prefix('/media')->group(function(){
 	Route::get('/bizimg/{fyl}',[ViewController::class, 'showimg']);
 	Route::get('/getreport/imgs/{fyl}',[ViewController::class, 'showreport_img']);
 	Route::get('/getreport/pdfs/{fyl}',[ViewController::class, 'showreport_pdf']);
+	Route::get('/getinvoice/imgs/{fyl}',[ViewController::class, 'showinvoice_img']);
+	Route::get('/getinvoice/pdfs/{fyl}',[ViewController::class, 'showinvoice_pdf']);
 });
 
 require __DIR__.'/auth.php';

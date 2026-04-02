@@ -1,4 +1,15 @@
-<!-- incomplete setup -->
+<?php
+	/*
+	require_once __DIR__.'/piece_add_client_form.php';
+	require_once __DIR__.'/piece_payments_xtras.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.codes_datatables')
+@include('pieces.payments_xtras')
+{{-- --> --}}
 
 <style>
 	/* stats (keep here, ill figure them out later) */
@@ -465,19 +476,6 @@
 	</div>
 </div>
 
-<?php
-	/*
-	require_once __DIR__.'/piece_add_client_form.php';
-	require_once __DIR__.'/piece_payments_xtras.php';
-	require_once __DIR__.'/datatables_code.php';
-	// */
-?>
-
-{{-- <!-- --}}
-@include('pieces.codes_datatables')
-@include('pieces.payments_xtras')
-{{-- --> --}}
-
 <script>
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
@@ -553,16 +551,16 @@
 							// return `<span class="badge ${value}">${value}</span>`;
 						}
 					},
-					/*{
-						title: 'Status',
-						data: 'status',
+					{
+						title: 'Purpose',
+						data: 'payment_type',
 						sortable: true,
 						render: function(value) {
-							let cls = state_classes[value];
+							let cls = type_classes[value];
 							// let con = value == 'monthly' ? "yes" : "no";
-							return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+							return `<strong class="mybadge themeround ${cls}">${value}</strong>`;
 						}
-					},*/
+					},
 					{
 						title: 'Actions',
 						data: 'id',

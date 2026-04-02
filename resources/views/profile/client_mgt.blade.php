@@ -623,12 +623,24 @@
 
 				// Optional: Filter definitions
 				filters: [
-					/*{
-						name: 'user_roles_id',
-						label: 'role_name',
+					{
+						name: 'with_credit_balance',
+						label: 'credit balance',
 						rawname: 'user roles',
-						options: user_roles_condensed
-					},*/
+						options: [
+							{value: 'yes', label: 'has credit balance'},
+							{value: 'no', label: 'no credit balance'},
+						]
+					},
+					{
+						name: 'client_gender',
+						label: 'Gender',
+						rawname: 'user roles',
+						options: [
+							{value: 'male', label: 'male'},
+							{value: 'female', label: 'female'},
+						]
+					},
 					{
 						name: 'payment_plan',
 						label: 'payment plan',
@@ -643,6 +655,7 @@
 				// Optional: Enable stats
 				// enableStats: false,
 				// statsEndpoint: '/api/students/stats',
+				sortDirection: 'desc',
 
 				// Optional: Callbacks
 				onDataLoaded: function(data) {

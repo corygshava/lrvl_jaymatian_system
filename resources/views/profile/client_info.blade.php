@@ -126,10 +126,14 @@
 					<i data-myicon="Reports"></i> Reports
 				</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="invoices-tab" data-toggle="tab" href="#invoices" role="tab">
+					<i data-myicon="invoices"></i> Invoices
+				</a>
+			</li>
 		</ul>
 
 		<div class="tab-content border in_fullwidth panelbg themeround custom-tab-content container-fluid" id="myTabContent">
-			<!-- Overview Tab -->
 			<div class="tab-pane fade show active" id="samples" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Task Samples</h4>
@@ -146,7 +150,6 @@
 				</div>
 			</div>
 
-			<!-- Details Tab -->
 			<div class="tab-pane fade" id="payments" role="tabpanel">
 				<div class="tab-inner-content spacy-sm w3-display-container">
 					<h4>Task Payments</h4>
@@ -167,7 +170,6 @@
 				</div>
 			</div>
 
-			<!-- History Tab -->
 			<div class="tab-pane fade" id="reports" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Generated reports</h4>
@@ -175,6 +177,26 @@
 
 					<div class="table-responsive themeround border">
 						<table class="table table-hover mb-0 table-modern" data-role="reports_table">
+							<thead data-subrole="tableHead" class="thead-light">
+							</thead>
+							<tbody data-subrole="tableBody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane fade" id="invoices" role="tabpanel">
+				<div class="tab-inner-content spacy-sm w3-display-container">
+					<h4>Task Payments</h4>
+					<p>here are the payments made for this task</p>
+
+					<div class="spacy-sm w3-display-topright" id="invoice_ops">
+						<button class="mybtn primary" data-runme="add_payment_invoice" data-subrole="add_pay_btn"><i class="fa fa-plus"></i> add payment</button>
+					</div>
+
+					<div class="table-responsive themeround border">
+						<table class="table table-hover mb-0 table-modern" data-role="invoices_table">
 							<thead data-subrole="tableHead" class="thead-light">
 							</thead>
 							<tbody data-subrole="tableBody">

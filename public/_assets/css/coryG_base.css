@@ -236,12 +236,12 @@ a{
 	.gap-lg{gap: var(--size-lg) !important;}
 	.gap-mg{gap: var(--size-mg) !important;}
 
-	.text-tn{font-size: var(--size-tn);}
-	.text-sm{font-size: var(--size-sm);}
-	.text-nm{font-size: var(--size-nm);}
-	.text-md{font-size: var(--size-md);}
-	.text-lg{font-size: var(--size-lg);}
-	.text-mg{font-size: var(--size-mg);}
+	.text-tn{font-size: var(--size-tn) !important;}
+	.text-sm{font-size: var(--size-sm) !important;}
+	.text-nm{font-size: var(--size-nm) !important;}
+	.text-md{font-size: var(--size-md) !important;}
+	.text-lg{font-size: var(--size-lg) !important;}
+	.text-mg{font-size: var(--size-mg) !important;}
 
 	.nopadding{padding: 0 !important;}
 	.spacy-tn{padding: var(--size-tn) !important;}

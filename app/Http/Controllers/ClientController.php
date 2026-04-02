@@ -24,6 +24,7 @@ class ClientController extends Controller{
 			// filters
 			$payment_plan = $req->input('payment_plan',null);
 			$client_gender = $req->input('client_gender',null);
+			$has_credit_balance = $req->input('with_credit_balance',null);
 
 			$search = $search == '*' ? null : $search;
 
@@ -34,6 +35,7 @@ class ClientController extends Controller{
 				"sortDirection" => $sortDirection,
 				"payment_plan" => $payment_plan,
 				"client_gender" => $client_gender,
+				"credit_balance" => $has_credit_balance,
 			];
 
 			$clients = Client::query();
@@ -48,7 +50,7 @@ class ClientController extends Controller{
 				$res['runlog'][] = "added search filter";
 			}
 
-			// filter for user roles
+			// filter for payment plans
 			if($payment_plan){
 				$clients = $clients->where('payment_plan',$payment_plan);
 			}
@@ -56,6 +58,12 @@ class ClientController extends Controller{
 			// filter for activity
 			if($client_gender){
 				$clients = $clients->where('client_gender',$client_gender);
+			}
+
+			// filter for credit balance
+			if($has_credit_balance){
+				$con = $has_credit_balance == 'yes' ? '>' : '=';
+				$clients = $clients->where('credit_balance',$con,0);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

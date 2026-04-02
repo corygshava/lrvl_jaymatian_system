@@ -1,13 +1,15 @@
 <?php
 	/*
-	require_once __DIR__.'/piece_reports_xtras.php';
+	require_once __DIR__.'/piece_invoices_xtras.php';
 	require_once __DIR__.'/datatables_code.php';
+	require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
 
 {{-- <!-- --}}
 @include('pieces.codes_datatables')
-@include('pieces.reports_xtras')
+@include('pieces.invoices_xtras')
+@include('pieces.codes_simpletables')
 {{-- --> --}}
 
 <style>
@@ -360,7 +362,6 @@
 		</div>
 	</div>
 
-
 	<div class="stats-row w3-hide themeround" id="statsContainer">
 	</div>
 
@@ -462,6 +463,25 @@
 						}
 					},
 					{
+						title: 'Payment Progress',
+						data: 'balance',
+						sortable: true,
+						render: function(value,row) {
+							let myprogress = (row.total_paid / row.total) * 100;
+							return `
+								<div>
+									<div style="padding: 4px">
+										<b class="themetxt">${formatNumber(row.total_paid)}</b> / <b>${formatNumber(row.total)}</b>
+										<span>[${Math.floor(myprogress)} %]</span>
+									</div>
+									<div class="progress themeround except" style="height:0.5rem;">
+										<div class="progress-bar bg-primary bg-striped" style="width: ${myprogress}%"></div>
+									</div>
+								</div>
+							`;
+						}
+					},
+					{
 						title: 'Client name',
 						data: 'client',
 						sortable: true,
@@ -496,8 +516,11 @@
 						render: function(value, row) {
 							return `
 								<div class="action-btns">
-									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<a class="mybtn primary sm" target="blank" href="${linkAtlas['getinvoice_pdf']}/${row.pdf_link}" title="View">
 										<i class="fas fa-eye"></i> View
+									</a>
+									<button class="mybtn primary sm" data-runme="make_invoice_payment" data-myid="${value}" title="Make payment record">
+										<i class="${iconAtlas['payments']}"></i> Make payment
 									</button>
 								</div>
 							`;
@@ -570,18 +593,35 @@
 		}
 
 		let cur = {
-			rectype: 'report',
+			rectype: 'invoice',
 			data: myn,
 		}
 
 		// copytext1(JSON.stringify(cur,null,4));
 		viewRecordInfo(cur);
 	}
+	window['make_invoice_payment'] = (el) => {
+		let id = el.dataset.myid || 0;
+		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == ("" + id).toLowerCase();})[0];
+
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		let cur = {
+			rectype: 'invoice',
+			data: myn,
+		}
+
+		renderInvoiceData(cur);
+		trymekpayment();
+	}
 
 	function viewRecordInfo(who) {
 		// alert_info('wottafag');
 		view_report_modal_trig.click();
-		renderReportData(who);
+		renderInvoiceData(who);
 	}
 
 	window['form_afterfx'] = (m) => {

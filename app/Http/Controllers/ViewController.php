@@ -314,6 +314,28 @@ class ViewController extends Controller{
 
 		return response()->file($path);
 	}
+	public function showinvoice_pdf(Request $req,$fyl = ""){
+		$path = storage_path((self::$invoice_files_path).$fyl);
+		// dd($path);
+
+		if(!File::exists($path)){
+			http_response_code(404);
+			return null;
+		}
+
+		return response()->file($path);
+	}
+	public function showinvoice_img(Request $req,$fyl = ""){
+		$path = storage_path((self::$invoice_images_path).$fyl);
+		// dd($path);
+
+		if(!File::exists($path)){
+			http_response_code(404);
+			return null;
+		}
+
+		return response()->file($path);
+	}
 
 	// data
 	public function showpermissions(Request $req){

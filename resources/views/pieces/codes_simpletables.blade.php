@@ -12,6 +12,18 @@
 		window[callme](el,n,wot);
 	}
 
+	window['setup_simpleTable'] = (prop = `data-role="tasks_table"`) => {
+		return `
+			<div class="table-responsive themeround border">
+				<table class="table table-hover mb-0 table-modern" ${prop}>
+					<thead data-subrole="tableHead" class="thead-light">
+					</thead>
+					<tbody data-subrole="tableBody">
+					</tbody>
+				</table>
+			</div>
+		`;
+	}
 	window['render_simpleTable'] = (dta) => {
 		let dft = {
 			data: {},

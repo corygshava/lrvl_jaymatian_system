@@ -237,6 +237,10 @@
 
 <script>
 	let payment = {};
+	let type_classes = {
+		'invoice' : 'alert-primary w3-text-blue',
+		'task' : 'alert-warning w3-text-black',
+	};
 
 	window['task_state_atlas'] = [
 		'Pending',
@@ -363,6 +367,10 @@
 
 			<div class="sample-info-card w3-hide_">
 				<h5><i class="fas fa-money-bill"></i> Payment Information</h5>
+				<div class="info-row">
+					<span class="info-label">Payment Purpose:</span>
+					<span class="info-value"><b class="mybadge text-sm ${type_classes[payment.payment_type]}">${payment.payment_type}</b></span>
+				</div>
 				<div class="info-row">
 					<span class="info-label">Client Name:</span>
 					<span class="info-value">${payment.owner.client_name}</span>

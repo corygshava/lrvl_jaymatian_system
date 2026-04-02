@@ -494,9 +494,9 @@
 						render: function(value, row) {
 							return `
 								<div class="action-btns">
-									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<a class="mybtn primary sm" target="blank" href="${linkAtlas['getreport_pdf']}/${row.pdf_link}" title="View">
 										<i class="fas fa-eye"></i> View
-									</button>
+									</a>
 								</div>
 							`;
 						}

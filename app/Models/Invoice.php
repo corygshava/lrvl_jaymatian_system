@@ -6,6 +6,7 @@ use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model{
 	use TimeRangeScope;
@@ -46,6 +47,9 @@ class Invoice extends Model{
 		return $this->belongsTo(User::class,'created_by');
 	}
 	public function tasks(): BelongsToMany{
-		return $this->belongsToMany(Invoice::class,'invoice_tasks','task_id','invoice_id');
+		return $this->belongsToMany(Task::class,'invoice_tasks','invoice_id','task_id');
+	}
+	public function payments(): HasMany{
+		return $this->hasMany(Payment::class,'invoice_id');
 	}
 }

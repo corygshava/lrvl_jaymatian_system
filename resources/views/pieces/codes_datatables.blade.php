@@ -6,6 +6,7 @@
 	 * @author Cornelius Shava
 	 *
 	 * assumes you are using my template for sending info from APIs
+	 *
 	 */
 
 	window['LaravelDataTable'] = (function() {
@@ -108,20 +109,30 @@
 		 * Setup event listeners
 		 */
 		function setupEventListeners() {
-			const searchstuff = (e) => {
+			const searchstuff = (e,immediate = false) => {
 				clearTimeout(debounceTimer);
 
 				let tosearch = e.target.value;
 
 				if(tosearch == ''){
+					alert_warning('type something first');
 					return;
 				}
 
-				debounceTimer = setTimeout(() => {
+				const searchit = () => {
+					// alert_info(`searching for '${e.target.value}'`);
 					searchQuery = e.target.value;
 					currentPage = 1;
 					loadData();
-				}, 700); // debounce to prevent too many requests
+				}
+
+				if(!immediate){
+					debounceTimer = setTimeout(() => {
+						searchit();
+					}, 700); // debounce to prevent too many requests
+				} else {
+					searchit();
+				}
 			}
 
 			// Search input
@@ -134,8 +145,7 @@
 
 					searchInput.addEventListener('keydown', function(e) {
 						if(e.key.toLowerCase() == 'enter'){
-							alert_info(`searching for '${e.target.value}'`);
-							searchstuff(e);
+							searchstuff(e,true);
 						}
 					});
 				}

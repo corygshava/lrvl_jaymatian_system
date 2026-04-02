@@ -101,6 +101,7 @@
 				'save_readings' : './op/save_worksheet_readings',
 				'publish_worksheet' : './op/publish_worksheet',
 				'standardize_sample_charges' : './op/standardize_charges',
+				'add_payment_invoice' : './op/add_payment_invoice',
 
 			// datalinks
 				'search_clients' : './data/search_clients',
@@ -131,6 +132,8 @@
 				'bizimages' : './media/bizimg',
 				'getreport_img' : './media/getreport/imgs',
 				'getreport_pdf' : './media/getreport/pdfs',
+				'getinvoice_img' : './media/getinvoice/imgs',
+				'getinvoice_pdf' : './media/getinvoice/pdfs',
 		};
 		const pageNames = {
 			'view_users' : 'user information',
@@ -179,19 +182,21 @@
 			'staff_dash' : 'fa fa-house-user',
 			'user_roles' : 'fa fa-user-lock',
 			'user_mgt' : 'fa fa-user-cog',
+			'users' : 'fa fa-user-cog',
 			'user_profile' : 'fa fa-user-tie',
+			'user' : 'fa fa-user-tie',
 			'clients' : 'fa fa-users',
 			'client' : 'fa fa-user',
 			'tasks' : 'fa fa-folder',
 			'add_task' : 'fa fa-folder-plus',
 			'samples' : 'fa fa-flask',
 			'payments' : 'fa fa-dollar-sign',
-			'reports' : 'fa fa-file-contract',
+			'reports' : 'fa fa-file-alt',
 			'bizdata' : 'fa fa-briefcase',
 			'xtras' : 'fa fa-file-code',
 			'xtras_2' : 'fa fa-file-excel',
 			'worksheets' : 'fa fa-file-signature',
-			'invoices' : 'fa fa-file-invoice',
+			'invoices' : 'fa fa-file-invoice-dollar',
 			'results' : 'fas fa-chart-line',
 		};
 

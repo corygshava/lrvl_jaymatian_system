@@ -58,6 +58,8 @@ class InvoiceController extends Controller{
 				->with('creator')
 				->with('tasks')
 				->withCount('tasks')
+				->with('payments')
+				->withCount('payments')
 			;
 
 			if($search){
