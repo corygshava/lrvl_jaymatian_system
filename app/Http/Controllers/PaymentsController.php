@@ -22,6 +22,7 @@ class PaymentsController extends Controller{
 			// filters
 			$task_status = $req->input('status',null);
 			$pay_method = $req->input('method',null);
+			$pay_type = $req->input('payment_type',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
@@ -47,6 +48,7 @@ class PaymentsController extends Controller{
 				->with('mycreator')
 				->with('owner')
 				->with('task')
+				->with('invoice')
 			;
 
 			if($search){
@@ -57,6 +59,9 @@ class PaymentsController extends Controller{
 					->orWhereHas('task', function($q) use ($search){
 						$q->where('task_no','LIKE',"%{$search}%");
 					})
+					->orWhereHas('invoice', function($q) use ($search){
+						$q->where('invoice_no','LIKE',"%{$search}%");
+					})
 					->orWhere('amount', 'like', "%{$search}%")
 					// ->orWhere('sample_tag', 'like', "%{$search}%")
 				;
@@ -66,6 +71,11 @@ class PaymentsController extends Controller{
 			// filter for task status
 			if($task_status){
 				$records = $records->where('status',$task_status);
+			}
+
+			// filter for task status
+			if($pay_type){
+				$records = $records->where('payment_type',$pay_type);
 			}
 
 			// filter for whether or not its paid
@@ -155,6 +165,7 @@ class PaymentsController extends Controller{
 				->with('mycreator')
 				->with('owner')
 				->with('task')
+				->with('invoice')
 				->get()
 			;
 

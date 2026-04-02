@@ -519,11 +519,19 @@
 						}
 					},
 					{
-						title: 'Task number',
+						title: 'Associate Number',
 						data: 'task',
 						sortable: true,
-						render: function(value) {
-							return `<strong>${value.task_no}</strong>`;
+						render: function(value,row) {
+							if(row.task !== null){
+								value = `[${row.payment_type}] ${row.task.task_no}`;
+							} else if(row.invoice !== null){
+								value = `[${row.payment_type}] ${row.invoice.invoice_no}`;
+							} else {
+								value = "<i>No associate serial</i>";
+							}
+
+							return `<strong>${value}</strong>`;
 						}
 					},
 					{
@@ -556,7 +564,7 @@
 						data: 'payment_type',
 						sortable: true,
 						render: function(value) {
-							let cls = type_classes[value];
+							let cls = pay_type_classes[value];
 							// let con = value == 'monthly' ? "yes" : "no";
 							return `<strong class="mybadge themeround ${cls}">${value}</strong>`;
 						}
@@ -596,6 +604,15 @@
 						label: 'payment Method',
 						rawname: 'method',
 						options: meth_map
+					},
+					{
+						name: 'payment_type',
+						label: 'Payment Type',
+						rawname: 'method',
+						options: [
+							{value: 'invoice',label: 'Invoice'},
+							{value: 'task',label: 'Task'},
+						]
 					}
 				],
 

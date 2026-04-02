@@ -473,7 +473,7 @@
 		const step2 = (d) => {
 			// alert
 			// return;
-			if(d.sendme.credit_balance == 0){
+			if(d.sendme.credit_balance <= 0){
 				throw new Error('Client has no credit balance');
 			}
 

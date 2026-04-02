@@ -5,6 +5,7 @@
 	require_once __DIR__.'/piece_payments_xtras.php';
 	require_once __DIR__.'/piece_reports_xtras.php';
 	require_once __DIR__.'/piece_worksheet_xtras.php';
+	require_once __DIR__.'/piece_invoices_xtras.php';
 	require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
@@ -15,6 +16,7 @@
 @include('pieces.payments_xtras')
 @include('pieces.reports_xtras')
 @include('pieces.worksheet_xtras')
+@include('pieces.invoices_xtras')
 @include('pieces.codes_simpletables')
 {{-- --> --}}
 
@@ -136,8 +138,8 @@
 		<div class="tab-content border in_fullwidth panelbg themeround custom-tab-content container-fluid" id="myTabContent">
 			<div class="tab-pane fade show active" id="samples" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
-					<h4>Task Samples</h4>
-					<p>here are the samples brought in with this task</p>
+					<h4>Client Samples</h4>
+					<p>here are some of the samples brought in by the client</p>
 
 					<div class="table-responsive themeround border">
 						<table class="table table-hover mb-0 table-modern" data-role="samples_table">
@@ -152,10 +154,10 @@
 
 			<div class="tab-pane fade" id="payments" role="tabpanel">
 				<div class="tab-inner-content spacy-sm w3-display-container">
-					<h4>Task Payments</h4>
-					<p>here are the payments made for this task</p>
+					<h4>Client Payments</h4>
+					<p>here are the payments made by the client</p>
 
-					<div class="spacy-sm w3-display-topright" id="payment_ops">
+					<div class="spacy-sm w3-display-topright w3-hide" id="payment_ops">
 						<button class="mybtn primary" data-runme="add_payment" data-subrole="add_pay_btn"><i class="fa fa-plus"></i> add payment</button>
 					</div>
 
@@ -173,7 +175,7 @@
 			<div class="tab-pane fade" id="reports" role="tabpanel">
 				<div class="tab-inner-content spacy-sm">
 					<h4>Generated reports</h4>
-					<p>here are the generated reports for this task</p>
+					<p>here are the generated reports for this Client</p>
 
 					<div class="table-responsive themeround border">
 						<table class="table table-hover mb-0 table-modern" data-role="reports_table">
@@ -188,12 +190,8 @@
 
 			<div class="tab-pane fade" id="invoices" role="tabpanel">
 				<div class="tab-inner-content spacy-sm w3-display-container">
-					<h4>Task Payments</h4>
-					<p>here are the payments made for this task</p>
-
-					<div class="spacy-sm w3-display-topright" id="invoice_ops">
-						<button class="mybtn primary" data-runme="add_payment_invoice" data-subrole="add_pay_btn"><i class="fa fa-plus"></i> add payment</button>
-					</div>
+					<h4>Client Invoices</h4>
+					<p>here are the invoices made for the client</p>
 
 					<div class="table-responsive themeround border">
 						<table class="table table-hover mb-0 table-modern" data-role="invoices_table">
@@ -209,43 +207,17 @@
 	</div>
 </div>
 
-<button class="mybtn primary w3-hide" id="add_note_trig" data-toggle="modal" data-target="#add_note_modal">
-	<i class="fas fa-plus"></i>
-	Add payment
-</button>
-
-<div class="modal fade" id="add_note_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
-	<div class="modal-dialog modal-md" role="document">
-		<div class="modal-content themeround borderless">
-			<div class="modal-header">
-				<span class="h3 modal-title" id="add_edit_title">Add Note</span>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			</div>
-			<div class="modal-body">
-				<form id="add_note_form" action="defined:add_task_note" data-onsubmit="sendform" data-blockdefault="yes" data-callback="add_note_form_afterfx" method="post">
-					<input type="hidden" name="taskid" value="">
-					<div class="input-group-custom">
-						<div class="form-group">
-							<label class="form-label" for="note">your Note</label>
-							<textarea class="form-control-custom" id="note" name="note" rows="4" placeholder="enter the task notes here" required>
-							</textarea>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
-				<button type="button" class="mybtn primary" data-submitme="#add_note_form">Add note</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script>
 	let task = {};
 	let c_pld = {};
+	let started_init = false;
 
 	let task_payment_state_atlas = window['payment_state_atlas'];
+	let invoice_state_classes = {
+		0 : 'w3-blue',
+		1 : 'w3-orange',
+		2 : 'w3-green',
+	};
 
 	window['client_info_data'] = {};
 	window['killOnLeave'] = [
@@ -269,6 +241,19 @@
 
 	// initialisers
 	window['init_task'] = () => {
+		if(started_init){
+			alert_dark('invalid init call');
+			return;
+		}
+
+		started_init = true;
+
+		let client_fetched = false;
+		let samples_fetched = false;
+		let payments_fetched = false;
+		let reports_fetched = false;
+		let invoices_fetched = false;
+
 		let c_id = window[variableAtlas['client_id']];
 		let nextact = window[variableAtlas['t_i_act']];
 		let nextact_vars = window[variableAtlas['t_i_args']];
@@ -285,20 +270,27 @@
 		// get task
 		const step1 = () => {
 			window[fetch_bypass](linkAtlas['get_client'],{id: c_id},'POST').then((d) => {
-				responseHandler(d,step2,d);
-
 				if(d.result){
 					showError(false);
 				} else {
 					showError(true,{heading: 'Error',text: d.message});
+					return;
 				}
+
+				responseHandler(d,step2,d);
 			})
 		};
 
 		// get payments first
 		const step2 = (d) => {
+			if(client_fetched){
+				alert_danger('invalid samples load call');
+				return;
+			}
+
 			// render task info
 			client_info_data.clientData = d.sendme;
+			client_fetched = true;
 
 			renderBrief();
 			load_txt.innerHTML = 'loading task samples';
@@ -308,22 +300,47 @@
 		}
 
 		const step3 = (d) => {
+			if(samples_fetched){
+				// alert_danger('invalid fetch samples call');
+				return;
+			}
 			client_info_data.samplesData = d.sendme;
+			samples_fetched = true;
 			// render samples
 			// load payments
 			loadMe('payments',linkAtlas['get_payments'],c_pld,step4,'POST');
 		}
 
 		const step4 = (d) => {
+			if(payments_fetched){
+				// alert_danger('invalid fetch payments call');
+				return;
+			}
 			client_info_data.paymentData = d.sendme;
+			payments_fetched = true;
 			// render payments
 			// load reports
 			loadMe('reports',linkAtlas['get_reports'],c_pld,step5,'POST');
 		}
 
 		const step5 = (d) => {
+			if(reports_fetched){
+				// alert_danger('invalid fetch reports call');
+				return;
+			}
 			client_info_data.reportData = d.sendme;
+			reports_fetched = true;
 			// render reports
+
+			loadMe('invoices',linkAtlas['get_invoices'],c_pld,step6,'POST');
+		}
+		const step6 = (d) => {
+			if(invoices_fetched){
+				// alert_danger('invalid fetch invoices call');
+				return;
+			}
+			client_info_data.invoiceData = d.sendme;
+			invoices_fetched = true;
 			// run final step
 			final_step();
 
@@ -338,6 +355,8 @@
 			if(typeof(window[nextact]) == 'function'){
 				window[nextact](nextact_vars);
 			}
+
+			started_init = false;
 		}
 
 		load_txt.innerHTML = 'loading client information';
@@ -453,6 +472,18 @@
 		view_report_modal_trig.click();
 		renderReportData(cur);
 	}
+	window['view_invoice'] = (el,id,w) => {
+		let myn = client_info_data.invoiceData[id];
+
+		let cur = {
+			rectype: 'invoice',
+			data: myn,
+		}
+
+		// copytext1(JSON.stringify(cur,null,4));
+		view_invoice_modal_trig.click();
+		renderInvoiceData(cur);
+	}
 
 	window['showthis'] = (wot) => {
 		// alert_dark('showthis called');
@@ -527,6 +558,7 @@
 		renderSamples();
 		renderPayments();
 		renderReports();
+		renderInvoices();
 
 		refreshUI(200);
 	}
@@ -565,7 +597,7 @@
 		return;
 
 		// extra stuff (for convenience planning)
-		payment_ops.style.display = client_info_data.taskData.balance <= 0 ? 'none' : 'block';
+		// payment_ops.style.display = client_info_data.taskData.balance <= 0 ? 'none' : 'block';
 	}
 	window['renderStats'] = () => {
 		let stats = the_brief.querySelector('[data-subrole="stats"]');
@@ -575,6 +607,7 @@
 		let samples = client_info_data.samplesData;
 		let payments = client_info_data.paymentData;
 		let reports = client_info_data.reportData;
+		let invoices = client_info_data.invoiceData;
 
 		stats.innerHTML = `
 			<div class="stat">
@@ -592,6 +625,10 @@
 			<div class="stat">
 				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Reports</small>
 				<span class="font-weight-bold" id="reports_count">${reports.length}</span>
+			</div>
+			<div class="stat">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Invoices</small>
+				<span class="font-weight-bold" id="invoices_count">${invoices.length}</span>
 			</div>
 		`;
 
@@ -655,7 +692,7 @@
 					field: 'status',
 					cap: 'Status',
 					show: (v) => {
-						return `<b>${sample_state_atlas[v]}</b>`;
+						return `<b class="mybadge ${invoice_state_classes[v]}">${sample_state_atlas[v]}</b>`;
 					}
 				},
 			],
@@ -693,7 +730,14 @@
 				},
 				{
 					field: 'method',
-					cap: 'Method',
+					cap: 'Method'
+				},
+				{
+					field: 'payment_type',
+					cap: 'Purpose',
+					show: (v) => {
+						return `<b class="mybadge ${pay_type_classes[v]}">${v}</b>`;
+					}
 				},
 				{
 					field: 'transaction_time',
@@ -716,7 +760,7 @@
 			rowprops: 'data-rectype="payment"',
 		};
 
-		// /*
+		/*
 		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = client_info_data.clientData || true ? 'none' : 'block';
 		// */
 
@@ -727,9 +771,12 @@
 			data: client_info_data.reportData,
 			cols: [
 				{
-					cap: 'ID',
+					cap: '',
 					field: 'id',
 					width: '50px',
+					show: (v,row,n) => {
+						return n + 1;
+					}
 				},
 				{
 					cap: 'Sample number',
@@ -774,6 +821,64 @@
 			caption: 'reports',
 			viewcall: 'view_rec',
 			rowprops: 'data-rectype="report"',
+		};
+		render_simpleTable(data);
+	}
+	window['renderInvoices'] = () => {
+		const data = {
+			data: client_info_data.invoiceData,
+			cols: [
+				{
+					cap: '',
+					field: 'id',
+					width: '50px',
+					show: (v,row,n) => {
+						return n + 1;
+					},
+				},
+				{
+					cap: 'Invoice number',
+					field: 'invoice_no',
+					show: function(value) {
+						return `<strong>${value}</strong>`;
+					}
+				},
+				{
+					cap: 'Date added',
+					field: 'created_at',
+					show: function(value) {
+						return formatDate0(value);
+						// return `<span class="badge ${value}">${value}</span>`;
+					}
+				},
+				{
+					cap: 'Status',
+					field: 'status',
+					show: function(value) {
+						return `<b class="mybadge ${invoice_state_classes[value]}">${invoice_state_atlas[value]}</b>`;
+					}
+				},
+				/*
+				{
+					cap: 'Actions',
+					field: 'id',
+					width: '200px',
+					show: function(value, row) {
+						return `
+							<div class="action-btns">
+								<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<i class="fas fa-eye"></i> View
+								</button>
+							</div>
+						`;
+					}
+				}
+				// */
+			],
+			tablename: 'invoices_table',
+			caption: 'invoices',
+			viewcall: 'view_rec',
+			rowprops: 'data-rectype="invoice"',
 		};
 		render_simpleTable(data);
 	}

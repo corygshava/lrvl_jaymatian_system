@@ -197,7 +197,7 @@
 		.action-btns {
 			display: flex;
 			flex-direction: row;
-			flex-wrap: wrap;
+			/*flex-wrap: wrap;*/
 			gap: 8px;
 		}
 
@@ -600,12 +600,18 @@
 						width: '200px',
 						render: function(value, row) {
 							return `
-								<div class="action-btns">
-									<button class="btn-action btn-view" onclick="viewRecord(${value})" title="View">
+								<div class="gap-tn action-btns">
+									<button class="btn-action btn-view w3-hide" onclick="viewRecord(${value})" title="View">
 										<i class="fas fa-eye"></i> view
 									</button>
-									<button class="btn-action btn-edit" data-runme='edit_record' data-myid="${value}" title="Edit">
+									<button class="btn-action btn-edit w3-hide" data-runme='edit_record' data-myid="${value}" title="Edit">
 										<i class="fas fa-edit"></i> edit
+									</button>
+									<button class="btn-action mybtn secondary sm" data-runme='edit_record' data-myid="${value}" title="Edit">
+										<i class="fas fa-edit"></i> edit
+									</button>
+									<button class="btn-action mybtn primary sm" data-runme='view_info' data-myid="${value}" title="Edit">
+										<i class="fas fa-list"></i> data
 									</button>
 								</div>
 							`;
@@ -648,6 +654,17 @@
 						options: [
 							{ value: 'monthly', label: 'Monthly' },
 							{ value: 'per_visit', label: 'Per visit' }
+						]
+					},
+					{
+						name: 'has_invoice',
+						label: 'Invoices',
+						rawname: 'Payment plan_',
+						options: [
+							{ value: 'has', label: 'Have invoices' },
+							{ value: 'none', label: 'Without Invoices' },
+							{ value: 'unpaid', label: 'Unpaid Invoices' },
+							{ value: 'paid', label: 'Paid Invoices' },
 						]
 					}
 				],
@@ -711,6 +728,17 @@
 		window['cur_record'] = cur;
 
 		loadPage({template: linkAtlas['view_client'],sidenote: pageNames['view_client']});
+	}
+	window['view_info'] = (btn) => {
+		let id = btn.dataset.myid;
+		let myn = window['curClientData'].filter(f => {return f.id.toString().toLowerCase() == ("" + id).toLowerCase();})[0];
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		window[variableAtlas['client_id']] = id;
+		loadPage({template: linkAtlas['client_info'],sidenote: pageNames['client_info']});
 	}
 
 	function deleteRecord(id) {

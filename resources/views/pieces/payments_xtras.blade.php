@@ -236,9 +236,10 @@
 </div>
 
 <script>
+	// alert_dark('what the act')
 	let payment = {};
-	let type_classes = {
-		'invoice' : 'alert-primary w3-text-blue',
+	let pay_type_classes = {
+		'invoice' : 'alert-primary w3-text-black',
 		'task' : 'alert-warning w3-text-black',
 	};
 
@@ -335,13 +336,71 @@
 				: '<span class="mybadge status-unpaid">Unpaid</span>';
 		}
 
+		let toshow = {};
+		let assoc = payment.task != null ? 'Task' : 'Invoice';
+		let my_icon = assoc.toLowerCase() + 's';
+		let assocBtn = payment.task != null ? `
+			<button class="mybtn secondary" onclick="viewTask_payments(${payment.task.id})" data-openthis="taskinfo">
+				<i class="fas fa-folder"></i> View Task
+			</button>
+		` : '';
+		let assocSerial = payment.task != null ? payment.task.task_no : payment.invoice.invoice_no;
+
+		if(payment.task != null){
+			let mytask = payment.task;
+			toshow = {
+				task_number : mytask.task_no,
+				status : `<b class="mybadge w3-black">${task_state_atlas[payment.task.status]}</b>`,
+				payment_status : getPaymentBadge(payment.task.is_paid),
+				created_at : formatDate(payment.task.created_at),
+			};
+		} else if(payment.invoice != null){
+			let invoice = payment.invoice;
+			toshow = {
+				invoice_no : invoice.invoice_no,
+				total : formatNumber(invoice.total),
+				total_paid : formatNumber(invoice.total_paid),
+				balance : formatNumber(invoice.balance),
+				payment_progress : `<b class="themetxt">${formatNumber(invoice.total_paid)}</b> / <b>${formatNumber(invoice.total)}</b>`,
+				number_of_tasks : invoice.tasks_count,
+				status : `<span>${invoice_state_atlas[invoice.status]}</span>`,
+				date_of_issue : `<span>${formatDate0(invoice.created_at)}</span>`,
+			};
+		}
+
+		let tdd = 'assocInfo';
+		let task_outht = `
+			<div class="distance-sm border themeround collapser">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#${tdd}" data-toggle="collapse" data-target="#${tdd}">
+					<span class="text-uppercase text-muted font-weight-bold"><i class="${iconAtlas[my_icon]}"></i> ${assoc} Information</span>
+					<i class="fa fa-chevron-down myicon"></i>
+				</a>
+				<div class="collapse panelbg distance-sm spacy-sm" id="${tdd}">
+		`;
+		Object.keys(toshow).forEach(f => {
+			task_outht += `
+				<div class="info-row">
+					<span class="info-label">${f.split("_").join(' ')}:</span>
+					<span class="info-value">${toshow[f]}</span>
+				</div>
+			`;
+		});
+
+		task_outht += `
+					<div class="info-row">
+						${assocBtn}
+					</div>
+				</div>
+			</div>
+		`;
+
 		// return;
 		// Build the interface
 		const html = `
 			<div class="sample-header themegrad w3-display-container">
 				<div class="d-flex justify-content-between align-items-center">
 					<div>
-						<span class="h4">Payment: ${payment.task.task_no}</span>
+						<span class="h4">Payment: ${assocSerial}</span>
 						<div class="flowline overflow gap-sm left" style="margin-top: 8px;">
 							<div class="distance-tn">Method: <b>${payment.method}</b></div>
 							<div class="distance-tn">amount: <b>${Number(payment.amount).toLocaleString()}</b></div>
@@ -357,9 +416,7 @@
 				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
 					<i class="fas fa-plus-circle"></i> Add Result
 				</button>
-				<button class="mybtn secondary" onclick="viewTask_payments(${payment.task.id})" data-openthis="taskinfo">
-					<i class="fas fa-folder"></i> View Task
-				</button>
+				${assocBtn}
 				<button class="mybtn secondary" onclick="viewClient_payments(${payment.owner.id})" data-openthis="clientinfo">
 					<i class="fas fa-users"></i> View Client
 				</button>
@@ -369,7 +426,7 @@
 				<h5><i class="fas fa-money-bill"></i> Payment Information</h5>
 				<div class="info-row">
 					<span class="info-label">Payment Purpose:</span>
-					<span class="info-value"><b class="mybadge text-sm ${type_classes[payment.payment_type]}">${payment.payment_type}</b></span>
+					<span class="info-value"><b class="mybadge text-sm ${pay_type_classes[payment.payment_type]}">${payment.payment_type}</b></span>
 				</div>
 				<div class="info-row">
 					<span class="info-label">Client Name:</span>
@@ -389,35 +446,7 @@
 				</div>
 			</div>
 
-			<div class="distance-sm border themeround collapser">
-				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#sampleInfo" data-toggle="collapse" data-target="#sampleInfo">
-					<span class="text-uppercase text-muted font-weight-bold"><i class="fas fa-folder"></i> Task Information</span>
-					<i class="fa fa-chevron-down myicon"></i>
-				</a>
-				<div class="collapse panelbg distance-sm spacy-sm" id="sampleInfo">
-					<div class="info-row">
-						<span class="info-label">Task Number:</span>
-						<span class="info-value">${payment.task.task_no}</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Status:</span>
-						<span class="info-value"><b class="mybadge w3-black">${task_state_atlas[payment.task.status]}</b></span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Payment Status:</span>
-						<span class="info-value">${getPaymentBadge(payment.task.is_paid)}</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Created:</span>
-						<span class="info-value">${formatDate(payment.task.created_at)}</span>
-					</div>
-					<div class="info-row">
-						<button class="mybtn secondary sm" onclick="viewTask_payments()" data-openthis="taskinfo">
-							<i class="fas fa-folder"></i> View Task
-						</button>
-					</div>
-				</div>
-			</div>
+			${task_outht}
 
 			<div class="distance-sm border themeround collapser">
 				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#taskInfo" data-toggle="collapse" data-target="#taskInfo">

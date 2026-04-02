@@ -126,7 +126,8 @@
 				'get_income_chart_data' : './data/income_chart_data',
 				'get_worksheets' : './data/get_worksheets',
 				'get_invoice_data' : './data/get_invoice_info',
-				'get_invoices' : './data/invoices',
+				'get_invoices' : './data/get_invoices',
+				'get_reports_count' : './data/get_reports_count',
 
 			// misc
 				'bizimages' : './media/bizimg',

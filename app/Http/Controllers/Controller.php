@@ -16,6 +16,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 
 use App\Models\userRoles;
 use App\Models\systemData;
+use App\Models\User;
 
 use App\Http\Controllers\FileopsController;
 
@@ -102,7 +103,7 @@ abstract class Controller{
 		return self::isloggedin();
 	}
 
-	public static function cur_user(){
+	public static function cur_user() : User | null{
 		if(self::ili()){
 			return Auth::user();
 		} else {
@@ -943,6 +944,7 @@ abstract class Controller{
 	public function ReqTemplate(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
+		$msg = "didnt even get to start";
 
 		/*
 		$passed = $req->validate([

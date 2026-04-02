@@ -169,20 +169,20 @@
 	}
 </style>
 
-<button class="mybtn primary w3-hide" id="view_report_modal_trig" data-toggle="modal" data-target="#invoice_info_modal">
+<button class="mybtn primary w3-hide" id="view_invoice_modal_trig" data-toggle="modal" data-target="#invoice_info_modal">
 	<i data-myicon="invoices"></i>
 	View Invoice details
 </button>
 
-<div class="modal fade" id="invoice_info_modal" tabindex="-1" role="dialog" aria-labelledby="report_info_heading" aria-hidden="true" style="z-index: 102;">
+<div class="modal fade" id="invoice_info_modal" tabindex="-1" role="dialog" aria-labelledby="invoice_info_heading" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-mg" role="document">
 		<div class="modal-content themeround borderless">
 			<div class="modal-header">
-				<span class="h3 modal-title" id="report_info_heading">Invoice Information</span>
+				<span class="h3 modal-title" id="invoice_info_heading">Invoice Information</span>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<div id="DataContainer"></div>
+				<div id="InvoiceDataContainer"></div>
 			</div>
 			<div class="modal-footer w3-hide">
 				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
@@ -210,7 +210,7 @@
 					<p>Enter the details to add a payment entry for this invoice</p>
 				</div>
 				<div data-subrole="cur_invoice_report"></div>
-				<form id="add_payment_form" action="defined:add_payment_invoice" data-onsubmit="sendform" data-blockdefault="yes" data-callback="add_pay_form_afterfx" method="post">
+				<form id="add_invoice_payment_form" action="defined:add_payment_invoice" data-onsubmit="sendform" data-blockdefault="yes" data-callback="add_pay_form_afterfx" method="post">
 					<input type="hidden" name="invoice_id" value="">
 					<div class="input-group-custom">
 						<div class="form-group">
@@ -234,7 +234,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
-				<button type="button" class="mybtn primary" data-submitme="#add_payment_form">Add payment</button>
+				<button type="button" class="mybtn primary" data-submitme="#add_invoice_payment_form">Add payment</button>
 			</div>
 		</div>
 	</div>
@@ -242,63 +242,9 @@
 
 <script>
 	let invoice = {};
+	let modalon = false;
 
 	// Render results table
-	function renderResultsTable(results,xtra_results) {
-		let tableHTML = `
-			<table class="table table-bordered results-table">
-				<thead>
-					<tr>
-						<th class="w3-hide">ID</th>
-						<th>Sample ID</th>
-						<th>AU (ppm)</th>
-						<th>CU (ppm)</th>
-						<th class="w3-hide">Date Added</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody id="results_table_data">
-		`;
-
-		if (!results || results.length === 0) {
-			tableHTML += '<tr><td class="w3-center spacy-sm" colspan="6"><i>No saved results</i></td></tr>';
-		} else {
-			results.forEach(result => {
-				tableHTML += `
-					<tr>
-						<td class="w3-hide">${result.id}</td>
-						<td>${result.sample_name}</td>
-						<td>${result.au_ppm}</td>
-						<td>${result.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(result.date_added)}</td>
-						<td></td>
-					</tr>
-				`;
-			});
-		}
-
-		if(xtra_results !== undefined || xtra_results.length > 0){
-			xtra_results.forEach((r, n) => {
-				tableHTML += `
-					<tr class="secondary_rows">
-						<td class="w3-hide">${r.id}</td>
-						<td>${r.sample_id}</td>
-						<td>${r.au_ppm}</td>
-						<td>${r.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(r.date_added)}</td>
-						<td>
-							<button type="button" class="mybtn secondary sm" data-runme="edit_result" data-myid="${n}">edit</button>
-							<button type="button" class="mybtn bg-danger w3-text-white sm" data-runme="delete_result" data-myid="${n}">delete</button>
-						</td>
-					</tr>
-				`;
-			});
-		}
-
-		tableHTML += '</tbody></table>';
-		return tableHTML;
-	}
-
 	function renderInvoiceData(dta) {
 		console.log('invoice: ',dta);
 		let rectype = 'invoice';
@@ -311,7 +257,7 @@
 
 		invoice = dta.data;
 		let payment = dta.data;
-		const container = document.getElementById('DataContainer');
+		const container = document.getElementById('InvoiceDataContainer');
 
 		container.innerHTML = 'loading...';
 
@@ -365,6 +311,7 @@
 						<div class="flow overflow left" style="margin-top: 8px;gap: 8px;">
 							<div>Created: <b>${formatDate(invoice.created_at)}</b></div>
 							<div>Payment Progress: <b>${formatNumber(invoice.total_paid)}</b> / <b>${formatNumber(invoice.total)}</b></div>
+							<div>Balance: <b>${formatNumber(invoice.balance)}</b></div>
 						</div>
 					</div>
 				</div>
@@ -603,24 +550,36 @@
 		loadPage(payld);
 	}
 
-	window['showmodal'] = (f) => {
+	window['_inv_showmodal'] = (f) => {
 		let wot = !f ? 'hide' : 'show';
+		modalon = f;
 		$('#invoice_info_modal').modal(wot);
 	}
 
 	window['trymekpayment'] = (el) => {
-		setup_payment_form(invoice.id,'add_pay_form_afterfx');
-		showmodal(false);
+		setup_payment_form(invoice.id,'_inv_resetstuff');
+		_inv_showmodal(false);
 
 		setTimeout(() => {
 			add_invoice_payment_trig.click();
 		},300);
 	}
 	window['setup_payment_form'] = (t_id,cbk) => {
-		add_payment_form.invoice_id.value = t_id;
+		add_invoice_payment_form.invoice_id.value = t_id;
 
 		if(cbk !== undefined){
-			add_payment_form.dataset.lastcallback = cbk;
+			add_invoice_payment_form.dataset.lastcallback = cbk;
+		}
+	}
+	window['_inv_resetstuff'] = (d) => {
+		let cur = {
+			rectype: 'invoice',
+			data: d.data.sendme,
+		}
+
+		renderInvoiceData(cur);
+		if(!modalon){
+			_inv_showmodal(true);
 		}
 	}
 
@@ -628,24 +587,15 @@
 		let el = d.el;
 		let cbk = el.dataset.lastcallback;
 
-		add_payment_trig.click();
+		add_invoice_payment_trig.click();
 		el.reset();
 		el.pay_method.value = '';
 
 		if(cbk !== undefined){
-			window[cbk]();
+			window[cbk](d);
 		}
 	}
 
-	window['regen_report'] = (el) => {
-		alert_info('heading to invoice creation page');
-		window[variableAtlas['sample_id']] = invoice.sample.id;
-
-		loadPage({
-			template: linkAtlas['gen_report'],
-			sidenote: pageNames['gen_report'],
-		});
-	}
 	window['printPdf'] = () => {
 		alert_info('printing invoice');
 

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class InvoiceController extends Controller{
@@ -102,7 +105,6 @@ class InvoiceController extends Controller{
 
 		return response()->json($res);
 	}
-
     public function get_my_info(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -161,6 +163,78 @@ class InvoiceController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $incomplete;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+	public function get_some(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		/*
+		$passed = $req->validate([
+			'sample_id' => ['required','numeric','sometimes'],
+		]);
+		// */
+
+		$client_id = isset($alldata['client_id']) ? $alldata['client_id'] : null;
+		$added_by = isset($alldata['added_by']) ? $alldata['added_by'] : null;
+
+		$row = 'id';
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "fetching invoices";
+			$reslt = false;
+			$found = false;
+
+			// find a sample
+			$therecs = Invoice::where('id','<>',null)
+			;
+
+			if($client_id !== null){
+				$therecs = $therecs->where('client_id',$client_id);
+				$res['runlog'][] = 'client_id found';
+				$found = true;
+			}
+			if($added_by !== null){
+				$therecs = $therecs->where('added_by',$added_by);
+				$res['runlog'][] = 'added_by found';
+				$found = true;
+			}
+
+			if(!$found){
+				$therecs = $therecs->where('id','=',null);
+			}
+
+			$therecs = $therecs
+				->with('client')
+				->with('creator')
+				->with('tasks')
+				->withCount('tasks')
+				->with('payments')
+				->withCount('payments')
+				->get()
+			;
+
+			// check if it exists
+			if(count($therecs) == 0){
+				$msg = "invoices not found";
+				$reslt = true;
+			} else {
+				$reslt = true;
+				$msg = "invoices fetched successfully";
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $therecs;
 			$res['message'] = $msg;
 		}
 
@@ -307,6 +381,152 @@ class InvoiceController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $showthis;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_payment(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even start";
+
+		// /*
+		$passed = $req->validate([
+			'invoice_id' => ['required','numeric'],
+			'admin_password' => ['required'],
+			'pay_method' => ['required'],
+			'amount' => ['required','numeric'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($wot,$logit = true) use(&$update_msg){
+			$update_msg($wot,$logit);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+			$invoice = null;
+			$user = $this->cur_user();
+
+			$inv_id = $passed['invoice_id'];
+			$admin_password = $passed['admin_password'];
+			$pay_method = $passed['pay_method'];
+			$amount = (float) $passed['amount'];
+
+			if(!$this->verifyPassword($admin_password)){
+				$_msg('invalid admin password');
+			} else {
+				$invoice = Invoice::where('id',$inv_id)
+					->with('client')
+					->with('creator')
+					->with('tasks')
+					->withCount('tasks')
+					->with('payments')
+					->withCount('payments')
+					->first()
+				;
+
+				if($invoice == null){
+					$_msg('invalid invoice passed');
+				} else {
+					$client = Client::where('id',$invoice->client_id);
+
+					if($client == null){
+						$_msg('invalid client, regenerate the invoice');
+					} else {
+						$_msg('comencing database update');
+
+						try{
+							DB::beginTransaction();
+
+							$_msg('valid invoice passed');
+
+							$tasks = $invoice->tasks;
+							$client = $invoice->client;
+							$toremove = $amount;
+
+							foreach($tasks as $t){
+								if($toremove > 0){
+									$paid = $t->paid;
+									$cost = $t->cost;
+									$bal = $t->balance;
+									$addme = $bal;
+
+									if($toremove < $addme){
+										$addme = $toremove;
+									}
+
+									$t->paid += $addme;
+									$t->balance -= $addme;
+									$t->save();
+
+									$toremove -= $addme;
+								}
+							}
+
+							$_msg('all tasks updated accordingly');
+
+							Payment::create([
+								'added_by' => $user->id,
+								// 'task_id' => -1,
+								'invoice_id' => $invoice->id,
+								'client_id' => $invoice->client->id,
+								'method' => $pay_method,
+								'amount' => $amount,
+								'status' => 1,
+								'payment_type' => 'invoice',
+								'extra_details' => ['added_via' => 'invoice_payment'],
+								'transaction_time' => Carbon::now(),
+							]);
+
+							$_msg('added payment record');
+
+							$cred = $client->credit_balance - $amount;
+							$client->credit_balance = $cred;
+							$client->save();
+
+							$newbal = $invoice->balance - $amount;
+							$invoice->status = $newbal <= 0 ? 2 : 1;
+							$newbal = $newbal < 0 ? 0 : $newbal;
+							$invoice->balance = $newbal;
+							$invoice->total_paid = $amount;
+							$invoice->save();
+							$invoice->refresh();
+
+							$reslt = true;
+							$_msg = "invoice updated successfully";
+
+							DB::commit();
+						} catch(\Exception $e){
+							DB::rollBack();
+							$_msg('adding payment record failed');
+							$update_runlog($e);
+						}
+					}
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $invoice;
 			$res['message'] = $msg;
 		}
 

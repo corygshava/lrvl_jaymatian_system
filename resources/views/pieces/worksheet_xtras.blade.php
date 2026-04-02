@@ -127,13 +127,13 @@
 			let toggle_editable = cur_sheet.is_published ? 'pointer-events: none;' : '';
 
 			let show_weight = !cur_sheet.is_published ?
-				`<input type="text" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
 				` : `<span>${_data.weight || "!!"}</span>`;
 			let show_au_reading = !cur_sheet.is_published ?
-				`<input type="text" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="au_reading ${n}" value="${_data.au_reading || ""}" required>
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="au_reading ${n}" value="${_data.au_reading || ""}" required>
 				` : `<span>${_data.au_reading || "!!"}</span>`;
 			let show_cu_reading = !cur_sheet.is_published ?
-				`<input type="text" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
 				` : `<span>${_data.cu_reading || "!!"}</span>`;
 			let show_remarks = !cur_sheet.is_published ?
 				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">

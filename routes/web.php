@@ -93,9 +93,11 @@ Route::prefix('/data')->group(function(){
 
 	Route::get('/reports', [ReportsController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_reports', [ReportsController::class,'get_some'])->middleware(['auth','verified']);
+	Route::post('/get_reports_count', [ReportsController::class,'get_count'])->middleware(['auth','verified']);
 
-	Route::post('/get_invoice_info', [InvoiceController::class,'get_my_info'])->middleware(['auth','verified']);
 	Route::get('/invoices', [InvoiceController::class,'get_all'])->middleware(['auth','verified']);
+	Route::post('/get_invoice_info', [InvoiceController::class,'get_my_info'])->middleware(['auth','verified']);
+	Route::post('/get_invoices', [InvoiceController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 
@@ -132,6 +134,7 @@ Route::prefix('/op')->group(function(){
 	Route::post('/update_bizdata_images',[BizdataController::class, 'update_sth_2'])->middleware(['auth','verified']);
 
 	Route::post('/save_invoice', [InvoiceController::class,'add_new'])->middleware(['auth','verified']);
+	Route::post('/add_payment_invoice',[InvoiceController::class, 'add_payment'])->middleware(['auth','verified']);
 
 	Route::post('/save_report', [ReportsController::class,'add_new'])->middleware(['auth','verified']);
 });

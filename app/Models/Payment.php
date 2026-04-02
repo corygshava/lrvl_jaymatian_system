@@ -51,4 +51,7 @@ class Payment extends Model{
     public function owner(): BelongsTo{
         return $this->belongsTo(Client::class,'client_id');
     }
+    public function invoice(): BelongsTo{
+        return $this->belongsTo(Invoice::class,'invoice_id');
+    }
 }

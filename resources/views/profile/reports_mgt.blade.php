@@ -452,6 +452,14 @@
 						sortable: true
 					},
 					{
+						title: 'Report number',
+						data: 'report_no',
+						sortable: true,
+						render: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
 						title: 'Sample number',
 						data: 'sample',
 						sortable: true,

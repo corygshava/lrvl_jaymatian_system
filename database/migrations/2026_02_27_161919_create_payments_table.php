@@ -9,7 +9,7 @@ return new class extends Migration{
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->integer('added_by');
-			$table->integer('task_id')->constrained()->onDelete('cascade');
+			$table->integer('task_id')->nullable();
 			$table->integer('client_id')->constrained()->onDelete('cascade');
 
 			$table->string('method')->default('cash');

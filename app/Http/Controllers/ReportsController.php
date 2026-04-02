@@ -8,6 +8,7 @@ use App\Models\Sample;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 class ReportsController extends Controller{
     public function get_all(Request $req){
@@ -81,6 +82,32 @@ class ReportsController extends Controller{
 			$records = $records
 				->orderBy($sortBy, $sortDirection)
 				->paginate($perPage);
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function get_count(Request $req){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "all Reports retrieved";
+
+			$records = ReportsGen::all()->count();
 
 			$res['result'] = true;
 			$res['sendme'] = $records;

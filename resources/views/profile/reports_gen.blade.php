@@ -501,13 +501,31 @@
 
 			setTimeout(() => {
 				window[fetch_bypass](linkAtlas['get_sample'],{sample_id: sid},'POST').then(dta => {
-					responseHandler(dta, step2, dta);
+					responseHandler(dta, step1b, dta);
 
 					if(!dta.success || !dta.result){
 						throw new Error(dta.message);
 					}
 				}).catch(err => {
-					outht = `There was an arror fetching sample information: <br><b class="w3-text-red">${err.message}</b>`;
+					outht = `There was an error fetching sample information: <br><b class="w3-text-red">${err.message}</b>`;
+					showerror(outht);
+					errshown = true;
+				})
+			},min_loadtime)
+		}
+
+		const step1b = (p) => {
+			setTimeout(() => {
+				window[fetch_bypass](linkAtlas['get_reports_count'],{sample_id: sid},'POST').then(dta => {
+					report_runtime_data.reports_count = dta.sendme;
+
+					responseHandler(dta, step2, p);
+
+					if(!dta.success || !dta.result){
+						throw new Error(dta.message);
+					}
+				}).catch(err => {
+					outht = `There was an error fetching sample information: <br><b class="w3-text-red">${err.message}</b>`;
 					showerror(outht);
 					errshown = true;
 				})
@@ -533,7 +551,7 @@
 					throw new Error(dta.message);
 				}
 			}).catch(err => {
-				outht = `There was an arror fetching business information: <br><b class="w3-text-red">${err.message}</b>`;
+				outht = `There was an error fetching business information: <br><b class="w3-text-red">${err.message}</b>`;
 				showerror(outht);
 				errshown = true;
 			})
@@ -993,7 +1011,7 @@
 		printWindow.document.close();
 	}
 	window['generateSerial'] = (b) => {
-		let serial = `${b.sample_no}_${b.reports_count}`;
+		let serial = `RPT_${(report_runtime_data.reports_count).toString().padStart(4,'0')}`;
 		report_runtime_data.report_no = serial;
 		return serial;
 	}
@@ -1069,7 +1087,7 @@
 	window['upload_stuff'] = (el) => {
 		const step2 = (d) => {
 			alert_info('uploading report...');
-			el.report_no.value = report_runtime_data.report_no;
+			el.report_no.value = generateSerial();
 			el.sampleid.value = report_runtime_data.sampleData.id;
 			el.admin_password_mine.value = d.admin_password;
 			el.bizdata.value = JSON.stringify(bizdata);
