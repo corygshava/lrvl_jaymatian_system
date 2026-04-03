@@ -432,7 +432,7 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		border-spacing: 0;
 
 		--w_sm: 48px;
-		--w: 115px;
+		--w: 125px;
 		--w_m: calc(var(--w) * 2);
 	}
 	.table-modern thead th {

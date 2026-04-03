@@ -27,6 +27,7 @@ class Invoice extends Model{
 
 		'pdf_link',
 		'image_link',
+		'file_slug',
     ];
 
     protected $casts = [
@@ -38,6 +39,12 @@ class Invoice extends Model{
         'tasks_count' => 'integer',
         'status' => 'integer',
     ];
+
+	protected $state_atlas = [
+		0 => 'pending',
+		1 => 'incomplete',
+		2 => 'paid',
+	];
 
 	//
     public function client(): BelongsTo{

@@ -30,8 +30,10 @@ class ReportsGen extends Model{
 		'analytical_report',
 		'deviation_data',
 		'business_logo_img',
+
 		'pdf_link',
 		'image_link',
+		'file_slug',
 	];
 
 	protected $casts = [

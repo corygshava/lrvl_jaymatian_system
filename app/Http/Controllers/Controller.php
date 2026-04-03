@@ -961,6 +961,9 @@ abstract class Controller{
 				$update_runlog($wot);
 			}
 		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
 
 		if($this->ili()){
 			$res['success'] = true;

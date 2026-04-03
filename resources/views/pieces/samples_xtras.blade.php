@@ -352,10 +352,7 @@
 
 		// return;
 		// Build the interface
-		let genreport = (sample.status == 2) ?
-			`
-				<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>
-			` : '';
+		let genreport = '';
 		let has_sheets = sample.worksheets.length > 0;
 		let publish_btn = '';
 		let save_readings_btn = '';
@@ -368,6 +365,10 @@
 			save_readings_btn = !cur_sheet.is_published ? `
 				<button class="mybtn primary" data-submitme="#worksheetreadings"><i class="fa fa-save"></i> save readings</button>
 			` : ``;
+			genreport = (sample.status == 2 && cur_sheet.is_published) ?
+			`
+				<button type="button" class="mybtn primary w3-hide_" data-runme="gen_report"><i class="fa fa-file-export"></i> make report</button>
+			` : ''
 		}
 		let sheetht = has_sheets ? `
 			<form id="worksheetreadings" action="defined:save_readings" data-onsubmit="readings_saver_inter" data-callback="worksheets_aftermath" data-blockdefault="yes">
@@ -960,11 +961,19 @@
 
 		if(window['task_info_data'] !== undefined){
 			// alert_dark('currently in task info');
+			// refresh_data();
+			// return;
 		}
 
-		if(window['refreshData'] != undefined){
+		if(window['task_info_data'] !== undefined){
+			// alert_dark('currently in task info');
+			// refresh_data();
+			// return;
+		}
+
+		if(typeof window['refreshData'] == 'function'){
 			refreshData();
-		} else if(window['refresh_data'] != undefined){
+		} else if(typeof window['refresh_data'] == 'function'){
 			refresh_data();
 		}
 

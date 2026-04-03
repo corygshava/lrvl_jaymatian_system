@@ -25,6 +25,7 @@ class ClientController extends Controller{
 			$payment_plan = $req->input('payment_plan',null);
 			$client_gender = $req->input('client_gender',null);
 			$has_credit_balance = $req->input('with_credit_balance',null);
+			$invoice_status = $req->input('has_invoice',null);
 
 			$search = $search == '*' ? null : $search;
 
@@ -64,6 +65,29 @@ class ClientController extends Controller{
 			if($has_credit_balance){
 				$con = $has_credit_balance == 'yes' ? '>' : '=';
 				$clients = $clients->where('credit_balance',$con,0);
+			}
+
+			if($invoice_status){
+				$invoice_status = strtolower($invoice_status);
+
+				switch($invoice_status){
+					case 'none':
+						$clients = $clients->doesntHave('invoices');
+						break;
+					case 'paid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status',2);
+						});
+						break;
+					case 'unpaid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status','<>',2);
+						});
+						break;
+					default:
+						$clients = $clients->has('invoices');
+						break;
+				}
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

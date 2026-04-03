@@ -20,6 +20,7 @@ Route::get('/', [UserController::class,'index']);
 Route::get('/dashboard', [ViewController::class,'showdash'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/my_permissions', [UserController::class,'mypermissions'])->middleware(['auth', 'verified']);
 Route::get('/am_i_admin', [UserController::class,'checkadmin'])->middleware(['auth', 'verified']);
+Route::get('/verify_file', [ViewController::class,'show_verify_files_page']);
 
 Route::middleware('auth')->group(function () {
 	Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -62,6 +63,7 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/invoices_mgt', [ViewController::class,'showinvoices']);
 
 	Route::get('/biz_data', [ViewController::class,'showbizdata']);
+	Route::get('/verify_file', [ViewController::class,'showverifiersubscreen']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -143,8 +145,17 @@ Route::prefix('/media')->group(function(){
 	Route::get('/bizimg/{fyl}',[ViewController::class, 'showimg']);
 	Route::get('/getreport/imgs/{fyl}',[ViewController::class, 'showreport_img']);
 	Route::get('/getreport/pdfs/{fyl}',[ViewController::class, 'showreport_pdf']);
+
 	Route::get('/getinvoice/imgs/{fyl}',[ViewController::class, 'showinvoice_img']);
 	Route::get('/getinvoice/pdfs/{fyl}',[ViewController::class, 'showinvoice_pdf']);
+
+	Route::get('/reports/pdf/{fyl}',[ViewController::class, 'findreport_pdf']);
+	Route::get('/reports/image/{fyl}',[ViewController::class, 'findreport_img']);
+	Route::get('/reports/img/{fyl}',[ViewController::class, 'findreport_img']);
+
+	Route::get('/invoices/pdf/{fyl}',[ViewController::class, 'findinvoice_pdf']);
+	Route::get('/invoices/image/{fyl}',[ViewController::class, 'findinvoice_img']);
+	Route::get('/invoices/img/{fyl}',[ViewController::class, 'findinvoice_img']);
 });
 
 require __DIR__.'/auth.php';

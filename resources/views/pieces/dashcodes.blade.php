@@ -84,6 +84,7 @@
 				'invoices_mgt' : './ui/invoices_mgt',
 				'ui_tester' : './ui/_ui_creat0r',
 				'mek_invoice' : './ui/gen_invoice',
+				'verify_file' : './ui/verify_file',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -157,6 +158,7 @@
 			'view_payments' : 'payments management',
 			'mek_invoice' : 'Generate Invoice',
 			'invoices_mgt' : 'Invoice management',
+			'verify_file' : 'File verification',
 
 			'ui_tester' : 'UI testing grounds',
 		};
@@ -199,6 +201,7 @@
 			'worksheets' : 'fa fa-file-signature',
 			'invoices' : 'fa fa-file-invoice-dollar',
 			'results' : 'fas fa-chart-line',
+			'verify_file' : 'fas fa-check-circle',
 		};
 
 		// will be set via server call later
@@ -231,6 +234,7 @@
 			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports']},
 			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices']},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
+			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file']},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},

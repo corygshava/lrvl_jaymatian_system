@@ -223,6 +223,11 @@
 								<tbody id="resultsguy"></tbody>
 							</table>
 						</div>
+
+						<div class="w3-display-topright">
+							<img src="" id="myqrcodeium" onload="img_qr_loader.classList.add('w3-hide')">
+							<i id="img_qr_loader">Generating QR code, Please wait</i>
+						</div>
 					</div>
 
 					<div class="page-section invoice_summary">
@@ -320,6 +325,7 @@
 					<form action="defined:save_invoice" class="border themeround spacy-sm" data-afterfx="aftersave_ops" data-onsubmit="upload_stuff" data-blockdefault="yes">
 						<div class="notactive">
 							<input type="hidden" name="invoice_no">
+							<input type="hidden" name="file_slug">
 							<input type="hidden" name="client_id">
 							<input type="hidden" name="admin_password_mine">
 							<input type="hidden" name="bizdata">
@@ -358,7 +364,7 @@
 				<div class="flowline gap-tn left">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="downloadPdf"><i class="fa fa-download"></i> download Invoice</button>
+					<button class="mybtn secondary sm" data-runme="download_invoice_pdf"><i class="fa fa-download"></i> download Invoice</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Invoice</button>
 				</div>
 			</div>
@@ -388,7 +394,7 @@
 		'renderCanvas',
 		'generatePdf',
 		'gen_download',
-		'downloadPdf',
+		'download_invoice_pdf',
 		'printPdf',
 		'generateSerial',
 		'pick_step',
@@ -514,10 +520,32 @@
 			invoice_runtime_data.bizdata = d.sendme;
 			window['bizdata'] = parseBizdata(d.sendme);
 
+			step5();
+		}
+
+		const step5 = async (d) => {
+			// assign image src
+			invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
+			img_qr_loader.classList.remove('w3-hide');
+			let pagelink = [...window.location.href.split('/').map((l,id,arr) => {return id == (arr.length - 1) ? '' : l})].join('/');
+			let filelink = `${pagelink}media/invoices/pdf/${invoice_runtime_data.file_slug}`;
+
+			invoice_runtime_data.file_link = filelink;
+
+			let encodedText = encodeURIComponent(filelink);
+			let imglink = `https://quickchart.io/qr?text=${encodedText}&size=100`;
+
+			let meimg = await fetch(`https://quickchart.io/qr?text=${encodedText}&size=100`);
+			let blb = await meimg.blob();
+			let objUrl = URL.createObjectURL(blb);
+			myqrcodeium.src = objUrl;
+
 			final_step();
 		}
 
 		const final_step = () => {
+			report_runtime_data.file_slug = `_${report_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
+
 			showloader(false);
 			generateAggregates();
 			render_all_data();
@@ -935,18 +963,18 @@
 		}
 	}
 
-	window['downloadPdf'] = () => {
+	window['download_invoice_pdf'] = () => {
 		if(invoice_runtime_data.medFile == undefined){
 			alert_danger('no pdf has been generated yet');
 			return;
 		}
 
-		if(invoice_runtime_data.sampleData == undefined){
-			alert_danger('sample data missing, refresh the page to fix',4);
+		if(invoice_runtime_data.aggregates == undefined){
+			alert_danger('tasks data missing, refresh the page to fix',4);
 			return;
 		}
 
-		invoice_runtime_data.medFile.save(`${invoice_runtime_data.sampleData.task.task_no}_generated_report.pdf`);
+		invoice_runtime_data.medFile.save(`[${invoice_runtime_data.aggregates.invoice_id}] generated_report.pdf`);
 
 		alert_info('downloading generated pdf');
 	}
@@ -1079,6 +1107,7 @@
 		const step2 = (d) => {
 			alert_info('uploading Invoice...');
 			el.invoice_no.value = invoice_runtime_data.aggregates.invoice_id;
+			el.file_slug.value = invoice_runtime_data.file_slug;
 			el.client_id.value = invoice_runtime_data.clientData.id;
 			el.admin_password_mine.value = d.admin_password;
 			el.bizdata.value = JSON.stringify(bizdata);

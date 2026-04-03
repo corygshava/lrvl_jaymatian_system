@@ -259,6 +259,11 @@
 								<tbody id="resultsguy"></tbody>
 							</table>
 						</div>
+
+						<div class="w3-display-topright">
+							<img src="" id="myqrcodeium" onload="img_qr_loader.classList.add('w3-hide')">
+							<i id="img_qr_loader">Generating QR code, Please wait</i>
+						</div>
 					</div>
 
 					<div class="page-section">
@@ -332,7 +337,7 @@
 					<span class="h4">Generated document</span>
 				</div>
 
-				<div class="canvasguy slide-up flow centroid">
+				<div class="canvasguy slide-up flow centroid" id="output">
 				</div>
 
 				<div class="distance-sm border panelbg themeround collapser slide-up">
@@ -365,6 +370,7 @@
 					<form action="defined:save_report" class="border themeround spacy-sm" data-afterfx="aftersave_ops" data-onsubmit="upload_stuff" data-blockdefault="yes">
 						<div class="notactive">
 							<input type="hidden" name="report_no">
+							<input type="hidden" name="file_slug">
 							<input type="hidden" name="sampleid">
 							<input type="hidden" name="admin_password_mine">
 							<input type="hidden" name="bizdata">
@@ -518,7 +524,6 @@
 			setTimeout(() => {
 				window[fetch_bypass](linkAtlas['get_reports_count'],{sample_id: sid},'POST').then(dta => {
 					report_runtime_data.reports_count = dta.sendme;
-
 					responseHandler(dta, step2, p);
 
 					if(!dta.success || !dta.result){
@@ -562,15 +567,40 @@
 			report_runtime_data.bizdata = d.sendme;
 			window['bizdata'] = parseBizdata(d.sendme);
 
+			step4();
+		}
+
+		const step4 = async (d) => {
+			// assign image src
+			report_runtime_data.file_slug = `_${report_runtime_data.reports_count}_${mekRandomString(7).toUpperCase()}`;
+			img_qr_loader.classList.remove('w3-hide');
+			let pagelink = [...window.location.href.split('/').map((l,id,arr) => {return id == (arr.length - 1) ? '' : l})].join('/');
+			let filelink = `${pagelink}media/reports/pdf/${report_runtime_data.file_slug}`
+			report_runtime_data.file_link = filelink;
+
+			let encodedText = encodeURIComponent(filelink);
+			let imglink = `https://quickchart.io/qr?text=${encodedText}&size=100`;
+
+			let meimg = await fetch(`https://quickchart.io/qr?text=${encodedText}&size=100`);
+			let blb = await meimg.blob();
+			let objUrl = URL.createObjectURL(blb);
+			myqrcodeium.src = objUrl;
+
 			final_step();
 		}
 
 		const final_step = () => {
+
+
 			showloader(false);
 			render_all_data();
 			pick_step(0);
 			refreshUI(300);
 		};
+
+		// reset QR code image
+		// img_qr_loader.classList.remove('w3-hide');
+		// myqrcodeium.src = '';
 
 		step1();
 	}
@@ -804,9 +834,9 @@
 
 	// operations
 	window['renderCanvas'] = async () => {
-		el = document.querySelector('#document_Holder>[data-role="report_setup"]');
-		outguy = document.querySelector('#canvasHolder>.canvasguy');
-		statsDiv = document.querySelector('#statsguy');
+		let el = document.querySelector('#document_Holder>[data-role="report_setup"]');
+		let outguy = document.querySelector('#canvasHolder>.canvasguy');
+		let statsDiv = document.querySelector('#statsguy');
 
 		if(el == undefined){alert_danger('document holder not found');return;}
 		if(outguy == undefined){alert_danger('output holder not found');return;}
@@ -815,7 +845,7 @@
 		alert_dark('rendering canvas');
 
 		const options = {
-			allowTaint: true,
+			allowTaint: false,
 			backgroundColor: null,
 			logging: false,
 			scale: 2,
@@ -823,7 +853,8 @@
 		};
 
 		outguy.innerHTML = 'rendering, please wait';
-		statsDiv.innerHTML = 'rendering, please wait';
+		// statsDiv.innerHTML = 'rendering, please wait';
+		statsDiv.innerHTML = "";
 
 		// outguy.classList.add('w3-hide');
 		// loader_render.classList.remove('w3-hide');
@@ -854,7 +885,7 @@
 				// */
 
 				let dur = duration + 400;
-				statsDiv.innerHTML = `
+				statsDiv.innerHTML += `
 					<div class="info-row">
 						<span class="info-label">Size:</span>
 						<span class="info-value">${canvas.width} × ${canvas.height} px</span>
@@ -875,7 +906,8 @@
 
 				alert_success('report rendered');
 			} catch (error) {
-				output.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
+				// outguy.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
+				// statsDiv.innerHTML += `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
 				console.error('Capture failed:', error);
 			}
 		// },400);
@@ -1088,6 +1120,7 @@
 		const step2 = (d) => {
 			alert_info('uploading report...');
 			el.report_no.value = generateSerial();
+			el.file_slug.value = report_runtime_data.file_slug;
 			el.sampleid.value = report_runtime_data.sampleData.id;
 			el.admin_password_mine.value = d.admin_password;
 			el.bizdata.value = JSON.stringify(bizdata);

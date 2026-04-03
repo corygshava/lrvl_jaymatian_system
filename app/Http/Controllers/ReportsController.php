@@ -8,7 +8,7 @@ use App\Models\Sample;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use SebastianBergmann\CodeCoverage\Report\Xml\Report;
+use Illuminate\Support\Facades\File;
 
 class ReportsController extends Controller{
     public function get_all(Request $req){
@@ -98,7 +98,6 @@ class ReportsController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_count(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
@@ -124,7 +123,6 @@ class ReportsController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_some(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -207,6 +205,74 @@ class ReportsController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_from_slug(Request $req,$fl = 'img',$slug = ''){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$report = ReportsGen::where('file_slug',$slug)->first();
+
+			if($report == null){
+				$_msg('the report doesnt exist');
+			} else {
+				$_msg('report found');
+
+				$fyl_ = $fl == 'img' ? $report->image_link : $report->pdf_link;
+				$folder = $fl == 'img' ? self::$report_images_path : self::$report_files_path;
+				$fyl_link = "{$folder}{$fyl_}";
+				$path = storage_path($fyl_link);
+
+				if(File::exists($path)){
+					$reslt = true;
+					return response()->file($path);
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $report;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if(!$reslt){
+			http_response_code(404);
+			$vw = new ViewController();
+			return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>$msg");
+		}
+
+		return null;
+		return response()->json($res);
+	}
+
 	public function add_new(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -219,6 +285,7 @@ class ReportsController extends Controller{
 			'genfile' => ['required','file'],
 			'genimage' => ['required','file'],
 			'bizdata' => ['required'],
+			'file_slug' => ['required'],
 		]);
 		// */
 
@@ -264,6 +331,8 @@ class ReportsController extends Controller{
 					$file_link = "{$sno}_{$rpts}_{$rndr}_pdf";
 					$img_link = "{$sno}_{$rpts}_{$rndr}_img";
 					$fyls = [];
+
+					$slug = $passed['file_slug'];
 
 					$fkey = 'genfile';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
@@ -312,6 +381,8 @@ class ReportsController extends Controller{
 						'business_logo_img' => $bizdata['business_images']['company_logo'],
 						'pdf_link' => $fyls['genfile'],
 						'image_link' => $fyls['genimage'],
+
+						'file_slug' => $slug,
 					];
 
 					// $res['runlog'][] = ["newrec" => $toadd];

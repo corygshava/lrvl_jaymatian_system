@@ -611,7 +611,7 @@
 										<i class="fas fa-edit"></i> edit
 									</button>
 									<button class="btn-action mybtn primary sm" data-runme='view_info' data-myid="${value}" title="Edit">
-										<i class="fas fa-list"></i> data
+										<i class="fas fa-info"></i> data
 									</button>
 								</div>
 							`;

@@ -268,6 +268,31 @@ class ViewController extends Controller{
 		}
 	}
 
+	public function showverifiersubscreen(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.verify_file',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+	public function show_verify_files_page(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('verify_files',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
 	public function showerror(Request $req,$msg = 'an error occured'){
 		$dta = [
 			'msg' => $msg,
@@ -314,6 +339,15 @@ class ViewController extends Controller{
 
 		return response()->file($path);
 	}
+	public function findreport_pdf(Request $req,$fyl = ""){
+		$rpt = new ReportsController();
+		return $rpt->get_from_slug($req,'pdf',$fyl);
+	}
+	public function findreport_img(Request $req,$fyl = ""){
+		$rpt = new ReportsController();
+		return $rpt->get_from_slug($req,'img',$fyl);
+	}
+
 	public function showinvoice_pdf(Request $req,$fyl = ""){
 		$path = storage_path((self::$invoice_files_path).$fyl);
 		// dd($path);
@@ -335,6 +369,14 @@ class ViewController extends Controller{
 		}
 
 		return response()->file($path);
+	}
+	public function findinvoice_pdf(Request $req,$fyl = ""){
+		$inv = new InvoiceController();
+		return $inv->get_from_slug($req,'pdf',$fyl);
+	}
+	public function findinvoice_img(Request $req,$fyl = ""){
+		$inv = new InvoiceController();
+		return $inv->get_from_slug($req,'img',$fyl);
 	}
 
 	// data
