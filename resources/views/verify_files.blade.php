@@ -1,1000 +1,1007 @@
 <x-layouts.mainlayout>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary-dark: #1a1f2e;
-            --primary-blue: #2563eb;
-            --primary-blue-hover: #1d4ed8;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-orange: #f59e0b;
-            --neutral-100: #f8f9fa;
-            --neutral-200: #e9ecef;
-            --neutral-300: #dee2e6;
-            --neutral-700: #495057;
-            --neutral-800: #343a40;
-            --border-color: #d1d5db;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Public Sans', sans-serif;
-            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
-            background: #eee;
-            min-height: 100vh;
-            padding: 2rem 1rem;
-            color: var(--neutral-800);
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-        }
-
-        .main-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, #2d3748 100%);
-            color: white;
-            padding: 2rem;
-            border-bottom: 3px solid var(--primary-blue);
-        }
-
-        .card-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .card-header h1 i {
-            color: var(--primary-blue);
-            font-size: 2rem;
-        }
-
-        .card-header p {
-            margin: 0.5rem 0 0 0;
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--neutral-700);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-title::before {
-            content: '';
-            width: 3px;
-            height: 14px;
-            background: var(--primary-blue);
-            border-radius: 2px;
-        }
-
-        .type-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .type-btn {
-            position: relative;
-            padding: 24px 16px;
-            border: 2px solid var(--border-color);
-            background: var(--neutral-100);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .type-btn:hover {
-            border-color: var(--primary-blue);
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .type-btn.active {
-            border-color: var(--primary-blue);
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            box-shadow: var(--shadow-md);
-        }
-
-        .type-btn i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--neutral-700);
-            transition: color 0.3s ease;
-        }
-
-        .type-btn.active i {
-            color: var(--primary-blue);
-        }
-
-        .type-btn span {
-            display: block;
-            font-weight: 600;
-            color: var(--neutral-800);
-        }
-
-        .format-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .format-btn {
-            padding: 1rem;
-            border: 2px solid var(--border-color);
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .format-btn:hover {
-            border-color: var(--primary-blue);
-            transform: translateX(4px);
-        }
-
-        .format-btn.active {
-            border-color: var(--primary-blue);
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .format-btn i {
-            font-size: 1.5rem;
-        }
-
-        .format-btn span {
-            font-weight: 500;
-        }
-
-        .upload-zone {
-            border: 3px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 3rem 2rem;
-            text-align: center;
-            background: var(--neutral-100);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-bottom: 2rem;
-        }
-
-        .upload-zone:hover {
-            border-color: var(--primary-blue);
-            background: white;
-        }
-
-        .upload-zone.dragover {
-            border-color: var(--primary-blue);
-            background: #eff6ff;
-            border-style: solid;
-        }
-
-        .upload-zone i {
-            font-size: 3rem;
-            color: var(--neutral-700);
-            margin-bottom: 1rem;
-        }
-
-        .upload-zone p {
-            margin: 0;
-            color: var(--neutral-700);
-        }
-
-        .upload-zone .btn-upload {
-            margin-top: 1rem;
-        }
-
-        .preview-section {
-            background: var(--neutral-100);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            display: none;
-        }
-
-        .preview-section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .preview-container {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            max-height: 400px;
-            overflow: auto;
-            border: 1px solid var(--border-color);
-        }
-
-        .preview-container img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border-radius: 4px;
-        }
-
-        .file-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .file-info-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .file-info-left i {
-            font-size: 1.5rem;
-            color: var(--primary-blue);
-        }
-
-        .file-name {
-            font-weight: 500;
-            color: var(--neutral-800);
-        }
-
-        .file-size {
-            font-size: 0.85rem;
-            color: var(--neutral-700);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .btn-remove {
-            background: none;
-            border: none;
-            color: var(--accent-red);
-            cursor: pointer;
-            font-size: 1.25rem;
-            padding: 0.25rem 0.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .btn-remove:hover {
-            transform: scale(1.2);
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--neutral-800);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            border: 2px solid var(--border-color);
-            padding: 0.75rem 1rem;
-            transition: all 0.2s ease;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .metadata-section {
-            background: var(--neutral-100);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            display: none;
-        }
-
-        .metadata-section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .progress-section {
-            display: none;
-            margin-bottom: 2rem;
-        }
-
-        .progress-section.active {
-            display: block;
-        }
-
-        .progress {
-            height: 8px;
-            border-radius: 8px;
-            background: var(--neutral-200);
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-blue), var(--accent-green));
-            transition: width 0.3s ease;
-            border-radius: 8px;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .btn-primary {
-            background: var(--primary-blue);
-            border: none;
-            color: white;
-            padding: 0.875rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-blue-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary:disabled {
-            background: var(--neutral-300);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-upload {
-            background: white;
-            border: 2px solid var(--primary-blue);
-            color: var(--primary-blue);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-upload:hover {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .results-section {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 2rem;
-            border-left: 4px solid var(--primary-blue);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .results-section.active {
-            display: block;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--neutral-200);
-        }
-
-        .result-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .result-icon.success {
-            background: #d1fae5;
-            color: var(--accent-green);
-        }
-
-        .result-icon.error {
-            background: #fee2e2;
-            color: var(--accent-red);
-        }
-
-        .result-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .result-data {
-            background: var(--neutral-100);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .result-data pre {
-            margin: 0;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .result-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--neutral-700);
-            margin-bottom: 0.5rem;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .type-selector,
-            .format-selector {
-                grid-template-columns: 1fr;
-            }
-
-            .card-body {
-                padding: 1.5rem;
-            }
-
-            .upload-zone {
-                padding: 2rem 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="main-card">
-            <div class="card-header">
-                <h1>
-                    <!-- <i class="fas fa-shield-alt"></i> -->
-                    File Verification
-                </h1>
-                <p>Upload and verify your reports and invoices</p>
-            </div>
-
-            <div class="card-body">
-                <!-- Document Type Selection -->
-                <div class="section-title">
-                    <span>Document Type</span>
-                </div>
-
-                <div class="type-selector">
-                    <div class="type-btn" data-type="report">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Report</span>
-                    </div>
-                    <div class="type-btn" data-type="invoice">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <span>Invoice</span>
-                    </div>
-                </div>
-
-                <!-- File Format Selection -->
-                <div class="section-title">
-                    <span>File Format</span>
-                </div>
-
-                <div class="format-selector">
-                    <div class="format-btn" data-format="image">
-                        <i class="fas fa-image"></i>
-                        <span>Image (JPG, PNG)</span>
-                    </div>
-                    <div class="format-btn" data-format="pdf">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>PDF Document</span>
-                    </div>
-                </div>
-
-                <!-- Upload Zone -->
-                <div class="section-title">
-                    <span>Upload File</span>
-                </div>
-
-                <div class="upload-zone" id="uploadZone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Drag and drop your file here</p>
-                    <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">or</p>
-                    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
-                        Browse Files
-                    </button>
-                    <input type="file" id="fileInput" class="hidden" accept="image/*,.pdf">
-                </div>
-
-                <!-- File Info -->
-                <div id="fileInfoSection" class="hidden">
-                    <div class="file-info">
-                        <div class="file-info-left">
-                            <i class="fas fa-file" id="fileIcon"></i>
-                            <div>
-                                <div class="file-name" id="fileName"></div>
-                                <div class="file-size" id="fileSize"></div>
-                            </div>
-                        </div>
-                        <button class="btn-remove" onclick="removeFile()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Image Preview -->
-                <div class="preview-section" id="previewSection">
-                    <div class="section-title">
-                        <span>Image Preview</span>
-                    </div>
-                    <div class="preview-container">
-                        <img id="imagePreview" src="" alt="File preview">
-                    </div>
-                </div>
-
-                <!-- Metadata Section -->
-                <div class="metadata-section" id="metadataSection">
-                    <div class="section-title">
-                        <span>Document Information</span>
-                    </div>
-
-                    <!-- Invoice Fields -->
-                    <div id="invoiceFields" class="hidden">
-                        <div class="form-group">
-                            <label>Invoice Number</label>
-                            <input type="text" class="form-control" id="invoiceNo" placeholder="INV-2024-001">
-                        </div>
-                        <div class="form-group">
-                            <label>Date of Issue</label>
-                            <input type="date" class="form-control" id="invoiceDateOfIssue">
-                        </div>
-                    </div>
-
-                    <!-- Report Fields -->
-                    <div id="reportFields" class="hidden">
-                        <div class="form-group">
-                            <label>Job Number</label>
-                            <input type="text" class="form-control" id="jobNo" placeholder="JOB-2024-001">
-                        </div>
-                        <div class="form-group">
-                            <label>Date of Issue</label>
-                            <input type="date" class="form-control" id="reportDateOfIssue">
-                        </div>
-                        <div class="form-group">
-                            <label>Number of Samples</label>
-                            <input type="number" class="form-control" id="numberOfSamples" placeholder="5">
-                        </div>
-                        <div class="form-group">
-                            <label>Attendant Name</label>
-                            <input type="text" class="form-control" id="attendantName" placeholder="John Doe">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Progress Section -->
-                <div class="progress-section" id="progressSection">
-                    <div class="progress-info">
-                        <span>Uploading...</span>
-                        <span id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button class="btn-primary" id="submitBtn" onclick="submitVerification()" disabled>
-                    <i class="fas fa-check-circle"></i>
-                    Verify Document
-                </button>
-
-                <!-- Results Section -->
-                <div class="results-section" id="resultsSection">
-                    <div class="result-header">
-                        <div class="result-icon" id="resultIcon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div>
-                            <h3 class="result-title" id="resultTitle">Verification Complete</h3>
-                        </div>
-                    </div>
-
-                    <div id="resultContent"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        // State management
-        let state = {
-            documentType: null,
-            fileFormat: null,
-            selectedFile: null
-        };
-
-        // Document type selection
-        document.querySelectorAll('.type-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                state.documentType = this.dataset.type;
-                updateMetadataSection();
-                validateForm();
-            });
-        });
-
-        // File format selection
-        document.querySelectorAll('.format-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                state.fileFormat = this.dataset.format;
-                updateFileInputAccept();
-                validateForm();
-            });
-        });
-
-        // Update file input accept attribute
-        function updateFileInputAccept() {
-            const fileInput = document.getElementById('fileInput');
-            if (state.fileFormat === 'image') {
-                fileInput.accept = 'image/*';
-            } else if (state.fileFormat === 'pdf') {
-                fileInput.accept = '.pdf,application/pdf';
-            }
-        }
-
-        // File input handling
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            handleFileSelection(e.target.files[0]);
-        });
-
-        // Drag and drop
-        const uploadZone = document.getElementById('uploadZone');
-
-        uploadZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('dragover');
-        });
-
-        uploadZone.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-        });
-
-        uploadZone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-            handleFileSelection(e.dataTransfer.files[0]);
-        });
-
-        // Handle file selection
-        function handleFileSelection(file) {
-            if (!file) return;
-
-            // Validate file type
-            if (state.fileFormat === 'image' && !file.type.startsWith('image/')) {
-                alert('Please select an image file');
-                return;
-            }
-
-            if (state.fileFormat === 'pdf' && file.type !== 'application/pdf') {
-                alert('Please select a PDF file');
-                return;
-            }
-
-            state.selectedFile = file;
-
-            // Show file info
-            document.getElementById('fileInfoSection').classList.remove('hidden');
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileSize').textContent = formatFileSize(file.size);
-
-            // Update icon
-            const fileIcon = document.getElementById('fileIcon');
-            if (state.fileFormat === 'image') {
-                fileIcon.className = 'fas fa-image';
-            } else {
-                fileIcon.className = 'fas fa-file-pdf';
-            }
-
-            // Show preview for images
-            if (state.fileFormat === 'image') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                    document.getElementById('previewSection').classList.add('active');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('previewSection').classList.remove('active');
-            }
-
-            validateForm();
-        }
-
-        // Remove file
-        function removeFile() {
-            state.selectedFile = null;
-            document.getElementById('fileInput').value = '';
-            document.getElementById('fileInfoSection').classList.add('hidden');
-            document.getElementById('previewSection').classList.remove('active');
-            validateForm();
-        }
-
-        // Update metadata section based on document type
-        function updateMetadataSection() {
-            const metadataSection = document.getElementById('metadataSection');
-            const invoiceFields = document.getElementById('invoiceFields');
-            const reportFields = document.getElementById('reportFields');
-
-            if (state.documentType) {
-                metadataSection.classList.add('active');
-
-                if (state.documentType === 'invoice') {
-                    invoiceFields.classList.remove('hidden');
-                    reportFields.classList.add('hidden');
-                } else {
-                    reportFields.classList.remove('hidden');
-                    invoiceFields.classList.add('hidden');
-                }
-            } else {
-                metadataSection.classList.remove('active');
-            }
-        }
-
-        // Validate form
-        function validateForm() {
-            const submitBtn = document.getElementById('submitBtn');
-            let isValid = state.documentType && state.fileFormat && state.selectedFile;
-
-            if (isValid && state.documentType === 'invoice') {
-                const invoiceNo = document.getElementById('invoiceNo').value.trim();
-                const dateOfIssue = document.getElementById('invoiceDateOfIssue').value;
-                isValid = invoiceNo && dateOfIssue;
-            }
-
-            if (isValid && state.documentType === 'report') {
-                const jobNo = document.getElementById('jobNo').value.trim();
-                const dateOfIssue = document.getElementById('reportDateOfIssue').value;
-                const numberOfSamples = document.getElementById('numberOfSamples').value;
-                const attendantName = document.getElementById('attendantName').value.trim();
-                isValid = jobNo && dateOfIssue && numberOfSamples && attendantName;
-            }
-
-            submitBtn.disabled = !isValid;
-        }
-
-        // Add input listeners for validation
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', validateForm);
-            input.addEventListener('change', validateForm);
-        });
-
-        // Submit verification
-        function submitVerification() {
-            if (!state.selectedFile) return;
-
-            const formData = new FormData();
-            formData.append('file', state.selectedFile);
-            formData.append('document_type', state.documentType);
-            formData.append('file_format', state.fileFormat);
-
-            if (state.documentType === 'invoice') {
-                formData.append('invoice_no', document.getElementById('invoiceNo').value);
-                formData.append('date_of_issue', document.getElementById('invoiceDateOfIssue').value);
-            } else {
-                formData.append('job_no', document.getElementById('jobNo').value);
-                formData.append('date_of_issue', document.getElementById('reportDateOfIssue').value);
-                formData.append('number_of_samples', document.getElementById('numberOfSamples').value);
-                formData.append('attendant_name', document.getElementById('attendantName').value);
-            }
-
-            // Show progress section
-            document.getElementById('progressSection').classList.add('active');
-            document.getElementById('submitBtn').disabled = true;
-            document.getElementById('resultsSection').classList.remove('active');
-
-            // XHR request
-            const xhr = new XMLHttpRequest();
-
-            xhr.upload.addEventListener('progress', function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = Math.round((e.loaded / e.total) * 100);
-                    document.getElementById('progressBar').style.width = percentComplete + '%';
-                    document.getElementById('progressPercent').textContent = percentComplete + '%';
-                }
-            });
-
-            xhr.addEventListener('load', function() {
-                document.getElementById('progressSection').classList.remove('active');
-                document.getElementById('submitBtn').disabled = false;
-
-                if (xhr.status === 200) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        displayResults(response);
-                    } catch (e) {
-                        console.error('Error parsing response:', e);
-                        alert('Error parsing server response');
-                    }
-                } else {
-                    alert('Upload failed with status: ' + xhr.status);
-                }
-            });
-
-            xhr.addEventListener('error', function() {
-                document.getElementById('progressSection').classList.remove('active');
-                document.getElementById('submitBtn').disabled = false;
-                alert('Upload failed. Please try again.');
-            });
-
-            xhr.open('POST', './../data/verify_files', true);
-            xhr.send(formData);
-        }
-
-        // Display results
-        function displayResults(response) {
-            const resultsSection = document.getElementById('resultsSection');
-            const resultIcon = document.getElementById('resultIcon');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultContent = document.getElementById('resultContent');
-
-            resultsSection.classList.add('active');
-
-            // Check authorization
-            if (!response.success) {
-                resultIcon.classList.remove('success');
-                resultIcon.classList.add('error');
-                resultIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-                resultTitle.textContent = 'Unauthorized';
-                resultContent.innerHTML = '<p style="color: var(--accent-red);">You are not authorized to perform this action.</p>';
-                return;
-            }
-
-            // Check verification result
-            if (response.result) {
-                resultIcon.classList.remove('error');
-                resultIcon.classList.add('success');
-                resultIcon.innerHTML = '<i class="fas fa-check"></i>';
-                resultTitle.textContent = 'File Verified Successfully';
-            } else {
-                resultIcon.classList.remove('success');
-                resultIcon.classList.add('error');
-                resultIcon.innerHTML = '<i class="fas fa-times"></i>';
-                resultTitle.textContent = 'Verification Failed';
-            }
-
-            // Build result content
-            let html = '';
-
-            // Display tosend data
-            if (response.tosend) {
-                html += '<div class="result-data">';
-                html += '<div class="result-label">Saved Data</div>';
-                html += '<pre>' + JSON.stringify(response.tosend, null, 2) + '</pre>';
-                html += '</div>';
-            }
-
-            // Display runlog
-            if (response.runlog && response.runlog.length > 0) {
-                html += '<div class="result-data">';
-                html += '<div class="result-label">Run Log</div>';
-                html += '<pre>' + response.runlog.join('\n') + '</pre>';
-                html += '</div>';
-            }
-
-            // Display xtra data
-            if (response.xtra && response.xtra.length > 0) {
-                html += '<div class="result-data">';
-                html += '<div class="result-label">Additional Data</div>';
-                html += '<pre>' + JSON.stringify(response.xtra, null, 2) + '</pre>';
-                html += '</div>';
-            }
-
-            resultContent.innerHTML = html;
-        }
-
-        // Utility function to format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-        }
-    </script>
+	<style>
+		body{
+			background: #eee;
+
+			--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+			--clr-border: #ddd;
+		}
+		.container-fluid>*{
+			width: 100%;
+			max-width: 1200px;
+		}
+		.logo_img_ img {
+			/* aspect-ratio: auto; */
+			height: 150px;
+			width: auto;
+		}
+
+		#intro .steps_list .litem{
+			padding: 8px 16px;
+			border-radius: var(--roundness);
+			border: 1px solid var(--clr-border);
+			margin: 0 0 12px 0;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 12px;
+		}
+		#intro .steps_list .litem .num {
+			--w: 36px;
+			padding: 16px;
+			background: var(--clr-text-muted);
+			height: var(--w);
+			width: var(--w);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			color: var(--clr-alttext);
+			border-radius: 50%;
+		}
+
+		/* form area */
+		.formarea .section-title {
+			/*font-size: 0.75rem;*/
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--clr-text-muted);
+			margin-bottom: 1rem;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+		.formarea .section-title_::before {
+			content: '';
+			width: 3px;
+			height: 14px;
+			background: var(--themecolor);
+			border-radius: 2px;
+		}
+
+		.formarea .docsetup .type-selector, .formarea .docsetup .format-selector {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1rem;
+			margin-bottom: 2rem;
+		}
+		.formarea .docsetup .type-btn {
+			padding: 24px 16px;
+			border: 2px solid var(--clr-border);
+			border-radius: var(--roundness);
+			cursor: pointer;
+			text-align: center;
+			font-weight: 700;
+		}
+		.formarea .docsetup .type-btn:hover {
+			border-color: var(--themecolor);
+			background: white;
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-md);
+		}
+		.formarea .docsetup .type-btn.active {
+			--c: var(--darkcolor);
+			border-color: var(--c);
+			background: var(--c);
+			color: #fff;
+			box-shadow: var(--shadow-md);
+		}
+		.formarea .docsetup .type-btn i {
+			font-size: 2rem;
+			display: block;
+			margin-bottom: 0.5rem;
+		}
+
+		.formarea .docsetup .format-btn {
+			padding: 1rem;
+			border: 2px solid var(--clr-border);
+			border-radius: var(--roundness);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			font-weight: 700;
+		}
+		.formarea .docsetup .format-btn:hover {
+			border-color: var(--themecolor);
+			transform: translateY(-2px);
+		}
+		.formarea .docsetup .format-btn.active {
+			--c: var(--darkcolor);
+			border-color: var(--c);
+			background: var(--c);
+			color: white;
+		}
+		.formarea .docsetup .format-btn i {
+			font-size: 1.5rem;
+		}
+
+
+		.formarea .upload-zone {
+			border: 3px dashed var(--clr-border);
+			border-radius: 12px;
+			padding: 3rem 2rem;
+			text-align: center;
+			cursor: pointer;
+			margin-bottom: 2rem;
+		}
+		.formarea .upload-zone:hover {
+			border-color: var(--themecolor);
+			background: white;
+		}
+
+		.formarea .upload-zone.dragover {
+			border-color: var(--seccolor);
+			background: #eff6ff;
+			border-style: solid;
+		}
+
+		.formarea .upload-zone i {
+			font-size: 3rem;
+			/*color: var(--clr-text-muted);*/
+			margin-bottom: 1rem;
+		}
+
+		.formarea .upload-zone p {
+			margin: 16px 0;
+			color: var(--clr-text-muted);
+			font-weight: 700;
+		}
+
+		.formarea .upload-zone .btn-upload {
+			margin-top: 1rem;
+		}
+
+		.file-info {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0.75rem;
+			background: white;
+			border-radius: 8px;
+			margin-bottom: 1rem;
+			border: 1px solid var(--clr-border);
+		}
+		.file-info-left {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+		}
+		.file-info-left i {
+			font-size: 1.5rem;
+		}
+		.file-info .file-name {
+			font-weight: 500;
+			color: var(--clr-text-muted);
+		}
+		.file-info .file-size {
+			font-size: 0.85rem;
+			color: var(--clr-text-muted);
+			font-family: 'IBM Plex Mono', monospace;
+		}
+
+		.preview-container #imagePreview{
+			max-width: 80%;
+			max-height: 80vh;
+			aspect-ratio: auto;
+			width: auto;
+		}
+
+		/* finalize */
+			.info-row .info-label{width: 240px;}
+
+		@media (max-width: 768px) {
+			.progress-steps{--l: 32px !important;}
+			.page-header{
+				text-align: center;
+			}
+		}
+	</style>
+
+	<div class="container-fluid flow centroid mt-4">
+
+		<div class="page-header w3-animate-opacity w3-display-container">
+			<?php
+				if(isset($_GET['fromdash']) && $_GET['fromdash'] == 'yes'){
+			?>
+				<div class="w3-display-topright spacy-sm">
+					<a href="#" class="mybtn primary" onclick="window.close()"><i class="fa fa-times"></i> leave</a>
+				</div>
+			<?php
+				}
+			?>
+			<div class="flowline centerline overflow">
+				<div class="logo_img_ flow centroid">
+					<img src="./_assets/img/logo_full.png">
+				</div>
+
+				<div>
+					<div class="page-title mb-4">
+						<span class="h3" data-role="pagename">Jaymatian Mineral laboratory File verification</span>
+						<span class="text-muted">This page enables you to find out if a document originated from us. or is a counterfiet document</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panelbg themeround distance-sm spacy-sm slide-up" id="intro">
+			<div>
+				<span class="h4">Instructions</span>
+				<p>The page will take you through all the necessary steps required to verify the document</p>
+			</div>
+			<div>
+				<!-- <p>Here are the 4 easy steps</p> -->
+				<div class="steps_list">
+					<div class="litem">
+						<div class="num">1</div>
+						<div class="content">Specify the type of document</div>
+					</div>
+					<div class="litem">
+						<div class="num">2</div>
+						<div class="content">Upload the document</div>
+					</div>
+					<div class="litem">
+						<div class="num">3</div>
+						<div class="content">Enter additional information (should be in the document provided)</div>
+					</div>
+					<div class="litem">
+						<div class="num">4</div>
+						<div class="content">Find out if its <b class="w3-text-green">valid</b> or <b class="w3-text-red">fake</b></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="distance-sm flowline spread">
+				<button class="mybtn primary is_ghost">get started <i class="fa fa-angle-double-right"></i></button>
+				<button class="mybtn primary" data-runme="get_started">get started <i class="fa fa-angle-double-right"></i></button>
+			</div>
+		</div>
+
+		<div id="thesteps" class="w3-hide slide-up">
+			<div class="panelbg themeround distance-tn" id="progress_panel">
+				<div class="progress-indicator">
+					<div class="progress-steps">
+						<div class="progress-line themegrad" id="progressLine" style="width: 20%;"></div>
+						<div class="step" data-step="0" data-runme="pick_step_2">
+							<div class="step-circle"><i class="fas fa-user"></i></div>
+							<div class="step-label w3-hide-small">Document setup</div>
+						</div>
+						<div class="step" data-step="1" data-runme="pick_step_2">
+							<div class="step-circle"><i class="fas fa-upload"></i></div>
+							<div class="step-label w3-hide-small">File upload</div>
+						</div>
+						<div class="step" data-step="2" data-runme="pick_step_2">
+							<div class="step-circle"><i class="fas fa-info"></i></div>
+							<div class="step-label w3-hide-small">Document Details</div>
+						</div>
+						<div class="step" data-step="3" data-runme="pick_step_2">
+							<div class="step-circle"><i class="fas fa-stamp"></i></div>
+							<div class="step-label w3-hide-small">Finalize</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<form class="tabs formarea" id="veriform" data-onsubmit="send_form_data" data-callback="form_afterfx" data-onfail="form_onfail" data-blockdefault="yes">
+				<div class="w3-hide">
+					<input type="hidden" name="doctype" value="invoice">
+					<input type="hidden" name="filetype" value="image">
+					<input type="file" id="fileInput" name="fileInput" class="w3-hide" accept="image/*,.pdf">
+					@csrf
+				</div>
+
+				<div id="docsetup_tab" class="tab docsetup slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<span class="h4 themetxt border-bottom spacy-sm">Document setup</span>
+
+						<div>
+							<div class="section-title">
+								<span>Document Type (select one)</span>
+							</div>
+
+							<div class="type-selector">
+								<div class="type-btn" data-subrole="doctype_selector" data-runme="select_doctype" data-type="report">
+									<i class="fas fa-file-alt"></i>
+									<span>Report</span>
+								</div>
+								<div class="type-btn" data-subrole="doctype_selector" data-runme="select_doctype" data-type="invoice">
+									<i class="fas fa-file-invoice-dollar"></i>
+									<span>Invoice</span>
+								</div>
+							</div>
+
+							<div class="section-title">
+								<span>File Format (select one)</span>
+							</div>
+
+							<div class="format-selector">
+								<div class="format-btn" data-subrole="filetype_selector" data-runme="select_filetype" data-type="image">
+									<i class="fas fa-image"></i>
+									<span>Image (JPG, PNG)</span>
+								</div>
+								<div class="format-btn" data-subrole="filetype_selector" data-runme="select_filetype" data-type="pdf">
+									<i class="fas fa-file-pdf"></i>
+									<span>PDF Document</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+						<a class="mybtn primary" data-runme="just_stop">
+							<i class="fa fa-angle-double-left"></i> start over
+						</a>
+						<a class="mybtn primary" data-runme="pick_step_2" data-step="1">
+							upload files <i class="fa fa-angle-double-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<div id="file_upload_tab" class="tab slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<span class="h4 themetxt border-bottom spacy-sm">File upload</span>
+
+						<div>
+							<div class="section-title">
+								<span>Upload document File</span>
+							</div>
+
+							<div class="upload-zone" id="uploadZone" onclick="fileInput.click()">
+								<i class="fas fa-cloud-upload-alt"></i>
+								<p>Drag and drop your file here</p>
+								<!-- <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">or</p> -->
+								<button type="button" class="mybtn secondary">
+									Browse Files
+								</button>
+							</div>
+						</div>
+
+						<div id="fileInfoSection" class="w3-hide">
+							<div class="file-info">
+								<div class="file-info-left">
+									<i class="fas fa-file" id="fileIcon"></i>
+									<div>
+										<div class="file-name" id="fileName"></div>
+										<div class="file-size" id="fileSize"></div>
+									</div>
+								</div>
+								<button class="btn-remove w3-hide" onclick="removeFile()">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="preview-section w3-hide slide-up" id="previewSection">
+							<div class="section-title">
+								<span>Image Preview</span>
+							</div>
+							<div class="preview-container">
+								<img id="imagePreview" src="" alt="File preview">
+							</div>
+						</div>
+					</div>
+
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+						<a class="mybtn secondary" data-runme="pick_step_2" data-step="0">
+							<i class="fa fa-angle-double-left"></i> document setup
+						</a>
+						<a class="mybtn primary" data-runme="pick_step_2" data-step="2">
+							Document Details <i class="fa fa-angle-double-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<div id="details_tab" class="tab slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<span class="h4 themetxt border-bottom spacy-sm">Document Details</span>
+						<p>provided the document is valid it should have all this information indicated on it</p>
+
+						<div id="forminputs">
+						</div>
+					</div>
+
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+						<a class="mybtn secondary" data-runme="pick_step_2" data-step="1">
+							<i class="fa fa-angle-double-left"></i> file uploads
+						</a>
+						<a class="mybtn primary" data-runme="saveinputs" data-step="3">
+							Finalize <i class="fa fa-angle-double-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<div id="finalize_tab" class="tab slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<span class="h4 themetxt border-bottom spacy-sm">Data summary</span>
+						<p>this is all the data you have provided, confirm that it is true before proceeding</p>
+
+						<div id="formsummary">
+						</div>
+
+						<div class="distance-sm">
+							<button class="mybtn primary">submit Information <i class="fa fa-paper-plane"></i></button>
+						</div>
+					</div>
+
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+						<a class="mybtn secondary" data-runme="pick_step_2" data-step="2">
+							<i class="fa fa-angle-double-left"></i> Document Details
+						</a>
+						<a class="mybtn primary is_ghost" data-runme="saveinputs" data-step="3">
+							Finalize <i class="fa fa-angle-double-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="tab slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<div class="spacy-mg w3-center" id="submitter_loader_ui">
+							<p>submitting Information, please wait</p>
+							<div class="flow centroid">
+								<div class="loader"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="final_report" class="tab slide-up">
+					<div class="panelbg themeround spacy-sm">
+						<span class="h4 themetxt border-bottom spacy-sm">Verdict</span>
+						<p>here are the results from the server</p>
+
+						<div id="results_summary">
+						</div>
+
+						<div>
+							<div id="verdict_holder" class="alert-success">
+								<div>
+									<i class="fa fa-check-circle"></i>
+								</div>
+								<div>
+									<span>valid document</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="distance-sm">
+							<!-- <button class="mybtn primary">submit Information <i class="fa fa-paper-plane"></i></button> -->
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		const verify_runtime_data = {};
+
+		let tabs = document.querySelectorAll('.tabs .tab');
+
+		let checks = document.querySelectorAll('.progress-steps>.step');
+		const steps = 4;
+		const spans = [0,31,63,90,90];
+		const fields = {
+			'invoice' : [
+				{
+					field: 'invoice_no',
+					label: 'Invoice number',
+					placeholder: 'INV_0000',
+					typ: 'text',
+					required: true,
+				},
+				{
+					field: 'invoice_date',
+					label: 'date of issue',
+					placeholder: 'enter the given invoice date',
+					typ: 'date',
+					required: true,
+				}
+			],
+			'report' : [
+				/*
+				job_number
+				date_of_issue
+				sample_count
+				attendant_name
+				*/
+				{
+					field: 'report_no',
+					label: 'Report number',
+					placeholder: 'RPT_0000',
+					typ: 'text',
+					required: true,
+				},
+				{
+					field: 'report_date',
+					label: 'date of issue',
+					placeholder: 'enter the given invoice date',
+					typ: 'date',
+					required: true,
+				},
+				{
+					field: 'sample_count',
+					label: 'Number of sample',
+					placeholder: 'Number of samples delivered',
+					typ: 'number',
+					required: true,
+				},
+				{
+					field: 'authorizer',
+					label: 'Authorizing staff',
+					placeholder: 'Name of authorizer',
+					typ: 'text',
+					required: true,
+				},
+			]
+		};
+		Object.freeze(fields);
+
+		window['just_stop'] = () => {
+			thesteps.classList.add('w3-hide');
+			intro.classList.remove('w3-hide');
+		}
+
+		window['get_started'] = (el) => {
+			intro.classList.add('w3-hide');
+			thesteps.classList.remove('w3-hide');
+
+			pick_step(0);
+		}
+
+		// navigations
+		function pick_step(n) {
+			progressLine.style.width = `${spans[n]}%`;
+			// render_all_data();
+
+			checks.forEach((w,id) => {
+				if(id == n){
+					w.classList.add('active');
+				}else {
+					w.classList.remove('active');
+				}
+
+				if(id < n){
+					w.classList.add('completed');
+				} else {
+					w.classList.remove('completed');
+				}
+			})
+
+			tabs.forEach(el => {
+				el.style.display = 'none';
+			})
+
+			let it = tabs[n];
+			if(it !== undefined){
+				it.style.display = 'block';
+			}
+		}
+		window['pick_step_2'] = (g) => {
+			let n = Number(g.dataset.step);
+
+			if(verify_runtime_data.doctype == undefined && n > 0){
+				alert_danger('pick a document type first');
+				return;
+			}
+			if(verify_runtime_data.filetype == undefined && n > 0){
+				alert_danger('specify a file type first');
+				return;
+			}
+
+			if(verify_runtime_data.selectedFile == undefined && n > 1){
+				alert_danger('pick a file first');
+				return;
+			}
+			pick_step(n);
+		}
+
+		// doc setup ops
+			window['select_doctype'] = (el) => {
+				let mtype = el.dataset.type;
+
+				if(mtype == undefined){
+					alert_danger('invalid function call');
+					return;
+				}
+
+				let items = document.querySelectorAll('[data-subrole="doctype_selector"]');
+				items.forEach(el => {
+					el.classList.remove('active');
+				})
+				el.classList.add('active');
+
+				verify_runtime_data.doctype = mtype;
+				veriform.doctype.value = mtype;
+
+				let allowed = Object.keys(fields);
+				if(!allowed.includes(mtype.toLowerCase())){
+					alert_danger('invalid field type chosen');
+					return;
+				}
+
+				removefyl();
+				setupinputs(mtype);
+				setupformaction(mtype)
+			}
+			window['select_filetype'] = (el) => {
+				let mtype = el.dataset.type;
+
+				if(mtype == undefined){
+					alert_danger('invalid function call');
+					return;
+				}
+
+				let items = document.querySelectorAll('[data-subrole="filetype_selector"]');
+				items.forEach(el => {
+					el.classList.remove('active');
+				})
+				el.classList.add('active');
+
+				if (mtype == 'image') {
+					fileInput.accept = 'image/*';
+				} else if (mtype == 'pdf') {
+					fileInput.accept = '.pdf,application/pdf';
+				}
+
+				verify_runtime_data.filetype = mtype;
+				veriform.filetype.value = mtype;
+
+				removefyl();
+			}
+			window['setupinputs'] = (t) => {
+				t = t.toLowerCase();
+
+				console.log(fields);
+
+				let allowed = Object.keys(fields);
+				if(!allowed.includes(t.toLowerCase())){
+					alert_danger('invalid field type chosen');
+					return;
+				}
+
+				let outht = '';
+				let inputs = [];
+
+				switch(t){
+					case 'report':
+						inputs = fields[t];
+
+						inputs.forEach((npt,id) => {
+							outht += mekInputholder(npt);
+						})
+						break;
+					case 'invoice':
+						inputs = fields[t];
+
+						inputs.forEach((npt,id) => {
+							outht += mekInputholder(npt);
+						})
+						break;
+					default:
+						outht = '';
+						break;
+				}
+
+				forminputs.innerHTML = outht;
+			}
+			window['setupformaction'] = (t) => {
+				let acts = {
+					'report' : './op/verify_report',
+					'invoice' : './op/verify_invoice',
+				}
+
+				let allowed = Object.keys(acts);
+				if(!allowed.includes(t)){
+					alert_danger('invalid field type');
+					return;
+				}
+
+				veriform.action = acts[t];
+			}
+
+		// file upload ops
+			fileInput.addEventListener('change',(e) => {
+				pickfyl(e.target.files[0]);
+			})
+			uploadZone.addEventListener('dragover', function(e) {
+				e.preventDefault();
+				this.classList.add('dragover');
+			});
+
+			uploadZone.addEventListener('dragleave', function(e) {
+				e.preventDefault();
+				this.classList.remove('dragover');
+			});
+
+			uploadZone.addEventListener('drop', function(e) {
+				e.preventDefault();
+				this.classList.remove('dragover');
+
+				let f = e.dataTransfer.files[0];
+				let dtr = new DataTransfer();
+				dtr.items.add(f);
+				fileInput.files = dtr.files;
+
+				pickfyl(f);
+			});
+
+			function pickfyl(file) {
+				verify_runtime_data.selectedFile = undefined;
+
+				if (!file) return;
+
+				// Validate file type
+				if (verify_runtime_data.filetype === 'image' && !file.type.startsWith('image/')) {
+					alert_danger('Please select an image file');
+					removefyl();
+					return;
+				}
+
+				if (verify_runtime_data.filetype === 'pdf' && file.type !== 'application/pdf') {
+					alert_danger('Please select a PDF file');
+					removefyl();
+					return;
+				}
+
+				verify_runtime_data.selectedFile = file;
+
+				// Show file info
+				fileInfoSection.classList.remove('w3-hide');
+				document.getElementById('fileName').textContent = file.name;
+				document.getElementById('fileSize').textContent = formatFileSize(file.size);
+
+				// Update icon
+				const fileIcon = document.getElementById('fileIcon');
+				if (verify_runtime_data.filetype === 'image') {
+					fileIcon.className = 'fas fa-image';
+				} else {
+					fileIcon.className = 'fas fa-file-pdf';
+				}
+
+				// Show preview for images
+				if (verify_runtime_data.filetype === 'image') {
+					const reader = new FileReader();
+
+					previewSection.classList.remove('w3-hide');
+
+					reader.onload = function(e) {
+						imagePreview.src = e.target.result;
+						previewSection.classList.add('active');
+					};
+					reader.readAsDataURL(file);
+				} else {
+					previewSection.classList.add('w3-hide');
+					previewSection.classList.remove('active');
+				}
+
+				// validateForm();
+			}
+			function removefyl(){
+				fileInput.value = '';
+				verify_runtime_data.selectedFile = undefined;
+				fileInfoSection.classList.add('w3-hide');
+				previewSection.classList.add('w3-hide');
+				previewSection.classList.remove('active');
+			}
+
+		// document info section
+			window['saveinputs'] = (el) => {
+				let inputs = fields[verify_runtime_data.doctype];
+				let mafields = [];
+
+				inputs.forEach(np => {
+					let tmp = {
+						name: np.field,
+						label: np.label,
+						value: veriform[np.field].value,
+					}
+
+					mafields.push(tmp);
+				});
+
+				let invalid = mafields.filter(f => {return (f.value == '' || f.value == null || f.value == undefined);});
+
+				verify_runtime_data.documentDetails = mafields;
+
+				if(invalid.length == 0){
+					render_summary();
+					pick_step_2(el);
+				} else {
+					let np = invalid[0];
+					alert_danger(`fill in the ${np.label} field first`);
+				}
+			}
+		// finalize section
+			window['render_summary'] = (d) => {
+				let doctype = verify_runtime_data.doctype;
+				let docdeets = verify_runtime_data.documentDetails;
+
+				let outht = `
+					<div class="info-row">
+						<span class="info-label">Document Type:</span>
+						<span class="info-value">${doctype}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">File Type:</span>
+						<span class="info-value">${verify_runtime_data.filetype}</span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">Uploaded file:</span>
+						<span class="info-value">${verify_runtime_data.selectedFile.name}</span>
+					</div>
+				`;
+
+				// get doc details
+				docdeets.forEach(d => {
+					outht += `
+						<div class="info-row">
+							<span class="info-label">${d.label}:</span>
+							<span class="info-value">${d.value}</span>
+						</div>
+					`;
+				})
+
+				formsummary.innerHTML = outht;
+			}
+			window['send_form_data'] = (frm) => {
+				pick_step_2({dataset: {step: 4}});
+
+				progress_panel.classList.add('is_inactive');
+
+				setTimeout(() => {
+					sendform(frm);
+				},1200);
+			}
+			window['form_onfail'] = () => {
+				progress_panel.classList.remove('is_inactive');
+				pick_step_2({dataset: {step: 3}});
+			}
+			window['form_afterfx'] = () => {
+				progress_panel.classList.remove('is_inactive');
+				pick_step_2({dataset: {step: 5}});
+			}
+
+		// utilities
+			function formatFileSize(bytes) {
+				if (bytes === 0) return '0 Bytes';
+				const k = 1024;
+				const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+				const i = Math.floor(Math.log(bytes) / Math.log(k));
+				return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+			}
+
+			function sendform(m,callback,onfail,tosend = undefined) {
+				let hasencrypted = false;
+				let ps = '';
+
+				if(m.dataset.submitting === true){
+					alert_danger('already submitting...');
+					return;
+				} else {
+					alert_info('submitting form...')
+				}
+
+				// callback mgt
+				if(callback == undefined){
+					if(m.dataset.callback){
+						console.log('callback: ',m.dataset.callback);
+						// alert_dark('callback: ' + m.dataset.callback);
+
+						callback = window[m.dataset.callback.trim()];
+					} else {
+						console.log('no fallback to the callback');
+						// alert_dark('no fallback to the callback');
+					}
+				} else {
+					if(typeof callback != "function"){
+						console.log('trying to read from a window variable');
+						// alert_dark('trying to read from a window variable');
+						callback = window[callback];
+					}
+				}
+
+				if(typeof callback == "function"){
+					console.log('valid callback')
+					// alert_dark('valid callback')
+				} else {
+					callback = (a) => {
+						alert_success('process successful');
+						console.log('default callback results: ',a);
+					};
+					console.log('not a function')
+					// alert_dark('not a function')
+				}
+
+				// onfail mgt
+				if(onfail == undefined){
+					if(m.dataset.onfail){
+						console.log('onfail: ',m.dataset.onfail);
+						// alert_dark('onfail: ' + m.dataset.onfail);
+
+						onfail = window[m.dataset.onfail.trim()];
+					} else {
+						console.log('no fallback to the onfail');
+						// alert_dark('no fallback to the onfail');
+					}
+				} else {
+					if(typeof onfail != "function"){
+						console.log('trying to read from a window variable');
+						// alert_dark('trying to read from a window variable');
+						onfail = window[onfail];
+					}
+				}
+
+				if(typeof onfail == "function"){
+					console.log('valid onfail')
+					// alert_dark('valid onfail')
+				} else {
+					onfail = (a) => {alert_danger('process failed')};
+					console.log('not a function')
+					// alert_dark('not a function')
+				}
+
+				// return;
+
+				// callback = callback == undefined ? (m.dataset.callback ? window[m.dataset.callback] : undefined) : callback;
+
+				callback = typeof callback == 'function' ? callback : () => {alert_info('invalid callback passed to sendform')};
+
+				m.style.pointerEvents = "none";
+				m.style.opacity = 0.2;
+				m.dataset.submitting = true;
+
+				// /*
+				if(m.admin_password !== undefined){
+					hasencrypted = true;
+					ps = m.admin_password.value;
+					m.admin_password.value = encryptme(ps,encsetup.offset,encsetup.salt,encsetup.chunks);
+				}
+				// */
+
+				let fdata = tosend == undefined ? getFormdata(m) : tosend;
+				const sender = tosend == undefined ? window[fetch_bypass_fyls] : window[fetch_bypass];
+				const as_is = tosend == undefined;
+				let myres = undefined;
+				let myaction = m.action;
+				// console.log('fdata: ',fdata,'use as is: ',as_is);
+
+				if(myaction.includes('defined:')){
+					// myaction = linkAtlas[myaction.split(':')[1]];
+				}
+
+				// add_edit_form.style.pointerEvents = "all";
+				sender(myaction,fdata,'POST',true,as_is).then(d => {
+					myres = d;
+
+					// console.log(callback);
+					// return;
+					responseHandler(d,callback,{'el': m,'data': d});
+
+					if(!d.success || !d.result){
+						onfail(d);
+					}
+					// console.log("finally, the result is: ",myres);
+					// callback(m);
+				})
+				.catch(err => {
+					alert_danger(err.message);
+					console.error(err);
+
+					if(onfail !== undefined){
+						onfail(err);
+					}
+				})
+				.finally(() => {
+					m.style.pointerEvents = "all";
+					m.style.opacity = 1;
+					m.dataset.submitting = false;
+
+					if(hasencrypted){
+						m.admin_password.value = ps;
+					}
+				})
+			}
+	</script>
 </x-layouts.mainlayout>

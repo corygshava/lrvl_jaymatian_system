@@ -137,8 +137,10 @@ Route::prefix('/op')->group(function(){
 
 	Route::post('/save_invoice', [InvoiceController::class,'add_new'])->middleware(['auth','verified']);
 	Route::post('/add_payment_invoice',[InvoiceController::class, 'add_payment'])->middleware(['auth','verified']);
+	Route::post('/verify_invoice', [InvoiceController::class,'log_my_payload_fyls'])->middleware(['auth','verified']);
 
 	Route::post('/save_report', [ReportsController::class,'add_new'])->middleware(['auth','verified']);
+	Route::post('/verify_report', [ReportsController::class,'log_my_payload_fyls'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/media')->group(function(){

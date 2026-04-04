@@ -638,7 +638,16 @@ function mekButton(pr = {caption: "",type: "button",icon:"",_props: "",_class:""
 }
 
 function mekInputholder(params) {
-	const dftdata = {label: "input",field: "inp_name",typ:"text",placeholder: undefined,props: undefined,_inp_props: undefined,required: false};
+	const dftdata = {
+		label: "input",
+		field: "inp_name",
+		typ:"text",
+		placeholder: undefined,
+		props: undefined,
+		_inp_props: undefined,
+		_inp_classes: undefined,
+		required: false
+	};
 
 	params = {...dftdata,...params};
 
@@ -650,12 +659,13 @@ function mekInputholder(params) {
 	let val = params.value || '';
 	let _inp_props = params._inp_props || '';
 	let _inp_req = params.required ? "required" : "";
+	let _inp_classes = params._inp_classes || "no_additional_classes";
 
 	let xtrs = props == undefined ? "" : props;
 
 	placeholder = placeholder == undefined ? `enter ${label} here...` : placeholder;
 
-	let inputht = `<input type="${typ}" name="${field}" id="${field}" placeholder="${placeholder}" ${_inp_props} ${_inp_req} value="${val}">`;
+	let inputht = `<input class="form-control-custom ${_inp_classes}" type="${typ}" name="${field}" id="${field}" placeholder="${placeholder}" ${_inp_props} ${_inp_req} value="${val}">`;
 
 	if(typ == 'select'){
 		let optht = ``;
@@ -667,18 +677,18 @@ function mekInputholder(params) {
 		})
 
 		inputht = `
-			<select name="${field}" id="${field}" ${_inp_props} ${_inp_req}>
+			<select class="form-control-custom ${_inp_classes}" name="${field}" id="${field}" ${_inp_props} ${_inp_req}>
 				<option disabled>${placeholder}</option>
 				${optht}
 			</select>
 		`;
 	} else if(typ == "textarea"){
-		inputht = `<textarea rows="3" name="${field}" id="${field}" placeholder="${placeholder}" ${_inp_props} ${_inp_req}>${val}</textarea>`
+		inputht = `<textarea class="form-control-custom ${_inp_classes}" rows="3" name="${field}" id="${field}" placeholder="${placeholder}" ${_inp_props} ${_inp_req}>${val}</textarea>`
 	}
 
 	return `
 		<div class="inputholder" ${props || "data-noprops"}>
-			<label for="${field}">${label} ${params.required === true ? '*' : ''}</label>
+			<label class="form-label" for="${field}">${label} ${params.required === true ? '*' : ''}</label>
 			${inputht}
 		</div>
 	`;

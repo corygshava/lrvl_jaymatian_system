@@ -974,7 +974,7 @@
 			return;
 		}
 
-		invoice_runtime_data.medFile.save(`[${invoice_runtime_data.aggregates.invoice_id}] generated_report.pdf`);
+		invoice_runtime_data.medFile.save(`[${invoice_runtime_data.aggregates.invoice_id}] generated_invoice.pdf`);
 
 		alert_info('downloading generated pdf');
 	}
