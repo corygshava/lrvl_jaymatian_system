@@ -46,7 +46,7 @@ class Invoice extends Model{
 		2 => 'paid',
 	];
 
-	//
+	// relations
     public function client(): BelongsTo{
         return $this->belongsTo(Client::class);
     }
