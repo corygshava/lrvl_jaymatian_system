@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('page_count')->default(1); // Number of pages (1 for images, multiple for PDFs)
             $table->timestamps();
 
-			/*
+			// /*
             // Indexes for fast lookups
             $table->index('myhash');
             $table->index(['file_type', 'invoice_id']);
