@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\FileHash;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Task;
+use App\Services\ImageHashService;
+use App\services\pdfHashService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -247,7 +250,6 @@ class InvoiceController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function get_from_slug(Request $req,$fl = 'img',$slug = ''){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -370,7 +372,7 @@ class InvoiceController extends Controller{
 				;
 
 				if($client == null){
-					$msg = "invalid sample";
+					$msg = "invalid client";
 				} else {
 					$tasks = Task::where('client_id',$client_id)->where('payment_status','<>',2)->get();
 					$task_ids = [];
@@ -392,9 +394,11 @@ class InvoiceController extends Controller{
 					$rndr = Str::upper($this->mekRandomString(4));
 					$sno = '';
 					$rpts = $owner['invoices_count'];
-					$file_link = "{$sno}_{$rpts}_{$rndr}_pdf";
-					$img_link = "{$sno}_{$rpts}_{$rndr}_img";
+					$file_link = "{$sno}_invoice_{$rpts}_{$rndr}_pdf";
+					$img_link = "{$sno}_invoice_{$rpts}_{$rndr}_img";
 					$fyls = [];
+					$img_serial = '';
+					$pdf_serial = '';
 
 					$fkey = 'genfile';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
@@ -410,6 +414,10 @@ class InvoiceController extends Controller{
 
 					$fkey = 'genimage';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+						$imghash = new ImageHashService();
+						$mfile = $req->file($fkey,null);
+						$img_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+
 						$fyl = $req->file($fkey);
 						$myname = $img_link;
 						$ext = $fyl->getClientOriginalExtension();
@@ -420,6 +428,7 @@ class InvoiceController extends Controller{
 						$fyls[$fkey] = $fname;
 					};
 
+					$pdf_serial = $img_serial;
 					// $res['runlog'][] = ['sample' => $sample];
 
 					$toadd = [
@@ -442,9 +451,31 @@ class InvoiceController extends Controller{
 						'file_slug' => $slug,
 					];
 
+					$invoice = Invoice::create($toadd);
+
+					$add_to_hashes = [
+						[
+							'invoice_id' => $invoice->id,
+							'file_type' => 'invoice',
+							'myhash' => $img_serial,
+							'file_name' => $toadd['image_link'],
+							'file_format' => 'image',
+						],
+						[
+							'invoice_id' => $invoice->id,
+							'file_type' => 'invoice',
+							'myhash' => $pdf_serial,
+							'file_name' => $toadd['pdf_link'],
+							'file_format' => 'pdf',
+						]
+					];
+
+					for($x = 0;$x < count($add_to_hashes);$x++){
+						FileHash::create($add_to_hashes[$x]);
+					}
+
 					// $res['runlog'][] = ["newrec" => $toadd];
 
-					$invoice = Invoice::create($toadd);
 					$invoice->tasks()->sync($task_ids);
 					$msg = "Invoice saved successfully";
 					$showthis = $invoice;
@@ -465,7 +496,6 @@ class InvoiceController extends Controller{
 
 		return response()->json($res);
 	}
-
 	public function add_payment(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -600,6 +630,115 @@ class InvoiceController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $invoice;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function verify_me(Request $req){
+		// return $this->log_my_payload_fyls($req, 'true');
+
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'filetype' => ['required'],
+			'invoice_no' => ['required'],
+			'invoice_date' => ['required','date'],
+			'invoice_amt' => ['required','numeric'],
+			'invoice_tasks' => ['required','numeric'],
+			'fileInput' => ['required','file'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili() || true){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$ftype = $passed['filetype'];
+			$inv_no = $passed['invoice_no'];
+			$inv_date = Carbon::parse($passed['invoice_date']);
+			$amt = $passed['invoice_amt'];
+
+			$outdata = [];
+
+			$invoice = Invoice::where('invoice_no',$inv_no)->with('filehashes')->first();
+
+			if($invoice == null){
+				$_msg('no invoice found with that Number');
+			} else {
+				$_msg('invoice found');
+
+				$outdata['invoice_no'] = $invoice->invoice_no;
+				$serial = '';
+				$mfile = $req->file('fileInput',null);
+
+				if($ftype == "image"){
+					$imghash = new ImageHashService();
+					$serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+				} elseif($ftype == 'pdf') {
+					$pdfhash = new ImageHashService();
+					$serial = $pdfhash->generateHash($mfile,$res['runlog'])['hex'];
+				}
+
+				$hashes = $invoice->filehashes->toArray();
+				$savedhash = '';
+				// $f_name = $ftype == 'image' ? $invoice->image_link : $invoice->pdf_link;
+				$f_name = $invoice->file_slug;
+
+				if(count($hashes) > 0){
+					foreach($hashes as $h){
+						if(strtolower($h['file_format']) == strtolower($ftype)){
+							$savedhash = $h['myhash'];
+							// $fname = $h['file_name'];
+						}
+					}
+				}
+
+				$outdata['invoice'] = $invoice->toArray();
+				unset($outdata['invoice']['filehashes']);
+
+				$_msg("file name: $f_name");
+
+				$outdata['matchfile'] = strtolower($serial) == strtolower($savedhash);
+				$outdata['matches'] = [$serial,$savedhash];
+				$outdata = [
+					...$outdata,
+					'invoice_amt' => $invoice->total,
+					'invoice_date' => $invoice->created_at,
+					'invoice_tasks' => $invoice->tasks_count,
+					'file_link' => $f_name,
+				];
+
+				$reslt = true;
+			}
+
+			$res['wegood'] = $reslt;
+			$res['result'] = true;
+			$res['sendme'] = $outdata;
 			$res['message'] = $msg;
 		}
 

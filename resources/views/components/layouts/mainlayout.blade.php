@@ -21,6 +21,9 @@
 	<script src="_assets/js/jquery-3.6.0.min.js"></script>
 	<script src="_assets/js/popper.min.js"></script>
 	<script src="_assets/_vendor/BS4/js/bootstrap.bundle.min.js"></script>
+	<script src="_assets/_vendor/misc/html2canvas.min.js"></script>
+	<script src="_assets/_vendor/misc/jspdf.umd.min.js"></script>
+	<script src="_assets/_vendor/misc/pdf.min.js"></script>
 	<script src="_assets/js/chart.js"></script>
 	<script src="_assets/js/SuperScript.js"></script>
 	<script src="_assets/js/toappend.js"></script>
@@ -31,6 +34,11 @@
 	<script src="_assets/js/super_encryptor.js"></script>
 
 	<script src="_assets/js/app.js"></script>
+
+	<script>
+	    // Configure PDF.js worker
+		pdfjsLib.GlobalWorkerOptions.workerSrc = '_assets/_vendor/misc/pdf.worker.min.js';
+	</script>
 </head>
 <body>
     {{ $slot }}

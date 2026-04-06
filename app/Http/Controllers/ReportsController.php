@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BizData;
+use App\Models\Client;
+use App\Models\FileHash;
 use App\Models\ReportsGen;
 use App\Models\Sample;
+use App\Services\ImageHashService;
+use App\services\pdfHashService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -272,7 +276,6 @@ class ReportsController extends Controller{
 		return null;
 		return response()->json($res);
 	}
-
 	public function add_new(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -328,14 +331,22 @@ class ReportsController extends Controller{
 					$rndr = Str::upper($this->mekRandomString(4));
 					$sno = $sample->sample_no;
 					$rpts = $sample->reports_count;
-					$file_link = "{$sno}_{$rpts}_{$rndr}_pdf";
-					$img_link = "{$sno}_{$rpts}_{$rndr}_img";
+					$file_link = "{$sno}_report_{$rpts}_{$rndr}_pdf";
+					$img_link = "{$sno}_report_{$rpts}_{$rndr}_img";
 					$fyls = [];
 
 					$slug = $passed['file_slug'];
+					$img_serial = '';
+					$pdf_serial = '';
 
 					$fkey = 'genfile';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+						/*
+						$imghash = new pdfHashService();
+						$mfile = $req->file($fkey,null);
+						$pdf_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+						// */
+
 						$fyl = $req->file($fkey);
 						$myname = $file_link;
 						$ext = $fyl->getClientOriginalExtension();
@@ -344,10 +355,15 @@ class ReportsController extends Controller{
 						$fname = "[{$date}] {$daname}";
 						$fyl->move(storage_path(self::$report_files_path),$fname);
 						$fyls[$fkey] = $fname;
+						// $pdf_serial = '';
 					};
 
 					$fkey = 'genimage';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+						$imghash = new ImageHashService();
+						$mfile = $req->file($fkey,null);
+						$img_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+
 						$fyl = $req->file($fkey);
 						$myname = $img_link;
 						$ext = $fyl->getClientOriginalExtension();
@@ -357,6 +373,8 @@ class ReportsController extends Controller{
 						$fyl->move(storage_path(self::$report_images_path),$fname);
 						$fyls[$fkey] = $fname;
 					};
+
+					$pdf_serial = $img_serial;
 
 					// $res['runlog'][] = ['sample' => $sample];
 
@@ -388,6 +406,28 @@ class ReportsController extends Controller{
 					// $res['runlog'][] = ["newrec" => $toadd];
 
 					$report = ReportsGen::create($toadd);
+
+					$add_to_hashes = [
+						[
+							'report_id' => $report->id,
+							'file_type' => 'report',
+							'myhash' => $img_serial,
+							'file_name' => $toadd['image_link'],
+							'file_format' => 'image',
+						],
+						[
+							'report_id' => $report->id,
+							'file_type' => 'report',
+							'myhash' => $pdf_serial,
+							'file_name' => $toadd['pdf_link'],
+							'file_format' => 'pdf',
+						]
+					];
+
+					for($x = 0;$x < count($add_to_hashes);$x++){
+						FileHash::create($add_to_hashes[$x]);
+					}
+
 					$showthis = $report;
 					$reslt = true;
 				}
@@ -395,6 +435,127 @@ class ReportsController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $showthis;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function verify_me(Request $req){
+		// return $this->log_my_payload_fyls($req, 'true');
+
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'filetype' => ['required'],
+			'task_no' => ['required'],
+			'sample_type' => ['required'],
+			'sample_count' => ['required','numeric'],
+			'client_name' => ['required'],
+			'report_date' => ['required','date'],
+			'authorizer' => ['required'],
+			'fileInput' => ['required','file'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili() || true){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$ftype = $passed['filetype'];
+			$task_no = $passed['task_no'];
+			$sample_type = $passed['sample_type'];
+			$sample_count = $passed['sample_count'];
+			$client_name = $passed['client_name'];
+			$report_date = $passed['report_date'];
+			$authorizer = $passed['authorizer'];
+
+			$s_task_no = null;
+			$s_sample_type = null;
+			$s_sample_count = null;
+			$s_name = null;
+			$s_report_date = null;
+			$s_authorizer = null;
+
+			$mfile = $req->file('fileInput',null);
+			$outdata = [];
+			$savedhash = '';
+			$serial = '';
+			$flink = '';
+
+			if($ftype == "image"){
+				$imghash = new ImageHashService();
+				$serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+			}
+
+			$fhash = FileHash::where('myhash',$serial)->with('report')->first();
+			$savedhash = $fhash->myhash;
+
+			if($fhash == null){
+				$_msg('filehash not found');
+			} else {
+				$_msg('filehash found');
+
+				$report = $fhash->report;
+				$client = Client::where('id',$report->client_id)->first();
+
+				$s_task_no = $report->task_no;
+				$s_sample_type = $report->sample_type;
+				$s_sample_count = $report->sample_count;
+				$s_name = $client->client_name;
+				$s_report_date = $report->date_compiled;
+				$s_authorizer = $report->authorizer;
+
+				$flink = $report->file_slug;
+
+				$reslt = true;
+			}
+
+			$outdata['matchdata'] = [
+				'passed' => $serial,
+				'saved' => $savedhash,
+			];
+
+			$ismatch = !($fhash == null);
+
+			$outdata = [
+				...$outdata,
+				'file_link' => $flink,
+				'matchfile' => $ismatch,
+				'task_no' => $s_task_no,
+				'sample_type' => $s_sample_type,
+				'sample_count' => $s_sample_count,
+				'client_name' => $s_name,
+				'report_date' => $s_report_date,
+				'authorizer' => $s_authorizer,
+			];
+
+			$res['wegood'] = $reslt;
+			$res['result'] = true;
+			$res['sendme'] = $outdata;
 			$res['message'] = $msg;
 		}
 

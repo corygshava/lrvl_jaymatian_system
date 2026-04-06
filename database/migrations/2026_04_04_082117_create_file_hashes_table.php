@@ -11,12 +11,12 @@ return new class extends Migration
         Schema::create('file_hashes', function (Blueprint $table) {
             $table->id();
             $table->enum('file_type', ['invoice', 'report']);
-            $table->string('myhash', 255); // Perceptual hash (works for both images and PDFs)
+            $table->longText('myhash');
             $table->integer('invoice_id')->nullable();
             $table->integer('report_id')->nullable();
             $table->string('file_name')->nullable();
-            $table->string('file_format'); // 'image' or 'pdf'
-            $table->integer('page_count')->default(1); // Number of pages (1 for images, multiple for PDFs)
+            $table->string('file_format');				// 'image' or 'pdf'
+            $table->integer('page_count')->default(1);	// Number of pages (1 for images, multiple for PDFs)
             $table->timestamps();
 
 			// /*

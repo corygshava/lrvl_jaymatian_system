@@ -329,6 +329,9 @@
 							<input type="hidden" name="client_id">
 							<input type="hidden" name="admin_password_mine">
 							<input type="hidden" name="bizdata">
+							<div class="w3-hide">
+								<input type="file" name="fpreview" id="fpreview">
+							</div>
 							<div class="form-group">
 								<label class="form-label" for="client_name">Generated PDF</label>
 								<input type="file" name="genfile" id="genfile" required>
@@ -364,7 +367,8 @@
 				<div class="flowline gap-tn left">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="download_invoice_pdf"><i class="fa fa-download"></i> download Invoice</button>
+					<button class="mybtn secondary sm" data-runme="download_invoice_pdf"><i class="fa fa-download"></i> download Invoice (pdf)</button>
+					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Invoice (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Invoice</button>
 				</div>
 			</div>
@@ -951,16 +955,67 @@
 
 			genfile.files = dtr.files;
 
-			invoice_runtime_data.filemade = true;
-			invoice_runtime_data.medFile = pdf;
+			// create a render of the first page to create a hash from
+			setuppdf_invoice(pdf,'fpreview').then((img) => {
+				invoice_runtime_data.filemade = true;
+				invoice_runtime_data.medFile = pdf;
 
-			// Download the PDF
-			// pdf.save('gen_doc.pdf');
-			// alert_danger('PDF downloaded successfully!', 'success');
+				// Download the PDF
+				// pdf.save('gen_doc.pdf');
+				// alert_danger('PDF downloaded successfully!', 'success');
+			});
 		} catch (error) {
 			console.error('Error:', error);
 			alert_danger('Error generating PDF: ' + error.message);
 		}
+	}
+	window['setuppdf_invoice'] = async (pdfFile,inputId = 'fileInput') => {
+	    try {
+	    	return null;
+	        // Read the PDF file
+	        const arrayBuffer = await pdfFile.arrayBuffer();
+	        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+	        const page = await pdf.getPage(1);
+
+	        // Set up canvas for rendering
+	        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+	        const canvas = document.createElement('canvas');
+	        const context = canvas.getContext('2d');
+	        canvas.width = viewport.width;
+	        canvas.height = viewport.height;
+
+	        // Render PDF page to canvas
+	        await page.render({
+	            canvasContext: context,
+	            viewport: viewport
+	        }).promise;
+
+	        // Convert canvas to blob
+	        const blob = await new Promise(resolve => {
+	            canvas.toBlob(resolve, 'image/png', 0.95);
+	        });
+
+	        // Create new file for the read page
+	        const originalName = pdfFile.name.replace('.pdf', '');
+	        const newFileName = `${originalName} [converted]`;
+	        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+
+	        // Create a DataTransfer object to assign to the input
+	        const dataTransfer = new DataTransfer();
+	        dataTransfer.items.add(imageFile);
+
+	        // Assign to file input
+	        const fileInput = document.getElementById(inputId);
+	        if(fileInput !== undefined){
+	        	fileInput.files = dataTransfer.files;
+	        }
+
+	        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+	        return imageFile;
+	    } catch (error) {
+	        console.error('Error converting PDF to image:', error);
+	        throw error;
+	    }
 	}
 
 	window['download_invoice_pdf'] = () => {
@@ -977,6 +1032,22 @@
 		invoice_runtime_data.medFile.save(`[${invoice_runtime_data.aggregates.invoice_id}] generated_invoice.pdf`);
 
 		alert_info('downloading generated pdf');
+	}
+	window['download_invoice_img'] = () => {
+		const invdata = {...invoice_runtime_data};
+		const canvas = invoice_runtime_data.renderedCanvas;
+
+		// Create a new window for printing
+		const printWindow = window.open('', '_blank');
+		const dataUrl = canvas.toDataURL();
+
+		let a = document.createElement('a');
+		a.href = dataUrl;
+		a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] generated_invoice`;
+		document.body.appendChild(a);
+
+		a.click();
+		document.body.removeChild(a);
 	}
 	window['printPdf'] = () => {
 		// Get the canvas element

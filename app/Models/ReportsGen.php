@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\TimeRangeScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ReportsGen extends Model{
 	use TimeRangeScope;
@@ -56,5 +57,8 @@ class ReportsGen extends Model{
 	}
 	public function owner(): BelongsTo {
 		return $this->belongsTo(Client::class,'client_id');
+	}
+	public function filehashes(): HasMany{
+		return $this->hasMany(FileHash::class,'report_id');
 	}
 }

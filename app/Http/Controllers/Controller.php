@@ -854,7 +854,7 @@ abstract class Controller{
 
 		return response()->json($res);
 	}
-	public function log_my_payload_fyls(Request $req){
+	public function log_my_payload_fyls(Request $req,$bypass = 'false'){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
@@ -865,7 +865,8 @@ abstract class Controller{
 		// */
 
 
-		if($this->ili()){
+		$go = $bypass == 'yes' || $bypass == 'true' ? true : false;
+		if($this->ili() || $go){
 			$res['success'] = true;
 
 			$fyls = [];

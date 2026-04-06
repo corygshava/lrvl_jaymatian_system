@@ -538,6 +538,25 @@
 						}
 					},
 					{
+						title: 'Task progress',
+						data: 'client_name',
+						sortable: true,
+						render: function(value,row) {
+							let myprogress = (row.processed_sample_count / row.sample_count) * 100;
+							return `
+								<div>
+									<div style="padding: 4px">
+										<b class="themetxt">${formatNumber(row.processed_sample_count)}</b> / <b>${formatNumber(row.sample_count)}</b>
+										<span>[${Math.floor(myprogress)} %]</span>
+									</div>
+									<div class="progress themeround except" style="height:0.5rem;">
+										<div class="progress-bar bg-primary bg-striped" style="width: ${myprogress}%"></div>
+									</div>
+								</div>
+							`;
+						}
+					},
+					{
 						title: 'Client name',
 						data: 'client_name',
 						sortable: true,

@@ -374,6 +374,9 @@
 							<input type="hidden" name="sampleid">
 							<input type="hidden" name="admin_password_mine">
 							<input type="hidden" name="bizdata">
+							<div class="w3-hide">
+								<input type="file" name="fpreview" id="fpreview">
+							</div>
 							<div class="form-group">
 								<label class="form-label" for="client_name">Generated PDF</label>
 								<input type="file" name="genfile" id="genfile" required>
@@ -406,10 +409,11 @@
 			<div class="spacy-sm panelbg themeround mt-4">
 				<span class="h4">Report Generation successful</span>
 				<p>the report has been generated, pick an option below to proceed</p>
-				<div class="flowline gap-tn left">
+				<div class="flowline gap-tn left overflow">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:reports_mgt" data-label="defined:reports_mgt"><i class="fa fa-file-export"></i> manage reports</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="downloadPdf"><i class="fa fa-download"></i> download report</button>
+					<button class="mybtn secondary sm" data-runme="downloadPdf"><i class="fa fa-download"></i> download report (pdf)</button>
+					<button class="mybtn secondary sm" data-runme="downloadImg"><i class="fa fa-download"></i> download report (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
 				</div>
 			</div>
@@ -964,16 +968,67 @@
 
 			genfile.files = dtr.files;
 
-			report_runtime_data.filemade = true;
-			report_runtime_data.medFile = pdf;
+			// create a render of the first page to create a hash from
+			setuppdf(pdf,'fpreview').then((img) => {
+				report_runtime_data.filemade = true;
+				report_runtime_data.medFile = pdf;
 
-			// Download the PDF
-			// pdf.save('gen_doc.pdf');
-			// alert_danger('PDF downloaded successfully!', 'success');
+				// Download the PDF
+				// pdf.save('gen_doc.pdf');
+				// alert_danger('PDF downloaded successfully!', 'success');
+			});
 		} catch (error) {
 			console.error('Error:', error);
 			alert_danger('Error generating PDF: ' + error.message);
 		}
+	}
+	window['setuppdf'] = async (pdfFile,inputId = 'fileInput') => {
+	    try {
+	    	return null;
+	        // Read the PDF file
+	        const arrayBuffer = await pdfFile.arrayBuffer();
+	        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+	        const page = await pdf.getPage(1);
+
+	        // Set up canvas for rendering
+	        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+	        const canvas = document.createElement('canvas');
+	        const context = canvas.getContext('2d');
+	        canvas.width = viewport.width;
+	        canvas.height = viewport.height;
+
+	        // Render PDF page to canvas
+	        await page.render({
+	            canvasContext: context,
+	            viewport: viewport
+	        }).promise;
+
+	        // Convert canvas to blob
+	        const blob = await new Promise(resolve => {
+	            canvas.toBlob(resolve, 'image/png', 0.95);
+	        });
+
+	        // Create new file for the read page
+	        const originalName = pdfFile.name.replace('.pdf', '');
+	        const newFileName = `${originalName} [converted]`;
+	        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+
+	        // Create a DataTransfer object to assign to the input
+	        const dataTransfer = new DataTransfer();
+	        dataTransfer.items.add(imageFile);
+
+	        // Assign to file input
+	        const fileInput = document.getElementById(inputId);
+	        if(fileInput !== undefined){
+	        	fileInput.files = dataTransfer.files;
+	        }
+
+	        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+	        return imageFile;
+	    } catch (error) {
+	        console.error('Error converting PDF to image:', error);
+	        throw error;
+	    }
 	}
 
 	window['downloadPdf'] = () => {
@@ -990,6 +1045,26 @@
 		report_runtime_data.medFile.save(`${report_runtime_data.sampleData.task.task_no}_generated_report.pdf`);
 
 		alert_info('downloading generated pdf');
+	}
+	window['downloadImg'] = () => {
+		const rptdata = {...report_runtime_data};
+		const canvas = report_runtime_data.renderedCanvas;
+
+		// Create a new window for printing
+		const printWindow = window.open('', '_blank');
+
+		// Get the canvas as a data URL
+		const dataUrl = canvas.toDataURL();
+
+		let a = document.createElement('a');
+		a.href = dataUrl;
+		a.download = `${rptdata.sampleData.sample_no}_generated_report`;
+		document.body.appendChild(a);
+
+		a.click();
+		document.body.removeChild(a);
+
+		// a.click();
 	}
 	window['printPdf'] = () => {
 		// Get the canvas element

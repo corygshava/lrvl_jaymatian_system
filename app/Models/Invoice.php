@@ -59,4 +59,7 @@ class Invoice extends Model{
 	public function payments(): HasMany{
 		return $this->hasMany(Payment::class,'invoice_id');
 	}
+	public function filehashes(): HasMany{
+		return $this->hasMany(FileHash::class,'invoice_id');
+	}
 }

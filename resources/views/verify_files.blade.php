@@ -321,7 +321,7 @@
 									<i class="fas fa-image"></i>
 									<span>Image (JPG, PNG)</span>
 								</div>
-								<div class="format-btn" data-subrole="filetype_selector" data-runme="select_filetype" data-type="pdf">
+								<div class="format-btn w3-hide_" data-subrole="filetype_selector" data-runme="select_filetype" data-type="pdf">
 									<i class="fas fa-file-pdf"></i>
 									<span>PDF Document</span>
 								</div>
@@ -329,7 +329,7 @@
 						</div>
 					</div>
 
-					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-right">
 						<a class="mybtn primary" data-runme="just_stop">
 							<i class="fa fa-angle-double-left"></i> start over
 						</a>
@@ -367,7 +367,7 @@
 										<div class="file-size" id="fileSize"></div>
 									</div>
 								</div>
-								<button class="btn-remove w3-hide" onclick="removeFile()">
+								<button class="btn-remove w3-hide">
 									<i class="fas fa-times"></i>
 								</button>
 							</div>
@@ -383,7 +383,7 @@
 						</div>
 					</div>
 
-					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-right">
 						<a class="mybtn secondary" data-runme="pick_step_2" data-step="0">
 							<i class="fa fa-angle-double-left"></i> document setup
 						</a>
@@ -402,7 +402,7 @@
 						</div>
 					</div>
 
-					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-right">
 						<a class="mybtn secondary" data-runme="pick_step_2" data-step="1">
 							<i class="fa fa-angle-double-left"></i> file uploads
 						</a>
@@ -425,7 +425,7 @@
 						</div>
 					</div>
 
-					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-left">
+					<div class="distance-sm flowline spread themeround panelbg spacy-sm slide-right">
 						<a class="mybtn secondary" data-runme="pick_step_2" data-step="2">
 							<i class="fa fa-angle-double-left"></i> Document Details
 						</a>
@@ -447,19 +447,19 @@
 				</div>
 
 				<div id="final_report" class="tab slide-up">
-					<div class="panelbg themeround spacy-sm">
+					<div class="panelbg themeround spacy-sm mb-4">
 						<span class="h4 themetxt border-bottom spacy-sm">Verdict</span>
 						<p>here are the results from the server</p>
 
-						<div id="results_summary">
+						<div id="results_summary" class="mb-4">
 						</div>
 
 						<div>
-							<div id="verdict_holder" class="alert-success">
+							<div id="verdict_holder" class="spacy-sm themeround flowline left gap-sm alert-success slide-right">
 								<div>
-									<i class="fa fa-check-circle"></i>
+									<i data-role="icon" class="fa fa-check-circle" style="scale: 1.7"></i>
 								</div>
-								<div>
+								<div data-role="content">
 									<span>valid document</span>
 								</div>
 							</div>
@@ -497,6 +497,22 @@
 					placeholder: 'enter the given invoice date',
 					typ: 'date',
 					required: true,
+				},
+				{
+					field: 'invoice_amt',
+					label: 'Invoice Amount',
+					placeholder: 'enter the given invoice amount',
+					typ: 'number',
+					required: true,
+					_inp_props: 'step=0.01',
+				},
+				{
+					field: 'invoice_tasks',
+					label: 'Number of tasks',
+					placeholder: 'enter the number of tasks the invoice has',
+					typ: 'number',
+					required: true,
+					// _inp_props: 'step=0.01',
 				}
 			],
 			'report' : [
@@ -507,24 +523,38 @@
 				attendant_name
 				*/
 				{
-					field: 'report_no',
-					label: 'Report number',
-					placeholder: 'RPT_0000',
+					field: 'task_no',
+					label: 'Job number',
+					placeholder: 'JML_0000',
+					typ: 'text',
+					required: true,
+				},
+				{
+					field: 'sample_type',
+					label: 'sample type',
+					placeholder: 'the indicated sample type',
+					typ: 'text',
+					required: true,
+				},
+				{
+					field: 'sample_count',
+					label: 'Number of samples',
+					placeholder: 'Number of sample results delivered',
+					typ: 'text',
+					required: true,
+				},
+				{
+					field: 'client_name',
+					label: 'Name of receiving client',
+					placeholder: 'JML_0000',
 					typ: 'text',
 					required: true,
 				},
 				{
 					field: 'report_date',
 					label: 'date of issue',
-					placeholder: 'enter the given invoice date',
+					placeholder: 'Date it was issued',
 					typ: 'date',
-					required: true,
-				},
-				{
-					field: 'sample_count',
-					label: 'Number of sample',
-					placeholder: 'Number of samples delivered',
-					typ: 'number',
 					required: true,
 				},
 				{
@@ -747,36 +777,95 @@
 
 				verify_runtime_data.selectedFile = file;
 
-				// Show file info
-				fileInfoSection.classList.remove('w3-hide');
-				document.getElementById('fileName').textContent = file.name;
-				document.getElementById('fileSize').textContent = formatFileSize(file.size);
-
-				// Update icon
-				const fileIcon = document.getElementById('fileIcon');
-				if (verify_runtime_data.filetype === 'image') {
-					fileIcon.className = 'fas fa-image';
+				if(verify_runtime_data.filetype === 'pdf'){
+					setuppdf(file).then((f) => {
+						file = f;
+						next_steps();
+					})
 				} else {
-					fileIcon.className = 'fas fa-file-pdf';
+					next_steps();
 				}
 
-				// Show preview for images
-				if (verify_runtime_data.filetype === 'image') {
-					const reader = new FileReader();
+				function next_steps(){
+					// Show file info
+					fileInfoSection.classList.remove('w3-hide');
+					document.getElementById('fileName').textContent = file.name;
+					document.getElementById('fileSize').textContent = formatFileSize(file.size);
 
-					previewSection.classList.remove('w3-hide');
+					// Update icon
+					const fileIcon = document.getElementById('fileIcon');
+					if (verify_runtime_data.filetype === 'image') {
+						fileIcon.className = 'fas fa-image';
+					} else {
+						fileIcon.className = 'fas fa-file-pdf';
+					}
 
-					reader.onload = function(e) {
-						imagePreview.src = e.target.result;
-						previewSection.classList.add('active');
-					};
-					reader.readAsDataURL(file);
-				} else {
-					previewSection.classList.add('w3-hide');
-					previewSection.classList.remove('active');
+					// Show preview for images
+					if (verify_runtime_data.filetype === 'image' || true) {
+						const reader = new FileReader();
+
+						previewSection.classList.remove('w3-hide');
+
+						reader.onload = function(e) {
+							imagePreview.src = e.target.result;
+							previewSection.classList.add('active');
+						};
+						reader.readAsDataURL(file);
+					} else {
+						previewSection.classList.add('w3-hide');
+						previewSection.classList.remove('active');
+					}
+
+					// validateForm();
 				}
+			}
 
-				// validateForm();
+			window['setuppdf'] = async (pdfFile,inputId = 'fileInput') => {
+			    try {
+			        // Read the PDF file
+			        const arrayBuffer = await pdfFile.arrayBuffer();
+			        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+			        const page = await pdf.getPage(1);
+
+			        // Set up canvas for rendering
+			        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+			        const canvas = document.createElement('canvas');
+			        const context = canvas.getContext('2d');
+			        canvas.width = viewport.width;
+			        canvas.height = viewport.height;
+
+			        // Render PDF page to canvas
+			        await page.render({
+			            canvasContext: context,
+			            viewport: viewport
+			        }).promise;
+
+			        // Convert canvas to blob
+			        const blob = await new Promise(resolve => {
+			            canvas.toBlob(resolve, 'image/png', 0.95);
+			        });
+
+			        // Create new file for the read page
+			        const originalName = pdfFile.name.replace('.pdf', '');
+			        const newFileName = `${originalName} [converted]`;
+			        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+
+			        // Create a DataTransfer object to assign to the input
+			        const dataTransfer = new DataTransfer();
+			        dataTransfer.items.add(imageFile);
+
+			        // Assign to file input
+			        const fileInput = document.getElementById(inputId);
+			        if(fileInput !== undefined){
+			        	fileInput.files = dataTransfer.files;
+			        }
+
+			        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+			        return imageFile;
+			    } catch (error) {
+			        console.error('Error converting PDF to image:', error);
+			        throw error;
+			    }
 			}
 			function removefyl(){
 				fileInput.value = '';
@@ -796,13 +885,13 @@
 						name: np.field,
 						label: np.label,
 						value: veriform[np.field].value,
+						mytype: np.typ
 					}
 
 					mafields.push(tmp);
 				});
 
 				let invalid = mafields.filter(f => {return (f.value == '' || f.value == null || f.value == undefined);});
-
 				verify_runtime_data.documentDetails = mafields;
 
 				if(invalid.length == 0){
@@ -813,12 +902,30 @@
 					alert_danger(`fill in the ${np.label} field first`);
 				}
 			}
+
 		// finalize section
 			window['render_summary'] = (d) => {
 				let doctype = verify_runtime_data.doctype;
+				let filetype = verify_runtime_data.filetype;
 				let docdeets = verify_runtime_data.documentDetails;
 
+				let warnin = '';
+
+				if(filetype == 'pdf'){
+					warnin = `
+						<div id="warnin_holder" class="spacy-sm themeround flowline left gap-sm alert-warning slide-right">
+							<div>
+								<i data-role="icon" class="fa fa-exclamation-triangle" style="scale: 1.7"></i>
+							</div>
+							<div data-role="content">
+								<span>Due to how different applications and browsers process pdfs, the result may not be accurate. Please use the image we sent you for verification</span>
+							</div>
+						</div>
+					`;
+				}
+
 				let outht = `
+					${warnin}
 					<div class="info-row">
 						<span class="info-label">Document Type:</span>
 						<span class="info-value">${doctype}</span>
@@ -846,8 +953,10 @@
 				formsummary.innerHTML = outht;
 			}
 			window['send_form_data'] = (frm) => {
-				pick_step_2({dataset: {step: 4}});
+				let myel = {dataset: {step: 4}};
+				pick_step_2(myel);
 
+				saveinputs(myel);
 				progress_panel.classList.add('is_inactive');
 
 				setTimeout(() => {
@@ -858,8 +967,113 @@
 				progress_panel.classList.remove('is_inactive');
 				pick_step_2({dataset: {step: 3}});
 			}
-			window['form_afterfx'] = () => {
+			window['form_afterfx'] = (d) => {
+				let el = d.el;
+				let dta = d.data;
+
 				progress_panel.classList.remove('is_inactive');
+
+				const showverdict = (ver,txt) => {
+					let v = ver == 'good';
+					let c1 = v ? 'add' : 'remove';
+					let c2 = !v ? 'add' : 'remove';
+
+					verdict_holder.classList[c1]('alert-success');
+					verdict_holder.classList[c2]('alert-danger');
+
+					let ico = verdict_holder.querySelector('[data-role="icon"]');
+					let con = verdict_holder.querySelector('[data-role="content"]');
+
+					con.innerHTML = `<b>${txt}</b>`;
+					ico.className = v ? 'fa fa-check-circle' : 'fa fa-times-circle';
+				}
+
+				if(dta.wegood == false){
+					showverdict('bad',`Invalid document: ${dta.message}`);
+					// return;
+				} else {
+					results_summary.innerHTML = '';
+
+					let outres = dta.sendme;
+					let vrf = {...verify_runtime_data};
+					let docdeets = vrf.documentDetails;
+
+					showverdict('good',dta.message);
+
+					const clscompare = (sent, rec, ftype = 'alphanum') => {
+						let con = false;
+
+						// let con = ftype.toLowerCase() == 'date' ? (new Date(sent)) == (new Date(rec)) : (sent + "").toLocaleString().toLowerCase() == (rec + "").toLocaleString().toLowerCase();
+						if(ftype.toLowerCase() == 'date'){
+							con = formatDate(new Date(sent)) == formatDate(new Date(rec));
+						} else if(ftype.toLowerCase() == 'number'){
+							con = Number(sent) == Number(rec);
+						} else {
+							con = (sent + "").toLocaleString().toLowerCase() == (rec + "").toLocaleString().toLowerCase();
+						}
+
+						let cls = con ? 'w3-text-green good' : 'w3-text-red bad';
+						let icon = con ? '<i class="fa fa-check-circle"></i>' : '<i class="fa fa-times-circle"></i>';
+
+						return {
+							class : cls,
+							icon : icon,
+						}
+					}
+
+					let outshape = [
+						{
+							extracls: clscompare(true,outres.matchfile).class,
+							title: `${clscompare(true,outres.matchfile).icon} Files Match`,
+							val: `<b class="w3-tag themeround ${!outres.matchfile ? 'w3-red' : 'w3-green'}">${outres.matchfile ? 'yes' : 'no'}</b>`,
+						},
+					]
+					let outht = ``;
+
+					outshape.forEach(f => {
+						outht += `
+							<div class="info-row ${f.extracls || ''}">
+								<span class="info-label">${f.title}:</span>
+								<span class="info-value">${f.val}</span>
+							</div>
+						`;
+					});
+
+					docdeets.forEach(dts => {
+						let mcl = clscompare(dts.value,outres[dts.name], dts.mytype);
+						let xcls = mcl.class;
+						let ico = mcl.icon;
+
+						outht += `
+							<div class="info-row ${xcls}">
+								<span class="info-label">${ico} ${dts.label}:</span>
+								<span class="info-value">${dts.value}</span>
+							</div>
+						`;
+					})
+
+					results_summary.innerHTML = outht;
+
+					let totals = results_summary.querySelectorAll('.info-row');
+					console.log('totals: ', totals);
+
+					let good = [...totals].filter(t => {return t.className.includes('good');});
+					let ver = totals.length == good.length;
+
+					if(ver){
+						showverdict('good',`valid document`);
+					} else {
+						showverdict('bad',`Invalid document: some information was altered`);
+					}
+
+					results_summary.innerHTML += `
+						<div class="info-row">
+							<span class="info-label">File Link:</span>
+							<span class="info-value"><a href="./media/${vrf.doctype}s/img/${outres.file_link}" target="_blank" class="mybtn secondary">view original file <i class="fa fa-angle-double-right"></i></a></span>
+						</div>
+					`;
+				}
+
 				pick_step_2({dataset: {step: 5}});
 			}
 

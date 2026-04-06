@@ -540,14 +540,14 @@
 							return `<strong class="w3-tag themeround ${cls}">${sample_state_atlas[value]}</strong>`;
 						}
 					},
-					/*
 					{
-						title: 'Has report',
-						data: 'has_report',
-						sortable: true,
-						render: function(value) {
-							let cls = value == true ? "w3-green" : "w3-black";
-							let con = value == true ? "yes" : "no";
+						title: 'Has worksheet',
+						data: 'id',
+						sortable: false,
+						render: function(value, row) {
+							let s_con = row.worksheets.length > 0;
+							let cls = s_con == true ? "w3-green" : "w3-black";
+							let con = s_con == true ? "yes" : "no";
 							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
 						}
 					},
