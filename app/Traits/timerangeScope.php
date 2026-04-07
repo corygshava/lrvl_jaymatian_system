@@ -13,7 +13,7 @@ trait TimeRangeScope{
 	];
 
 	public function scopeTimeRange($q, $range){
-		// lastweek
+		$range = strtolower($range);
 
 		return match($range){
 			'today' => $q->whereDate('created_at', Carbon::today()),

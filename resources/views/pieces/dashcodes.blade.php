@@ -87,6 +87,7 @@
 				'mek_invoice' : './ui/gen_invoice',
 				'verify_file' : './ui/verify_file',
 				'expenses_mgt' : './ui/expenses_mgt',
+				'cash_reports' : './ui/cash_reports',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -135,6 +136,8 @@
 				'get_invoices' : './data/get_invoices',
 				'get_reports_count' : './data/get_reports_count',
 				'get_expenses' : './data/expenses',
+				'get_daily_report' : './data/get_daily_report',
+				'get_cash_reports' : './data/cash_reports',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -166,6 +169,7 @@
 			'invoices_mgt' : 'Invoice management',
 			'verify_file' : 'File verification',
 			'expenses_mgt' : 'Expenses management',
+			'cash_reports' : 'Daily reports',
 
 			'ui_tester' : 'UI testing grounds',
 		};
@@ -212,6 +216,7 @@
 			'verify_file' : 'fas fa-check-circle',
 			'export_file' : 'fas fa-file-export',
 			'expenses' : 'fas fa-money-bill-wave',
+			'cash_reports' : 'fas fa-book',
 		};
 
 		// will be set via server call later

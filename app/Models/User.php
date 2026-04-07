@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable{
 	/** @use HasFactory<\Database\Factories\UserFactory> */
-	use HasFactory, Notifiable;
+	use HasFactory, Notifiable, TimeRangeScope;
 
 	/**
 	 * The attributes that are mass assignable.

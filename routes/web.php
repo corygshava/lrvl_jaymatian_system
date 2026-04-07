@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BizdataController;
+use App\Http\Controllers\CashReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ViewController;
@@ -106,6 +107,9 @@ Route::prefix('/data')->group(function(){
 	Route::post('/get_invoices', [InvoiceController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::get('/expenses', [ExpenseController::class,'get_all'])->middleware(['auth','verified']);
+
+	Route::post('/get_daily_report', [CashReportController::class,'get_for_today'])->middleware(['auth','verified']);
+	Route::get('/cashreports', [CashReportController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 

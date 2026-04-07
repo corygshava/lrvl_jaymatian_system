@@ -3,6 +3,7 @@
 	require_once __DIR__.'/piece_shared_dash_styles.php';
 	require_once __DIR__.'/piece_simple_table.php';
 	require_once __DIR__.'/piece_samples_extras.php';
+	require_once __DIR__.'/piece_cash_report_xtras.php';
 	// */
 ?>
 
@@ -10,6 +11,7 @@
 @include('pieces.dash_styles')
 @include('pieces.codes_simpletables')
 @include('pieces.samples_xtras')
+@include('pieces.cashreport_xtras')
 {{-- --> --}}
 
 <div class="container-fluid">
@@ -23,6 +25,7 @@
 				<i class="fas fa-sync-alt"></i>
 				Refresh
 			</button>
+			<button class="mybtn primary" data-runme="render_required_data"><i class="fa fa-save"></i> prepare report</button>
 		</div>
 	</div>
 
@@ -113,10 +116,30 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
 						<div class="action-icon bg-primary text-white mx-auto">
+							<i data-myicon="invoices"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Invoices</h6>
+						<small class="text-muted">List all invoices</small>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+						<div class="action-icon bg-primary text-white mx-auto">
 							<i data-myicon="add_task"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">New Task</h6>
 						<small class="text-muted">Create task</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i data-myicon="cash_reports"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">Daily report</h6>
+						<small class="text-muted">View daily reports</small>
 					</div>
 				</div>
 			</div>

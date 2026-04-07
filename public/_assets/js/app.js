@@ -16,6 +16,7 @@ const imagepath = `${mainhost}/res/images/`;
 
 const pref_auth = 'trybXP_comp_app_access_token';
 var curfun = "";
+
 // var confirm_modal = undefined;
 // var confirm_toggler = undefined;
 // var the_modal = undefined;
@@ -734,7 +735,12 @@ function mekForm(m) {
 }
 
 function mekLoader(t) {
-	return getLoader(t);
+	return `
+		<div class="spacy-lg w3-center flow centroid gap-md slide-up">
+			<div>${t || "loading..."}</div>
+			<div class="loader"></div>
+		</div>
+	`;
 }
 
 function mekNavbar(links,cta = {}) {
