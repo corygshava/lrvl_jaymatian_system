@@ -826,7 +826,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="w3-display-right spacy-md" style="z-index: 102">
+				<div class="w3-display-right spacy-md" style="z-index: 2">
 					<div class="dropdown">
 						<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
 							<i class="fas fa-ellipsis-v"></i>
@@ -950,6 +950,17 @@
 			let maxno = thesample.sample_count > 12 ? thesample.sample_count : 12;
 
 			const mek_my_row = (x,prefix='',_data) => {
+				if(thesample.sample_type.toLowerCase() == 'solution'){
+					return `
+						<tr>
+							<td><span>${x}</span></td>
+							<td><span><b>${prefix}</b> ${_data.sample_id}</span></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					`;
+				}
 				return `
 					<tr>
 						<td><span>${x}</span></td>
@@ -1073,24 +1084,51 @@
 					</td>
 				</tr>
 			`;
-			w_sinfo.innerHTML = `
-				<tr>
-					<th style="width:35px;">${mekSpan('sn')}</th>
-					<th style="width:60px;">${mekSpan('beaker')}</th>
-					<th>${mekSpan('Sample ids')}</th>
-					<th style="width:78px;">${mekSpan('Weight')}</th>
-					<th style="width:92px;">${mekSpan('AU reading')}</th>
-					<th style="width:92px;">${mekSpan('CU reading')}</th>
-					<th style="width:96px;">${mekSpan('Remark')}</th>
-				</tr>
-			`;
+
+			let mytype = thesample.sample_type.toLowerCase();
+
+			if(mytype == 'carbon activity'){
+				w_sinfo.innerHTML = `
+					<tr>
+						<th style="width:35px;">${mekSpan('sn')}</th>
+						<th style="width:60px;">${mekSpan('beaker')}</th>
+						<th>${mekSpan('Sample ids')}</th>
+						<th style="width:78px;">${mekSpan('initial reading')}</th>
+						<th style="width:92px;">${mekSpan('Sample reading')}</th>
+						<th style="width:92px;">${mekSpan('Virgin reading')}</th>
+						<th style="width:96px;">${mekSpan('Remark')}</th>
+					</tr>
+				`;
+			} else if(mytype == 'solution'){
+				w_sinfo.innerHTML = `
+					<tr>
+						<th style="width:35px;">${mekSpan('sn')}</th>
+						<th>${mekSpan('Sample ids')}</th>
+						<th style="width:92px;">${mekSpan('AU reading')}</th>
+						<th style="width:92px;">${mekSpan('CU reading')}</th>
+						<th style="width:96px;">${mekSpan('Remark')}</th>
+					</tr>
+				`;
+			} else {
+				w_sinfo.innerHTML = `
+					<tr>
+						<th style="width:35px;">${mekSpan('sn')}</th>
+						<th style="width:60px;">${mekSpan('beaker')}</th>
+						<th>${mekSpan('Sample ids')}</th>
+						<th style="width:78px;">${mekSpan('Weight')}</th>
+						<th style="width:92px;">${mekSpan('AU reading')}</th>
+						<th style="width:92px;">${mekSpan('CU reading')}</th>
+						<th style="width:96px;">${mekSpan('Remark')}</th>
+					</tr>
+				`;
+			}
 
 			outht = '';
 
 			let _lno = 0;
 			cur_sheet.sample_data.forEach((sdt) => {
 				_lno += 1;
-				outht += mek_my_row(_lno,'',sdt);
+				outht += mek_my_row(_lno, '', sdt);
 
 				if(thesample.sample_type.toLowerCase() == 'soil' || thesample.sample_type.toLowerCase() == 'rock'){
 					_lno += 1;

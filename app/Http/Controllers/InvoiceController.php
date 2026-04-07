@@ -147,6 +147,7 @@ class InvoiceController extends Controller{
 
 				$incomplete = Task::where('client_id',$c_id)
 					->where('payment_status','<>',2)
+					->doesntHave('invoices')
 					->get()
 				;
 				$cnt = count($incomplete);

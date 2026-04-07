@@ -594,6 +594,28 @@
 						}
 					},
 					{
+						title: 'Credit balance',
+						data: 'credit_balance',
+						sortable: true,
+						render: function(value) {
+							let amt = Number(value);
+							return `<strong class="${amt > 0 ? 'w3-text-orange' : 'text-muted'}">KES <b>${formatNumber(Number(value))}</b></strong>`;
+							// return `<strong>KES ${value}</strong>`;
+						}
+					},
+					/*
+					{
+						title: 'Invoices',
+						data: 'invoices_count',
+						sortable: true,
+						render: function(value) {
+							let amt = Number(value);
+							return `<strong class="${amt > 0 ? 'w3-text-orange' : 'text-muted'}">KES <b>${formatNumber(Number(value))}</b></strong>`;
+							// return `<strong>KES ${value}</strong>`;
+						}
+					},
+					// */
+					{
 						title: 'Actions',
 						data: 'id',
 						sortable: false,

@@ -958,7 +958,7 @@ function formatDateTime(date) {
 	}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
 }
 
-function formatNumber(n,dp = 0) {
+function formatNumber(n,dp = 0,locale = true) {
 	if(Number(n) == NaN){
 		alert_danger('invalid number passed for formatting');
 		return 'NaN';
@@ -967,7 +967,7 @@ function formatNumber(n,dp = 0) {
 	}
 
 	let parts = n.toString().split('.');
-	let p1 = Number(parts[0]).toLocaleString();
+	let p1 = locale ? Number(parts[0]).toLocaleString() : Number(parts[0]);
 	let p2 = parts[1] || '00';
 
 	p2 = p2.slice(0,dp);

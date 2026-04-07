@@ -250,63 +250,7 @@
 		'Cancelled',
 	];
 
-	// Render results table
-	function renderResultsTable(results,xtra_results) {
-		let tableHTML = `
-			<table class="table table-bordered results-table">
-				<thead>
-					<tr>
-						<th class="w3-hide">ID</th>
-						<th>Sample ID</th>
-						<th>AU (ppm)</th>
-						<th>CU (ppm)</th>
-						<th class="w3-hide">Date Added</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody id="results_table_data">
-		`;
-
-		if (!results || results.length === 0) {
-			tableHTML += '<tr><td class="w3-center spacy-sm" colspan="6"><i>No saved results</i></td></tr>';
-		} else {
-			results.forEach(result => {
-				tableHTML += `
-					<tr>
-						<td class="w3-hide">${result.id}</td>
-						<td>${result.sample_name}</td>
-						<td>${result.au_ppm}</td>
-						<td>${result.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(result.date_added)}</td>
-						<td></td>
-					</tr>
-				`;
-			});
-		}
-
-		if(xtra_results !== undefined || xtra_results.length > 0){
-			xtra_results.forEach((r, n) => {
-				tableHTML += `
-					<tr class="secondary_rows">
-						<td class="w3-hide">${r.id}</td>
-						<td>${r.sample_id}</td>
-						<td>${r.au_ppm}</td>
-						<td>${r.cu_ppm}</td>
-						<td class="w3-hide">${formatDate(r.date_added)}</td>
-						<td>
-							<button type="button" class="mybtn secondary sm" data-runme="edit_result" data-myid="${n}">edit</button>
-							<button type="button" class="mybtn bg-danger w3-text-white sm" data-runme="delete_result" data-myid="${n}">delete</button>
-						</td>
-					</tr>
-				`;
-			});
-		}
-
-		tableHTML += '</tbody></table>';
-		return tableHTML;
-	}
-
-	function renderPayData(dta) {
+	window['renderPayData'] = (dta) => {
 		// clear stuff from last session
 
 		// Validate rectype
@@ -513,7 +457,7 @@
 		// setTimeout(d => {render_results_data();},100);
 	}
 
-	function viewTask_payments() {
+	window['viewTask_payments'] = () => {
 		alert_info('opening task');
 		window[variableAtlas['task_id']] = payment.task.id;
 
@@ -524,7 +468,7 @@
 		loadPage(payld);
 	}
 
-	function viewClient_payments(clientId) {
+	window['viewClient_payments'] = (clientId) => {
 		alert_info('opening client Information');
 		window[variableAtlas['client_id']] = payment.owner.id;
 

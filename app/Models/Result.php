@@ -24,6 +24,7 @@ class Result extends Model{
         'sample_type',
         'au_ppm',
         'cu_ppm',
+        'activity',
     ];
 
     protected $casts = [

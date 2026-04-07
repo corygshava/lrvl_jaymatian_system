@@ -250,12 +250,7 @@
 						<h3 class="heading">Analytical report</h3>
 						<div>
 							<table class="mytable" style="width: 80%;">
-								<tr>
-									<th style="width: 40px;"><span>SN</span></th>
-									<th style="width: 400px;"><span>SAMPLE ID</span></th>
-									<th style="width: 90px;"><span>Au ppm</span></th>
-									<th style="width: 90px;"><span>Cu ppm</span></th>
-								</tr>
+								<thead id="resultsHead"></thead>
 								<tbody id="resultsguy"></tbody>
 							</table>
 						</div>
@@ -655,6 +650,7 @@
 		let bizimgs = b_data.business_images;
 
 		let s_data = report_runtime_data.sampleData;
+		let sample = s_data;
 
 		// header
 		header.innerHTML = `
@@ -741,14 +737,41 @@
 		// the results
 		outht = '';
 		resultsguy.innerHTML = '';
+		let is_special = sample.sample_type.toLowerCase() == 'carbon activity';
+
+		resultsHead.innerHTML = is_special ? `
+			<tr>
+				<th style="width: 40px;"><span>SN</span></th>
+				<th style="width: 300px;"><span>SAMPLE ID</span></th>
+				<th style="width: 230px;text-align:center;"><span>CARBON ACTIVITY</span></th>
+			</tr>
+		` : `
+			<tr>
+				<th style="width: 40px;"><span>SN</span></th>
+				<th style="width: 400px;"><span>SAMPLE ID</span></th>
+				<th style="width: 90px;"><span>Au ppm</span></th>
+				<th style="width: 90px;"><span>Cu ppm</span></th>
+			</tr>
+		`;
+
+		let is_carbon = sample.sample_type.toLowerCase() == 'carbon';
+		let vonv = (n) => {
+			return is_carbon ? formatNumber(n,0,false) : n;
+		}
 
 		s_data.results.forEach((r,i) => {
-			outht += `
+			outht += is_special ? `
 				<tr>
 					<td><span>${i + 1}</span></td>
 					<td><span>${r.sample_name}</span></td>
-					<td class="text-right"><span>${r.au_ppm}</span></td>
-					<td class="text-right"><span>${r.cu_ppm}</span></td>
+					<td class="text-center"><span>${r.activity} %</span></td>
+				</tr>
+			` : `
+				<tr>
+					<td><span>${i + 1}</span></td>
+					<td><span>${r.sample_name}</span></td>
+					<td class="text-right"><span>${vonv(r.au_ppm)}</span></td>
+					<td class="text-right"><span>${vonv(r.cu_ppm)}</span></td>
 				</tr>
 			`;
 		})

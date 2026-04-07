@@ -171,6 +171,12 @@
 		<div class="tab slide-up">
 			<div class="spacy-sm w3-center text-muted section-title">
 				<span class="h4">document preview</span>
+
+				<!-- <span class="h4">Invoice Type</span> -->
+				<div class="flowline center gap-sm in_fullwidth distance-sm">
+					<button class="mybtn primary sm" data-runme="toggle_doctype" data-mytype="detailed">detailed</button>
+					<button class="mybtn secondary sm" data-runme="toggle_doctype" data-mytype="plain">plain</button>
+				</div>
 			</div>
 
 			<div id="document_Holder" class="flow centroid">
@@ -217,6 +223,7 @@
 									<th style="width: 40px;"><span></span></th>
 									<th style="width: 160px;"><span>date created</span></th>
 									<th style="width: 400px;"><span>Task No</span></th>
+									<!-- <th style="width: 400px;"><span>Sample type</span></th> -->
 									<th style="width: 190px;"><span>Samples delivered</span></th>
 									<th style="width: 90px;"><span>balance</span></th>
 								</tr>
@@ -307,7 +314,7 @@
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary" data-runme="pick_step_2" data-step="0"><i class="fa fa-arrow-left"></i> previous</button>
-				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">generate pdf <i class="fa fa-arrow-right"></i></button>
+				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
 
@@ -332,7 +339,7 @@
 							<div class="w3-hide">
 								<input type="file" name="fpreview" id="fpreview">
 							</div>
-							<div class="form-group">
+							<div class="form-group w3-hide">
 								<label class="form-label" for="client_name">Generated PDF</label>
 								<input type="file" name="genfile" id="genfile" required>
 							</div>
@@ -408,27 +415,27 @@
 	];
 
 	/*
-	invoice_runtime_data = {
-		tosend: {
-			'task_id' : undefined,
-			'sample_id' : undefined,
-			'created_by' : undefined,
-			'client_id' : undefined,
+		invoice_runtime_data = {
+			tosend: {
+				'task_id' : undefined,
+				'sample_id' : undefined,
+				'created_by' : undefined,
+				'client_id' : undefined,
 
-			'company_contact' : undefined,
-			'sample_type' : undefined,
-			'sample_count' : undefined,
-			'date_received' : undefined,
-			'date_compiled' : undefined,
-			'task_no' : undefined,
-			'technical_staff_name' : undefined,
-			'analytical_report' : undefined,
-			'deviation_data' : undefined,
-			'business_logo_img' : undefined,
-			'pdf_link' : undefined,
-			'image_link' : undefined,
+				'company_contact' : undefined,
+				'sample_type' : undefined,
+				'sample_count' : undefined,
+				'date_received' : undefined,
+				'date_compiled' : undefined,
+				'task_no' : undefined,
+				'technical_staff_name' : undefined,
+				'analytical_report' : undefined,
+				'deviation_data' : undefined,
+				'business_logo_img' : undefined,
+				'pdf_link' : undefined,
+				'image_link' : undefined,
+			}
 		}
-	}
 	*/
 
 	let tabs = document.querySelectorAll('.tabs .tab');
@@ -524,7 +531,11 @@
 			invoice_runtime_data.bizdata = d.sendme;
 			window['bizdata'] = parseBizdata(d.sendme);
 
-			step5();
+			step5().catch(err => {
+				alert_danger(err.message);
+				console.error(err);
+				showerror(`error generating QR code: ${err.message}`);
+			});
 		}
 
 		const step5 = async (d) => {
@@ -548,7 +559,7 @@
 		}
 
 		const final_step = () => {
-			report_runtime_data.file_slug = `_${report_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
+			invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
 
 			showloader(false);
 			generateAggregates();
@@ -710,6 +721,13 @@
 		// the results
 		outht = '';
 		resultsguy.innerHTML = '';
+		let scounts = [];
+
+		t_data.forEach((r,i) => {
+			scounts.push(r);
+		})
+
+		console.log('scc: ',scounts);
 
 		t_data.forEach((r,i) => {
 			outht += `
@@ -755,7 +773,7 @@
 					to our office whatsapp at <b style="display: inline-block;" class="themetxt">${processNumber(bizdeets.phone)}</b>
 				</p>
 				<p>
-					All payments must be made to our official Mpesa <b class="themetxt">(${bizdeets.mpesa})</b> and the transaction code provided is what will be used to verify your payment
+					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${bizdeets.mpesa})</b> our office and the transaction code provided is what will be used to verify your payment
 				</p>
 			</div>
 		`;
@@ -1147,7 +1165,7 @@
 				return;
 			}
 			if(invoice_runtime_data.filemade == undefined && n > 1){
-				alert_danger('generate a pdf first');
+				alert_danger('finalize the document first');
 				return;
 			}
 		// }

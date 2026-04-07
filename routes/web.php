@@ -152,16 +152,16 @@ Route::prefix('/op')->group(function(){
 Route::prefix('/media')->group(function(){
 	Route::get('/bizimg/{fyl}',[ViewController::class, 'showimg']);
 	Route::get('/getreport/imgs/{fyl}',[ViewController::class, 'showreport_img']);
-	Route::get('/getreport/pdfs/{fyl}',[ViewController::class, 'showreport_pdf']);
+	// Route::get('/getreport/pdfs/{fyl}',[ViewController::class, 'showreport_pdf']);
 
 	Route::get('/getinvoice/imgs/{fyl}',[ViewController::class, 'showinvoice_img']);
-	Route::get('/getinvoice/pdfs/{fyl}',[ViewController::class, 'showinvoice_pdf']);
+	// Route::get('/getinvoice/pdfs/{fyl}',[ViewController::class, 'showinvoice_pdf']);
 
-	Route::get('/reports/pdf/{fyl}',[ViewController::class, 'findreport_pdf']);
+	// Route::get('/reports/pdf/{fyl}',[ViewController::class, 'findreport_pdf']);
 	Route::get('/reports/image/{fyl}',[ViewController::class, 'findreport_img']);
 	Route::get('/reports/img/{fyl}',[ViewController::class, 'findreport_img']);
 
-	Route::get('/invoices/pdf/{fyl}',[ViewController::class, 'findinvoice_pdf']);
+	// Route::get('/invoices/pdf/{fyl}',[ViewController::class, 'findinvoice_pdf']);
 	Route::get('/invoices/image/{fyl}',[ViewController::class, 'findinvoice_img']);
 	Route::get('/invoices/img/{fyl}',[ViewController::class, 'findinvoice_img']);
 });

@@ -345,6 +345,15 @@ class WorksheetsController extends Controller{
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
 		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
 
 		if($this->ili()){
 			$res['success'] = true;
@@ -409,6 +418,8 @@ class WorksheetsController extends Controller{
 					// calculate results using the calculator setup
 					foreach($parsed_readings as $r){
 						if($r['is_final']){
+							// $update_runlog($r);
+
 							$tmp_rec = [
 								'task_id' => $thesample->task_id,
 								'sample_id' => $s_id,
@@ -423,9 +434,10 @@ class WorksheetsController extends Controller{
 							];
 							$calc_au_ppm = 707.77;
 							$calc_cu_ppm = 707.77;
+							$calc_activity = -1.33;
 							$weight = $r['weight'];
-							$au_reading = $tmp_reading['au_reading'];
-							$cu_reading = $tmp_reading['cu_reading'];
+							$au_reading = $r['au_reading'];
+							$cu_reading = $r['cu_reading'];
 
 							// TODO: modify it to accomodate different sample types
 							// calculate results based on sample type [incomplete]
@@ -436,10 +448,61 @@ class WorksheetsController extends Controller{
 							$calculate_soil = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal){
 								return $calculate_nermal();
 							};
+							$calculate_solution = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal){
+								$calc_au_ppm = $au_reading;
+								$calc_cu_ppm = $cu_reading;
+							};
+							$calculate_carbon = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog){
+								$calc_au_ppm = $au_reading * 100;
+								$calc_cu_ppm = $cu_reading * 100;
 
-							switch (strtolower($thesample->sample_type)) {
+								/*
+									$update_runlog([
+										'calc_au' => "$au_reading * 100",
+										'calc_cu' => "$cu_reading * 100",
+										'au_ppm' => $calc_au_ppm,
+										'cu_ppm' => $calc_cu_ppm,
+									]);
+								// */
+							};
+							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog,&$calc_activity){
+								$initial = $weight;
+								$virgin = $au_reading;
+								$sample = $cu_reading;
+
+								$i = $initial;
+								$v = $virgin;
+								$s = $sample;
+
+								$nume = ($i - $s);
+								$deno = ($i - $v);
+								$clc = (float) $deno / $nume;
+								$calc_activity = $clc * 90;
+
+								// /*
+								$update_runlog("clc sum: ($deno / $nume) = $clc");
+								$update_runlog("calc: $clc");
+								$update_runlog("sum: $clc * 90");
+								$update_runlog("final: $calc_activity");
+								// */
+							};
+
+							$stype = strtolower($thesample->sample_type);
+							$update_runlog("type: $stype");
+
+							switch ($stype) {
 								case 'soil':
 									$calculate_soil();
+									break;
+								case 'carbon':
+									$calculate_carbon();
+									break;
+								case 'solution':
+									$calculate_solution();
+									break;
+								case 'carbon activity':
+									// $update_runlog('processing carbon_activity');
+									$calculate_carbon_activity();
 									break;
 								default:
 									$calculate_nermal();
@@ -448,12 +511,15 @@ class WorksheetsController extends Controller{
 
 							$tmp_rec['au_ppm'] = $calc_au_ppm;
 							$tmp_rec['cu_ppm'] = $calc_cu_ppm;
+							$tmp_rec['activity'] = $calc_activity;
 
 							// fix up the name before saving
 							$sname = str_contains($r['sample_id'], self::$readings_divider) ? substr($r['sample_id'],strlen(self::$readings_divider)) : $r['sample_id'];
 							$tmp_rec['sample_name'] = $sname;
 
 							$results[] = $tmp_rec;
+
+							$update_runlog($results);
 
 							$cols = array_keys($tmp_rec);
 						} else {

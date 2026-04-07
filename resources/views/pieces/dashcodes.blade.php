@@ -29,6 +29,7 @@
 		};
 		window['sample_ref_atlas'] = {
 			'carbon' : 'carbon reference solution',
+			'carbon activity' : null,
 			'solution' : null,
 			'rock' : 'reference material',
 			'soil' : 'reference material',
@@ -876,19 +877,19 @@
 			if(window[who] !== undefined){
 				delete(window[who]);
 			} else {
-				alert_danger('invalid killghost pass');
+				// alert_danger('invalid killghost pass');
 			}
 		}
 
 		function killghosts(stuff = []) {
 			if(typeof stuff == 'object'){
 				if(stuff.forEach === undefined){
-					alert_danger('invalid killghosts pass')
+					alert_silent('invalid killghosts pass')
 					return;
 				}
 				stuff.forEach(s => {killghost(s);})
 			} else {
-				alert_dark('invalid killghosts pass');
+				alert_silent('invalid killghosts pass');
 			}
 		}
 

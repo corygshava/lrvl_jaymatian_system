@@ -32,6 +32,11 @@
 		has_readings: false,
 		is_published: true,
 	};
+	window['myaddition'] = [
+		'mekmyTable',
+		'save_worksheet_sampleids',
+		'save_worksheet_readings',
+	];
 	let readings_divider = 'RPT';
 
 	window['mekmyTable'] = (m = 'create',sel='') => {
@@ -46,23 +51,45 @@
 		let table_body = tableguy.querySelector('[data-subrole="tableBody"]');
 
 		// utils
-		const _mekrow_titles = (is_readings) => {
-			return !(is_readings) ?
-				`
+		const _mekrow_titles = (is_readings = false,is_special = false, stype = '') => {
+			stype = stype.toLowerCase();
+
+			let myht = '';
+
+			if(is_readings){
+				if(is_special){
+					myht = `
+						<tr class="text-uppercase">
+							<th style="width: 48px;">final</th>
+							<th style="width: 48px;"><span>no</span></th>
+							<th><span>sample id</span></th>
+							<th style="width: var(--w);"><span>initial reading</span></th>
+							<th style="width: var(--w);"><span>Sample reading</span></th>
+							<th style="width: var(--w);"><span>Virgin reading</span></th>
+							<th style="width: var(--w_m);"><span>Remarks</span></th>
+						</tr>
+					`;
+				} else {
+					myht = `
+						<tr class="text-uppercase">
+							<th style="width: 48px;">final</th>
+							<th style="width: 48px;"><span>no</span></th>
+							<th><span>sample id</span></th>
+							<th style="width: var(--w);" class="xtra ${stype == 'solution' ? 'w3-hide' : ''}"><span>weight (g)</span></th>
+							<th style="width: var(--w);"><span>Au Reading</span></th>
+							<th style="width: var(--w);"><span>Cu Reading</span></th>
+							<th style="width: var(--w_m);"><span>Remarks</span></th>
+						</tr>
+					`;
+				}
+			} else {
+				myht = `
 					<th style="width: var(--w_sm);"><span>no</span></th>
 					<th><span>sample id</span></th>
-				` :
-				`
-					<tr class="text-uppercase">
-						<th style="width: 48px;">final</th>
-						<th style="width: 48px;"><span>no</span></th>
-						<th><span>sample id</span></th>
-						<th style="width: var(--w);"><span>weight (g)</span></th>
-						<th style="width: var(--w);"><span>Au Reading</span></th>
-						<th style="width: var(--w);"><span>Cu Reading</span></th>
-						<th style="width: var(--w_m);"><span>Remarks</span></th>
-					</tr>
 				`;
+			}
+
+			return myht;
 		}
 		const _mekrow_entries = (x) => {
 			let n = x + 1;
@@ -125,15 +152,18 @@
 			;
 			let toggle_radio = !show_radio ? `opacity: 0;` : '';
 			let toggle_editable = cur_sheet.is_published ? 'pointer-events: none;' : '';
+			let is_special = cur_sheet.sample_type.toLowerCase() == 'carbon activity';
+			let noweight = cur_sheet.sample_type.toLowerCase() == 'solution';
+			let weightval = noweight ? '--' : _data.weight == undefined ? "!!" : _data.weight;
 
 			let show_weight = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="weight ${n}" value="${_data.weight || ""}" required>
-				` : `<span>${_data.weight || "!!"}</span>`;
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="${is_special ? 'initial' : 'weight'} ${n}" value="${weightval == '--' ? 0.01 : weightval}" ${noweight ? '' : 'required'}>
+				` : `<span>${weightval}</span>`;
 			let show_au_reading = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="au_reading ${n}" value="${_data.au_reading || ""}" required>
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'sample' : 'au_reading'} ${n}" value="${_data.au_reading || ""}" required>
 				` : `<span>${_data.au_reading || "!!"}</span>`;
 			let show_cu_reading = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="cu_reading ${n}" value="${_data.cu_reading || ""}" required>
+				`<input type="number" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'virgin' : 'cu_reading'} ${n}" value="${_data.cu_reading || ""}" required>
 				` : `<span>${_data.cu_reading || "!!"}</span>`;
 			let show_remarks = !cur_sheet.is_published ?
 				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
@@ -148,7 +178,7 @@
 					<td>
 						${editht}
 					</td>
-					<td>
+					<td class="${noweight ? 'w3-hide' : ''}">
 						<div>
 							${show_weight}
 						</div>
@@ -173,7 +203,10 @@
 		}
 
 		const renderCreate = () => {
+			// let special = cur_sheet.sample_type.toLowerCase() == 'carbon activity';
 			table_head.innerHTML = _mekrow_titles(false);
+
+			// alert_dark(`sample type: ${cur_sheet.sample_type.toLowerCase()}`);
 
 			table_body.innerHTML = ``;
 
@@ -189,7 +222,8 @@
 		};
 
 		const renderEntries = () => {
-			table_head.innerHTML = _mekrow_titles(true);
+			let special = cur_sheet.sample_type.toLowerCase() == 'carbon activity';
+			table_head.innerHTML = _mekrow_titles(true, special, cur_sheet.sample_type);
 
 			table_body.innerHTML = ``;
 
@@ -214,7 +248,7 @@
 
 					if(cur_sheet.sample_type.toLowerCase() == 'soil' || cur_sheet.sample_type.toLowerCase() == 'rock'){
 						rpt = 2;
-					} else if(cur_sheet.sample_type.toLowerCase() == 'carbon' || cur_sheet.sample_type.toLowerCase() == 'carbon activity'){
+					} else if(cur_sheet.sample_type.toLowerCase() == 'carbon'){
 						rpt = 3;
 					}
 
@@ -413,4 +447,12 @@
 		// alert_info('savin readings');
 		step1();
 	}
+
+	setTimeout(() => {
+		window['killOnLeave'] = window['killOnLeave'] == undefined ? [] : killOnLeave;
+		killlist = killOnLeave;
+		killlist = [...killlist,...myaddition];
+
+		window['killOnLeave'] = killlist;
+	},600)
 </script>

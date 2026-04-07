@@ -217,16 +217,44 @@
 		2 : 'paid',
 	};
 
+	let myaddition = [
+		'render_sample_results',
+		'renderSampleData',
+		'toggleCollapse',
+		'addResult',
+		'viewTask_samples',
+		'viewClient_samples',
+		'showmodal',
+		'render_results_data',
+		'readings_saver_inter',
+		'gen_report',
+		'mekworksheet',
+		'refreshStuff',
+		'publish_worksheet',
+		'worksheets_aftermath',
+	];
+
 	// Render results table
-	function renderResultsTable(results,xtra_results) {
+	window['render_sample_results'] = (results,xtra_results = []) => {
+		let special = sample.sample_type.toLowerCase() == 'carbon activity';
+		// alert_dark(special ? 'special' : 'nope');
+
+		let head_rows = special ? `
+			<th class="w3-hide">ID</th>
+			<th>Sample ID</th>
+			<th>Activity</th>
+		` : `
+			<th class="w3-hide">ID</th>
+			<th>Sample ID</th>
+			<th>AU (ppm)</th>
+			<th>CU (ppm)</th>
+		`;
+
 		let tableHTML = `
 			<table class="table table-bordered results-table">
 				<thead>
 					<tr>
-						<th class="w3-hide">ID</th>
-						<th>Sample ID</th>
-						<th>AU (ppm)</th>
-						<th>CU (ppm)</th>
+						${head_rows}
 						<th class="w3-hide">Date Added</th>
 						<th>Actions</th>
 					</tr>
@@ -238,12 +266,31 @@
 			tableHTML += '<tr><td class="w3-center spacy-sm" colspan="6"><i>No saved results</i></td></tr>';
 		} else {
 			results.forEach(result => {
+				let is_carbon = sample.sample_type.toLowerCase() == 'carbon';
+
+				let vonv = (n) => {
+					if(is_carbon) {
+						return formatNumber(n,0,false);
+					} else if(special) {
+						return `${formatNumber(n,0,false)}%`;
+					} else {
+						return `${n}`;
+					}
+				}
+
+				let rescon = special ? `
+					<td>${result.sample_name}</td>
+					<td>${result.activity}</td>
+				` : `
+					<td>${result.sample_name}</td>
+					<td>${vonv(result.au_ppm)}</td>
+					<td>${vonv(result.cu_ppm)}</td>
+				`;
+
 				tableHTML += `
 					<tr>
 						<td class="w3-hide">${result.id}</td>
-						<td>${result.sample_name}</td>
-						<td>${result.au_ppm}</td>
-						<td>${result.cu_ppm}</td>
+						${rescon}
 						<td class="w3-hide">${formatDate0(result.date_added)}</td>
 						<td></td>
 					</tr>
@@ -273,7 +320,7 @@
 		return tableHTML;
 	}
 
-	function renderSampleData(dta) {
+	window['renderSampleData'] = (dta) => {
 		// console.log(dta);
 
 		// clear stuff from last session
@@ -375,9 +422,9 @@
 				<table class="table table-hover mb-0 table-modern border themeround">
 					<thead data-subrole="tableHead">
 						<tr class="text-uppercase">
-							<td><span>no -- </span></td>
+							<td><span>no</span></td>
 							<td><span>sample id</span></td>
-							<td style="width: var(--w);"><span>weight (g)</span></td>
+							<td style="width: var(--w);" class="${sample.sample_type.toLowerCase() == 'solution' ? 'w3-hide' : ''}"><span>weight (g)</span></td>
 							<td style="width: var(--w);"><span>Au Reading</span></td>
 							<td style="width: var(--w);"><span>Cu Reading</span></td>
 							<td style="width: var(--w_m);"><span>Remarks</span></td>
@@ -446,7 +493,7 @@
 						<span><b>${sample.results ? sample.results.length : 0} / ${sample.sample_count} </b> sample results saved</span>
 					</div>
 					<div id="resultsTable">
-						${renderResultsTable(sample.results,temp_results)}
+						${render_sample_results(sample.results,temp_results)}
 					</div>
 					<div>
 						<div class="distance-tn w3-hide">
@@ -599,7 +646,7 @@
 	}
 
 	// Toggle collapsible sections
-	function toggleCollapse(sectionId) {
+	window['toggleCollapse'] = (sectionId) => {
 		const body = document.getElementById(sectionId);
 		const icon = document.getElementById(sectionId + '-icon');
 
@@ -615,7 +662,7 @@
 	}
 
 	// Action button handlers (implement these based on your needs)
-	function addResult(sampleId) {
+	window['addResult'] = (sampleId) => {
 		console.log('Add result for sample:', sampleId);
 		// view_samples_modal_trig.click();
 
@@ -634,7 +681,7 @@
 		},300);
 	}
 
-	function viewTask_samples(taskId) {
+	window['viewTask_samples'] = (taskId) => {
 		alert_info('opening task');
 		window[variableAtlas['task_id']] = sample.task.id;
 
@@ -645,7 +692,7 @@
 		loadPage(payld);
 	}
 
-	function viewClient_samples(clientId) {
+	window['viewClient_samples'] = (clientId) => {
 		alert_info('opening client Information');
 		window[variableAtlas['client_id']] = sample.owner.id;
 
@@ -662,7 +709,7 @@
 	}
 
 	window['render_results_data'] = () => {
-		resultsTable.innerHTML = renderResultsTable(sample.results,temp_results);
+		resultsTable.innerHTML = render_sample_results(sample.results,temp_results);
 
 		let samples = sample.sample_count;
 		let results = sample.results ? sample.results.length : 0;
@@ -984,4 +1031,12 @@
 		};
 		renderSampleData(cur);
 	}
+
+	setTimeout(() => {
+		window['killOnLeave'] = window['killOnLeave'] == undefined ? [] : killOnLeave;
+		killlist = killOnLeave;
+		killlist = [...killlist,...myaddition];
+
+		window['killOnLeave'] = killlist;
+	},300)
 </script>
