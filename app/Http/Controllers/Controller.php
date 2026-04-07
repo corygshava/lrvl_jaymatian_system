@@ -621,8 +621,13 @@ abstract class Controller{
 				// payments
 				"VIEW_PAYMENTS" => "view payments",
 				"GEN_REPORT" => "generate a report from a job",
-				"VIEW_REPORT" => "view generated reports internally"
+				"VIEW_REPORT" => "view generated reports internally",
 				// 'ADD_REPORT' => "",
+
+				// expenses
+				"VIEW_EXPENSES" => "view expense records",
+				"ADD_EXPENSE" => "add expense records",
+				"ADD_TRANSFER" => "add transfer records",
 			],
 		];
 	}

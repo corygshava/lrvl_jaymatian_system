@@ -443,6 +443,7 @@
 		'carbon',
 	];
 	let samples_filter = [];
+	let pay_state_filter = [];
 
 	window['runOnAwake'] = () => {
 		Object.keys(sample_state_atlas).forEach((k,id) => {
@@ -454,6 +455,12 @@
 		sample_types.forEach(k => {
 			let tmp = {value: k, label: k};
 			samples_filter.push(tmp);
+		});
+
+		Object.keys(payment_state_atlas).forEach((k,id) => {
+			// if(id == 0){return;}
+			let tmp = {value: `${k}`, label: payment_state_atlas[k]};
+			pay_state_filter.push(tmp);
 		});
 
 		const initstuff = (m) => {
@@ -587,6 +594,12 @@
 						label: 'processing status',
 						rawname: 'status',
 						options: state_filter
+					},
+					{
+						name: 'payment_status',
+						label: 'payment status',
+						rawname: 'status',
+						options: pay_state_filter
 					},
 					{
 						name: 'with_results',

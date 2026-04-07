@@ -255,6 +255,19 @@ class ViewController extends Controller{
 		}
 	}
 
+	public function showexpenses(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.expenses_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
 	public function showbizdata(Request $req){
 		if($this->ili()){
 			$cmdt = self::commondata();

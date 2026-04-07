@@ -432,7 +432,7 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		border-spacing: 0;
 
 		--w_sm: 48px;
-		--w: 125px;
+		--w: 115px;
 		--w_m: calc(var(--w) * 2);
 	}
 	.table-modern thead th {
@@ -495,6 +495,23 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+/* content modals */
+	.sample-info-card {
+		background: white;
+		border: 1px solid var(--themecolor);
+		border-radius: 8px;
+		padding: 20px;
+		margin-bottom: 20px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+	}
+	.sample-info-card h5 {
+		color: var(--themecolor);
+		font-weight: 600;
+		margin-bottom: 16px;
+		border-bottom: 1px solid var(--themecolor);
+		padding-bottom: 8px;
 	}
 
 /* content cards */

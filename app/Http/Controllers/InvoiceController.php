@@ -129,6 +129,9 @@ class InvoiceController extends Controller{
 				$update_runlog($wot);
 			}
 		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
 
 		if($this->ili()){
 			$res['success'] = true;
@@ -151,6 +154,84 @@ class InvoiceController extends Controller{
 					->with('samples')
 					->get()
 				;
+				$cnt = count($incomplete);
+				$has_some = $cnt > 0;
+
+				if(!$has_some){
+					$update_msg("all tasks are fully paid, an Invoice is unnecessary");
+				} else {
+					$update_msg("found $cnt unpaid tasks");
+					$reslt = true;
+
+					$invs = Invoice::all()->count();
+					$res['xtra'] = [
+						'invoices_count' => $invs,
+					];
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $incomplete;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+    public function get_my_spec_info(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "authenticafion failed";
+
+		// /*
+		$passed = $req->validate([
+			'client_id' => ['required','numeric'],
+			'invoice_id' => ['required','numeric'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg("fetching permissions");
+			$reslt = false;
+
+			$c_id = $passed['client_id'];
+			$i_id = $passed['invoice_id'];
+			$incomplete = [];
+
+			$theclient = Client::where('id',$c_id)->first();
+
+			if($theclient == null){
+				$update_msg("invalid client specified");
+			} else {
+				$update_msg("valid client specified");
+
+				$invoice = Invoice::where('id',$i_id)
+					->with('tasks.samples')
+					->first()
+				;
+				$update_runlog('invoice task samples');
+				// $update_runlog($invoice->tasks->samples);
+
+				$incomplete = $invoice->invoice_data;
 				$cnt = count($incomplete);
 				$has_some = $cnt > 0;
 
@@ -376,7 +457,7 @@ class InvoiceController extends Controller{
 				if($client == null){
 					$msg = "invalid client";
 				} else {
-					$tasks = Task::where('client_id',$client_id)->where('payment_status','<>',2)->get();
+					$tasks = Task::where('client_id',$client_id)->where('payment_status','<>',2)->with('samples')->get();
 					$task_ids = [];
 					$total = 0;
 					$savetasks = $tasks->toArray();
@@ -482,6 +563,134 @@ class InvoiceController extends Controller{
 					$msg = "Invoice saved successfully";
 					$showthis = $invoice;
 					$reslt = true;
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $showthis;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+	public function change_image(Request $req) {
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		// /*
+		$passed = $req->validate([
+			'admin_password_mine' => ['required'],
+			'client_id' => ['required'],
+			'invoice_no' => ['required','numeric'],
+			'genfile' => ['required','file'],
+			'genimage' => ['required','file'],
+			'bizdata' => ['required'],
+			'file_slug' => ['required'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		$client_id = $passed['client_id'];
+		$rno = $passed['invoice_no'];
+		$bizdata = json_decode($passed['bizdata'],true);
+
+		$b_deets = $bizdata['business_details'];
+
+		// $res['runlog'][] = json_decode($bizdata);
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "business information updated successfully";
+			$reslt = false;
+			$wegood = $this->verifyPassword($passed['admin_password_mine']);
+			$user = $this->cur_user();
+			$showthis = null;
+			$invoice = null;
+			$slug = $passed['file_slug'];
+
+			if(!$wegood){
+				$msg = "invalid admin password";
+			} else {
+				$client = Client::where('id',$client_id)
+					->withCount('invoices')
+					->first()
+				;
+
+				if($client == null){
+					$_msg("invalid client");
+				} else {
+					$i_id = $passed['invoice_no'];
+					$invoice = Invoice::where('id',$i_id)->first();
+
+					if($invoice == null){
+						$_msg("Invalid invoice passed");
+					} else {
+						$rndr = Str::upper($this->mekRandomString(4));
+						$sno = '';
+						$rpts = $client['invoices_count'];
+						$img_link = "invoice_{$rpts}_{$rndr}_img";
+						$fyls = [];
+						$img_serial = '';
+						$pdf_serial = '';
+
+						if($invoice->image_link){
+							$delimg = $invoice->image_link;
+							$path = storage_path(self::$invoice_images_path).$delimg;
+							$has_fyl = is_file($path);
+
+							if($has_fyl){
+								unlink($path);
+							}
+						}
+
+						$fkey = 'genimage';
+						if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+							$imghash = new ImageHashService();
+							$mfile = $req->file($fkey,null);
+							$img_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+
+							$fyl = $req->file($fkey);
+							$myname = $img_link;
+							$ext = $fyl->getClientOriginalExtension();
+							$date = date('y_m');
+							$daname = "{$myname}.{$ext}";
+							$fname = "[{$date}] {$daname}";
+							$fyl->move(storage_path(self::$invoice_images_path),$fname);
+							$fyls[$fkey] = $fname;
+						};
+
+						$invoice->image_link = $fyls['genimage'];
+						$invoice->file_slug = $passed['file_slug'];
+						$invoice->save();
+						$invoice->refresh();
+
+						$hashes = FileHash::where('invoice_id',$i_id)->first();
+						$hashes->myhash = $img_serial;
+						$hashes->file_name = $fyls['genimage'];
+						$hashes->save();
+
+						$msg = "Invoice updated successfully";
+						$showthis = $invoice;
+						$reslt = true;
+					}
 				}
 			}
 
@@ -609,11 +818,16 @@ class InvoiceController extends Controller{
 							$client->credit_balance = $cred;
 							$client->save();
 
-							$newbal = $invoice->balance - $amount;
+							$mybalance = $invoice->balance;
+							$newbal = $mybalance - $amount;
 							$invoice->status = $newbal <= 0 ? 2 : 1;
-							$newbal = $newbal < 0 ? 0 : $newbal;
+							// $newbal = $newbal < 0 ? 0 : $newbal;
 							$invoice->balance = $newbal;
-							$invoice->total_paid = $amount;
+							$invoice->total_paid += $amount;
+
+							$update_runlog("calc: $mybalance - $amount");
+							$update_runlog("new balance: $newbal");
+							$update_runlog("new balance: $newbal");
 							$invoice->save();
 							$invoice->refresh();
 

@@ -321,7 +321,7 @@
 									<i class="fas fa-image"></i>
 									<span>Image (JPG, PNG)</span>
 								</div>
-								<div class="format-btn w3-hide_" data-subrole="filetype_selector" data-runme="select_filetype" data-type="pdf">
+								<div class="format-btn w3-hide" data-subrole="filetype_selector" data-runme="select_filetype" data-type="pdf">
 									<i class="fas fa-file-pdf"></i>
 									<span>PDF Document</span>
 								</div>

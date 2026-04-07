@@ -27,6 +27,7 @@ class SamplesController extends Controller{
 			$status = $req->input('status',null);
 			$with_results = $req->input('with_results',null);
 			$sample_typ = $req->input('sample_type',null);
+			$pay_status = $req->input('payment_status',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
@@ -87,6 +88,14 @@ class SamplesController extends Controller{
 				} else {
 					$records = $records->doesntHave('results');
 				}
+			}
+
+			if($pay_status){
+				$con = $pay_status;
+
+				$records = $records->whereHas('task', function($q) use ($con){
+					$q->where('payment_status',"$con");
+				});
 			}
 
 			if($sample_typ){

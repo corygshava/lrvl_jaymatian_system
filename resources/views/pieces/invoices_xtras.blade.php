@@ -301,6 +301,12 @@
 
 		let invoice_setup_outht = setup_simpleTable('data-role="tasks_table"');
 
+		let mekpaybtn = invoice.balance > 0 ? `
+			<button class="mybtn primary" data-runme="trymekpayment">
+				<i class="${iconAtlas['payments']}"></i> Make a Payment
+			</button>
+		` : '';
+
 		// return;
 		// Build the interface
 		const html = `
@@ -318,20 +324,24 @@
 			</div>
 
 			<!-- Action Buttons -->
-			<div class="flowline centerline center spacy-sm w3-hide_">
-				<button class="mybtn secondary" onclick="viewClient_payments(${invoice.client.id})" data-openthis="clientinfo">
-					<i class="${iconAtlas['clients']}"></i> View Client
-				</button>
-				<button class="mybtn primary" data-runme="trymekpayment">
-					<i class="${iconAtlas['payments']}"></i> Make a Payment
-				</button>
-			</div>
-			<div class="flowline centerline center spacy-sm">
-				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-download"></i> download as image</a>
-				<!--
-				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_pdf']}/${invoice.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
-				// -->
-				<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print invoice</button>
+			<div class="flowline overflow spacy-md">
+				<div class="flowline centerline center spacy-sm w3-hide_">
+					<button class="mybtn secondary" onclick="viewClient_invoices(${invoice.client.id})" data-openthis="clientinfo">
+						<i class="${iconAtlas['clients']}"></i> View Client
+					</button>
+					<button class="mybtn secondary" onclick="regen_invoice()" data-openthis="clientinfo">
+						<i class="${iconAtlas['export_file']}"></i> Regenerate Invoice
+					</button>
+					${mekpaybtn}
+				</div>
+				<div class="border-left w3-hide-small"></div>
+				<div class="flowline centerline center spacy-sm">
+					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-download"></i> download as image</a>
+					<!--
+					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_pdf']}/${invoice.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
+					// -->
+					<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print invoice</button>
+				</div>
 			</div>
 
 			<div class="sample-info-card w3-hide_">
@@ -390,7 +400,7 @@
 						<span class="info-value">KES ${formatNumber((+invoice.client.credit_balance).toFixed(2))}</span>
 					</div>
 					<div class="info-row">
-						<button class="mybtn secondary" onclick="viewClient_payments(${invoice.client.id})" data-openthis="clientinfo">
+						<button class="mybtn secondary" onclick="viewClient_invoices(${invoice.client.id})" data-openthis="clientinfo">
 							<i class="${iconAtlas['clients']}"></i> View Client
 						</button>
 					</div>
@@ -522,7 +532,7 @@
 			],
 			tablename: 'tasks_table',
 			caption: 'Invoice tasks',
-			viewcall: 'view_rec',
+			viewcall: 'viewTask_invoices',
 			rowprops: 'data-rectype="invoice"',
 		};
 
@@ -530,9 +540,9 @@
 		render_simpleTable(data);
 	}
 
-	function viewTask_payments() {
+	window['viewTask_invoices'] = (el) => {
 		alert_info('opening task');
-		window[variableAtlas['task_id']] = invoice.task.id;
+		window[variableAtlas['task_id']] = el.myid;
 
 		let payld = {
 			template: linkAtlas['task_info'],
@@ -540,14 +550,24 @@
 		};
 		loadPage(payld);
 	}
-
-	function viewClient_payments(clientId) {
+	window['viewClient_invoices'] = (clientId) => {
 		alert_info('opening client Information');
 		window[variableAtlas['client_id']] = invoice.client.id;
 
 		let payld = {
 			template: linkAtlas['client_info'],
 			sidenote: pageNames['client_info'],
+		};
+		loadPage(payld);
+	}
+	window['regen_invoice'] = () => {
+		alert_info('opening invoice creation page');
+		window[variableAtlas['invoice_id']] = invoice.id;
+		window[variableAtlas['client_id']] = invoice.client.id;
+
+		let payld = {
+			template: linkAtlas['mek_invoice'],
+			sidenote: pageNames['mek_invoice'],
 		};
 		loadPage(payld);
 	}
@@ -582,6 +602,10 @@
 		renderInvoiceData(cur);
 		if(!modalon){
 			_inv_showmodal(true);
+		}
+
+		if(typeof window['refreshData'] == 'function'){
+			refreshData();
 		}
 	}
 

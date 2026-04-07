@@ -1,0 +1,33 @@
+daily_cash_report
+	id
+	carry_over
+	sample_data
+		json in the form {
+			soil: 23,
+			rock: 23,
+			carbon: 23,
+			solution: 23,
+			carbon activity: 23,
+		}
+	total_income
+	cash_data
+		additional cash info
+	cash_from_debtors
+		fetched from invoices
+	total_daily_cash
+	total_cash
+	expenditure
+	spend_data
+		json containing {
+			withdraw_director
+			makato
+			mpesa_expenditure
+		}
+
+	total_balance_forward
+
+expenses
+	purpose
+	added_by
+	added_at
+	amount

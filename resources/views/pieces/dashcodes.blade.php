@@ -86,6 +86,7 @@
 				'ui_tester' : './ui/_ui_creat0r',
 				'mek_invoice' : './ui/gen_invoice',
 				'verify_file' : './ui/verify_file',
+				'expenses_mgt' : './ui/expenses_mgt',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -104,6 +105,8 @@
 				'publish_worksheet' : './op/publish_worksheet',
 				'standardize_sample_charges' : './op/standardize_charges',
 				'add_payment_invoice' : './op/add_payment_invoice',
+				'update_invoice_image' : './op/change_invoice_image',
+				'add_expense' : './op/add_expense',
 
 			// datalinks
 				'search_clients' : './data/search_clients',
@@ -128,8 +131,10 @@
 				'get_income_chart_data' : './data/income_chart_data',
 				'get_worksheets' : './data/get_worksheets',
 				'get_invoice_data' : './data/get_invoice_info',
+				'get_specific_invoice_data' : './data/get_spec_invoice_info',
 				'get_invoices' : './data/get_invoices',
 				'get_reports_count' : './data/get_reports_count',
+				'get_expenses' : './data/expenses',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -160,6 +165,7 @@
 			'mek_invoice' : 'Generate Invoice',
 			'invoices_mgt' : 'Invoice management',
 			'verify_file' : 'File verification',
+			'expenses_mgt' : 'Expenses management',
 
 			'ui_tester' : 'UI testing grounds',
 		};
@@ -168,6 +174,7 @@
 			'task_id' : `cur_task_id`,
 			'client_id' : `cur_client_id`,
 			'sample_id' : `cur_sample_id`,
+			'invoice_id' : `cur_invoice_id_${mekRandomString(8)}`,
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
 		};
@@ -203,6 +210,8 @@
 			'invoices' : 'fa fa-file-invoice-dollar',
 			'results' : 'fas fa-chart-line',
 			'verify_file' : 'fas fa-check-circle',
+			'export_file' : 'fas fa-file-export',
+			'expenses' : 'fas fa-money-bill-wave',
 		};
 
 		// will be set via server call later
@@ -236,6 +245,7 @@
 			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices']},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
 			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file']},
+			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses']},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},

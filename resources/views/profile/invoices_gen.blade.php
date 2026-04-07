@@ -174,8 +174,8 @@
 
 				<!-- <span class="h4">Invoice Type</span> -->
 				<div class="flowline center gap-sm in_fullwidth distance-sm">
-					<button class="mybtn primary sm" data-runme="toggle_doctype" data-mytype="detailed">detailed</button>
-					<button class="mybtn secondary sm" data-runme="toggle_doctype" data-mytype="plain">plain</button>
+					<button class="mybtn secondary sm doctype_toggler" data-runme="toggle_doctype" data-mytype="detailed">detailed</button>
+					<button class="mybtn primary sm doctype_toggler" data-runme="toggle_doctype" data-mytype="plain">plain</button>
 				</div>
 			</div>
 
@@ -490,13 +490,26 @@
 		const step2 = (d) => {
 			// alert
 			// return;
-			if(d.sendme.credit_balance <= 0){
+			let inv_id = window[variableAtlas['invoice_id']];
+
+			if(d.sendme.credit_balance <= 0 && inv_id === undefined){
 				throw new Error('Client has no credit balance');
 			}
 
 			invoice_runtime_data.clientData = d.sendme;
 
-			window[fetch_bypass](linkAtlas['get_invoice_data'],{client_id: c_id},'POST').then(dta => {
+			let querycall = inv_id != undefined ?
+				window[fetch_bypass](linkAtlas['get_specific_invoice_data'],{invoice_id: inv_id, client_id: c_id},'POST')
+				:
+				window[fetch_bypass](linkAtlas['get_invoice_data'],{client_id: c_id},'POST')
+			;
+
+			if(inv_id !== undefined){
+				invoice_runtime_data.invoice_id = inv_id;
+				delete(window[variableAtlas['invoice_id']]);
+			}
+
+			querycall.then(dta => {
 				responseHandler(dta,step3,dta);
 
 				if(!dta.success || !dta.result){
@@ -511,7 +524,35 @@
 
 		const step3 = (d) => {
 			invoice_runtime_data.incomplete = d.sendme;
-			invoice_runtime_data.invoices = d.xtra.invoices_count;
+			invoice_runtime_data.invoices = d.xtra.invoices_count || 0;
+
+			// alert_dark(`${d.sendme.length} found`);
+
+			if(d.sendme.length == 0){
+				outht = `There was an error fetching business information: <br><b class="w3-text-red">there are no unpaid tasks for this client</b>`;
+				showerror(outht);
+				return;
+			}
+
+			// infer samples from fetched data
+			let smp = [];
+
+			d.sendme.forEach((s,id) => {
+				let ss = s.samples;
+				let len = ss.length;
+
+				ss.forEach((sm, n) => {
+					let tmp = {...sm};
+					tmp.task_no = s.task_no;
+					tmp.isbig = n == 0;
+					tmp.mycount = len;
+					tmp.balance = s.balance;
+
+					smp.push(tmp);
+				});
+			})
+
+			invoice_runtime_data.samples = smp;
 
 			window[fetch_bypass_fyls](linkAtlas['get_bizdata'],{},'POST').then(dta => {
 				responseHandler(dta,step4,dta);
@@ -531,8 +572,12 @@
 			invoice_runtime_data.bizdata = d.sendme;
 			window['bizdata'] = parseBizdata(d.sendme);
 
+			final_step();
+			// skip to prevent failure when internet is down
+			return;
+
 			step5().catch(err => {
-				alert_danger(err.message);
+				alert_danger('QR code generation error: ' + err.message);
 				console.error(err);
 				showerror(`error generating QR code: ${err.message}`);
 			});
@@ -559,7 +604,8 @@
 		}
 
 		const final_step = () => {
-			invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
+			// invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
+			invoice_runtime_data.doctype = 'plain';
 
 			showloader(false);
 			generateAggregates();
@@ -626,9 +672,10 @@
 		invoice_runtime_data.aggregates = agg;
 	}
 	window['render_all_data'] = () => {
-		alert_dark('rendering header');
+		// alert_dark('rendering header');
 
 		let outht = '';
+		let advanced = invoice_runtime_data.doctype == 'detailed';
 
 		// elements
 		let holder = document_Holder;
@@ -636,7 +683,7 @@
 		let header = reportguy.querySelector('.page-section.header');
 		let invoice_details = holder.querySelector('.page-section.invoice_details>[data-subrole="deetsui"]');
 		let invoice_summary = holder.querySelector('.page-section.invoice_summary>[data-subrole="deetsui"]');
-		let inv_results_headings = holder.querySelectorAll('.rslts_headings>*');
+		let invTableHeadings = holder.querySelector('.rslts_headings');
 
 		let b_data = bizdata;
 		let bizdeets = b_data.business_details;
@@ -644,6 +691,7 @@
 
 		let c_data = invoice_runtime_data.clientData;
 		let t_data = invoice_runtime_data.incomplete;
+		let s_data = invoice_runtime_data.samples;
 		let agg = invoice_runtime_data.aggregates;
 
 		// header
@@ -685,7 +733,6 @@
 		// the second section (aka the creditsguy)
 		invoice_details.style.textTransform = "uppercase";
 		// invoice_details.classList.add('smallerCells');
-
 		// invoice_details.innerHTML = `damn, thats awesome`;
 
 		invoice_details.innerHTML = `
@@ -729,21 +776,60 @@
 
 		console.log('scc: ',scounts);
 
-		t_data.forEach((r,i) => {
-			outht += `
-				<tr>
-					<td><span>${i + 1}</span></td>
-					<td>${mekSpan(formatDate0(r.created_at))}</td>
-					<td>${mekSpan(r.task_no)}</td>
-					<td>${mekSpan(r.sample_count)}</td>
-					<td>${mekSpan(formatNumber(r.balance))}</td>
-				</tr>
+		if(!advanced){
+			invTableHeadings.innerHTML = `
+				<th style="width: 40px;"><span></span></th>
+				<th style="width: 160px;"><span>date created</span></th>
+				<th style="width: 400px;"><span>Task No</span></th>
+				<th style="width: 190px;"><span>Samples delivered</span></th>
+				<th style="width: 90px;"><span>balance</span></th>
 			`;
-		});
+			t_data.forEach((r,i) => {
+				outht += `
+					<tr>
+						<td><span>${i + 1}</span></td>
+						<td>${mekSpan(formatDate0(r.created_at))}</td>
+						<td>${mekSpan(r.task_no)}</td>
+						<td>${mekSpan(r.sample_count)}</td>
+						<td>${mekSpan(formatNumber(r.balance))}</td>
+					</tr>
+				`;
+			});
+		} else {
+			invTableHeadings.innerHTML = `
+				<th style="width: 40px;"><span></span></th>
+				<th style="width: 120px;"><span>Task No</span></th>
+				<th style="width: 200px;"><span>date delivered</span></th>
+				<th style="width: 190px;"><span>Samples type</span></th>
+				<th style="width: 190px;"><span>Samples delivered</span></th>
+				<th style="width: 90px;"><span>balance</span></th>
+			`;
+			s_data.forEach((r,i) => {
+				/*
+					tmp.task_no = s.task_no;
+					tmp.isbig = n == 0;
+					tmp.mycount = len;
+					tmp.balance = s.balance;
+				// */
+				let bigone = `rowspan="${r.mycount}" class="${r.isbig ? '' : 'w3-hide'}" style="vertical-align: baseline;"`;
+				outht += `
+					<tr>
+						<td><span>${i + 1}</span></td>
+						<td ${bigone}>${mekSpan(r.task_no)}</td>
+						<td>${mekSpan(formatDate0(r.created_at))}</td>
+						<td>${mekSpan(r.sample_type)}</td>
+						<td>${mekSpan(r.sample_count)}</td>
+						<td ${bigone}>${mekSpan(formatNumber(r.balance))}</td>
+					</tr>
+				`;
+			})
+		}
+
+		let inv_results_headings = advanced ? 6 : 5;
 
 		outht += `
 			<tr>
-				<td colspan="${inv_results_headings.length - 1}"><b>Total</b></td>
+				<td colspan="${inv_results_headings - 1}"><b>Total</b></td>
 				<td>${mekSpan(formatNumber(agg.total))}</td>
 			</tr>
 		`;
@@ -773,7 +859,7 @@
 					to our office whatsapp at <b style="display: inline-block;" class="themetxt">${processNumber(bizdeets.phone)}</b>
 				</p>
 				<p>
-					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${bizdeets.mpesa})</b> our office and the transaction code provided is what will be used to verify your payment
+					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${processNumber(bizdeets.mpesa)})</b> our office and the transaction code provided is what will be used to verify your payment
 				</p>
 			</div>
 		`;
@@ -828,6 +914,20 @@
 			<div id="dateguy" class="w3-text-red">${('<?php echo date("d M Y")?>').toUpperCase()}</div>
 		`;
 		stamp.innerHTML = outht;
+	}
+	window['toggle_doctype'] = (el) => {
+		invoice_runtime_data.doctype = el.dataset.mytype == 'detailed' ? 'detailed' : 'plain';
+		render_all_data();
+
+		let btns = document.querySelectorAll('.doctype_toggler');
+
+		btns.forEach(b => {
+			b.classList.remove('primary');
+			b.classList.add('secondary');
+		})
+
+		el.classList.add('primary');
+		el.classList.remove('secondary');
 	}
 	window['processNumber'] = (n) => {
 		let xtra = "";
@@ -1200,6 +1300,14 @@
 			el.client_id.value = invoice_runtime_data.clientData.id;
 			el.admin_password_mine.value = d.admin_password;
 			el.bizdata.value = JSON.stringify(bizdata);
+
+			if(invoice_runtime_data.invoice_id !== undefined){
+				el.action = "defined:update_invoice_image";
+				el.invoice_no.value = invoice_runtime_data.invoice_id;
+			} else {
+				el.action = "defined:save_invoice";
+			}
+
 			pick_step(3);
 
 			sendform(el,step3,step2b);

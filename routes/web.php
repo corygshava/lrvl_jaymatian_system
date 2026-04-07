@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SamplesController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\WorksheetsController;
@@ -64,6 +65,8 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/biz_data', [ViewController::class,'showbizdata']);
 	Route::get('/verify_file', [ViewController::class,'showverifiersubscreen']);
+
+	Route::get('/expenses_mgt', [ViewController::class,'showexpenses']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -99,7 +102,10 @@ Route::prefix('/data')->group(function(){
 
 	Route::get('/invoices', [InvoiceController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_invoice_info', [InvoiceController::class,'get_my_info'])->middleware(['auth','verified']);
+	Route::post('/get_spec_invoice_info', [InvoiceController::class,'get_my_spec_info'])->middleware(['auth','verified']);
 	Route::post('/get_invoices', [InvoiceController::class,'get_some'])->middleware(['auth','verified']);
+
+	Route::get('/expenses', [ExpenseController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 
@@ -137,6 +143,7 @@ Route::prefix('/op')->group(function(){
 
 	Route::post('/save_invoice', [InvoiceController::class,'add_new'])->middleware(['auth','verified']);
 	Route::post('/add_payment_invoice',[InvoiceController::class, 'add_payment'])->middleware(['auth','verified']);
+	Route::post('/change_invoice_image',[InvoiceController::class, 'change_image'])->middleware(['auth','verified']);
 	Route::post('/verify_invoice', [InvoiceController::class,'verify_me'])
 		->middleware('throttle:5,1')
 		// ->middleware(['auth','verified'])
@@ -147,6 +154,9 @@ Route::prefix('/op')->group(function(){
 		->middleware('throttle:5,1')
 		// ->middleware(['auth','verified'])
 	;
+
+	Route::post('/add_expense',[ExpenseController::class, 'add_new'])->middleware(['auth','verified']);
+	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/media')->group(function(){

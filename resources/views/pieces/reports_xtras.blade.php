@@ -340,23 +340,26 @@
 			</div>
 
 			<!-- Action Buttons -->
-			<div class="flowline centerline center spacy-sm w3-hide_">
-				<button class="mybtn secondary" onclick="viewTask_payments(${report.task.id})" data-openthis="taskinfo">
-					<i class="fas fa-folder"></i> View Task
-				</button>
-				<button class="mybtn secondary" onclick="viewClient_payments(${report.owner.id})" data-openthis="clientinfo">
-					<i class="fas fa-users"></i> View Client
-				</button>
-				<button class="mybtn secondary" data-runme="regen_report">
-					<i class="fas fa-file-export"></i> Regenerate
-				</button>
-			</div>
-			<div class="flowline centerline center spacy-sm">
-				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-download"></i> download as image</a>
-				<!--
-				<a class="mybtn secondary sm w3-hide" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
-				// -->
-				<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+			<div class="flowline overflow spacy-md">
+				<div class="flowline centerline center spacy-sm w3-hide_">
+					<button class="mybtn secondary" onclick="viewTask_payments(${report.task.id})" data-openthis="taskinfo">
+						<i class="fas fa-folder"></i> View Task
+					</button>
+					<button class="mybtn secondary" onclick="viewClient_payments(${report.owner.id})" data-openthis="clientinfo">
+						<i class="fas fa-users"></i> View Client
+					</button>
+					<button class="mybtn secondary" data-runme="regen_report">
+						<i class="fas fa-file-export"></i> Regenerate
+					</button>
+				</div>
+				<div class="border-left w3-hide-small"></div>
+				<div class="flowline centerline center spacy-sm">
+					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-download"></i> download as image</a>
+					<!--
+					<a class="mybtn secondary sm w3-hide" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
+					// -->
+					<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+				</div>
 			</div>
 
 			<div class="sample-info-card w3-hide_">
