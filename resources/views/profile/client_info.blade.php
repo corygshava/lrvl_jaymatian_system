@@ -844,6 +844,25 @@
 					}
 				},
 				{
+					cap: 'Payment Progress',
+					field: 'balance',
+					// sortable: true,
+					show: function(value,row) {
+						let myprogress = (row.total_paid / row.total) * 100;
+						return `
+							<div>
+								<div style="padding: 4px">
+									<b class="themetxt">${formatNumber(row.total_paid)}</b> / <b>${formatNumber(row.total)}</b>
+									<span>[${Math.floor(myprogress)} %]</span>
+								</div>
+								<div class="progress themeround except" style="height:0.5rem;">
+									<div class="progress-bar bg-primary bg-striped" style="width: ${myprogress}%"></div>
+								</div>
+							</div>
+						`;
+					}
+				},
+				{
 					cap: 'Date added',
 					field: 'created_at',
 					show: function(value) {

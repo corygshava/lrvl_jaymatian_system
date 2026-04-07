@@ -543,7 +543,7 @@
 			invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
 			img_qr_loader.classList.remove('w3-hide');
 			let pagelink = [...window.location.href.split('/').map((l,id,arr) => {return id == (arr.length - 1) ? '' : l})].join('/');
-			let filelink = `${pagelink}media/invoices/pdf/${invoice_runtime_data.file_slug}`;
+			let filelink = `${pagelink}media/invoices/img/${invoice_runtime_data.file_slug}`;
 
 			invoice_runtime_data.file_link = filelink;
 

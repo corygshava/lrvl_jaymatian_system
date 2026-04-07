@@ -328,7 +328,9 @@
 			</div>
 			<div class="flowline centerline center spacy-sm">
 				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-download"></i> download as image</a>
+				<!--
 				<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_pdf']}/${invoice.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
+				// -->
 				<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print invoice</button>
 			</div>
 

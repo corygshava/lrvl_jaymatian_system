@@ -574,7 +574,7 @@
 			report_runtime_data.file_slug = `_${report_runtime_data.reports_count}_${mekRandomString(7).toUpperCase()}`;
 			img_qr_loader.classList.remove('w3-hide');
 			let pagelink = [...window.location.href.split('/').map((l,id,arr) => {return id == (arr.length - 1) ? '' : l})].join('/');
-			let filelink = `${pagelink}media/reports/pdf/${report_runtime_data.file_slug}`
+			let filelink = `${pagelink}media/reports/img/${report_runtime_data.file_slug}`
 			report_runtime_data.file_link = filelink;
 
 			let encodedText = encodeURIComponent(filelink);
