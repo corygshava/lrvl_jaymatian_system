@@ -412,7 +412,7 @@
 				Refresh
 			</button>
 			<!-- <button class="mybtn primary" data-runme="add_record"> -->
-			<button class="mybtn primary" id="add_record_btn" data-runme="render_required_data">
+			<button class="mybtn primary" id="add_record_btn" data-runme="just_render_daily_report">
 				<i data-myicon="cash_reports"></i>
 				Today's report
 			</button>
@@ -422,7 +422,7 @@
 	<div class="stats-row w3-hide themeround" id="statsContainer">
 	</div>
 
-	<div class="filter-bar w3-hide themeround" id="filterContainer">
+	<div class="filter-bar themeround" id="filterContainer">
 		<span class="h4">Filters</span>
 		<div class="filter-row"></div>
 	</div>
@@ -542,8 +542,8 @@
 						}
 					},
 					{
-						title: 'Profit',
-						data: 'total_balance_forward',
+						title: 'Daily Profit',
+						data: 'total_profit',
 						// sortable: true,
 						render: function(value,row) {
 							let val = row.total_balance_forward - row.carry_over;
@@ -560,8 +560,8 @@
 						render: function(value, row) {
 							return `
 								<div class="action-btns">
-									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
-										<i class="fas fa-eye"></i> View
+									<button class="mybtn primary sm" data-runme="print_daily_report" data-myid="${row.id}" data-mytype="${row.rectype}" title="View">
+										<i class="fas fa-print"></i> print
 									</button>
 								</div>
 							`;
@@ -580,12 +580,12 @@
 				// Optional: Filter definitions
 				filters: [
 					{
-						name: 'payment_type',
-						label: 'Payment Type',
+						name: 'rectype',
+						label: 'Record Type',
 						rawname: 'method',
 						options: [
-							{value: 'invoice',label: 'Invoice'},
-							{value: 'task',label: 'Task'},
+							{value: 'monthly',label: 'Monthly reports'},
+							{value: 'daily',label: 'Daily reports'},
 						]
 					}
 				],

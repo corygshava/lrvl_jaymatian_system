@@ -38,13 +38,23 @@
 <script>
 	let report_sect_errshown = false;
 	window['daily_report_data'] = {};
+	window['myaddition'] = [
+		'just_render_daily_report',
+		'render_required_data',
+		'actual_renderer',
+		'save_daily_report',
+	];
 
+	window['just_render_daily_report'] = () => {
+		window['daily_report_data'] = {};
+		render_required_data();
+	};
 	window['render_required_data'] = () => {
 		save_daily_modal_trig.click();
+
 		let loadtym = daily_report_data.daily_report_loadtime;
 		if(loadtym == undefined){
 			daily_report_data = {};
-			daily_report_data.daily_report_loadtime = new Date();
 		}
 
 		dailyReportContainer.innerHTML = `
@@ -71,8 +81,14 @@
 
 		const step2 = (d) => {
 			daily_report_data.daily_report = d.sendme;
+			daily_report_data.daily_report_loadtime = new Date();
 
 			actual_renderer(d.sendme,Trange);
+		}
+
+		if(loadtym == undefined){
+			step1();
+			return;
 		}
 
 		if(getDateDiff(daily_report_data.daily_report_loadtime,new Date()) > 22){
@@ -86,6 +102,10 @@
 		let container = dailyReportContainer;
 		let drd = d;
 
+		if(drd == undefined){
+			alert_danger('invalid `actual_renderer` function call');
+			return;
+		}
 		alert_info('rendering...');
 
 		outht = `
@@ -98,6 +118,7 @@
 		} : {};
 		let toshow_1 = {
 			...xtra,
+			"total_owed" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
 			"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
 			"total_income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
 			"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
@@ -205,13 +226,47 @@
 				`;
 			});
 
+		// system usage subsection
+			let toshow_6 = {
+				"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
+				"director expenditure" : `${formatNumber(drd.spend_data["director expenditure"])}`,
+				"Bank transfer" : `${formatNumber(drd.spend_data["Bank transfer"])}`,
+			};
+			let deets_6_outht = '';
+
+			if(drd.debtors !== undefined && drd.debtors.length > 0){
+				drd.debtors.forEach(f => {
+					deets_6_outht += `
+						<div class="spacy-tn themeround_ mb-2 border-bottom flowline spread">
+							<b style="font-size: 1.1rem;">${f.client_name}</b>
+							<strong>KES ${formatNumber(f.credit_balance,2)}</strong>
+						</div>
+					`;
+				});
+
+				deets_6_outht += `
+					<div class="spacy-sm themeround mb-2 flowline spread" style="background: #eee;">
+						<b style="font-size: 1.1rem;">Total</b>
+						<strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong>
+					</div>
+				`;
+			} else {
+				deets_6_outht += `
+					<div class="spacy-sm themeround mb-2 flowline spread centroid" style="background: #eee;">
+						<b style="font-size: 1.1rem;"><i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i></b>
+					</div>
+				`;
+			}
+
 		// visual hints to show system info
 		let thedate = drd.created_at == undefined ? `<b class="themetxt">${range.replace('_',' ')}</b>` : `<b class="themetxt">${formatDate(new Date(drd.created_at))}</b>`;
-		let btns = `
-			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Daily Report</button>
+		let btns = drd.created_at == undefined ? `
+			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Cash Report</button>
+		` : `
+			<button class="mybtn primary" data-runme="print_daily_report" data-myid="${drd.id}" data-mytype="${drd.rectype || 'daily'}"><i class="fa fa-print"></i> Print Report</button>
 		`;
 		save_daily_modal_title.innerHTML = `
-			Daily summary for ${thedate}
+			${drd.rectype || 'Daily'} summary for ${thedate}
 		`;
 		outht = `
 			<div class="sample-info-card w3-hide_">
@@ -258,7 +313,18 @@
 					${deets_4_outht}
 				</div>
 			</div>
-			<div class="distance-sm">
+
+			<div class="distance-sm border themeround collapser">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#debtorInfo" data-toggle="collapse" data-target="#debtorInfo">
+					<span class="text-uppercase text-muted font-weight-bold"><i class="${iconAtlas['clients']}"></i> Debtors</span>
+					<i class="fa fa-chevron-down myicon"></i>
+				</a>
+				<div class="collapse panelbg distance-sm spacy-sm" id="debtorInfo">
+					${deets_6_outht}
+				</div>
+			</div>
+
+			<div class="flowline left gap-sm distance-sm">
 				${btns}
 			</div>
 		`;
@@ -283,4 +349,18 @@
 
 		step1();
 	}
+
+	window['print_daily_report'] = (btn) => {
+		window[variableAtlas['cash_report_id']] = btn.dataset.myid;
+		window[variableAtlas['cash_report_type']] = btn.dataset.mytype;
+		loadPage({template: linkAtlas['print_cash_report'], sidenote: pageNames['print_cash_report']});
+	}
+
+	setTimeout(() => {
+		window['killOnLeave'] = window['killOnLeave'] == undefined ? [] : killOnLeave;
+		killlist = killOnLeave;
+		killlist = [...killlist,...myaddition];
+
+		window['killOnLeave'] = killlist;
+	},randomRange(300,500));
 </script>

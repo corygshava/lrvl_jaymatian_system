@@ -346,7 +346,7 @@
 								<input type="file" name="genfile" id="genfile" required>
 							</div>
 							<div class="form-group">
-								<label class="form-label" for="client_name">Generated PDF</label>
+								<label class="form-label" for="client_name">Generated Invoice</label>
 								<input type="file" name="genimage" id="genimage" required>
 							</div>
 						</div>
@@ -376,7 +376,6 @@
 				<div class="flowline gap-tn left">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="download_invoice_pdf"><i class="fa fa-download"></i> download Invoice (pdf)</button>
 					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Invoice (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Invoice</button>
 				</div>
@@ -1139,6 +1138,7 @@
 	}
 
 	window['download_invoice_pdf'] = () => {
+		return;
 		if(invoice_runtime_data.medFile == undefined){
 			alert_danger('no pdf has been generated yet');
 			return;
@@ -1213,7 +1213,8 @@
 					</style>
 				</head>
 				<body>
-					<img src="${dataUrl}" onload="window.print(); window.close();" />
+					<img src="${dataUrl}" onload="printme()" />
+					<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
 				</body>
 			</html>
 		`);

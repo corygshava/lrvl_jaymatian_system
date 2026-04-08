@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\DailyCashReport;
 use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\MonthlyCashReport;
 use App\Models\Payment;
 use App\Models\ReportsGen;
 use App\Models\Sample;
@@ -15,7 +16,18 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CashReportController extends Controller{
-    public function get_all(Request $req){
+	public function route_stuff(Request $req){
+		$pickwhat = $req->input('rectype','daily');
+
+		if(strtolower($pickwhat) == 'daily'){
+			$result = $this->get_all_daily($req);
+		} else {
+			$result = $this->get_all_monthly($req);
+		}
+
+		return $result;
+	}
+    public function get_all_daily(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
 
@@ -49,6 +61,83 @@ class CashReportController extends Controller{
 			// return response()->json($res);
 
 			$records = DailyCashReport::query()
+				->with('mycreator')
+			;
+
+			if($search){
+				$records = $records
+					->whereHas('mycreator', function($q) use ($search){
+						$q->where('name','like',"%{$search}%")
+							->orWhere('email','like',"%{$search}%")
+						;
+					})
+					->where('created_at','like',"%{$search}%")
+				;
+				$res['runlog'][] = "added search filter";
+			}
+
+			// filter for task status
+			if($timegap){
+				$records = $records->TimeRange($timegap);
+			}
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			// $sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$records = $records
+				->orderBy($sortBy, $sortDirection)
+				->paginate($perPage)
+			;
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+    public function get_all_monthly(Request $req){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		if($this->ili()){
+			$res['success'] = true;
+			$msg = "all payments retrieved";
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search');
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$timegap = $req->input('timegap',null);
+
+			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"time gap" => $timegap,
+			];
+
+			// clean up sortBy to prevent issues
+			if($sortBy == 'mycreator'){
+				$sortBy = 'added_by';
+			}
+
+			// return response()->json($res);
+
+			$records = MonthlyCashReport::query()
 				->with('mycreator')
 			;
 
@@ -205,6 +294,7 @@ class CashReportController extends Controller{
 
 				$expenditure = (clone $expenses)->sum('amount');
 				$total_balance_forward = $total_cash - $expenditure;
+				$total_profit = $total_balance_forward - $carry_over;
 				$_msg("calculated expenses");
 
 				// get samples data
@@ -249,6 +339,10 @@ class CashReportController extends Controller{
 						'director expenditure' => $director_expenditure,
 						'Bank transfer' => $bank_transfer,
 					];
+				// get debtors
+					$d_clients = Client::where('credit_balance','>',0);
+					$total_debit = (clone $d_clients)->sum('credit_balance');
+					$debtors = (clone $d_clients)->withCount('invoices')->get();
 
 				// get extra data
 					$total_users = User::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
@@ -267,16 +361,19 @@ class CashReportController extends Controller{
 					...$outdata,
 					'time_difference' => $timediff,
 					'carry_over' => $carry_over,
+					'total_owed' => $total_debit,
 					'total_income' => $total_income,
 					'cash_from_debtors' => $cash_from_debtors,
 					'total_daily_cash' => $total_daily_cash,
 					'total_cash' => $total_cash,
 					'total_balance_forward' => $total_balance_forward,
+					'total_profit' => $total_profit,
 					'expenditure' => $expenditure,
 
 					'sample_data' => $sampledata,
 					'cash_data' => $cash_data,
 					'spend_data' => $spend_data,
+					'debtors' => $debtors,
 
 					// extras, coz why not
 					'users_count' => $total_users,
@@ -326,7 +423,90 @@ class CashReportController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			'rptdata' => ['required']
+			'rptdata' => ['required'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+		$_rlg = function($w) use (&$update_runlog){
+			return $update_runlog($w);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+			$user = $this->cur_user();
+
+			$toadd = $passed['rptdata'];
+			$_msg('adding daily report');
+
+			$lastrec = DailyCashReport::query()
+				->where('id','<>',null)
+				->latest()
+				->first()
+			;
+			$timediff = null;
+
+			if($lastrec !== null){
+				$timediff = $lastrec->created_at->diffInHours(now());
+			}
+
+			$_rlg(['timediff' => $timediff]);
+			$wegood = $timediff == null ? true : $timediff > 23;
+
+			if(!$wegood){
+				$_msg('You can only generate a daily report once every day');
+			} else {
+				$_msg('saving daily report');
+				$toadd = $this->get_for_today($req,true,$res['runlog']);
+				// unset($toadd['carry_over']);
+				$toadd['added_by'] = $user->id;
+				$_rlg($toadd);
+				$created = null;
+				$created = DailyCashReport::create($toadd);
+
+				if($created == null){
+					$_msg('error creating record');
+				} else {
+					$reslt = true;
+					$_msg('Daily Report saved successfully');
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $toadd;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function save_me_monthly(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'rptdata' => ['required'],
 		]);
 		// */
 
@@ -356,7 +536,7 @@ class CashReportController extends Controller{
 			$toadd['added_by'] = $user->id;
 			$_msg('adding daily report');
 
-			$lastrec = DailyCashReport::query()
+			$lastrec = MonthlyCashReport::query()
 				->where('id','<>',null)
 				->latest()
 				->first()
@@ -364,25 +544,26 @@ class CashReportController extends Controller{
 			$timediff = null;
 
 			if($lastrec !== null){
-				$timediff = $lastrec->created_at->diffInHours(now());
+				$timediff = $lastrec->created_at->diffInDays(now());
 			}
 
 			$_rlg(['timediff' => $timediff]);
-			$wegood = $timediff == null ? true : $timediff > 23;
+			$today = Carbon::now();
+			$wegood = $timediff == null ? true : $timediff > 28;
 
 			if(!$wegood){
-				$_msg('You can only generate a daily report once every day');
+				$_msg('You can only generate a monthly report once every month');
 			} else {
-				$_msg('saving daily report');
+				$_msg('saving monthly report');
 				$toadd = $this->get_for_today($req,true,$res['runlog']);
 				unset($toadd['carry_over']);
-				$created = DailyCashReport::create($toadd);
+				$created = MonthlyCashReport::create($toadd);
 
 				if($created == null){
 					$_msg('error creating record');
 				} else {
 					$reslt = true;
-					$_msg('Daily Report saved successfully');
+					$_msg('Monthly Report saved successfully');
 				}
 			}
 

@@ -13,16 +13,19 @@ class DailyCashReport extends Model{
 		'added_by',
 
 		'carry_over',
+		'total_owed',
 		'total_income',
 		'cash_from_debtors',
 		'total_daily_cash',
 		'expenditure',
 		'total_cash',
 		'total_balance_forward',
+		'total_profit',
 
 		'sample_data',
 		'cash_data',
 		'spend_data',
+		'debtors',
 
 		'users_count',
 		'clients_count',
@@ -39,7 +42,10 @@ class DailyCashReport extends Model{
 		'sample_data' => 'array',
 		'cash_data' => 'array',
 		'spend_data' => 'array',
+		'debtors' => 'array',
 
+		'total_owed' => 'decimal:2',
+		'total_profit' => 'decimal:2',
 		'total_income' => 'decimal:2',
 		'total_daily_cash' => 'decimal:2',
 		'cash_from_debtors' => 'decimal:2',

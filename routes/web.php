@@ -69,6 +69,7 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/expenses_mgt', [ViewController::class,'showexpenses']);
 	Route::get('/cash_reports_mgt', [ViewController::class,'showcashreports']);
+	Route::get('/gen_cash_report', [ViewController::class,'showprintcashreports']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -110,7 +111,7 @@ Route::prefix('/data')->group(function(){
 	Route::get('/expenses', [ExpenseController::class,'get_all'])->middleware(['auth','verified']);
 
 	Route::post('/get_daily_report', [CashReportController::class,'get_for_today'])->middleware(['auth','verified']);
-	Route::get('/cash_reports', [CashReportController::class,'get_all'])->middleware(['auth','verified']);
+	Route::get('/cash_reports', [CashReportController::class,'route_stuff'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 

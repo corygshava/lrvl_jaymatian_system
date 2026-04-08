@@ -281,6 +281,19 @@ class ViewController extends Controller{
 		}
 	}
 
+	public function showprintcashreports(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.gen_cash_report',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
+
 	public function showbizdata(Request $req){
 		if($this->ili()){
 			$cmdt = self::commondata();

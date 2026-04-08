@@ -10,10 +10,14 @@ return new class extends Migration{
      */
     public function up(): void {
         Schema::table('daily_cash_reports', function (Blueprint $table) {
-            $table->string('rectype')->default('daily');
+            $table->string('rectype')->after('added_by')->default('daily');
+            $table->json('debtors')->after('spend_data')->default('[]');
+            $table->decimal('total_owed',11,2)->after('carry_over')->default(0);
         });
         Schema::table('monthly_cash_reports', function (Blueprint $table) {
-            $table->string('rectype')->default('daily');
+            $table->string('rectype')->after('added_by')->default('daily');
+            $table->json('debtors')->after('spend_data')->default('[]');
+            $table->decimal('total_owed',11,2)->after('carry_over')->default(0);
         });
     }
 
@@ -24,9 +28,13 @@ return new class extends Migration{
     public function down(): void {
         Schema::table('daily_cash_reports', function (Blueprint $table) {
             $table->dropColumn('rectype');
+            $table->dropColumn('debtors');
+            $table->dropColumn('total_owed');
         });
         Schema::table('monthly_cash_reports', function (Blueprint $table) {
             $table->dropColumn('rectype');
+            $table->dropColumn('debtors');
+            $table->dropColumn('total_owed');
         });
     }
 };

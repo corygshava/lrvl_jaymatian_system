@@ -101,6 +101,7 @@
 				'verify_file' : './ui/verify_file',
 				'expenses_mgt' : './ui/expenses_mgt',
 				'cash_reports' : './ui/cash_reports_mgt',
+				'print_cash_report' : './ui/gen_cash_report',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -187,7 +188,8 @@
 			'mek_invoice' : 'Generate Invoice',
 			'invoices_mgt' : 'Invoice management',
 			'expenses_mgt' : 'Expenses management',
-			'cash_reports' : 'Daily reports',
+			'cash_reports' : 'Cash reports',
+			'print_cash_report' : 'Print Cash Report',
 
 			'ui_tester' : 'UI testing grounds',
 		};
@@ -197,6 +199,8 @@
 			'client_id' : `cur_client_id`,
 			'sample_id' : `cur_sample_id`,
 			'invoice_id' : `cur_invoice_id_${mekRandomString(8)}`,
+			'cash_report_id' : `cur_cash_report_id_${mekRandomString(8)}`,
+			'cash_report_type' : `cash_rpt_typ_${mekRandomString(8)}`,
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
 		};

@@ -349,7 +349,7 @@
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary" data-runme="pick_step_2" data-step="0"><i class="fa fa-arrow-left"></i> previous</button>
-				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">generate pdf <i class="fa fa-arrow-right"></i></button>
+				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
 
@@ -374,12 +374,12 @@
 							<div class="w3-hide">
 								<input type="file" name="fpreview" id="fpreview">
 							</div>
-							<div class="form-group">
+							<div class="form-group w3-hide">
 								<label class="form-label" for="client_name">Generated PDF</label>
 								<input type="file" name="genfile" id="genfile" required>
 							</div>
 							<div class="form-group">
-								<label class="form-label" for="client_name">Generated PDF</label>
+								<label class="form-label" for="client_name">Generated Report</label>
 								<input type="file" name="genimage" id="genimage" required>
 							</div>
 						</div>
@@ -409,7 +409,6 @@
 				<div class="flowline gap-tn left overflow">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:reports_mgt" data-label="defined:reports_mgt"><i class="fa fa-file-export"></i> manage reports</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="downloadPdf"><i class="fa fa-download"></i> download report (pdf)</button>
 					<button class="mybtn secondary sm" data-runme="downloadImg"><i class="fa fa-download"></i> download report (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
 				</div>
@@ -1057,6 +1056,7 @@
 	}
 
 	window['downloadPdf'] = () => {
+		return;
 		if(report_runtime_data.medFile == undefined){
 			alert_danger('no pdf has been generated yet');
 			return;
@@ -1135,7 +1135,8 @@
 					</style>
 				</head>
 				<body>
-					<img src="${dataUrl}" onload="window.print(); window.close();" />
+					<img src="${dataUrl}" onload="printme()" />
+					<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
 				</body>
 			</html>
 		`);
