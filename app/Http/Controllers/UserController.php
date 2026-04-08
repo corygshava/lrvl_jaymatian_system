@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\userRoles;
 use App\Http\Controllers\ViewController;
+use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Sample;
 use App\Models\Task;
@@ -444,43 +445,61 @@ class UserController extends Controller{
 
 			// prepare the data
 				// tasks
-				$tasksmade = Task::TimeRange($timerange)->count();
-				$tmp_box['caption'] = 'Client visits';
-				$tmp_box['icon'] = 'fa-users';
-				$tmp_box['amt'] = $tasksmade;
-				$outdata[] = $tmp_box;
+				/*
+					$tasksmade = Task::TimeRange($timerange)->count();
+					$tmp_box['caption'] = 'Client visits';
+					$tmp_box['icon'] = 'fa-users';
+					$tmp_box['amt'] = $tasksmade;
+					$outdata[] = $tmp_box;
 
-				$s_done = Sample::where('id','<>',null)->where('status',2)->count();
-				$s_all = Sample::where('id','<>',null)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Samples';
-				$tmp_box['icon'] = 'fa-flask';
-				$tmp_box['amt_progress'] = $s_done;
-				$tmp_box['amt_total'] = $s_all;
-				$outdata[] = $tmp_box;
+					$s_done = Sample::where('id','<>',null)->where('status',2)->count();
+					$s_all = Sample::where('id','<>',null)->count();
+					$tmp_box = [];
+					$tmp_box['caption'] = 'Samples';
+					$tmp_box['icon'] = 'fa-flask';
+					$tmp_box['amt_progress'] = $s_done;
+					$tmp_box['amt_total'] = $s_all;
+					$outdata[] = $tmp_box;
 
-				$s_done = Task::where('id','<>',null)->where('status',2)->count();
-				$s_all = Task::where('id','<>',null)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Complete Tasks';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt_progress'] = $s_done;
-				$tmp_box['amt_total'] = $s_all;
-				$outdata[] = $tmp_box;
+					$s_done = Task::where('id','<>',null)->where('status',2)->count();
+					$s_all = Task::where('id','<>',null)->count();
+					$tmp_box = [];
+					$tmp_box['caption'] = 'Complete Tasks';
+					$tmp_box['icon'] = 'fa-folder';
+					$tmp_box['amt_progress'] = $s_done;
+					$tmp_box['amt_total'] = $s_all;
+					$outdata[] = $tmp_box;
+				// */
 
-				$s_done = Task::where('id','<>',null)->where('status',1)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Unpaid Tasks';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt'] = $s_done;
-				$outdata[] = $tmp_box;
+				// lifetime data
+					$s_done = Sample::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['incomplete_samples_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
-				$s_done = Payment::timeRange($timerange)->where('status',1)->sum('amount');
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Total Income';
-				$tmp_box['icon'] = 'fa-money-bill';
-				$tmp_box['amt'] = $s_done;
-				$outdata[] = $tmp_box;
+					$s_done = Task::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['incomplete_tasks_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
+
+					$s_done = Invoice::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['unpaid_invoices_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
+
+					$s_done = Task::where('id','<>',null)->where('payment_status',2)->count();
+					$tmp_box = ['unpaid_tasks_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
+
+				// timerange data
+					$s_done = Payment::timeRange($timerange)->where('status',1)->sum('amount');
+					$tmp_box = ['total income' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
+
+					$cashguy = new CashReportController();
+					$req['use_range'] = 'today';
+					$today_data_all = $cashguy->get_for_today($req,true,$res['runlog']);
+					$outdata = [...$outdata,'today' => $today_data_all];
+					$s_done = $today_data_all['total_balance_forward'];
+					$tmp_box = ['cash_available' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
 			$reslt = true;
 
@@ -517,45 +536,31 @@ class UserController extends Controller{
 
 			// prepare the data
 				// tasks
-				$s_done = Sample::where('id','<>',null)->where('status',2)->count();
-				$s_all = Sample::where('id','<>',null)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Samples';
-				$tmp_box['icon'] = 'fa-flask';
-				$tmp_box['amt_progress'] = $s_done;
-				$tmp_box['amt_total'] = $s_all;
-				$outdata[] = $tmp_box;
+				// lifetime data
+					$s_done = Sample::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['incomplete_samples_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
-				$s_done = Task::where('id','<>',null)->where('status',2)->count();
-				$s_all = Task::where('id','<>',null)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Complete Tasks';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt_progress'] = $s_done;
-				$tmp_box['amt_total'] = $s_all;
-				$outdata[] = $tmp_box;
+					$s_done = Task::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['incomplete_tasks_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
-				$s_done = Task::where('id','<>',null)->where('status',0)->orWhere('status',1)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Pending Tasks';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt'] = $s_done;
-				$outdata[] = $tmp_box;
+					$s_done = Invoice::where('id','<>',null)->where('status','<>',2)->count();
+					$tmp_box = ['unpaid_invoices_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
-				$s_done = Task::where('id','<>',null)->where('status',1)->count();
-				$tmp_box = [];
-				$tmp_box['caption'] = 'Unpaid Tasks';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt'] = $s_done;
-				$outdata[] = $tmp_box;
+					$s_done = Task::where('id','<>',null)->where('payment_status',2)->count();
+					$tmp_box = ['unpaid_tasks_total' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
-				$s_done = Payment::timeRange('today')->where('status',1)->sum('amount');
-				$tmp_box = [];
-				$tmp_box['prefix'] = '';
-				$tmp_box['caption'] = 'today\'s income';
-				$tmp_box['icon'] = 'fa-folder';
-				$tmp_box['amt'] = $s_done;
-				$outdata[] = $tmp_box;
+				// today's info
+					$cashguy = new CashReportController();
+					$req['use_range'] = 'today';
+					$today_data_all = $cashguy->get_for_today($req,true,$res['runlog']);
+					$outdata = [...$outdata,'today' => $today_data_all];
+					$s_done = $today_data_all['total_balance_forward'];
+					$tmp_box = ['cash_available' => $s_done];
+					$outdata = [...$outdata,...$tmp_box];
 
 			$reslt = true;
 

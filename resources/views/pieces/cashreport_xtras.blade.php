@@ -41,17 +41,22 @@
 
 	window['render_required_data'] = () => {
 		save_daily_modal_trig.click();
-		daily_report_data = {};
+		let loadtym = daily_report_data.daily_report_loadtime;
+		if(loadtym == undefined){
+			daily_report_data = {};
+			daily_report_data.daily_report_loadtime = new Date();
+		}
 
 		dailyReportContainer.innerHTML = `
 			${mekLoader()}
 		`;
 
 		let container = dailyReportContainer;
+		let Trange = window['timerange'] || 'today';
 
 		const step1 = () => {
 			// get processed data from backend
-			window[fetch_bypass](linkAtlas['get_daily_report'],{},'POST').then(dta => {
+			window[fetch_bypass](linkAtlas['get_daily_report'],{t_range: Trange},'POST').then(dta => {
 				if(!dta.success || !dta.result){
 					throw new Error(dta.message);
 				}
@@ -67,13 +72,17 @@
 		const step2 = (d) => {
 			daily_report_data.daily_report = d.sendme;
 
-			actual_renderer(d.sendme);
+			actual_renderer(d.sendme,Trange);
 		}
 
-		step1();
+		if(getDateDiff(daily_report_data.daily_report_loadtime,new Date()) > 22){
+			step1();
+		} else {
+			step2({sendme: daily_report_data.daily_report});
+		}
 	}
 
-	window['actual_renderer'] = (d) => {
+	window['actual_renderer'] = (d,range = 'today') => {
 		let container = dailyReportContainer;
 		let drd = d;
 
@@ -84,15 +93,18 @@
 		`;
 
 		// top finances section
+		let xtra = drd.time_difference !== undefined ? {
+			"time_since_last_report" : `${formatNumber(drd.time_difference) || '--'} ${plural('hour',Math.floor(Number(drd.time_difference)))}`,
+		} : {};
 		let toshow_1 = {
-			"time_since_last_report" : `${formatNumber(drd.time_difference, 2) || '--'} hours`,
+			...xtra,
 			"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
 			"total_income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
 			"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
 			"total_daily_cash" : `<b>KES ${formatNumber(drd.total_daily_cash)}</b>`,
-			"total_cash_income" : `<b class="w3-text-green">KES ${formatNumber(drd.total_cash)}</b>`,
+			"total_cash" : `<b class="themetxt">KES ${formatNumber(drd.total_cash)}</b>`,
 			"expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
-			"total_balance_forward" : `<b class="w3-text-black">KES ${formatNumber(drd.total_balance_forward)}</b>`,
+			"total_balance_available" : `<b class="w3-text-green">KES ${formatNumber(drd.total_balance_forward)}</b>`,
 		};
 		let deets_1_outht = '';
 
@@ -117,12 +129,13 @@
 		let deets_2_outht = '';
 
 		Object.keys(toshow_2).forEach(f => {
-			deets_2_outht += `
+			deets_2_outht += range == 'today' ?
+			`
 				<div class="info-row">
 					<span class="info-label">${f.split("_").join(' ')}:</span>
 					<span class="info-value"><b>${toshow_2[f]}</b></span>
 				</div>
-			`;
+			` : '';
 		});
 
 
@@ -147,11 +160,14 @@
 		});
 
 		// system usage subsection
+		let newxtra = drd.paid_tasks == undefined ? {} : {
+			"paid_tasks" : drd.paid_tasks,
+			"unpaid_tasks" : drd.unpaid_tasks,
+		};
 		let toshow_4 = {
 			"users_registered" : drd.users_count,
 			"clients_registered" : drd.clients_count,
-			"paid_tasks" : drd.paid_tasks,
-			"unpaid_tasks" : drd.unpaid_tasks,
+			...newxtra,
 			"tasks_created" : drd.tasks_count,
 			"samples_delivered" : drd.samples_count,
 			"task payments" : drd.total_payments_task_count,
@@ -173,25 +189,26 @@
 
 
 		// system usage subsection
-		let toshow_5 = {
-			"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
-			"director expenditure" : `${formatNumber(drd.spend_data["director expenditure"])}`,
-			"Bank transfer" : `${formatNumber(drd.spend_data["Bank transfer"])}`,
-		};
-		let deets_5_outht = '';
+			let toshow_5 = {
+				"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
+				"director expenditure" : `${formatNumber(drd.spend_data["director expenditure"])}`,
+				"Bank transfer" : `${formatNumber(drd.spend_data["Bank transfer"])}`,
+			};
+			let deets_5_outht = '';
 
-		Object.keys(toshow_5).forEach(f => {
-			deets_5_outht += `
-				<div class="info-row">
-					<span class="info-label">${f.split("_").join(' ')}:</span>
-					<span class="info-value"><b>${toshow_5[f]}</b></span>
-				</div>
-			`;
-		});
+			Object.keys(toshow_5).forEach(f => {
+				deets_5_outht += `
+					<div class="info-row">
+						<span class="info-label">${f.split("_").join(' ')}:</span>
+						<span class="info-value"><b>${toshow_5[f]}</b></span>
+					</div>
+				`;
+			});
 
-		let thedate = drd.created_at == undefined ? 'Today' : formatDate0(drd.created_at);
+		// visual hints to show system info
+		let thedate = drd.created_at == undefined ? `<b class="themetxt">${range.replace('_',' ')}</b>` : `<b class="themetxt">${formatDate(new Date(drd.created_at))}</b>`;
 		let btns = `
-			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Report</button>
+			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Daily Report</button>
 		`;
 		save_daily_modal_title.innerHTML = `
 			Daily summary for ${thedate}

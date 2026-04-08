@@ -106,12 +106,12 @@
 	h3.heading{
 		text-align: left;
 		text-transform: uppercase;
-		font-size: 1.2rem;
+		font-size: 1.3rem;
 	}
 
 	.mylist b {width: 50px;display: inline-block;}
-	.smallerCells{font-size: 0.8rem;}
-	.smallerCells td{font-size: 0.8rem;padding: 1px 3px;}
+	/*.smallerCells{font-size: 0.9rem;}*/
+	/*.smallerCells td{font-size: 0.9rem;padding: 1px 3px;}*/
 
 	tr td{padding: 1px 3px !important;}
 	tr td>*{transform: translateY(-7px);}
@@ -175,7 +175,7 @@
 			<div id="document_Holder" class="flow centroid">
 				<div data-role="report_setup">
 					<div class="page-section header rendercorrect" style="padding: 0 !important;">
-						<h1 class="w3-center themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
+						<h1 class="w3-center dark_themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
 							<div class="thelogo">
 								<img src="">
@@ -265,11 +265,13 @@
 						<h3 class="heading">Deviation summary</h3>
 						<div>
 							<table class="mytable">
-								<tr>
-									<td style="width: 177px;"><span>Sample type</span></td>
-									<td><span>Analytical method</span></td>
-									<td style="width: 140px;"><span>Tolerance limit</span></td>
-								</tr>
+								<thead>
+									<tr>
+										<td style="width: 177px;"><span>Sample type</span></td>
+										<td><span>Analytical method</span></td>
+										<td style="width: 140px;"><span>Tolerance limit</span></td>
+									</tr>
+								</thead>
 								<tbody id="deviationguy"></tbody>
 							</table>
 						</div>

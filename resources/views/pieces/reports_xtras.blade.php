@@ -576,8 +576,9 @@
 					</style>
 				</head>
 				<body>
-					<img src="${dataUrl}" onload="window.print(); window.close();" />
+					<img src="${dataUrl}" onload="printme()" />
 				</body>
+				<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)}<\/script>
 			</html>
 		`);
 

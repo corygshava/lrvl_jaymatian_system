@@ -502,7 +502,7 @@
 						render: function(value, row) {
 							return `
 								<div class="action-btns">
-									<a class="mybtn primary sm" target="blank" href="${linkAtlas['getreport_pdf']}/${row.pdf_link}" title="View">
+									<a class="mybtn primary sm" target="blank" href="${linkAtlas['getreport_img']}/${row.image_link}" title="View">
 										<i class="fas fa-eye"></i> View
 									</a>
 								</div>

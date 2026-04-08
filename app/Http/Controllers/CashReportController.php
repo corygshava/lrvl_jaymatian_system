@@ -91,14 +91,16 @@ class CashReportController extends Controller{
 
 		return response()->json($res);
 	}
-    public function get_for_today(Request $req){
+
+    public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
 		$res = $this->dftres;
+		// $res = [...$res,...$oldres];
 		$alldata = $req->all();
 		$msg = "didnt even get to start";
 
-		/*
+		// /*
 		$passed = $req->validate([
-			'condition' => ['required']
+			't_range' => ['sometimes','in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime']
 		]);
 		// */
 
@@ -124,12 +126,29 @@ class CashReportController extends Controller{
 			$reslt = false;
 
 			$outdata = [];
+			$myrange = $req->input('t_range',null);
+
+			if(isset($req['use_range'])){
+				$myrange = $req['use_range'];
+			}
 
 			$lastrec = DailyCashReport::query()
 				->where('id','<>',null)
-				->latest()
-				->first()
 			;
+
+			if($myrange == null || strtolower("$myrange") == 'today'){
+				$lastrec = $lastrec
+					->latest()
+					->first()
+				;
+			} else {
+				$lastrec = $lastrec
+					->timeRange($myrange)
+					->orderBy('created_at','asc')
+					->first()
+				;
+			}
+			$_rlg($lastrec);
 			$timediff = null;
 
 			if($lastrec !== null){
@@ -143,7 +162,7 @@ class CashReportController extends Controller{
 				$_msg('you can only make one report per day');
 			} else {
 				$_msg('you can make a daily report for today');
-				$t_range = 'today';
+				$t_range = $myrange == null ? 'today' : $myrange;
 
 				// calculate carry over cash
 				$carry_over = $lastrec == null ? 0 : $lastrec->total_balance_forward;
@@ -164,7 +183,7 @@ class CashReportController extends Controller{
 					$_rlg('added payment filter');
 				} else {
 					$payemnts = Payment::query()
-					->where('id','<>',null)
+						->where('id','<>',null)
 					;
 					$_rlg('ignored payment filter');
 				}
@@ -288,7 +307,16 @@ class CashReportController extends Controller{
 			}
 		}
 
-		return response()->json($res);
+		if(!$iscalled){
+			return response()->json($res);
+		} else {
+			if(isset($res['runlog'])){
+				$runlog = $res['runlog'];
+				$errlog = [...$errlog,...$runlog];
+			}
+
+			return $res['sendme'];
+		}
 	}
 
 	public function save_me(Request $req){
@@ -346,6 +374,8 @@ class CashReportController extends Controller{
 				$_msg('You can only generate a daily report once every day');
 			} else {
 				$_msg('saving daily report');
+				$toadd = $this->get_for_today($req,true,$res['runlog']);
+				unset($toadd['carry_over']);
 				$created = DailyCashReport::create($toadd);
 
 				if($created == null){

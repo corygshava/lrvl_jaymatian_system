@@ -111,8 +111,8 @@
 		}
 
 		.mylist b {width: 50px;display: inline-block;}
-		.smallerCells{font-size: 0.8rem;}
-		.smallerCells td{font-size: 0.8rem;padding: 1px 3px;}
+		/*.smallerCells{font-size: 0.9rem;}*/
+		/*.smallerCells td{font-size: 0.9rem;padding: 1px 3px;}*/
 
 		tr td{padding: 1px 3px !important;}
 		tr td>*{transform: translateY(-7px);}
@@ -182,7 +182,7 @@
 			<div id="document_Holder" class="flow centroid">
 				<div data-role="report_setup">
 					<div class="page-section header rendercorrect" style="padding: 0 !important;">
-						<h1 class="w3-center themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
+						<h1 class="w3-center dark_themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
 							<div class="thelogo">
 								<!-- <img src="./_assets/img/logo.png"> -->
@@ -219,14 +219,16 @@
 						<!-- <h3 class="heading w3-hide">Analytical Invoice</h3> -->
 						<div>
 							<table class="mytable" style="width: 80%;">
-								<tr class="rslts_headings">
-									<th style="width: 40px;"><span></span></th>
-									<th style="width: 160px;"><span>date created</span></th>
-									<th style="width: 400px;"><span>Task No</span></th>
-									<!-- <th style="width: 400px;"><span>Sample type</span></th> -->
-									<th style="width: 190px;"><span>Samples delivered</span></th>
-									<th style="width: 90px;"><span>balance</span></th>
-								</tr>
+								<thead>
+									<tr class="rslts_headings">
+										<th style="width: 40px;"><span></span></th>
+										<th style="width: 160px;"><span>date created</span></th>
+										<th style="width: 400px;"><span>Task No</span></th>
+										<!-- <th style="width: 400px;"><span>Sample type</span></th> -->
+										<th style="width: 190px;"><span>Samples delivered</span></th>
+										<th style="width: 90px;"><span>balance</span></th>
+									</tr>
+								</thead>
 								<tbody id="resultsguy"></tbody>
 							</table>
 						</div>
@@ -574,7 +576,7 @@
 
 			final_step();
 			// skip to prevent failure when internet is down
-			return;
+			// return;
 
 			step5().catch(err => {
 				alert_danger('QR code generation error: ' + err.message);

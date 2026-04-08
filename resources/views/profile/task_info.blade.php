@@ -26,7 +26,7 @@
 
 	/* worksheet styles */
 		.worksheet_doc{
-			--r_border: #999;
+			--r_border: #000;
 			--w: 824px;
 			width: var(--w);
 			padding: 48px 32px;

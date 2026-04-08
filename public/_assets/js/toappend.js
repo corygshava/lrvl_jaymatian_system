@@ -405,3 +405,11 @@ window['objtoquery'] = (obj, prefix = '') => {
 function reverseLerp(min,max,val) {
 	return (val - min) / (max - min);
 }
+function getDateDiff(date1, date2) {
+	const time1 = new Date(date1).getTime();
+	const time2 = new Date(date2).getTime();
+	const diffInMs = Math.abs(time2 - time1);
+	const diffInSecs = Math.floor(diffInMs / 1000);
+
+	return diffInSecs;
+}

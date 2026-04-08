@@ -60,6 +60,9 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		/*box-shadow: 4px 0 10px rgba(0,0,0,0.1);*/
 		overflow: auto;
 	}
+	.menubar:not(.squish){
+		overflow-x: hidden;
+	}
 	.menubar.unavailable{
 		opacity: 0.3;
 		pointer-events: none;
@@ -989,14 +992,15 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 	}
 
 /* report_setup */
-	[data-role="report_setup"]{
+	[data-role="report_setup"] {
 		padding: 64px 48px;
 		background: #fff;
-		--r_border: #999;
+		--r_border: #000;
 		--w: 824px;
 		width: var(--w);
 		min-height: 1056px;
-		font-size: 0.7rem;
+		font-size: 0.9rem;
+		color: #000;
 	}
 	[data-role="report_setup"]>div{
 	}
@@ -1033,8 +1037,17 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		width: 100%;
 	}
 	.mytable td,.mytable th{
-		border: 1px solid var(--r_border);
 		padding: 1px 3px;
+	}
+	.mytable tr th,.mytable tr td{
+		border-top: 1px solid var(--r_border);
+		border-left: 1px solid var(--r_border);
+	}
+	.mytable tr th:last-child,.mytable tr td:last-child{
+		border-right: 1px solid var(--r_border);
+	}
+	.mytable tbody tr:last-child td{
+		border-bottom: 1px solid var(--r_border);
 	}
 	.mytable.last td,.mytable.last th{
 		/*border: none;*/

@@ -39,6 +39,17 @@
 			1 : 'incomplete',
 			2 : 'paid',
 		};
+		window['timeranges'] = [
+			'today',
+			'this_week',
+			'this_month',
+			'this_year',
+
+			'last_week',
+			'last_month',
+			'last_year',
+			'lifetime',
+		]
 
 		const min_loadtime = 400;
 	</script>
@@ -75,6 +86,8 @@
 				'view_tasks' : './ui/task_mgt',
 				'view_profile' : './ui/view_user',
 				'view_users' : './ui/user_mgt',
+				'view_invoices' : './ui/invoices_mgt',
+				'view_expenses' : './ui/expenses_mgt',
 				'client_info' : './ui/client_info',
 				'task_info' : './ui/task_info',
 				'add_task' : './ui/add_task',
@@ -87,7 +100,7 @@
 				'mek_invoice' : './ui/gen_invoice',
 				'verify_file' : './ui/verify_file',
 				'expenses_mgt' : './ui/expenses_mgt',
-				'cash_reports' : './ui/cash_reports',
+				'cash_reports' : './ui/cash_reports_mgt',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -139,6 +152,7 @@
 				'get_expenses' : './data/expenses',
 				'get_daily_report' : './data/get_daily_report',
 				'get_cash_reports' : './data/cash_reports',
+				'get_cashreports' : './data/cash_reports',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -152,23 +166,26 @@
 			'view_user' : 'user summary',
 			'view_client' : 'Client summary',
 			'view_clients' : 'Client management',
+			'view_task' : 'Task summary',
+			'view_tasks' : 'Task management',
+			'view_invoices' : 'Invoices management',
+			'view_expenses' : 'Expenses management',
+			'view_reports' : 'reports management',
+			'view_payments' : 'payments management',
+			'view_samples' : 'Samples management',
+
 			'client_mgt' : 'Client management',
 			'client_info' : 'Client Information',
 			'view_profile' : 'User Profile',
 			'view_users' : 'user management',
 			'add_task' : 'Add new task',
-			'view_task' : 'Task summary',
-			'view_tasks' : 'Task management',
 			'task_info' : 'Task Information',
 			'gen_report' : 'Generate Report',
 			'samples_mgt' : 'Samples management',
-			'view_samples' : 'Samples management',
+			'verify_file' : 'File verification',
 			'reports_mgt' : 'reports management',
-			'view_reports' : 'reports management',
-			'view_payments' : 'payments management',
 			'mek_invoice' : 'Generate Invoice',
 			'invoices_mgt' : 'Invoice management',
-			'verify_file' : 'File verification',
 			'expenses_mgt' : 'Expenses management',
 			'cash_reports' : 'Daily reports',
 
@@ -250,8 +267,9 @@
 			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports']},
 			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices']},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
-			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file']},
 			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses']},
+			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports']},
+			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file']},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},

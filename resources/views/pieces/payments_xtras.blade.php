@@ -11,23 +11,6 @@
 		font-weight: 600;
 	}
 
-	.sample-info-card {
-		background: white;
-		border: 1px solid var(--themecolor);
-		border-radius: 8px;
-		padding: 20px;
-		margin-bottom: 20px;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-	}
-
-	.sample-info-card h5 {
-		color: var(--themecolor);
-		font-weight: 600;
-		margin-bottom: 15px;
-		border-bottom: 1px solid var(--themecolor);
-		padding-bottom: 8px;
-	}
-
 	.info-row {
 		display: flex;
 		padding: 8px 0;

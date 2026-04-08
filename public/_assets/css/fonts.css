@@ -28,3 +28,8 @@
 	font-family: 'yukita body';
 	src: url('../fonts/YukitaSans-Regular.otf') format('truetype');
 }
+
+@font-face {
+	font-family: 'terminal dosis';
+	src: url('../fonts/TerminalDosis-Regular.ttf') format('truetype');
+}

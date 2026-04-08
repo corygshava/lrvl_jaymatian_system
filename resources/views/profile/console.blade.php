@@ -25,7 +25,7 @@
 				<i class="fas fa-sync-alt"></i>
 				Refresh
 			</button>
-			<button class="mybtn primary" data-runme="render_required_data"><i class="fa fa-save"></i> prepare report</button>
+			<button class="mybtn primary" data-runme="render_required_data"><i data-myicon="cash_reports"></i> Daily report</button>
 		</div>
 	</div>
 
@@ -116,25 +116,34 @@
 				<div class="col-md-2 col-sm-6 mb-3">
 					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
 						<div class="action-icon bg-primary text-white mx-auto">
-							<i data-myicon="invoices"></i>
-						</div>
-						<h6 class="mb-0 font-weight-bold">View Invoices</h6>
-						<small class="text-muted">List all invoices</small>
-					</div>
-				</div>
-			</div>
-			<div class="row mt-3">
-				<div class="col-md-2 col-sm-6 mb-3">
-					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
-						<div class="action-icon bg-primary text-white mx-auto">
 							<i data-myicon="add_task"></i>
 						</div>
 						<h6 class="mb-0 font-weight-bold">New Task</h6>
 						<small class="text-muted">Create task</small>
 					</div>
 				</div>
+			</div>
+			<div class="row mt-3">
 				<div class="col-md-2 col-sm-6 mb-3">
-					<div class="action-card card themeround text-center p-3" onclick="createNewTask()">
+					<div class="action-card card themeround text-center p-3" onclick="viewthis('invoices_mgt')">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i data-myicon="invoices"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Invoices</h6>
+						<small class="text-muted">List all invoices</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3">
+					<div class="action-card card themeround text-center p-3" onclick="viewthis('expenses_mgt')">
+						<div class="action-icon bg-primary text-white mx-auto">
+							<i data-myicon="expenses"></i>
+						</div>
+						<h6 class="mb-0 font-weight-bold">View Expenses</h6>
+						<small class="text-muted">List all Expenses</small>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6 mb-3 w3-hide">
+					<div class="action-card card themeround text-center p-3" onclick="viewthis('daily_reports')">
 						<div class="action-icon bg-primary text-white mx-auto">
 							<i data-myicon="cash_reports"></i>
 						</div>
@@ -217,22 +226,149 @@
 	}
 
 	window['initdashsetup'] = () => {
-		const step1 = () => {
-			window[fetch_bypass](linkAtlas['get_staff_stats'],{},'POST').then((d) => {
-				responseHandler(d,step2,d);
+		const step0 = () => {
+			// return;
+			window[fetch_bypass](linkAtlas['get_daily_report'],{},'POST').then(dta => {
+				if(!dta.success || !dta.result){
+					throw new Error(dta.message);
+				}
 
+				responseHandler(dta, step1, dta);
+			}).catch(err => {
+				showError(true,{heading: 'Error getting daily report',text: err.message});
+			})
+		}
+
+		const step1 = (dta) => {
+			let thereport = dta.sendme;
+			window['daily_report_data'].daily_report = thereport;
+			window['daily_report_data'].daily_report_loadtime = new Date();
+
+			window[fetch_bypass](linkAtlas['get_staff_stats'],{},'POST').then((d) => {
 				if(d.result){
 					showError(false);
 				} else {
 					showError(true,{heading: 'Error getting stats',text: d.message});
+					return;
 				}
+
+				responseHandler(d,step1b,d);
 			}).catch(err => {
 				showError(true,{heading: 'Error getting stats',text: err.message});
 			})
 		};
 
-		const step2 = (d) => {
-			dash_runtime_data.staffStats = d.sendme;
+		const step1b = (dta) => {
+			let fetched = dta.sendme;
+			let thereport = window['daily_report_data'].daily_report;
+
+			let totalStats = [
+				{
+					"caption": "Incomplete Tasks",
+					"icon": iconAtlas['tasks'],
+					"amt": fetched.incomplete_tasks_total,
+				},
+				{
+					"caption": "Unpaid tasks",
+					"icon": iconAtlas['tasks'],
+					"amt": fetched.unpaid_tasks_total,
+				},
+				{
+					"caption": "Incomplete Samples",
+					"icon": iconAtlas['samples'],
+					"amt": fetched.incomplete_samples_total,
+				},
+				{
+					"caption": "Unpaid Invoices",
+					"icon": iconAtlas['invoices'],
+					"amt": fetched.unpaid_invoices_total,
+				},
+			]
+
+			let staffStats = [
+				{
+					"caption": "Clients Registered",
+					"clickop" : 'viewthis("view_clients")',
+					"icon": iconAtlas['samples'],
+					"amt": thereport.clients_count
+				},
+				{
+					"caption": "Samples Entered",
+					"clickop" : 'viewthis("view_samples")',
+					"icon": iconAtlas['samples'],
+					"amt": thereport.samples_count,
+				},
+				{
+					"caption": "Tasks Created",
+					"clickop" : 'viewthis("view_tasks")',
+					"icon": iconAtlas['tasks'],
+					"amt": thereport.tasks_count,
+				},
+				{
+					"caption": "reports Generated",
+					"clickop" : 'viewthis("view_reports")',
+					"icon": iconAtlas['reports'],
+					"amt": thereport.reports_count,
+				},
+				{
+					"caption": "Invoices Generated",
+					"clickop" : 'viewthis("view_invoices")',
+					"icon": iconAtlas['invoices'],
+					"amt": thereport.invoices_count,
+				},
+				{
+					"caption": "Expense Records Generated",
+					"clickop" : 'viewthis("view_expenses")',
+					"icon": iconAtlas['expenses'],
+					"amt": thereport.expenses_count,
+				}
+			];
+
+			let finStats = [
+				{
+					"caption": "Carried Over",
+					"icon": iconAtlas['cash_reports'],
+					"prefix": 'KES',
+					"amt": formatNumber(fetched.today.carry_over,2),
+				},
+				{
+					"caption": "Total income (today)",
+					"icon": iconAtlas['payments'],
+					"prefix": 'KES',
+					"amt": formatNumber(fetched.today.total_daily_cash,2),
+				},
+				{
+					"caption": "Gross Cash",
+					"icon": iconAtlas['payments'],
+					"prefix": 'KES',
+					"amt": formatNumber(fetched.today.total_cash,2),
+				},
+				{
+					"caption": "Total expenses",
+					"icon": iconAtlas['expenses'],
+					"prefix": 'KES',
+					"amt": formatNumber(fetched.today.expenditure,2),
+				},
+				{
+					"caption": "Total Cash Available",
+					"icon": iconAtlas['expenses'],
+					"prefix": 'KES',
+					"amt": formatNumber(fetched.cash_available,2),
+				},
+			]
+
+			// return;
+			step2({
+				staff: staffStats,
+				totals: totalStats,
+				finances: finStats,
+			});
+		}
+
+		const step2 = (dta) => {
+			console.log('all stats: ',dta);
+			dash_runtime_data.staffStats = dta.staff;
+			dash_runtime_data.totalStats = dta.totals;
 
 			// get incomplete tasks
 			window[fetch_bypass](linkAtlas['get_incomplete_tasks'],{},'POST').then((d) => {
@@ -269,7 +405,7 @@
 		showError(false);
 
 		setTimeout(() => {
-			step1();
+			step0();
 		},1200);
 	}
 	window['render_all_stuff'] = () => {
@@ -336,11 +472,14 @@
 		window['viewPayments'] = () => {
 			loadthispage('view_payments');
 		}
+		window['viewthis'] = (wh) => {
+			loadPage({template: linkAtlas[wh],sidenote: pageNames[wh]});
+		}
 		window['refreshData'] = () => {
 			initdashsetup();
 		}
 
-		// samples ops
+	// samples ops
 		window['view_sample'] = (el,id,w) => {
 			let who = {
 				rectype: w,
@@ -378,107 +517,142 @@
 		}
 
 	// renderers
-	window['renderStats'] = () => {
-		// alert_info('render this stuff');
+		window['renderStats'] = () => {
+			// alert_info('render this stuff');
 
-		let stats = dash_runtime_data.staffStats;
-		let outht = '';
-		statsholder.innerHTML = outht;
+			let t_stats = dash_runtime_data.totalStats;
+			let a_stats = dash_runtime_data.staffStats;
+			// let f_stats = dash_runtime_data.finStats;
 
-		stats.forEach((el,id) => {
-			let prf = el.prefix == undefined ? '' : el.prefix + ' ';
-			let amt_dis = el.amt_progress == undefined ? `
-				${prf}${el.amt.toLocaleString()}
-			` : `
-				${prf}${el.amt_progress} / ${el.amt_total}
-			`;
-			outht += `
-				<div class="stat-card modern" data-role="dashstat">
-					<div class="myicon" data-subrole="stat_amt">
-						<i class="fa ${el.icon}"></i>
-					</div>
-					<div class="stats">
-						<h3 data-subrole="stat_amt">${amt_dis}</h3>
-						<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
-					</div>
+			let stattypes = [
+				t_stats,
+				a_stats,
+				// f_stats,
+			];
+			let outht = '';
+
+			statsholder.innerHTML = outht;
+
+			let sections = [];
+			let s_ht = '';
+
+			stattypes.forEach(st => {
+				let stats = st;
+				s_ht = '';
+
+				stats.forEach((el, id) => {
+					let prf = el.prefix == undefined ? '' : el.prefix + ' ';
+					let amt_dis = el.amt_progress == undefined ? `
+						${prf}${formatNumber(el.amt,2)}
+					` : `
+						${prf}${el.amt_progress} / ${el.amt_total}
+					`;
+					let clickact = el.clickop == undefined ? '' : `onclick='${el.clickop}'`;
+					s_ht += `
+						<div class="stat-card modern" data-role="dashstat" ${clickact}>
+							<div class="myicon" data-subrole="stat_amt">
+								<i class="fa ${el.icon}"></i>
+							</div>
+							<div class="stats">
+								<h3 data-subrole="stat_amt">${prf} ${el.amt}</h3>
+								<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
+							</div>
+						</div>
+					`;
+				});
+
+				sections.push(s_ht);
+			});
+
+			outht = `
+				<div class="distance-sm">
+					<b>Main summary <span class="themetxt">[today]</span></b>
+				</div>
+				<div class="stats-row">
+					${sections[1]}
+				</div>
+				<div class="distance-sm">
+					<b>System Aggregates</b>
+				</div>
+				<div class="stats-row">
+					${sections[0]}
 				</div>
 			`;
-		});
 
-		statsholder.innerHTML = outht;
-	}
-	window['renderTasks'] = () => {
-		const data = {
-			data: dash_runtime_data.taskData.data,
-			cols: [
-				{
-					cap: 'ID',
-					field: 'id',
-				},
-				{
-					cap: 'Task number',
-					field: 'task_no',
-					sortable: true,
-					show: function(value) {
-						return `<strong>${value}</strong>`;
+			statsholder.innerHTML = outht;
+		}
+		window['renderTasks'] = () => {
+			const data = {
+				data: dash_runtime_data.taskData.data,
+				cols: [
+					{
+						cap: 'ID',
+						field: 'id',
+					},
+					{
+						cap: 'Task number',
+						field: 'task_no',
+						sortable: true,
+						show: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						cap: 'Client name',
+						field: 'client_name',
+						sortable: true,
+						show: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						cap: 'Date added',
+						field: 'created_at',
+						sortable: true,
+						show: function(value) {
+							return formatDate0(value);
+							// return `<span class="badge ${value}">${value}</span>`;
+						}
+					},
+					{
+						cap: 'payment status',
+						field: 'payment_status',
+						sortable: true,
+						show: function(value) {
+							let cls = value == '2' ? "w3-text-green" : "w3-black_";
+							// let con = value == 'monthly' ? "yes" : "no";
+							return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
+						}
+					},
+					{
+						cap: 'Status',
+						field: 'status',
+						sortable: true,
+						show: function(value) {
+							let cls = value == '2' ? "w3-green" : "w3-blue";
+							// let con = value == 'monthly' ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
+						}
+					},
+					{
+						cap: 'is paid',
+						field: 'is_paid',
+						sortable: true,
+						show: function(value) {
+							let cls = value == true ? "w3-green" : "w3-black";
+							let con = value == true ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+						}
 					}
-				},
-				{
-					cap: 'Client name',
-					field: 'client_name',
-					sortable: true,
-					show: function(value) {
-						return `<strong>${value}</strong>`;
-					}
-				},
-				{
-					cap: 'Date added',
-					field: 'created_at',
-					sortable: true,
-					show: function(value) {
-						return formatDate0(value);
-						// return `<span class="badge ${value}">${value}</span>`;
-					}
-				},
-				{
-					cap: 'payment status',
-					field: 'payment_status',
-					sortable: true,
-					show: function(value) {
-						let cls = value == '2' ? "w3-text-green" : "w3-black_";
-						// let con = value == 'monthly' ? "yes" : "no";
-						return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
-					}
-				},
-				{
-					cap: 'Status',
-					field: 'status',
-					sortable: true,
-					show: function(value) {
-						let cls = value == '2' ? "w3-green" : "w3-blue";
-						// let con = value == 'monthly' ? "yes" : "no";
-						return `<strong class="w3-tag themeround ${cls}">${state_atlas[value]}</strong>`;
-					}
-				},
-				{
-					cap: 'is paid',
-					field: 'is_paid',
-					sortable: true,
-					show: function(value) {
-						let cls = value == true ? "w3-green" : "w3-black";
-						let con = value == true ? "yes" : "no";
-						return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
-					}
-				}
-			],
-			tablename: 'tasks_table',
-			caption: 'tasks',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="task"',
-		};
-		render_simpleTable(data);
-	}
-	window['renderSamples'] = () => {
+				],
+				tablename: 'tasks_table',
+				caption: 'tasks',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="task"',
+			};
+			render_simpleTable(data);
+		}
+		window['renderSamples'] = () => {
 		const data = {
 			data: dash_runtime_data.samplesData.data,
 			cols: [
