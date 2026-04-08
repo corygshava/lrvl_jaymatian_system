@@ -146,7 +146,7 @@ class CashReportController extends Controller{
 				$t_range = 'today';
 
 				// calculate carry over cash
-				$carry_over = $lastrec == null ? 0 : $lastrec->carry_over;
+				$carry_over = $lastrec == null ? 0 : $lastrec->total_balance_forward;
 				$_msg('carry over calculated');
 
 				// calculate sample counts
@@ -156,12 +156,19 @@ class CashReportController extends Controller{
 				;
 
 				// get total income
-				$payemnts = Payment::query()
-					->where('id','<>',null)
-				;
 				if($lastrec != null){
-					$payemnts = $payemnts->timeRange($t_range);
+					$payemnts = Payment::query()
+						->where('id','<>',null)
+						->timeRange($t_range)
+					;
+					$_rlg('added payment filter');
+				} else {
+					$payemnts = Payment::query()
+					->where('id','<>',null)
+					;
+					$_rlg('ignored payment filter');
 				}
+
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');
 				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->sum('amount');
 				$total_daily_cash = $total_income + $cash_from_debtors;
@@ -272,6 +279,85 @@ class CashReportController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $outdata;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function save_me(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'rptdata' => ['required']
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+		$_rlg = function($w) use (&$update_runlog){
+			return $update_runlog($w);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+			$user = $this->cur_user();
+
+			$toadd = $passed['rptdata'];
+			$toadd['added_by'] = $user->id;
+			$_msg('adding daily report');
+
+			$lastrec = DailyCashReport::query()
+				->where('id','<>',null)
+				->latest()
+				->first()
+			;
+			$timediff = null;
+
+			if($lastrec !== null){
+				$timediff = $lastrec->created_at->diffInHours(now());
+			}
+
+			$_rlg(['timediff' => $timediff]);
+			$wegood = $timediff == null ? true : $timediff > 23;
+
+			if(!$wegood){
+				$_msg('You can only generate a daily report once every day');
+			} else {
+				$_msg('saving daily report');
+				$created = DailyCashReport::create($toadd);
+
+				if($created == null){
+					$_msg('error creating record');
+				} else {
+					$reslt = true;
+					$_msg('Daily Report saved successfully');
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $toadd;
 			$res['message'] = $msg;
 		}
 

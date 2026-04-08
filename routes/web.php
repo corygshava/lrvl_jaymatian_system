@@ -161,6 +161,8 @@ Route::prefix('/op')->group(function(){
 
 	Route::post('/add_expense',[ExpenseController::class, 'add_new'])->middleware(['auth','verified']);
 	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
+
+	Route::post('/save_daily_report',[CashReportController::class, 'save_me'])->middleware(['auth','verified']);
 });
 
 Route::prefix('/media')->group(function(){

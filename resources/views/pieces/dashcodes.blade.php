@@ -108,6 +108,7 @@
 				'add_payment_invoice' : './op/add_payment_invoice',
 				'update_invoice_image' : './op/change_invoice_image',
 				'add_expense' : './op/add_expense',
+				'save_daily_report' : './op/save_daily_report',
 
 			// datalinks
 				'search_clients' : './data/search_clients',

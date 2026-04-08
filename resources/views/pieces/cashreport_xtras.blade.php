@@ -85,7 +85,7 @@
 
 		// top finances section
 		let toshow_1 = {
-			"time_since_last_report" : `${drd.time_difference || '--'} hours`,
+			"time_since_last_report" : `${formatNumber(drd.time_difference, 2) || '--'} hours`,
 			"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
 			"total_income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
 			"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
@@ -190,6 +190,9 @@
 		});
 
 		let thedate = drd.created_at == undefined ? 'Today' : formatDate0(drd.created_at);
+		let btns = `
+			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Report</button>
+		`;
 		save_daily_modal_title.innerHTML = `
 			Daily summary for ${thedate}
 		`;
@@ -238,8 +241,29 @@
 					${deets_4_outht}
 				</div>
 			</div>
+			<div class="distance-sm">
+				${btns}
+			</div>
 		`;
 
 		container.innerHTML = outht;
+
+		refreshUI(300);
 	};
+
+	window['save_daily_report'] = (btn) => {
+		alert_info('saving daily report');
+
+		const step1 = () => {
+			window[fetch_bypass](linkAtlas['save_daily_report'],{rptdata: daily_report_data.daily_report},'POST').then((d) => {
+				responseHandler(d,step2,d);
+			});
+		}
+
+		const step2 = (d) => {
+			// alert_success('saved')
+		}
+
+		step1();
+	}
 </script>
