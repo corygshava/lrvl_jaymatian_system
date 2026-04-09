@@ -587,21 +587,23 @@ abstract class Controller{
 		return [
 			"last_update" => Carbon::parse(self::$sys_permissions_last_update),
 			"permissions" => [
-				"view_dashboard" => 'view the admin dashboard',
-				"view_console" => 'view the normal user dashboard',
-				"manage_user_roles" => 'view the different user roles',
-				"manage_users" => 'view all registered users',
-				"manage_clients" => 'view all registered clients',
-				"manage_tasks" => 'view all tasks',
-				"add_task" => 'add a new task',
-				"manage_samples" => 'view all staff records',
-				"manage_payments" => 'view all payment records',
-				"manage_reports" => 'view all reports',
-				"manage_invoices" => 'view all invoices',
-				"manage_bizdata" => 'view business data interface',
-				"manage_expenses" => 'view expenses interface',
-				"manage_cashreports" => 'view cash reports interface',
-				"verify_files" => 'view file verification interface',
+				// VIEW_ and MANAGE_ -> ui menu permissions
+					"VIEW_DASHBOARD" => 'view the admin dashboard',
+					"VIEW_CONSOLE" => 'view the normal user dashboard',
+					"MANAGE_USER_ROLES" => 'view the different user roles',
+					"MANAGE_USERS" => 'view all registered users',
+					"MANAGE_CLIENTS" => 'view all registered clients',
+					"MANAGE_TASKS" => 'view all tasks',
+					"ADD_TASK" => 'add a new task',
+					"MANAGE_SAMPLES" => 'view all staff records',
+					"MANAGE_PAYMENTS" => 'view all payment records',
+					"MANAGE_REPORTS" => 'view all reports',
+					"MANAGE_INVOICES" => 'view all invoices',
+					"MANAGE_BIZDATA" => 'view business data interface',
+					"MANAGE_EXPENSES" => 'view expenses interface',
+					"MANAGE_CASHREPORTS" => 'view cash reports interface',
+					"VERIFY_FILES" => 'view file verification interface',
+				//
 			],
 		];
 	}
@@ -682,7 +684,7 @@ abstract class Controller{
 
 		if(self::ili()){
 			$perms = self::getmypermissions();
-            $outres = in_array($perm,$perms);
+            $outres = in_array(strtoupper($perm),$perms);
 		}
 
 		return $outres;

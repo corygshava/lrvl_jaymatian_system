@@ -21,6 +21,7 @@ class CheckPermissionsUI{
 		$passed = 0;
 		$status = 200;
 		$keepon = true;
+		$msg = "";
 
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
@@ -54,7 +55,7 @@ class CheckPermissionsUI{
 					$passed += $s;
 				}
 
-				$_msg('you dont have permission to proceed');
+				$_msg('you dont have permission to view this page');
 				$keepon = $passed >= 1;
 
 				$status = $keepon ? 200 : 403;
@@ -66,6 +67,7 @@ class CheckPermissionsUI{
 		}
 
 		unset($res['runlog']);
+		$res['message'] = $msg;
 
 		// return response()->json($res,$status);
 		return response($conEx->showerror($request,$res['message']),$status);

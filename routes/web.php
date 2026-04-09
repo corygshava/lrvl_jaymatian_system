@@ -37,16 +37,16 @@ Route::prefix('test')->group(function () {
 Route::prefix('/ui')->group(function (){
 	Route::get('/datatables', [ViewController::class,'showdatatable']);
 	Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
-	Route::get('/console', [ViewController::class,'showconsole'])->name('user_console');
-	Route::get('/admin_console', [ViewController::class,'showadminconsole'])->name('user_console');
+	Route::get('/console', [ViewController::class,'showconsole'])->middleware(['check.permissions.ui:view_dashboard'])->name('user_console');
+	Route::get('/admin_console', [ViewController::class,'showadminconsole'])->middleware(['check.permissions.ui:view_console'])->name('user_console');
 
 	// Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
-	Route::get('/user_roles', [ViewController::class,'showroles'])->name('user_roles');
-	Route::get('/user_mgt', [ViewController::class,'showusers'])->name('user_mgt');
+	Route::get('/user_roles', [ViewController::class,'showroles'])->middleware(['check.permissions.ui:manage_user_roles'])->name('user_roles');
+	Route::get('/user_mgt', [ViewController::class,'showusers'])->middleware(['check.permissions.ui:manage_users'])->name('user_mgt');
 	Route::get('/view_user', [ViewController::class,'showuser']);
 
-	Route::get('/client_mgt', [ViewController::class,'showclients'])->name('client_mgt');
-	Route::get('/view_client', [ViewController::class,'showclient']);
+	Route::get('/client_mgt', [ViewController::class,'showclients'])->middleware(['check.permissions.ui:manage_clients'])->name('client_mgt');
+	Route::get('/view_client', [ViewController::class,'showclient'])->middleware(['check.permissions.ui:view_client']);
 	Route::get('/client_info', [ViewController::class,'showclientinfo']);
 
 	Route::get('/task_mgt', [ViewController::class,'showtasks']);
@@ -73,7 +73,7 @@ Route::prefix('/ui')->group(function (){
 });
 
 Route::prefix('/data')->group(function(){
-	Route::get('/user_roles', [UserRoleController::class,'get_all'])->middleware(['auth','verified','check.permissions:manage_users,view_reports']);
+	Route::get('/user_roles', [UserRoleController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/cur_user', [UserController::class,'get_current'])->middleware(['auth','verified']);
 	Route::get('/users', [UserController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);

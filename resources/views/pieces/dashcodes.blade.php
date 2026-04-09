@@ -269,22 +269,22 @@
 		const fadein = [{opacity: 1},{opacity: 0}];
 
 		menuItems = [
-			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: iconAtlas['admin_dash']},
-			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: iconAtlas['staff_dash']},
-			{caption: "User Roles", url: './ui/user_roles',icon: iconAtlas['user_roles']},
-			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt']},
-			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile']},
-			{caption: "client management", url: './ui/client_mgt',icon: iconAtlas['clients']},
-			{caption: "Task Management", url: './ui/task_mgt',icon: iconAtlas['tasks']},
-			{caption: "Add new task", url: './ui/add_task',icon: iconAtlas['add_task']},
-			{caption: "Sample management", url: './ui/samples_mgt',icon: iconAtlas['samples']},
-			{caption: "Payment management", url: './ui/payments_mgt',icon: iconAtlas['payments']},
-			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports']},
-			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices']},
-			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata']},
-			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses']},
-			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports']},
-			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file']},
+			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: iconAtlas['admin_dash'],permissions: 'VIEW_DASHBOARD'},
+			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: iconAtlas['staff_dash'],permissions: 'VIEW_CONSOLE'},
+			{caption: "User Roles", url: './ui/user_roles',icon: iconAtlas['user_roles'],permissions: 'MANAGE_USER_ROLES'},
+			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt'],permissions: 'MANAGE_USERS'},
+			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile'],permissions: ''},
+			{caption: "client management", url: './ui/client_mgt',icon: iconAtlas['clients'],permissions: 'MANAGE_CLIENTS'},
+			{caption: "Task Management", url: './ui/task_mgt',icon: iconAtlas['tasks'],permissions: 'MANAGE_TASKS'},
+			{caption: "Add new task", url: './ui/add_task',icon: iconAtlas['add_task'],permissions: 'ADD_TASK'},
+			{caption: "Sample management", url: './ui/samples_mgt',icon: iconAtlas['samples'],permissions: 'MANAGE_SAMPLES'},
+			{caption: "Payment management", url: './ui/payments_mgt',icon: iconAtlas['payments'],permissions: 'MANAGE_PAYMENTS'},
+			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports'],permissions: 'MANAGE_REPORTS'},
+			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices'],permissions: 'MANAGE_INVOICES'},
+			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
+			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses'],permissions: 'MANAGE_EXPENSES'},
+			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
+			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -335,6 +335,8 @@
 			// render all pagenames where needed
 			let pnames = document.querySelectorAll('[data-role="pagename"]');
 			pnames.forEach(pn => {pn.innerHTML = p.sidenote;});
+
+
 
 			// alert_warning('updating user');
 			// console.log(cur_user);
@@ -479,16 +481,21 @@
 
 			themenu.innerHTML = '';
 			let outht = '';
+			let ps = mypermissions;
 
 			menuItems.forEach((m,i) => {
-				outht += `
-					<div>
-						<a href="#" class="menulink" data-runme="menuact" data-template='${m.url}' data-sidenote="${m.caption}">
-							<i class="${m.icon} slide-r" style="${mekstagger(200,i)}"></i>
-							<span>${m.caption}</span>
-						</a>
-					</div>
-				`;
+				let wegood = ps.includes(m.permissions || '');
+
+				if(wegood){
+					outht += `
+						<div>
+							<a href="#" class="menulink" data-runme="menuact" data-template='${m.url}' data-sidenote="${m.caption}">
+								<i class="${m.icon} slide-r" style="${mekstagger(200,i)}"></i>
+								<span>${m.caption}</span>
+							</a>
+						</div>
+					`;
+				}
 			});
 
 			themenu.innerHTML = outht;
