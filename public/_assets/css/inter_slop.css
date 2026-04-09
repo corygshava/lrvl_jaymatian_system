@@ -1014,7 +1014,7 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		padding: 12px 0;
 	}
 	[data-role="report_setup"] .heading {
-		color: var(--themecolor);
+		color: var(--darkcolor);
 		font-weight: 700;
 		margin: 0px;
 		transform: translateY(-7px);

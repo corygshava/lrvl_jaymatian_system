@@ -33,3 +33,8 @@
 	font-family: 'terminal dosis';
 	src: url('../fonts/TerminalDosis-Regular.ttf') format('truetype');
 }
+
+@font-face {
+	font-family: 'montserat';
+	src: url('../fonts/Montserrat-SemiBold.otf') format('truetype');
+}
