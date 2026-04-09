@@ -49,7 +49,16 @@
 			'last_month',
 			'last_year',
 			'lifetime',
-		]
+		];
+
+		window['expenditure_categories'] = [
+			'Bank transfer',
+			'Boss expenditure',
+			'Lab expense',
+			'Salary',
+			'Government Issue',
+			'Home expense',
+		];
 
 		const min_loadtime = 400;
 	</script>
@@ -154,6 +163,7 @@
 				'get_daily_report' : './data/get_daily_report',
 				'get_cash_reports' : './data/cash_reports',
 				'get_cashreports' : './data/cash_reports',
+				'get_cash_report' : './data/cash_report',
 
 			// misc
 				'bizimages' : './media/bizimg',
@@ -201,6 +211,7 @@
 			'invoice_id' : `cur_invoice_id_${mekRandomString(8)}`,
 			'cash_report_id' : `cur_cash_report_id_${mekRandomString(8)}`,
 			'cash_report_type' : `cash_rpt_typ_${mekRandomString(8)}`,
+			'cash_report_data' : `cash_rpt_dta_${mekRandomString(8)}`,
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
 		};
@@ -1036,6 +1047,19 @@
 				printElement(sel,con).then(e => {
 					alert_success('document printed successfully');
 				});
+			}
+			window['processNumber'] = (n) => {
+				let xtra = "";
+				let num = n;
+				let proc = [];
+
+				num.split("").map((l,id) => {
+					let xt = id % 3 == 0 && id != 0 ? " " : "";
+					let n = `${l}${xt}`;
+					proc.push(n);
+				})
+
+				return `${xtra}${proc.join("")}`;
 			}
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});

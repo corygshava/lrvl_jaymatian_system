@@ -14,6 +14,10 @@
 @include('pieces.cashreport_xtras')
 {{-- --> --}}
 
+<style>
+	/*[data-runme="save_daily_report"]{display: none;}*/
+</style>
+
 <div class="container-fluid">
 	<div class="page-header slide-r">
 		<div class="page-title">
@@ -205,6 +209,7 @@
 
 <script>
 	let charts = {};
+	window['is_admin_page'] = true;
 	window['dash_runtime_data'] = {
 		charts: {}
 	};
@@ -215,6 +220,7 @@
 	window['killOnLeave'] = [
 		'dash_runtime_data',
 		'timerange',
+		'is_admin_page',
 	];
 
 	/*
@@ -273,6 +279,7 @@
 			const step1 = (dta) => {
 				let thereport = dta.sendme;
 				window['daily_report_data'].daily_report = thereport;
+				window['daily_report_data'].daily_report.context = timerange;
 				window['daily_report_data'].daily_report_loadtime = new Date();
 
 				window[fetch_bypass](linkAtlas['get_admin_stats'],{t_range: timerange},'POST').then((d) => {

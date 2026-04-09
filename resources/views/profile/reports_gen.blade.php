@@ -435,7 +435,6 @@
 		'showerror',
 		'showloader',
 		'render_all_data',
-		'processNumber',
 		'renderCanvas',
 		'generatePdf',
 		'gen_download',
@@ -876,7 +875,7 @@
 			allowTaint: false,
 			backgroundColor: null,
 			logging: false,
-			scale: 2,
+			scale: 4,
 			useCORS: false
 		};
 

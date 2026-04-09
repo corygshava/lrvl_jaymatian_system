@@ -478,6 +478,8 @@
 <script>
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
+		setup_expense_types();
+
 		// view specific data
 		let methods = [
 			'Mpesa',
@@ -644,8 +646,8 @@
 
 	// adding recs handler
 		window['add_new_record'] = () => {
-			add_edit_form.purpose.value = cur_user.my_roles.role_name == 'admin' ? 'Expenditure' : 'Bank transfer';
-			add_edit_form.purpose.setAttribute('readonly',true);
+			// add_edit_form.purpose.value = cur_user.my_roles.role_name == 'admin' ? 'Expenditure' : 'Bank transfer';
+			// add_edit_form.purpose.setAttribute('readonly',true);
 
 			add_edit_modal_trig.click();
 		}

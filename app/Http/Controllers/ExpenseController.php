@@ -96,7 +96,14 @@ class ExpenseController extends Controller{
 			'amount' => ['required','numeric'],
 		]);
 		$purpose = $passed['purpose'];
-		$options = ['expenditure','bank transfer'];
+		$options = [
+			'bank transfer',
+			'boss expenditure',
+			'lab expense',
+			'salary',
+			'government issue',
+			'home expense',
+		];
 		$limits = [
 			'expenditure' => 2,
 			'bank transfer' => 3,
@@ -133,7 +140,8 @@ class ExpenseController extends Controller{
 				$_msg('invalid purpose given');
 			} else {
 				$lastguys = Expense::timeRange('today')->where('purpose',$purpose)->latest()->get();
-				$mylimit = $limits[strtolower($purpose)];
+				// $mylimit = $limits[strtolower($purpose)];
+				$mylimit = 120;
 				$populus = count($lastguys);
 				$wegood = $populus == 0 ? true : $lastguys[0]->created_at->lt(Carbon::now()->subDay());
 				$showamt = str_pad("$populus",4,'0',STR_PAD_LEFT);

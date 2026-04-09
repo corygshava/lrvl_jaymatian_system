@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MonthlyCashReport extends Model{
-    use TimeRangeScope;
+	use TimeRangeScope;
 
-    protected $fillable = [
+	protected $fillable = [
 		'added_by',
+		'cash_report_no',
 
 		'carry_over',
 		'total_owed',
@@ -26,6 +27,7 @@ class MonthlyCashReport extends Model{
 		'cash_data',
 		'spend_data',
 		'debtors',
+		'debt_pay_data',
 
 		'users_count',
 		'clients_count',
@@ -43,6 +45,7 @@ class MonthlyCashReport extends Model{
 		'cash_data' => 'array',
 		'spend_data' => 'array',
 		'debtors' => 'array',
+		'debt_pay_data' => 'array',
 
 		'total_owed' => 'decimal:2',
 		'total_profit' => 'decimal:2',

@@ -77,6 +77,24 @@
 			flex-grow: 1;
 		}
 
+	/* custom info rows */
+		.info_row_guy{
+			display: flex;
+		}
+		.info_row_guy>div{
+			flex: 1 1 400px;
+		}
+		.info-row{
+			border: none;
+			padding: 4px 0;
+		}
+		.info-row .info-label{
+			color: #000;
+		}
+
+		.cli_tab{
+			border: none;
+		}
 	/* misc */
 		.notactive{
 			opacity: 0.3;
@@ -111,6 +129,8 @@
 		}
 
 		.mylist b {width: 50px;display: inline-block;}
+		.printTxt{color: #000;}
+
 		/*.smallerCells{font-size: 0.9rem;}*/
 		/*.smallerCells td{font-size: 0.9rem;padding: 1px 3px;}*/
 
@@ -156,10 +176,10 @@
 					<div class="step-label">Document preview</div>
 				</div>
 				<div class="step" data-step="1" data-runme="pick_step_2">
-					<div class="step-circle"><i class="fas fa-file-export"></i></div>
-					<div class="step-label">Generated document</div>
+					<div class="step-circle"><i class="fas fa-check"></i></div>
+					<div class="step-label">Generated Document</div>
 				</div>
-				<div class="step" data-step="2" data-runme="pick_step_2">
+				<div class="step w3-hide" data-step="2" data-runme="pick_step_2">
 					<div class="step-circle"><i class="fas fa-check"></i></div>
 					<div class="step-label">Finalize</div>
 				</div>
@@ -171,12 +191,6 @@
 		<div class="tab slide-up">
 			<div class="spacy-sm w3-center text-muted section-title">
 				<span class="h4">document preview</span>
-
-				<!-- <span class="h4">Invoice Type</span> -->
-				<div class="flowline center gap-sm in_fullwidth distance-sm">
-					<button class="mybtn secondary sm doctype_toggler" data-runme="toggle_doctype" data-mytype="detailed">detailed</button>
-					<button class="mybtn primary sm doctype_toggler" data-runme="toggle_doctype" data-mytype="plain">plain</button>
-				</div>
 			</div>
 
 			<div id="document_Holder" class="flow centroid">
@@ -209,34 +223,7 @@
 						</div>
 					</div>
 
-					<div class="page-section invoice_details">
-						<h3 class="heading">Client Invoice</h3>
-						<div data-subrole="deetsui">
-						</div>
-					</div>
-
-					<div class="page-section results_area">
-						<!-- <h3 class="heading w3-hide">Analytical Invoice</h3> -->
-						<div>
-							<table class="mytable" style="width: 80%;">
-								<thead>
-									<tr class="rslts_headings">
-										<th style="width: 40px;"><span></span></th>
-										<th style="width: 160px;"><span>date created</span></th>
-										<th style="width: 400px;"><span>Task No</span></th>
-										<!-- <th style="width: 400px;"><span>Sample type</span></th> -->
-										<th style="width: 190px;"><span>Samples delivered</span></th>
-										<th style="width: 90px;"><span>balance</span></th>
-									</tr>
-								</thead>
-								<tbody id="resultsguy"></tbody>
-							</table>
-						</div>
-
-						<div class="w3-display-topright">
-							<img src="" id="myqrcodeium" onload="img_qr_loader.classList.add('w3-hide')">
-							<i id="img_qr_loader">Generating QR code, Please wait</i>
-						</div>
+					<div data-role="datasection">
 					</div>
 
 					<div class="page-section invoice_summary">
@@ -244,7 +231,7 @@
 						</div>
 					</div>
 
-					<div class="page-section">
+					<div class="page-section w3-hide">
 						<div id="signs">
 							<div class="flowline in_fullwidth signsection">
 								<img src="" class="signature_image">
@@ -281,17 +268,22 @@
 								</div>
 							</div>
 						</div>
+
 						<div class="stamp_space" id="stamp">
 							<img src="" class="stamp_image">
 						</div>
 					</div>
+				</div>
 
+				<div data-role="report_setup" class="mt-4">
+					<div class="page-section" id="debtors_xtraht">
+					</div>
 				</div>
 			</div>
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary hideme"><i class="fa fa-arrow-left"></i> previous</button>
-				<button class="mybtn primary" data-runme="pick_step_3" data-step="1" data-msg="rendering Invoice">render Invoice <i class="fa fa-arrow-right"></i></button>
+				<button class="mybtn primary" data-runme="pick_step_3" data-step="1" data-msg="rendering Cash report">render Cash report <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
 
@@ -303,6 +295,21 @@
 
 				<div class="canvasguy slide-up flow centroid">
 				</div>
+				<div>
+					<div class="distance-sm w3-center flowline gap-sm center">
+						<button class="mybtn secondary" data-runme="download_me" data-me="mainone" data-myid="0"><i class="fa fa-download"></i> download image</button>
+						<button class="mybtn primary" data-runme="print_me" data-me="mainone" data-myid="0"><i class="fa fa-print"></i> print image</button>
+					</div>
+				</div>
+
+				<div class="canvasguy_2 slide-up flow centroid mt-4">
+				</div>
+				<div>
+					<div class="distance-sm w3-center flowline gap-sm center">
+						<button class="mybtn secondary" data-runme="download_me" data-me="debtors" data-myid="1"><i class="fa fa-download"></i> download image</button>
+						<button class="mybtn primary" data-runme="print_me" data-me="debtors" data-myid="1"><i class="fa fa-print"></i> print image</button>
+					</div>
+				</div>
 
 				<div class="distance-sm border panelbg themeround collapser slide-up">
 					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#statsguy" data-toggle="collapse" data-target="#statsguy">
@@ -312,11 +319,33 @@
 					<div class="collapse panelbg themeround spacy-sm" id="statsguy">
 					</div>
 				</div>
+
+				<div class="distance-sm border panelbg themeround collapser slide-up">
+					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#statsguy2" data-toggle="collapse" data-target="#statsguy2">
+						<span class="text-uppercase text-muted font-weight-bold">Capture stats (Debtors)</span>
+						<i class="fa fa-chevron-down myicon"></i>
+					</a>
+					<div class="collapse panelbg themeround spacy-sm" id="statsguy2">
+					</div>
+				</div>
 			</div>
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary" data-runme="pick_step_2" data-step="0"><i class="fa fa-arrow-left"></i> previous</button>
-				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
+				<button class="mybtn primary w3-hide" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
+			</div>
+		</div>
+
+		<div class="tab slide-up">
+			<div class="spacy-sm panelbg themeround mt-4">
+				<span class="h4">Cash report Generation successful</span>
+				<p>the Cash report has been generated, pick an option below to proceed</p>
+				<div class="flowline gap-tn left">
+					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
+					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
+					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Cash report (image)</button>
+					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Cash report</button>
+				</div>
 			</div>
 		</div>
 
@@ -329,7 +358,7 @@
 				<div class="spacy-sm panelbg themeround">
 					<div class="distance-sm">
 						<p>Here are the generated files, both image and pdf file. You can check the generated files by navigating to the previous steps.</p>
-						<p>click the button to save the Invoice to the database</p>
+						<p>click the button to save the Cash report to the database</p>
 					</div>
 					<form action="defined:save_invoice" class="border themeround spacy-sm" data-afterfx="aftersave_ops" data-onsubmit="upload_stuff" data-blockdefault="yes">
 						<div class="notactive">
@@ -346,11 +375,12 @@
 								<input type="file" name="genfile" id="genfile" required>
 							</div>
 							<div class="form-group">
-								<label class="form-label" for="client_name">Generated Invoice</label>
+								<label class="form-label" for="client_name">Generated Cash report</label>
 								<input type="file" name="genimage" id="genimage" required>
+								<input type="file" name="genimage2" id="genimage2" required>
 							</div>
 						</div>
-						<button class="mybtn primary"><i class="fa fa-save"></i> save Invoice</button>
+						<button class="mybtn primary"><i class="fa fa-save"></i> save Cash report</button>
 					</form>
 				</div>
 			</div>
@@ -363,22 +393,9 @@
 
 		<div class="tab slide-up">
 			<div class="spacy-lg w3-center flow centroid gap-sm panelbg themeround mt-4 w3-hide_" id="loader_render">
-				<span class="h4">Uploading Invoice</span>
+				<span class="h4">Uploading Cash report</span>
 				<div>saving to database</div>
 				<div class="loader"></div>
-			</div>
-		</div>
-
-		<div class="tab slide-up">
-			<div class="spacy-sm panelbg themeround mt-4">
-				<span class="h4">Invoice Generation successful</span>
-				<p>the Invoice has been generated, pick an option below to proceed</p>
-				<div class="flowline gap-tn left">
-					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
-					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Invoice (image)</button>
-					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Invoice</button>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -389,34 +406,39 @@
 			<p>Here are actions you can perform on the document</p>
 		</div>
 		<div>
-			<button class="mybtn primary" data-runme="renderCanvas"><i class="fa fa-image"></i> render Invoice</button>
+			<button class="mybtn primary" data-runme="renderCanvas"><i class="fa fa-image"></i> render Cash report</button>
 			<button class="mybtn primary" data-runme="gen_download"><i class="fa fa-image"></i> generate pdf</button>
 		</div>
 	</div>
 </div>
 
 <script>
-	window['invoice_runtime_data'] = {};
+	window['cashreport_runtime_data'] = {};
 	window['killOnLeave'] = [
 		'initstuff',
 		'showerror',
 		'showloader',
 		'render_all_data',
-		'processNumber',
+		'gen_html',
+		'toggle_doctype',
 		'renderCanvas',
 		'generatePdf',
 		'gen_download',
+		'setuppdf_invoice',
 		'download_invoice_pdf',
+		'download_invoice_img',
 		'printPdf',
 		'generateSerial',
 		'pick_step',
 		'pick_step_2',
 		'pick_step_3',
 		'upload_stuff',
+		'download_me',
+		'print_me',
 	];
 
 	/*
-		invoice_runtime_data = {
+		cashreport_runtime_data = {
 			tosend: {
 				'task_id' : undefined,
 				'sample_id' : undefined,
@@ -441,7 +463,7 @@
 
 	let tabs = document.querySelectorAll('.tabs .tab');
 	let checks = document.querySelectorAll('.progress-steps>.step');
-	let spans = [0,45,92];
+	let spans = [0,86,100];
 
 	const steps = [
 		'do_nothing',
@@ -453,550 +475,656 @@
 		initstuff();
 	}
 
-	// initialisers
-	window['initstuff'] = () => {
-		alert_dark('loading stuff');
-		let outht = '';
-		let errshown = false;
-		let c_id = window[variableAtlas['client_id']];
+	window['runOnLeave'] = () => {
+		if(window[variableAtlas['cash_report_data']] != undefined){
+			delete(window[variableAtlas['cash_report_data']]);
+			delete(window[variableAtlas['cash_report_id']]);
+			delete(window[variableAtlas['cash_report_type']]);
+		};
+	}
 
-		const step1 = () => {
-			if(c_id == undefined){
-				alert_danger('pick a client first');
-				outht = `
-					pick a client first
-				`;
-				showerror(outht);
-				return;
+	// initialisers
+		window['initstuff'] = () => {
+			alert_dark('loading stuff');
+			let outht = '';
+			let errshown = false;
+			let cr_id = window[variableAtlas['cash_report_id']] ;
+			let cr_type = window[variableAtlas['cash_report_type']] ;
+			let cr_data = window[variableAtlas['cash_report_data']];
+
+			const step1 = () => {
+				if(cr_id == undefined){
+					alert_danger('pick a cash report first');
+					outht = `
+						pick a cash report first
+					`;
+					showerror(outht);
+					return;
+				}
+
+				showloader(true);
+
+				setTimeout(() => {
+					if(cr_data != undefined){
+						step2({sendme: cr_data});
+						return;
+					}
+
+					console.log('cr_data: ',cr_data);
+					window[fetch_bypass](linkAtlas['get_cash_report'],{id: cr_id,type: cr_type},'POST').then(dta => {
+						responseHandler(dta, step2, dta);
+
+						if(!dta.success || !dta.result){
+							throw new Error(dta.message);
+						}
+					}).catch(err => {
+						outht = `There was an error fetching the Cash Report: <br><b class="${err.result !== undefined ? 'w3-text-orange' : 'w3-text-red'}">${err.message}</b>`;
+						showerror(outht);
+						console.error(err);
+						errshown = true;
+					})
+				},min_loadtime)
 			}
 
-			showloader(true);
+			// validate and save sample data
+			const step2 = (d) => {
+				cashreport_runtime_data.cash_report_data = d.sendme;
+				step3();
+			}
 
-			setTimeout(() => {
-				window[fetch_bypass](linkAtlas['get_client'],{id: c_id},'POST').then(dta => {
-					responseHandler(dta, step2, dta);
+			const step3 = (d) => {
+				window[fetch_bypass_fyls](linkAtlas['get_bizdata'],{},'POST').then(dta => {
+					responseHandler(dta,step4,dta);
 
 					if(!dta.success || !dta.result){
 						throw new Error(dta.message);
 					}
 				}).catch(err => {
-					outht = `There was an error fetching Client information: <br><b class="${err.result !== undefined ? 'w3-text-orange' : 'w3-text-red'}">${err.message}</b>`;
+					outht = `There was an error fetching business information: <br><b class="w3-text-red">${err.message}</b>`;
 					showerror(outht);
 					errshown = true;
 				})
-			},min_loadtime)
-		}
-
-		// validate and save sample data
-		const step2 = (d) => {
-			// alert
-			// return;
-			let inv_id = window[variableAtlas['invoice_id']];
-
-			if(d.sendme.credit_balance <= 0 && inv_id === undefined){
-				throw new Error('Client has no credit balance');
 			}
 
-			invoice_runtime_data.clientData = d.sendme;
+			// get bizdata
+			const step4 = (d) => {
+				cashreport_runtime_data.bizdata = d.sendme;
+				window['bizdata'] = parseBizdata(d.sendme);
 
-			let querycall = inv_id != undefined ?
-				window[fetch_bypass](linkAtlas['get_specific_invoice_data'],{invoice_id: inv_id, client_id: c_id},'POST')
-				:
-				window[fetch_bypass](linkAtlas['get_invoice_data'],{client_id: c_id},'POST')
-			;
-
-			if(inv_id !== undefined){
-				invoice_runtime_data.invoice_id = inv_id;
-				delete(window[variableAtlas['invoice_id']]);
+				final_step();
 			}
 
-			querycall.then(dta => {
-				responseHandler(dta,step3,dta);
+			const final_step = () => {
+				cashreport_runtime_data.reporttype = cr_type;
 
-				if(!dta.success || !dta.result){
-					throw new Error(dta.message);
-				}
-			}).catch(err => {
-				outht = `There was an error fetching client task information: <br><b class="w3-text-red">${err.message}</b>`;
-				showerror(outht);
-				errshown = true;
-			})
+				showloader(false);
+				render_all_data();
+				pick_step(0);
+				refreshUI(300);
+			};
+
+			step1();
 		}
 
-		const step3 = (d) => {
-			invoice_runtime_data.incomplete = d.sendme;
-			invoice_runtime_data.invoices = d.xtra.invoices_count || 0;
+		window['showerror'] = (err) => {
+			c = true;
+			let cls = c ? 'add' : "remove";
+			let altcls = !c ? 'add' : "remove";
+			let txt = errorbox.querySelector('.errtxt');
 
-			// alert_dark(`${d.sendme.length} found`);
+			txt.innerHTML = `
+				<p>${err}</p>
+				<div class="spacy-sm flowline gap-sm">
+					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:cash_reports" data-label="defined:cash_reports"><i class="${iconAtlas['cash_reports']}"></i> pick another one</button>
+					<button class="mybtn secondary sm" data-runme="initstuff"><i class="fas fa-sync"></i> retry</button>
+				</div>
+			`;
 
-			if(d.sendme.length == 0){
-				outht = `There was an error fetching business information: <br><b class="w3-text-red">there are no unpaid tasks for this client</b>`;
-				showerror(outht);
+			loader_init.classList[cls]('w3-hide');
+
+			errorbox.classList[altcls]('w3-hide');
+			progress_panel.classList[cls]('w3-hide');
+			tabs_panel.classList[cls]('w3-hide');
+
+			refreshUI(300);
+		}
+		window['showloader'] = (c = true) => {
+			let cls = c ? 'add' : "remove";
+			let altcls = !c ? 'add' : "remove";
+
+			loader_init.classList[altcls]('w3-hide');
+
+			errorbox.classList['add']('w3-hide');
+			progress_panel.classList[cls]('w3-hide');
+			tabs_panel.classList[cls]('w3-hide');
+		}
+		window['render_all_data'] = () => {
+			// alert_dark('rendering header');
+			let outht = '';
+			let advanced = cashreport_runtime_data.reporttype == 'monthly';
+			let crd = cashreport_runtime_data.cash_report_data;
+			let crd_typ = cashreport_runtime_data.reporttype;
+
+			// elements
+			let holder = document_Holder;
+			let reportguy = holder.querySelector('[data-role="report_setup"]');
+			let datasect = holder.querySelector('[data-role="datasection"]');
+			let header = reportguy.querySelector('.page-section.header');
+
+			let b_data = bizdata;
+			let bizdeets = b_data.business_details;
+			let bizimgs = b_data.business_images;
+
+			// header
+			header.innerHTML = `
+				<h1 class="w3-center themetxt" style="font-size:2rem;">${bizdeets.biz_name}</h1>
+				<div class="flowline" style="gap: 10px !important;">
+					<div class="thelogo">
+						<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}" style="width: 102px;">
+					</div>
+					<div class="flow gap-tn mylist" style="gap: 2px !important;font-size:0.8rem;">
+						<div>
+							<b>Branch</b>
+							<strong data-subrole="branch" class="text-uppercase">
+								${bizdeets.branch_name}
+							</strong>
+						</div>
+						<div>
+							<b>Location:</b>
+							<span data-subrole="location">
+								${bizdeets.location}
+							</span>
+						</div>
+						<div style="color: orange;">
+							<b>Email:</b>
+							<span data-subrole="email">
+								${bizdeets.email}
+							</span>
+						</div>
+						<div>
+							<b>Phone:</b>
+							<span data-subrole="phone">
+								${processNumber(bizdeets.phone)}
+							</span>
+						</div>
+					</div>
+				</div>
+			`;
+
+			// render the cash report info
+			let templateht = `
+				<div class="page-section invoice_details">
+					<h3 class="heading">Client Cash report</h3>
+					<div data-subrole="deetsui">
+					</div>
+				</div>
+			`;
+
+			// generate html
+			gen_html(crd,crd_typ,datasect);
+
+			// the signature and stamp section
+			outht = '';
+			signs.innerHTML = '';
+
+			outht = `
+				<div class="flowline in_fullwidth signsection">
+					<img src="${linkAtlas['bizimages']}/${bizimgs.Technician_signature}" class="signature_image">
+					<div class="anc">
+						<b>Technical Staff</b>
+					</div>
+					<div class="deets">
+						<div class="myrow">
+							<div>
+								<b>Name: </b>
+								<span>${bizdeets.tech_staff}</span>
+							</div>
+						</div>
+						<div class="myrow">
+							<b>signature:</b>
+						</div>
+					</div>
+				</div>
+				<div class="flowline in_fullwidth signsection">
+					<img src="${linkAtlas['bizimages']}/${bizimgs.supervisor_signature}" class="signature_image">
+					<div class="anc">
+						<b>Authorizer</b>
+					</div>
+					<div class="deets">
+						<div class="myrow">
+							<div>
+								<b>Name: </b>
+								<span>${bizdeets.auth_staff}</span>
+							</div>
+						</div>
+						<div class="myrow">
+							<b>signature:</b>
+						</div>
+					</div>
+				</div>
+			`;
+			signs.innerHTML = outht;
+
+			outht = '';
+			stamp.innerHTML = '';
+
+			outht = `
+				<img src="${linkAtlas['bizimages']}/${bizimgs.official_stamp}" class="stamp_image">
+				<div id="dateguy" class="w3-text-red">${('<?php echo date("d M Y")?>').toUpperCase()}</div>
+			`;
+			stamp.innerHTML = outht;
+
+			debtors_xtraht.innerHTML = `<div data-copyme='[data-subrole="extrapage"]'></div>`;
+		}
+		window['gen_html'] = (d,range = 'today',item) => {
+			// let container = document.querySelector(sel);
+			let container = item;
+			let drd = d;
+
+			if(drd == undefined){
+				alert_danger('invalid `gen_html` function call');
+				return;
+			}
+			if(container == undefined){
+				alert_danger('invalid container for `gen_html`');
 				return;
 			}
 
-			// infer samples from fetched data
-			let smp = [];
+			alert_info('rendering...');
 
-			d.sendme.forEach((s,id) => {
-				let ss = s.samples;
-				let len = ss.length;
+			outht = `
+				renderin...
+			`;
 
-				ss.forEach((sm, n) => {
-					let tmp = {...sm};
-					tmp.task_no = s.task_no;
-					tmp.isbig = n == 0;
-					tmp.mycount = len;
-					tmp.balance = s.balance;
+			container.classList.add('printTxt');
 
-					smp.push(tmp);
-				});
-			})
+			// top finances section
+			let xtra = drd.time_difference !== undefined ? {
+				"time_since_last_report" : `${formatNumber(drd.time_difference) || '--'} ${plural('hour',Math.floor(Number(drd.time_difference)))}`,
+			} : {};
+			let toshow_1 = {
+				...xtra,
+				"total_owed" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
+				"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
+				"total_income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
+				"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
+				"total_daily_cash" : `<b>KES ${formatNumber(drd.total_daily_cash)}</b>`,
+				"total_cash" : `<b class="themetxt">KES ${formatNumber(drd.total_cash)}</b>`,
+				"expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
+				"total_balance_available" : `<b class="w3-text-green">KES ${formatNumber(drd.total_balance_forward)}</b>`,
+			};
+			let deets_1_outht = '';
 
-			invoice_runtime_data.samples = smp;
-
-			window[fetch_bypass_fyls](linkAtlas['get_bizdata'],{},'POST').then(dta => {
-				responseHandler(dta,step4,dta);
-
-				if(!dta.success || !dta.result){
-					throw new Error(dta.message);
-				}
-			}).catch(err => {
-				outht = `There was an error fetching business information: <br><b class="w3-text-red">${err.message}</b>`;
-				showerror(outht);
-				errshown = true;
-			})
-		}
-
-		// get bizdata
-		const step4 = (d) => {
-			invoice_runtime_data.bizdata = d.sendme;
-			window['bizdata'] = parseBizdata(d.sendme);
-
-			final_step();
-			// skip to prevent failure when internet is down
-			// return;
-
-			step5().catch(err => {
-				alert_danger('QR code generation error: ' + err.message);
-				console.error(err);
-				showerror(`error generating QR code: ${err.message}`);
+			Object.keys(toshow_1).forEach(f => {
+				deets_1_outht += `
+					<div class="info-row">
+						<span class="info-label">${f.split("_").join(' ')}:</span>
+						<span class="info-value">${toshow_1[f]}</span>
+					</div>
+				`;
 			});
-		}
 
-		const step5 = async (d) => {
-			// assign image src
-			invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
-			img_qr_loader.classList.remove('w3-hide');
-			let pagelink = [...window.location.href.split('/').map((l,id,arr) => {return id == (arr.length - 1) ? '' : l})].join('/');
-			let filelink = `${pagelink}media/invoices/img/${invoice_runtime_data.file_slug}`;
+			// samples subsection
+			let toshow_2 = {
+				"total_samples_delivered" : formatNumber(drd.samples_count),
+				"soil samples" : formatNumber(drd.sample_data['soil']),
+				"rock samples" : formatNumber(drd.sample_data['rock']),
+				"solution samples" : formatNumber(drd.sample_data['solution']),
+				"carbon samples" : formatNumber(drd.sample_data['carbon']),
+				"carbon activity samples" : formatNumber(drd.sample_data['carbon activity']),
+			};
+			let the_samples_outht = '';
 
-			invoice_runtime_data.file_link = filelink;
+			Object.keys(toshow_2).forEach(f => {
+				the_samples_outht += `
+					<div class="info-row">
+						<span class="info-label">${f.split("_").join(' ')}:</span>
+						<span class="info-value"><b>${toshow_2[f]}</b></span>
+					</div>
+				`;
+			});
 
-			let encodedText = encodeURIComponent(filelink);
-			let imglink = `https://quickchart.io/qr?text=${encodedText}&size=100`;
 
-			let meimg = await fetch(`https://quickchart.io/qr?text=${encodedText}&size=100`);
-			let blb = await meimg.blob();
-			let objUrl = URL.createObjectURL(blb);
-			myqrcodeium.src = objUrl;
+			// cash flow subsection
+			let toshow_3 = {
+				"income via mpesa" : `<b>KES ${formatNumber(drd.cash_data["income mpesa"])}</b>`,
+	            "income via cash" : `<b>KES ${formatNumber(drd.cash_data["income cash"])}</b>`,
+	            "debt paid via mpesa" : `<b>KES ${formatNumber(drd.cash_data["debt mpesa"])}</b>`,
+	            "debt paid via cash" : `<b>KES ${formatNumber(drd.cash_data["debt cash"])}</b>`,
+	            "total mpesa" : `<b>KES ${formatNumber(drd.cash_data["total mpesa"])}</b>`,
+	            "total cash" : `<b>KES ${formatNumber(drd.cash_data["total cash"])}</b>`,
+			};
+			let deets_3_outht = '';
 
-			final_step();
-		}
+			Object.keys(toshow_3).forEach(f => {
+				deets_3_outht += `
+					<div class="info-row">
+						<span class="info-label">${f.split("_").join(' ')}:</span>
+						<span class="info-value">${toshow_3[f]}</span>
+					</div>
+				`;
+			});
 
-		const final_step = () => {
-			// invoice_runtime_data.file_slug = `_${invoice_runtime_data.invoices}_${mekRandomString(7).toUpperCase()}`;
-			invoice_runtime_data.doctype = 'plain';
+			// system usage subsection
+			let newxtra = drd.paid_tasks == undefined ? {} : {
+				"paid_tasks" : drd.paid_tasks,
+				"unpaid_tasks" : drd.unpaid_tasks,
+			};
+			let toshow_4 = {
+				"users_registered" : drd.users_count,
+				"clients_registered" : drd.clients_count,
+				...newxtra,
+				"tasks_created" : drd.tasks_count,
+				"samples_delivered" : drd.samples_count,
+				"task payments" : drd.total_payments_task_count,
+				"invoice payments" : drd.total_payments_invoice_count,
+				"reports_generated" : drd.reports_count,
+				"invoices_generated" : drd.invoices_count,
+				"expense_records entered" : drd.expenses_count,
+			};
+			let sys_usage_outht = '';
 
-			showloader(false);
-			generateAggregates();
-			render_all_data();
-			pick_step(0);
+			Object.keys(toshow_4).forEach(f => {
+				sys_usage_outht += `
+					<div class="info-row">
+						<span class="info-label">${f.split("_").join(' ')}:</span>
+						<span class="info-value"><b>${toshow_4[f]}</b></span>
+					</div>
+				`;
+			});
+
+
+			// system usage subsection
+				let gen_from_spend_Data = {};
+				Object.keys(drd.spend_data).forEach(s => {
+					gen_from_spend_Data[s] = drd.spend_data[s];
+				});
+				let toshow_5 = {
+					"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
+					...gen_from_spend_Data,
+					"Total Expenditure" : `${formatNumber(drd.expenditure)}`,
+				};
+				let expenditure_outht = '';
+
+				Object.keys(toshow_5).forEach(f => {
+					expenditure_outht += `
+						<div class="info-row">
+							<span class="info-label">${f.split("_").join(' ')}:</span>
+							<span class="info-value"><b>${toshow_5[f]}</b></span>
+						</div>
+					`;
+				});
+
+
+			// debt payments subsection
+				let debtpay_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th>${mekSpan('Name')}</th>
+								<th>${mekSpan('Contact')}</th>
+								<th>${mekSpan('unpaid invoices')}</th>
+								<th>${mekSpan('Total Paid')}</th>
+								<th>${mekSpan('Balance')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				if(drd.debt_pay_data !== undefined && drd.debt_pay_data.length > 0){
+					let tot_balance = 0;
+					drd.debt_pay_data.forEach(f => {
+						debtpay_outht += `
+							<tr>
+								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
+								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
+								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
+								<td class="w3-right-align"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+							</tr>
+						`;
+
+						tot_balance += Number(f.credit_balance);
+					});
+
+					debtpay_outht += `
+							<tr>
+								<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
+								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
+								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				} else {
+					debtpay_outht += `
+							<tr>
+								<td colspan="12">
+									<span style="font-size: 1.1rem;">
+										<i>${drd.created_at == undefined ? 'no debt payments found' : 'no debt payments recorded'}</i>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				}
+
+			// debtors subsection
+				let debtors_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th>${mekSpan('Name')}</th>
+								<th>${mekSpan('Contact')}</th>
+								<th>${mekSpan('unpaid invoices')}</th>
+								<th>${mekSpan('Total Owed')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				if(drd.debtors !== undefined && drd.debtors.length > 0){
+					drd.debtors.forEach(f => {
+						debtors_outht += `
+							<tr>
+								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
+								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
+								<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+							</tr>
+						`;
+					});
+
+					debtors_outht += `
+							<tr>
+								<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
+								<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				} else {
+					debtors_outht += `
+							<tr>
+								<td colspan="3">
+									<span style="font-size: 1.1rem;"><i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				}
+
+			// visual hints to show system info
+			let thedate = '';
+			if(drd.created_at == undefined){
+				thedate = `<b class="themetxt">${range.replace('_',' ')}</b>`;
+
+				if(drd.context !== undefined){
+					thedate = `<b class="themetxt">${drd.context}</b>`;
+				}
+			} else {
+				thedate = `<b class="themetxt">${formatDate(new Date(drd.created_at))}</b>`;
+			}
+
+			let btns = drd.created_at == undefined ? `
+				<button class="mybtn primary ${window['is_admin_page'] ? 'is_ghost' : ''}" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Cash Report</button>
+			` : `
+				<button class="mybtn primary" data-runme="print_daily_report" data-myid="${drd.id}" data-mytype="${drd.rectype || 'daily'}"><i class="fa fa-print"></i> Print Report</button>
+			`;
+			let report_title = drd.context == undefined ?
+			`
+				${drd.rectype || 'Daily'} cash report for ${thedate}
+			` : `
+				${drd.rectype || 'Daily'} cash report [${thedate}]
+			`;
+
+			// console.log('samples html: ',the_samples_outht);
+			outht = `
+				<div class="mb-3">
+					<span class="h4">${report_title}</span>
+				</div>
+				<div class="page-section invoice_details">
+					<h3 class="heading w3-hide">Cash Summary</h3>
+					<div data-subrole="cash_summary">
+						${deets_1_outht}
+					</div>
+				</div>
+
+				<div class="info_row_guy spread gap-sm">
+					<div class="page-section invoice_details">
+						<h3 class="heading">Cash channels report</h3>
+						<div data-subrole="cash_channels_summary">
+							${deets_3_outht}
+						</div>
+					</div>
+
+					<div class="page-section invoice_details">
+						<h3 class="heading">Expenditure report</h3>
+						<div data-subrole="expenditure_summary">
+							${expenditure_outht}
+						</div>
+					</div>
+				</div>
+
+				<div class="info_row_guy spread gap-sm">
+					<div class="page-section invoice_details">
+						<h3 class="heading">System Usage Report</h3>
+						<div data-subrole="expenditure_summary">
+							${sys_usage_outht}
+						</div>
+					</div>
+
+					<div class="page-section invoice_details">
+						<h3 class="heading">Samples Information</h3>
+						<div data-subrole="samples_summary">
+							${the_samples_outht}
+						</div>
+					</div>
+				</div>
+
+				<div data-subrole="extrapage" class="w3-hide">
+					<div class="page-section invoice_details">
+						<span class="h4 mb-3">Debtors report for ${thedate}</span>
+						<h3 class="heading">Debt payments</h3>
+						<p>
+							this is a list of all debt payments for the day
+						</p>
+						<div data-subrole="debt_payments_summary" class="mb-4">
+							${debtpay_outht}
+						</div>
+
+						<h3 class="heading">Current Debtors</h3>
+						<p>
+							this is a list of all current debtors who are yet to pay their credit balance
+						</p>
+						<div data-subrole="debtors_summary">
+							${debtors_outht}
+						</div>
+					</div>
+				</div>
+			`;
+
+			container.innerHTML = outht;
 			refreshUI(300);
 		};
+		window['toggle_doctype'] = (el) => {
+			cashreport_runtime_data.doctype = el.dataset.mytype == 'detailed' ? 'detailed' : 'plain';
+			render_all_data();
 
-		step1();
-	}
+			let btns = document.querySelectorAll('.doctype_toggler');
 
-	window['showerror'] = (err) => {
-		c = true;
-		let cls = c ? 'add' : "remove";
-		let altcls = !c ? 'add' : "remove";
-		let txt = errorbox.querySelector('.errtxt');
-
-		txt.innerHTML = `
-			<p>${err}</p>
-			<div class="spacy-sm flowline gap-sm">
-				<button class="mybtn primary sm" data-runme="load_page" data-link="defined:view_clients" data-label="defined:view_clients"><i class="${iconAtlas['clients']}"></i> pick another client</button>
-				<button class="mybtn secondary sm" data-runme="initstuff" data-link="defined:gen_report" data-label="defined:gen_report"><i class="fas fa-sync"></i> retry</button>
-			</div>
-		`;
-
-		loader_init.classList[cls]('w3-hide');
-
-		errorbox.classList[altcls]('w3-hide');
-		progress_panel.classList[cls]('w3-hide');
-		tabs_panel.classList[cls]('w3-hide');
-
-		refreshUI(300);
-	}
-	window['showloader'] = (c = true) => {
-		let cls = c ? 'add' : "remove";
-		let altcls = !c ? 'add' : "remove";
-
-		loader_init.classList[altcls]('w3-hide');
-
-		errorbox.classList['add']('w3-hide');
-		progress_panel.classList[cls]('w3-hide');
-		tabs_panel.classList[cls]('w3-hide');
-	}
-	window['generateAggregates'] = () => {
-		let agg = {};
-		let _dta = invoice_runtime_data.incomplete;
-
-		let total = 0;
-		let tasks = _dta.length;
-		let invs = invoice_runtime_data.invoices + 1;
-		let inv = invs.toString().padStart(4,'0');
-
-		_dta.forEach(d => {
-			total += Number(d.balance);
-		})
-
-		agg = {
-			total: total.toFixed(2),
-			tasks: tasks,
-			invoice_no: inv,
-			invoice_id: `INV_${inv}`,
-		};
-
-		invoice_runtime_data.aggregates = agg;
-	}
-	window['render_all_data'] = () => {
-		// alert_dark('rendering header');
-
-		let outht = '';
-		let advanced = invoice_runtime_data.doctype == 'detailed';
-
-		// elements
-		let holder = document_Holder;
-		let reportguy = holder.querySelector('[data-role="report_setup"]');
-		let header = reportguy.querySelector('.page-section.header');
-		let invoice_details = holder.querySelector('.page-section.invoice_details>[data-subrole="deetsui"]');
-		let invoice_summary = holder.querySelector('.page-section.invoice_summary>[data-subrole="deetsui"]');
-		let invTableHeadings = holder.querySelector('.rslts_headings');
-
-		let b_data = bizdata;
-		let bizdeets = b_data.business_details;
-		let bizimgs = b_data.business_images;
-
-		let c_data = invoice_runtime_data.clientData;
-		let t_data = invoice_runtime_data.incomplete;
-		let s_data = invoice_runtime_data.samples;
-		let agg = invoice_runtime_data.aggregates;
-
-		// header
-		header.innerHTML = `
-			<h1 class="w3-center themetxt" style="font-size:2rem;">${bizdeets.biz_name}</h1>
-			<div class="flowline" style="gap: 10px !important;">
-				<div class="thelogo">
-					<img src="${linkAtlas['bizimages']}/${bizimgs.company_logo}" style="width: 102px;">
-				</div>
-				<div class="flow gap-tn mylist" style="gap: 2px !important;font-size:0.8rem;">
-					<div>
-						<b>Branch</b>
-						<strong data-subrole="branch" class="text-uppercase">
-							${bizdeets.branch_name}
-						</strong>
-					</div>
-					<div>
-						<b>Location:</b>
-						<span data-subrole="location">
-							${bizdeets.location}
-						</span>
-					</div>
-					<div style="color: orange;">
-						<b>Email:</b>
-						<span data-subrole="email">
-							${bizdeets.email}
-						</span>
-					</div>
-					<div>
-						<b>Phone:</b>
-						<span data-subrole="phone">
-							${processNumber(bizdeets.phone)}
-						</span>
-					</div>
-				</div>
-			</div>
-		`;
-
-		// the second section (aka the creditsguy)
-		invoice_details.style.textTransform = "uppercase";
-		// invoice_details.classList.add('smallerCells');
-		// invoice_details.innerHTML = `damn, thats awesome`;
-
-		invoice_details.innerHTML = `
-			<div class="row">
-				<div class="col-md-8">
-					<div>
-						<strong>Invoice to</strong>
-					</div>
-					<div>
-						<b>Name: </b> <span>${c_data.client_name}</span>
-					</div>
-					<div>
-						<b>Phone: </b> <span>${c_data.client_contact}</span>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div>
-						<strong>Invoice details</strong>
-					</div>
-					<div>
-						<b>Invoice No: </b> <span>INV_${agg.invoice_no}</span>
-					</div>
-					<div>
-						<b>Date: </b> <span>${formatDate0(new Date())}</span>
-					</div>
-					<div>
-						<b>Total Due: </b> <strong>${formatNumber(agg.total)}</strong>
-					</div>
-				</div>
-			</div>
-		`;
-
-		// the results
-		outht = '';
-		resultsguy.innerHTML = '';
-		let scounts = [];
-
-		t_data.forEach((r,i) => {
-			scounts.push(r);
-		})
-
-		console.log('scc: ',scounts);
-
-		if(!advanced){
-			invTableHeadings.innerHTML = `
-				<th style="width: 40px;"><span></span></th>
-				<th style="width: 160px;"><span>date created</span></th>
-				<th style="width: 400px;"><span>Task No</span></th>
-				<th style="width: 190px;"><span>Samples delivered</span></th>
-				<th style="width: 90px;"><span>balance</span></th>
-			`;
-			t_data.forEach((r,i) => {
-				outht += `
-					<tr>
-						<td><span>${i + 1}</span></td>
-						<td>${mekSpan(formatDate0(r.created_at))}</td>
-						<td>${mekSpan(r.task_no)}</td>
-						<td>${mekSpan(r.sample_count)}</td>
-						<td>${mekSpan(formatNumber(r.balance))}</td>
-					</tr>
-				`;
-			});
-		} else {
-			invTableHeadings.innerHTML = `
-				<th style="width: 40px;"><span></span></th>
-				<th style="width: 120px;"><span>Task No</span></th>
-				<th style="width: 200px;"><span>date delivered</span></th>
-				<th style="width: 190px;"><span>Samples type</span></th>
-				<th style="width: 190px;"><span>Samples delivered</span></th>
-				<th style="width: 90px;"><span>balance</span></th>
-			`;
-			s_data.forEach((r,i) => {
-				/*
-					tmp.task_no = s.task_no;
-					tmp.isbig = n == 0;
-					tmp.mycount = len;
-					tmp.balance = s.balance;
-				// */
-				let bigone = `rowspan="${r.mycount}" class="${r.isbig ? '' : 'w3-hide'}" style="vertical-align: baseline;"`;
-				outht += `
-					<tr>
-						<td><span>${i + 1}</span></td>
-						<td ${bigone}>${mekSpan(r.task_no)}</td>
-						<td>${mekSpan(formatDate0(r.created_at))}</td>
-						<td>${mekSpan(r.sample_type)}</td>
-						<td>${mekSpan(r.sample_count)}</td>
-						<td ${bigone}>${mekSpan(formatNumber(r.balance))}</td>
-					</tr>
-				`;
+			btns.forEach(b => {
+				b.classList.remove('primary');
+				b.classList.add('secondary');
 			})
+
+			el.classList.add('primary');
+			el.classList.remove('secondary');
 		}
 
-		let inv_results_headings = advanced ? 6 : 5;
-
-		outht += `
-			<tr>
-				<td colspan="${inv_results_headings - 1}"><b>Total</b></td>
-				<td>${mekSpan(formatNumber(agg.total))}</td>
-			</tr>
-		`;
-		resultsguy.innerHTML = outht;
-
-		invoice_summary.innerHTML = `
-			<h3 class="heading">Payment Details</h3>
-			<div class="row">
-				<div class="col-md-8">
-					<div>
-						<b>Mpesa number: </b> <br><b class="text-success_" style="font-size: 1rem">${processNumber(bizdeets.mpesa)}</b>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div>
-						<strong>Total Due</strong>
-					</div>
-					<div>
-						<strong class="h4 themetxt">KES ${formatNumber(agg.total)}</strong>
-					</div>
-				</div>
-			</div>
-			<div>
-				<h3 class="heading" style="font-size: 1.3rem;">Disclaimer</h3>
-				<p>
-					please confirm the validity of the invoice by scanning the QR code before proceeding to send money. When sent please forward the <b>invoice number</b> and <b>transaction code</b>
-					to our office whatsapp at <b style="display: inline-block;" class="themetxt">${processNumber(bizdeets.phone)}</b>
-				</p>
-				<p>
-					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${processNumber(bizdeets.mpesa)})</b> our office and the transaction code provided is what will be used to verify your payment
-				</p>
-			</div>
-		`;
-
-		// the signature and stamp section
-		outht = '';
-		signs.innerHTML = '';
-
-		outht = `
-			<div class="flowline in_fullwidth signsection">
-				<img src="${linkAtlas['bizimages']}/${bizimgs.Technician_signature}" class="signature_image">
-				<div class="anc">
-					<b>Technical Staff</b>
-				</div>
-				<div class="deets">
-					<div class="myrow">
-						<div>
-							<b>Name: </b>
-							<span>${bizdeets.tech_staff}</span>
-						</div>
-					</div>
-					<div class="myrow">
-						<b>signature:</b>
-					</div>
-				</div>
-			</div>
-			<div class="flowline in_fullwidth signsection">
-				<img src="${linkAtlas['bizimages']}/${bizimgs.supervisor_signature}" class="signature_image">
-				<div class="anc">
-					<b>Authorizer</b>
-				</div>
-				<div class="deets">
-					<div class="myrow">
-						<div>
-							<b>Name: </b>
-							<span>${bizdeets.auth_staff}</span>
-						</div>
-					</div>
-					<div class="myrow">
-						<b>signature:</b>
-					</div>
-				</div>
-			</div>
-		`;
-		signs.innerHTML = outht;
-
-		outht = '';
-		stamp.innerHTML = '';
-
-		outht = `
-			<img src="${linkAtlas['bizimages']}/${bizimgs.official_stamp}" class="stamp_image">
-			<div id="dateguy" class="w3-text-red">${('<?php echo date("d M Y")?>').toUpperCase()}</div>
-		`;
-		stamp.innerHTML = outht;
-	}
-	window['toggle_doctype'] = (el) => {
-		invoice_runtime_data.doctype = el.dataset.mytype == 'detailed' ? 'detailed' : 'plain';
-		render_all_data();
-
-		let btns = document.querySelectorAll('.doctype_toggler');
-
-		btns.forEach(b => {
-			b.classList.remove('primary');
-			b.classList.add('secondary');
-		})
-
-		el.classList.add('primary');
-		el.classList.remove('secondary');
-	}
-	window['processNumber'] = (n) => {
-		let xtra = "";
-		let num = n;
-		let proc = [];
-
-		num.split("").map((l,id) => {
-			let xt = id % 3 == 0 && id != 0 ? " " : "";
-			let n = `${l}${xt}`;
-			proc.push(n);
-		})
-
-		return `${xtra}${proc.join("")}`;
-	}
-
 	// operations
-	window['renderCanvas'] = async () => {
-		el = document.querySelector('#document_Holder>[data-role="report_setup"]');
-		outguy = document.querySelector('#canvasHolder>.canvasguy');
-		statsDiv = document.querySelector('#statsguy');
+		window['renderCanvas'] = async () => {
+			let els = document.querySelectorAll('#document_Holder>[data-role="report_setup"]');
+			let el1 = els[0];
+			let el2 = els[1];
 
-		if(el == undefined){alert_danger('document holder not found');return;}
-		if(outguy == undefined){alert_danger('output holder not found');return;}
-		if(genimage == undefined){alert_danger('generated image holder not found');return;}
+			outguy = document.querySelector('#canvasHolder>.canvasguy');
+			outguy2 = document.querySelector('#canvasHolder>.canvasguy_2');
 
-		alert_dark('rendering canvas');
+			statsDiv = document.querySelector('#statsguy');
+			statsDiv2 = document.querySelector('#statsguy2');
 
-		const options = {
-			allowTaint: true,
-			backgroundColor: null,
-			logging: false,
-			scale: 2,
-			useCORS: false
-		};
+			if(el1 == undefined){alert_danger('main data panel not found');return;}
+			if(el2 == undefined){alert_danger('detors panel not found');return;}
+			if(outguy == undefined){alert_danger('main output holder not found');return;}
+			if(outguy2 == undefined){alert_danger('detors output holder not found');return;}
+			if(genimage == undefined){alert_danger('main image holder not found');return;}
+			if(genimage2 == undefined){alert_danger('debtors image holder not found');return;}
 
-		outguy.innerHTML = 'rendering, please wait';
-		statsDiv.innerHTML = 'rendering, please wait';
+			alert_dark('rendering canvas...');
 
-		// outguy.classList.add('w3-hide');
-		// loader_render.classList.remove('w3-hide');
+			const options = {
+				allowTaint: true,
+				backgroundColor: null,
+				logging: false,
+				scale: 2,
+				useCORS: false
+			};
 
-		// setTimeout(async () => {
-			try{
+			delete(cashreport_runtime_data.canvases);
+
+			let mycanvases = [];
+			const renderme = async (guy,output,stats,input,saveprop = 'savedcanvas',filename=`gen_img_${mekRandomString(3)}`) => {
+				// return;
+				// render the main one
+				output.innerHTML = 'rendering, please wait';
+				stats.innerHTML = 'rendering, please wait';
+
 				const startTime = performance.now();
-
-				// capture element
-				const canvas = await html2canvas(el, options);
+				const canvas = await html2canvas(guy, options);
 				const endtime = performance.now();
 				const duration = (endtime - startTime).toFixed(2);
 
-				// outguy.classList.remove('w3-hide');
-				// loader_render.classList.add('w3-hide');
-				outguy.innerHTML = '';
-				outguy.appendChild(canvas);
+				output.innerHTML = '';
+				output.appendChild(canvas);
 
-				invoice_runtime_data.renderedCanvas = canvas;
+				let canva = {
+					'mycanvas' : canvas,
+				};
 
 				// /*
-				invoice_runtime_data.renderedCanvas.toBlob((blob) => {
-					const fyl = new File([blob],'generated_doc_image.png',{type: 'image/png'});
+				canva.mycanvas.toBlob((blob) => {
+					const fyl = new File([blob],filename,{type: 'image/png'});
 					let dtr = new DataTransfer();
 					dtr.items.add(fyl);
-					genimage.files = dtr.files;
+					input.files = dtr.files;
 				});
 				// */
 
 				let dur = duration + 400;
-				statsDiv.innerHTML = `
+				stats.innerHTML = `
 					<div class="info-row">
 						<span class="info-label">Size:</span>
 						<span class="info-value">${canvas.width} × ${canvas.height} px</span>
@@ -1015,322 +1143,399 @@
 					</div>
 				`;
 
-				alert_success('Invoice rendered');
-			} catch (error) {
-				output.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
-				console.error('Capture failed:', error);
+				// mycanvases.push(canva);
+				// console.log('adding to mycanvases');
+				return canva;
 			}
-		// },400);
-	}
 
-	window['generatePdf'] = async () => {
-		if(invoice_runtime_data.renderedCanvas == undefined){
-			alert_danger('no document has been rendered yet');
-			return;
+			// outguy.classList.add('w3-hide');
+			// loader_render.classList.remove('w3-hide');
+
+			// setTimeout(async () => {
+				try{
+					console.log('canvases before: ', mycanvases);
+
+					const [canvas1, canvas2] = await Promise.all([
+						renderme(el1,outguy,statsDiv,genimage,'saved_image_main'),
+						renderme(el2,outguy2,statsDiv2,genimage2,'saved_image_debtors'),
+					]);
+
+					mycanvases = [
+						canvas1,
+						canvas2,
+					];
+
+					cashreport_runtime_data.canvases = mycanvases;
+				} catch (error) {
+					output.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
+					console.error('Capture failed:', error);
+				}
+			// },400);
 		}
 
-		let rcv = invoice_runtime_data.renderedCanvas;
-		let fwidth = rcv.width;
-		let fheight = rcv.height;
-
-		const imgData = rcv.toDataURL('image/png');
-
-		const { jsPDF } = window.jspdf;
-		const pdf = new jsPDF({
-			orientation: fwidth > fheight ? 'landscape' : 'portrait',
-			unit: 'px',
-			format: [fwidth, fheight]
-		});
-
-		pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
-
-		return pdf;
-	}
-
-	window['gen_download'] = async () => {
-		try {
-			if(invoice_runtime_data.renderedCanvas == undefined){
-				throw new Error('no document has been rendered yet');
-			}
-			if(genfile == undefined){
-				throw new Error('the element to hold the document is missing');
+		window['generatePdf'] = async () => {
+			if(cashreport_runtime_data.renderedCanvas_main == undefined){
+				alert_danger('no document has been rendered yet');
+				return;
 			}
 
-			const pdf = await generatePdf();
+			let rcv = cashreport_runtime_data.renderedCanvas_main;
+			let fwidth = rcv.width;
+			let fheight = rcv.height;
 
-			if(!pdf){
-				throw new Error('something went wrong with generating the document.');
-			}
+			const imgData = rcv.toDataURL('image/png');
 
-			const theblob = pdf.output('blob');
-			const thefile = new File(
-				[theblob],
-				'generated_doc.pdf',
-				{type: 'application/pdf'}
-			);
-
-			const dtr = new DataTransfer();
-			dtr.items.add(thefile);
-
-			genfile.files = dtr.files;
-
-			// create a render of the first page to create a hash from
-			setuppdf_invoice(pdf,'fpreview').then((img) => {
-				invoice_runtime_data.filemade = true;
-				invoice_runtime_data.medFile = pdf;
-
-				// Download the PDF
-				// pdf.save('gen_doc.pdf');
-				// alert_danger('PDF downloaded successfully!', 'success');
+			const { jsPDF } = window.jspdf;
+			const pdf = new jsPDF({
+				orientation: fwidth > fheight ? 'landscape' : 'portrait',
+				unit: 'px',
+				format: [fwidth, fheight]
 			});
-		} catch (error) {
-			console.error('Error:', error);
-			alert_danger('Error generating PDF: ' + error.message);
+
+			pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
+
+			return pdf;
 		}
-	}
-	window['setuppdf_invoice'] = async (pdfFile,inputId = 'fileInput') => {
-	    try {
-	    	return null;
-	        // Read the PDF file
-	        const arrayBuffer = await pdfFile.arrayBuffer();
-	        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-	        const page = await pdf.getPage(1);
 
-	        // Set up canvas for rendering
-	        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
-	        const canvas = document.createElement('canvas');
-	        const context = canvas.getContext('2d');
-	        canvas.width = viewport.width;
-	        canvas.height = viewport.height;
+		window['gen_download'] = async () => {
+			try {
+				if(cashreport_runtime_data.renderedCanvas_main == undefined){
+					throw new Error('no document has been rendered yet');
+				}
+				if(genfile == undefined){
+					throw new Error('the element to hold the document is missing');
+				}
 
-	        // Render PDF page to canvas
-	        await page.render({
-	            canvasContext: context,
-	            viewport: viewport
-	        }).promise;
+				const pdf = await generatePdf();
 
-	        // Convert canvas to blob
-	        const blob = await new Promise(resolve => {
-	            canvas.toBlob(resolve, 'image/png', 0.95);
-	        });
+				if(!pdf){
+					throw new Error('something went wrong with generating the document.');
+				}
 
-	        // Create new file for the read page
-	        const originalName = pdfFile.name.replace('.pdf', '');
-	        const newFileName = `${originalName} [converted]`;
-	        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+				const theblob = pdf.output('blob');
+				const thefile = new File(
+					[theblob],
+					'generated_doc.pdf',
+					{type: 'application/pdf'}
+				);
 
-	        // Create a DataTransfer object to assign to the input
-	        const dataTransfer = new DataTransfer();
-	        dataTransfer.items.add(imageFile);
+				const dtr = new DataTransfer();
+				dtr.items.add(thefile);
 
-	        // Assign to file input
-	        const fileInput = document.getElementById(inputId);
-	        if(fileInput !== undefined){
-	        	fileInput.files = dataTransfer.files;
-	        }
+				genfile.files = dtr.files;
 
-	        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-	        return imageFile;
-	    } catch (error) {
-	        console.error('Error converting PDF to image:', error);
-	        throw error;
-	    }
-	}
+				// create a render of the first page to create a hash from
+				setuppdf_invoice(pdf,'fpreview').then((img) => {
+					cashreport_runtime_data.filemade = true;
+					cashreport_runtime_data.medFile = pdf;
 
-	window['download_invoice_pdf'] = () => {
-		return;
-		if(invoice_runtime_data.medFile == undefined){
-			alert_danger('no pdf has been generated yet');
+					// Download the PDF
+					// pdf.save('gen_doc.pdf');
+					// alert_danger('PDF downloaded successfully!', 'success');
+				});
+			} catch (error) {
+				console.error('Error:', error);
+				alert_danger('Error generating PDF: ' + error.message);
+			}
+		}
+		window['setuppdf_invoice'] = async (pdfFile,inputId = 'fileInput') => {
+		    try {
+		    	return null;
+		        // Read the PDF file
+		        const arrayBuffer = await pdfFile.arrayBuffer();
+		        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+		        const page = await pdf.getPage(1);
+
+		        // Set up canvas for rendering
+		        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+		        const canvas = document.createElement('canvas');
+		        const context = canvas.getContext('2d');
+		        canvas.width = viewport.width;
+		        canvas.height = viewport.height;
+
+		        // Render PDF page to canvas
+		        await page.render({
+		            canvasContext: context,
+		            viewport: viewport
+		        }).promise;
+
+		        // Convert canvas to blob
+		        const blob = await new Promise(resolve => {
+		            canvas.toBlob(resolve, 'image/png', 0.95);
+		        });
+
+		        // Create new file for the read page
+		        const originalName = pdfFile.name.replace('.pdf', '');
+		        const newFileName = `${originalName} [converted]`;
+		        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+
+		        // Create a DataTransfer object to assign to the input
+		        const dataTransfer = new DataTransfer();
+		        dataTransfer.items.add(imageFile);
+
+		        // Assign to file input
+		        const fileInput = document.getElementById(inputId);
+		        if(fileInput !== undefined){
+		        	fileInput.files = dataTransfer.files;
+		        }
+
+		        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+		        return imageFile;
+		    } catch (error) {
+		        console.error('Error converting PDF to image:', error);
+		        throw error;
+		    }
+		}
+
+		window['download_invoice_pdf'] = () => {
 			return;
+			if(cashreport_runtime_data.medFile == undefined){
+				alert_danger('no pdf has been generated yet');
+				return;
+			}
+
+			if(cashreport_runtime_data.aggregates == undefined){
+				alert_danger('tasks data missing, refresh the page to fix',4);
+				return;
+			}
+
+			cashreport_runtime_data.medFile.save(`[${cashreport_runtime_data.aggregates.invoice_id}] generated_invoice.pdf`);
+
+			alert_info('downloading generated pdf');
 		}
+		window['download_invoice_img'] = () => {
+			const invdata = {...cashreport_runtime_data};
+			const canvas = cashreport_runtime_data.renderedCanvas_main;
 
-		if(invoice_runtime_data.aggregates == undefined){
-			alert_danger('tasks data missing, refresh the page to fix',4);
-			return;
+			// Create a new window for printing
+			const printWindow = window.open('', '_blank');
+			const dataUrl = canvas.toDataURL();
+
+			let a = document.createElement('a');
+			a.href = dataUrl;
+			a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] generated_invoice`;
+			document.body.appendChild(a);
+
+			a.click();
+			document.body.removeChild(a);
 		}
+		window['printPdf'] = () => {
+			// Get the canvas element
+			// const canvasId = 'mycanvas';
+			// const canvas = document.getElementById(canvasId);
+			const canvas = cashreport_runtime_data.renderedCanvas_main;
 
-		invoice_runtime_data.medFile.save(`[${invoice_runtime_data.aggregates.invoice_id}] generated_invoice.pdf`);
+			// Create a new window for printing
+			const printWindow = window.open('', '_blank');
 
-		alert_info('downloading generated pdf');
-	}
-	window['download_invoice_img'] = () => {
-		const invdata = {...invoice_runtime_data};
-		const canvas = invoice_runtime_data.renderedCanvas;
+			// Get the canvas as a data URL
+			const dataUrl = canvas.toDataURL();
 
-		// Create a new window for printing
-		const printWindow = window.open('', '_blank');
-		const dataUrl = canvas.toDataURL();
-
-		let a = document.createElement('a');
-		a.href = dataUrl;
-		a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] generated_invoice`;
-		document.body.appendChild(a);
-
-		a.click();
-		document.body.removeChild(a);
-	}
-	window['printPdf'] = () => {
-		// Get the canvas element
-		// const canvasId = 'mycanvas';
-		// const canvas = document.getElementById(canvasId);
-		const canvas = invoice_runtime_data.renderedCanvas;
-
-		// Create a new window for printing
-		const printWindow = window.open('', '_blank');
-
-		// Get the canvas as a data URL
-		const dataUrl = canvas.toDataURL();
-
-		// Write HTML to the print window
-		printWindow.document.write(`
-			<!DOCTYPE html>
-			<html>
-				<head>
-					<title>Print Canvas</title>
-					<style>
-						body {
-							margin: 0;
-							padding: 0;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							min-height: 100vh;
-						}
-						img {
-							max-width: 100%;
-							height: auto;
-						}
-						@media print {
+			// Write HTML to the print window
+			printWindow.document.write(`
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<title>Print Canvas</title>
+						<style>
 							body {
 								margin: 0;
+								padding: 0;
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								min-height: 100vh;
 							}
 							img {
 								max-width: 100%;
 								height: auto;
-								page-break-inside: avoid;
 							}
-						}
-					</style>
-				</head>
-				<body>
-					<img src="${dataUrl}" onload="printme()" />
-					<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
-				</body>
-			</html>
-		`);
+							@media print {
+								body {
+									margin: 0;
+								}
+								img {
+									max-width: 100%;
+									height: auto;
+									page-break-inside: avoid;
+								}
+							}
+						</style>
+					</head>
+					<body>
+						<img src="${dataUrl}" onload="printme()" />
+						<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
+					</body>
+				</html>
+			`);
 
-		printWindow.document.close();
-	}
-	window['generateSerial'] = (b) => {
-		// let serial = `${b.sample_no}_${b.reports_count}`;
-		invoice_runtime_data.invoice_no = invoice_runtime_data.aggregates.invoices_id;
-		return serial;
-	}
+			printWindow.document.close();
+		}
+		window['generateSerial'] = (b) => {
+			// let serial = `${b.sample_no}_${b.reports_count}`;
+			// cashreport_runtime_data.invoice_no = cashreport_runtime_data.aggregates.invoices_id;
+			return '--xx--';
+		}
+
+		window['download_me'] = (el) => {
+			// alert_dark(`im doing it for ${el.dataset.me}`);
+			let me = el.dataset.me;
+			let c_id = Number(el.dataset.myid);
+			let canva = cashreport_runtime_data.canvases[c_id];
+
+			if(canva == undefined){
+				alert_danger('invalid canvas, render the document again')
+				return;
+			}
+			const imageDataUrl = canva.mycanvas.toDataURL('image/png');
+			let a = document.createElement('a');
+			a.href = imageDataUrl;
+			a.download = me == 'debtors' ? 'debtors_report_image' : 'cash_report_image.png';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		};
+		window['print_me'] = (el) => {
+			// alert_dark(`im doing it for ${el.dataset.me}`);
+			let c_id = Number(el.dataset.myid);
+			let canva = cashreport_runtime_data.canvases[c_id];
+
+			if(canva == undefined){
+				alert_danger('invalid canvas, render the document again')
+				return;
+			}
+
+			const imageDataUrl = canva.mycanvas.toDataURL('image/png');
+
+			// Open in new tab
+			let printtxt = `
+				onload="printme()"
+			`;
+			const newTab = window.open();
+			newTab.document.write(`
+				<html>
+					<head>
+						<title>Printed Element</title>
+						<style>
+							body { margin: 0;}
+							img { max-width: 100%; height: auto;}
+						</style>
+					</head>
+					<body>
+						<img src="${imageDataUrl}" alt="Captured element" ${printtxt}/>
+						<script>const printme=()=>{setTimeout(()=>{window.print();},600);}<\/script>
+					</body>
+				</html>
+			`);
+			newTab.document.close();
+		};
 
 	// navops
-	window['pick_step'] = (n) => {
-		progressLine.style.width = `${spans[n]}%`;
-		// render_all_data();
+		window['pick_step'] = (n) => {
+			progressLine.style.width = `${spans[n]}%`;
+			// render_all_data();
 
-		checks.forEach((w,id) => {
-			if(id == n){
-				w.classList.add('active');
-			}else {
-				w.classList.remove('active');
-			}
+			checks.forEach((w,id) => {
+				if(id == n){
+					w.classList.add('active');
+				}else {
+					w.classList.remove('active');
+				}
 
-			if(id < n){
-				w.classList.add('completed');
+				if(id < n){
+					w.classList.add('completed');
+				} else {
+					w.classList.remove('completed');
+				}
+			})
+
+			tabs.forEach(el => {
+				el.style.display = 'none';
+			})
+
+			let it = tabs[n];
+			if(it !== undefined){
+				it.style.display = 'block';
 			} else {
-				w.classList.remove('completed');
-			}
-		})
-
-		tabs.forEach(el => {
-			el.style.display = 'none';
-		})
-
-		let it = tabs[n];
-		if(it !== undefined){
-			it.style.display = 'block';
-		} else {
-			alert('tab doesnt exist');
-		}
-	}
-	window['pick_step_2'] = (g, skipchecks = false) => {
-		let n = Number(g.dataset.step);
-
-		// alert_warning('knadwjnwadkjwad');
-
-		// if(!skipchecks){
-			if(invoice_runtime_data.renderedCanvas == undefined && n > 0){
-				alert_danger('render a Invoice first');
-				return;
-			}
-			if(invoice_runtime_data.filemade == undefined && n > 1){
-				alert_danger('finalize the document first');
-				return;
-			}
-		// }
-
-		pick_step(n);
-	}
-	window['pick_step_3'] = async (g) => {
-		let n = Number(g.dataset.step);
-		alert_info(g.dataset.msg || 'running operation...');
-		// alert('whaadadadad');
-
-		if(n < steps.length){
-			let mystep = steps[n];
-
-			if(window[mystep] !== undefined){
-				alert_dark(`running: ${mystep}`);
-				// pick_step_2(g,true);
-
-				window[mystep]().then(w => {
-					pick_step_2(g);
-				});
+				alert('tab doesnt exist');
 			}
 		}
-	}
+		window['pick_step_2'] = (g, skipchecks = false) => {
+			let n = Number(g.dataset.step);
+
+			// if(!skipchecks){
+				if(cashreport_runtime_data.canvases == undefined && n > 0){
+					alert_danger('render a Cash report first');
+					return;
+				}
+				if(cashreport_runtime_data.canvases.length < 2 && n > 0){
+					alert_danger('render a Cash report first');
+					return;
+				}
+				if(cashreport_runtime_data.filemade == undefined && n > 1){
+					alert_danger('finalize the document first');
+					return;
+				}
+			// }
+
+			pick_step(n);
+		}
+		window['pick_step_3'] = async (g) => {
+			let n = Number(g.dataset.step);
+			alert_info(g.dataset.msg || 'running operation...');
+			// alert('whaadadadad');
+
+			if(n < steps.length){
+				let mystep = steps[n];
+
+				if(window[mystep] !== undefined){
+					alert_dark(`running: ${mystep}`);
+					// pick_step_2(g,true);
+
+					window[mystep]().then(w => {
+						pick_step_2(g);
+					});
+				}
+			}
+		}
 
 	// afterwork stuff
-	window['upload_stuff'] = (el) => {
-		const step2 = (d) => {
-			alert_info('uploading Invoice...');
-			el.invoice_no.value = invoice_runtime_data.aggregates.invoice_id;
-			el.file_slug.value = invoice_runtime_data.file_slug;
-			el.client_id.value = invoice_runtime_data.clientData.id;
-			el.admin_password_mine.value = d.admin_password;
-			el.bizdata.value = JSON.stringify(bizdata);
+		window['upload_stuff'] = (el) => {
+			const step2 = (d) => {
+				alert_info('uploading Cash report...');
+				el.invoice_no.value = cashreport_runtime_data.aggregates.invoice_id;
+				el.file_slug.value = cashreport_runtime_data.file_slug;
+				el.client_id.value = cashreport_runtime_data.clientData.id;
+				el.admin_password_mine.value = d.admin_password;
+				el.bizdata.value = JSON.stringify(bizdata);
 
-			if(invoice_runtime_data.invoice_id !== undefined){
-				el.action = "defined:update_invoice_image";
-				el.invoice_no.value = invoice_runtime_data.invoice_id;
-			} else {
-				el.action = "defined:save_invoice";
+				if(cashreport_runtime_data.invoice_id !== undefined){
+					el.action = "defined:update_invoice_image";
+					el.invoice_no.value = cashreport_runtime_data.invoice_id;
+				} else {
+					el.action = "defined:save_invoice";
+				}
+
+				pick_step(3);
+
+				sendform(el,step3,step2b);
 			}
 
-			pick_step(3);
+			const step2b = (d) => {
+				pick_step(2);
+				alert_danger('there was an error uploading the Cash report');
+			}
 
-			sendform(el,step3,step2b);
+			const step3 = (d) => {
+				pick_step(4);
+				// confirmAction(mekHeading('Cash report generated successfully','h4'),'the Cash report has been generated successfully',() => {});
+				alert_success('Cash report uploaded successfully');
+			}
+
+			const step1 = () => {
+				awaitConfirmPass(step2);
+			}
+
+			step1();
 		}
-
-		const step2b = (d) => {
-			pick_step(2);
-			alert_danger('there was an error uploading the Invoice');
-		}
-
-		const step3 = (d) => {
-			pick_step(4);
-			// confirmAction(mekHeading('Invoice generated successfully','h4'),'the Invoice has been generated successfully',() => {});
-			alert_success('Invoice uploaded successfully');
-		}
-
-		const step1 = () => {
-			awaitConfirmPass(step2);
-		}
-
-		step1();
-	}
 </script>

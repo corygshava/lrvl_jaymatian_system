@@ -27,7 +27,12 @@
 					<div class="input-group-custom">
 						<div class="form-group">
 							<label class="form-label" for="purpose">Purpose</label>
-							<input type="text" class="form-control-custom" id="purpose" name="purpose" placeholder="what was it used for" required>
+							<!-- <input type="text" class="form-control-custom" id="purpose" name="purpose" placeholder="what was it used for" required> -->
+							<select class="form-control-custom" id="purpose" name="purpose" required>
+								<option value="">purpose</option>
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</select>
 						</div>
 					</div>
 
@@ -98,7 +103,7 @@
 
 		let toshow = {
 			'internal serial' : expense.expenditure_no,
-			'purpose' : `<strong class="mybadge themeround ${purpose_classes[expense.purpose.toLowerCase()]}">${expense.purpose}</strong>`,
+			'purpose' : `<strong class="mybadge themeround ${purpose_classes[expense.purpose.toLowerCase()] || "w3-blue"}">${expense.purpose}</strong>`,
 			'Added by' : expense.mycreator.name,
 			'Amount' : `<strong>${formatNumber(expense.amount,2)}</strong>`,
 			'Added on' : `<span>${formatDate0(expense.created_at)}</span>`,
@@ -146,5 +151,28 @@
 		`;
 
 		container.innerHTML = outht;
+	}
+
+	window['setup_expense_types'] = () => {
+		let theform = add_edit_form;
+		let select = theform.purpose;
+
+		select.innerHTML = ``;
+
+		let dft = document.createElement('option');
+		dft.value = "";
+		dft.textContent = "Select a purpose";
+		dft.selected = true;
+		dft.disabled = true;
+
+		select.appendChild(dft);
+
+		expenditure_categories.forEach(ex => {
+			let newop = document.createElement('option');
+			newop.value = ex;
+			newop.innerHTML = ex;
+
+			select.appendChild(newop);
+		});
 	}
 </script>

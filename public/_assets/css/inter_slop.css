@@ -1035,6 +1035,7 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 /* table styles */
 	.mytable{
 		width: 100%;
+		--r_border: #000;
 	}
 	.mytable td,.mytable th{
 		padding: 1px 3px;

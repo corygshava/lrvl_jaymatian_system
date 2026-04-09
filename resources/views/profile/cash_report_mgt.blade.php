@@ -509,6 +509,14 @@
 						sortable: true
 					},
 					{
+						title: 'Serial',
+						data: 'cash_report_no',
+						sortable: true,
+						render: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
 						title: 'Added by',
 						data: 'mycreator',
 						sortable: true,

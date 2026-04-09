@@ -402,7 +402,6 @@
 		'showerror',
 		'showloader',
 		'render_all_data',
-		'processNumber',
 		'renderCanvas',
 		'generatePdf',
 		'gen_download',
@@ -573,7 +572,7 @@
 			invoice_runtime_data.bizdata = d.sendme;
 			window['bizdata'] = parseBizdata(d.sendme);
 
-			final_step();
+			// final_step();
 			// skip to prevent failure when internet is down
 			// return;
 
@@ -799,10 +798,10 @@
 		} else {
 			invTableHeadings.innerHTML = `
 				<th style="width: 40px;"><span></span></th>
-				<th style="width: 120px;"><span>Task No</span></th>
 				<th style="width: 200px;"><span>date delivered</span></th>
 				<th style="width: 190px;"><span>Samples type</span></th>
 				<th style="width: 190px;"><span>Samples delivered</span></th>
+				<th style="width: 120px;"><span>Task No</span></th>
 				<th style="width: 90px;"><span>balance</span></th>
 			`;
 			s_data.forEach((r,i) => {
@@ -816,10 +815,10 @@
 				outht += `
 					<tr>
 						<td><span>${i + 1}</span></td>
-						<td ${bigone}>${mekSpan(r.task_no)}</td>
 						<td>${mekSpan(formatDate0(r.created_at))}</td>
 						<td>${mekSpan(r.sample_type)}</td>
 						<td>${mekSpan(r.sample_count)}</td>
+						<td ${bigone}>${mekSpan(r.task_no)}</td>
 						<td ${bigone}>${mekSpan(formatNumber(r.balance))}</td>
 					</tr>
 				`;
@@ -960,7 +959,7 @@
 			allowTaint: true,
 			backgroundColor: null,
 			logging: false,
-			scale: 2,
+			scale: 4,
 			useCORS: false
 		};
 

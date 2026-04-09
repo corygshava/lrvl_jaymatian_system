@@ -147,10 +147,10 @@
 			"carbon samples" : formatNumber(drd.sample_data['carbon']),
 			"carbon activity samples" : formatNumber(drd.sample_data['carbon activity']),
 		};
-		let deets_2_outht = '';
+		let samples_outht = '';
 
 		Object.keys(toshow_2).forEach(f => {
-			deets_2_outht += range == 'today' ?
+			samples_outht += range == 'today' || true ?
 			`
 				<div class="info-row">
 					<span class="info-label">${f.split("_").join(' ')}:</span>
@@ -210,10 +210,14 @@
 
 
 		// system usage subsection
+			let gen_from_spend_Data = {};
+			Object.keys(drd.spend_data).forEach(s => {
+				gen_from_spend_Data[s] = `KES ${formatNumber(drd.spend_data[s])}`;
+			});
 			let toshow_5 = {
-				"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
-				"director expenditure" : `${formatNumber(drd.spend_data["director expenditure"])}`,
-				"Bank transfer" : `${formatNumber(drd.spend_data["Bank transfer"])}`,
+				// "Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
+				...gen_from_spend_Data,
+				"Total Expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
 			};
 			let deets_5_outht = '';
 
@@ -226,45 +230,118 @@
 				`;
 			});
 
+		// debt payments subsection
+			let debtpay_outht = `
+				<table class="mytable">
+					<thead>
+						<tr>
+							<th>${mekSpan('Name')}</th>
+							<th>${mekSpan('Contact')}</th>
+							<th>${mekSpan('unpaid invoices')}</th>
+							<th>${mekSpan('Total Paid')}</th>
+							<th>${mekSpan('Balance')}</th>
+						</tr>
+					</thead>
+					<tbody>
+			`;
+
+			if(drd.debt_pay_data !== undefined && drd.debt_pay_data.length > 0){
+				let tot_balance = 0;
+				drd.debt_pay_data.forEach(f => {
+					debtpay_outht += `
+						<tr>
+							<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+							<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
+							<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
+							<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
+							<td class="w3-right-align"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+						</tr>
+					`;
+
+					tot_balance += Number(f.credit_balance);
+				});
+
+				debtpay_outht += `
+						<tr>
+							<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
+							<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
+							<td class="themetxt w3-right-align"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
+						</tr>
+					</tbody>
+				</table>
+				`;
+			} else {
+				debtpay_outht += `
+						<tr>
+							<td colspan="12">
+								<span style="font-size: 1.1rem;">
+									<i>${drd.created_at == undefined ? 'no debt payments found' : 'no debt payments recorded'}</i>
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				`;
+			}
+
 		// system usage subsection
-			let toshow_6 = {
-				"Expenditure Entries" : `${formatNumber(drd.expenses_count)}`,
-				"director expenditure" : `${formatNumber(drd.spend_data["director expenditure"])}`,
-				"Bank transfer" : `${formatNumber(drd.spend_data["Bank transfer"])}`,
-			};
-			let deets_6_outht = '';
+			let debtors_outht = `
+				<table class="mytable">
+					<thead>
+						<tr>
+							<th>${mekSpan('Name')}</th>
+							<th>${mekSpan('Contact')}</th>
+							<th>${mekSpan('unpaid invoices')}</th>
+							<th>${mekSpan('Total Owed')}</th>
+						</tr>
+					</thead>
+					<tbody>
+			`;
 
 			if(drd.debtors !== undefined && drd.debtors.length > 0){
 				drd.debtors.forEach(f => {
-					deets_6_outht += `
-						<div class="spacy-tn themeround_ mb-2 border-bottom flowline spread">
-							<b style="font-size: 1.1rem;">${f.client_name}</b>
-							<strong>KES ${formatNumber(f.credit_balance,2)}</strong>
-						</div>
+					debtors_outht += `
+						<tr>
+							<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+							<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
+							<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
+							<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+						</tr>
 					`;
 				});
 
-				deets_6_outht += `
-					<div class="spacy-sm themeround mb-2 flowline spread" style="background: #eee;">
-						<b style="font-size: 1.1rem;">Total</b>
-						<strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong>
-					</div>
+				debtors_outht += `
+						<tr>
+							<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
+							<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+						</tr>
+					</tbody>
+				</table>
 				`;
 			} else {
-				deets_6_outht += `
-					<div class="spacy-sm themeround mb-2 flowline spread centroid" style="background: #eee;">
-						<b style="font-size: 1.1rem;"><i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i></b>
-					</div>
+				debtors_outht += `
+						<tr>
+							<td colspan="12">
+								<span style="font-size: 1.1rem;">
+									<i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i>
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 				`;
 			}
 
 		// visual hints to show system info
 		let thedate = drd.created_at == undefined ? `<b class="themetxt">${range.replace('_',' ')}</b>` : `<b class="themetxt">${formatDate(new Date(drd.created_at))}</b>`;
 		let btns = drd.created_at == undefined ? `
-			<button class="mybtn primary" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Cash Report</button>
+			<button class="mybtn primary ${window['is_admin_page'] ? 'is_ghost' : ''}" data-runme="save_daily_report"><i class="fa fa-save"></i> Save Cash Report</button>
 		` : `
 			<button class="mybtn primary" data-runme="print_daily_report" data-myid="${drd.id}" data-mytype="${drd.rectype || 'daily'}"><i class="fa fa-print"></i> Print Report</button>
 		`;
+		let extrabtn = drd.created_at == undefined ? `
+			<button class="mybtn primary" data-runme="print_current_setup" data-myid="${drd.id}" data-mytype="${drd.rectype || 'daily'}"><i class="fa fa-print"></i> Print Current Setup</button>
+		` : '';
 		save_daily_modal_title.innerHTML = `
 			${drd.rectype || 'Daily'} summary for ${thedate}
 		`;
@@ -280,7 +357,7 @@
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>
 				<div class="collapse panelbg distance-sm spacy-sm" id="sampleInfo">
-					${deets_2_outht}
+					${samples_outht}
 				</div>
 			</div>
 
@@ -315,17 +392,36 @@
 			</div>
 
 			<div class="distance-sm border themeround collapser">
+				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#debtpayInfo" data-toggle="collapse" data-target="#debtpayInfo">
+					<span class="text-uppercase text-muted font-weight-bold"><i class="${iconAtlas['invoices']}"></i> Debt payments</span>
+					<i class="fa fa-chevron-down myicon"></i>
+				</a>
+				<div class="collapse panelbg distance-sm spacy-sm" id="debtpayInfo">
+					${debtpay_outht}
+				</div>
+			</div>
+
+			<div class="distance-sm border themeround collapser">
 				<a class="text-decoration-none spacy-sm flowline spread centerline" href="#debtorInfo" data-toggle="collapse" data-target="#debtorInfo">
 					<span class="text-uppercase text-muted font-weight-bold"><i class="${iconAtlas['clients']}"></i> Debtors</span>
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>
 				<div class="collapse panelbg distance-sm spacy-sm" id="debtorInfo">
-					${deets_6_outht}
+					${debtors_outht}
 				</div>
 			</div>
 
 			<div class="flowline left gap-sm distance-sm">
+		`;
+
+		if(!window['is_admin_page']){
+			outht += `
 				${btns}
+			`;
+		}
+
+		outht += `
+				${extrabtn}
 			</div>
 		`;
 
@@ -353,6 +449,16 @@
 	window['print_daily_report'] = (btn) => {
 		window[variableAtlas['cash_report_id']] = btn.dataset.myid;
 		window[variableAtlas['cash_report_type']] = btn.dataset.mytype;
+		loadPage({template: linkAtlas['print_cash_report'], sidenote: pageNames['print_cash_report']});
+	}
+
+	window['print_current_setup'] = (btn) => {
+		window[variableAtlas['cash_report_id']] = btn.dataset.myid;
+		window[variableAtlas['cash_report_type']] = btn.dataset.mytype;
+		if(daily_report_data.daily_report.context == undefined){
+			daily_report_data.daily_report.context = formatDate(new Date());
+		}
+		window[variableAtlas['cash_report_data']] = daily_report_data.daily_report;
 		loadPage({template: linkAtlas['print_cash_report'], sidenote: pageNames['print_cash_report']});
 	}
 

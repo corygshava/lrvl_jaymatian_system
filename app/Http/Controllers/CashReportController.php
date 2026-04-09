@@ -181,6 +181,65 @@ class CashReportController extends Controller{
 		return response()->json($res);
 	}
 
+	public function get_one(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'id' => ['required'],
+			'type' => ['required','in:daily,monthly'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+			$cashreport = null;
+
+			$c_type = $passed['type'];
+			$c_id = $passed['id'];
+
+			$source = $c_type == 'daily' ? new DailyCashReport() : new MonthlyCashReport();
+
+			$cashreport = $source->where('id',$c_id)->with('mycreator')->first();
+
+			if($cashreport == null){
+				$_msg("invalid $c_type cash report");
+			} else {
+				$_msg("$c_type cash report found");
+				$reslt = true;
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $cashreport;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
     public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
 		$res = $this->dftres;
 		// $res = [...$res,...$oldres];
@@ -333,16 +392,62 @@ class CashReportController extends Controller{
 					$_msg('cash flow data compiled');
 
 				// get expenditure data
-					$director_expenditure = (clone $expenses)->where('purpose','expenditure')->sum('amount');
-					$bank_transfer = (clone $expenses)->where('purpose','<>','expenditure')->sum('amount');
-					$spend_data = [
-						'director expenditure' => $director_expenditure,
-						'Bank transfer' => $bank_transfer,
-					];
+					$spend_data = [];
+					$new_spend_data = Expense::timeRange($t_range) // if you're using your TimeRangeScope trait
+						->selectRaw('purpose, SUM(amount) as total_amount')
+						->groupBy('purpose')
+						->get()
+						->map(function($expense) {
+							return [
+								"p" => $expense->purpose,
+								"amt" => $expense->total_amount,
+							];
+						})
+						->toArray()
+					;
+					foreach($new_spend_data as $nsd){
+						$spend_data[$nsd["p"]] = $nsd["amt"];
+					}
+
 				// get debtors
 					$d_clients = Client::where('credit_balance','>',0);
 					$total_debit = (clone $d_clients)->sum('credit_balance');
-					$debtors = (clone $d_clients)->withCount('invoices')->get();
+					$guys = (clone $d_clients)->get();
+					$debtors = [];
+
+					// figure out how many unpaid invoices each debtor has
+					foreach($guys->toArray() as $dd){
+						$tmg = $dd;
+						$tmg['invoices_count'] = Invoice::where('client_id',$tmg['id'])->where('status','<>',2)->count();
+
+						$debtors[] = $tmg;
+					}
+
+				// get debt payment data
+					$d_payments = Payment::where('payment_type', 'invoice')
+						->timeRange($t_range)
+						->selectRaw('client_id, SUM(amount) as total_payment')
+						->groupBy('client_id')
+						->get();
+
+					$debt_payments = [];
+
+					foreach($d_payments as $invoice) {
+						$cquery = Client::where('id',$invoice->client_id);
+						$client = (clone $cquery)->first();
+						$unpaid_invoices = Invoice::where('client_id',$client->id)->where('status','<>',2)->count();
+
+						if ($client == null) {
+							$update_runlog('invalid client payment found');
+						} else {
+							$tmgg = (clone $cquery)->first()->toArray();
+							$debt_payments[] = [
+								...$tmgg,
+								'invoices_count' => $unpaid_invoices,
+								'payment_amount' => $invoice->total_payment,
+							];
+						}
+					}
 
 				// get extra data
 					$total_users = User::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
@@ -373,7 +478,9 @@ class CashReportController extends Controller{
 					'sample_data' => $sampledata,
 					'cash_data' => $cash_data,
 					'spend_data' => $spend_data,
+					'spend_data_new' => $new_spend_data,
 					'debtors' => $debtors,
+					'debt_pay_data' => $debt_payments,
 
 					// extras, coz why not
 					'users_count' => $total_users,
@@ -471,8 +578,11 @@ class CashReportController extends Controller{
 			} else {
 				$_msg('saving daily report');
 				$toadd = $this->get_for_today($req,true,$res['runlog']);
+				$cnt = DailyCashReport::where('id','<>',null)->count();
+				$num = str_pad("$cnt",4,'0',STR_PAD_LEFT);
 				// unset($toadd['carry_over']);
 				$toadd['added_by'] = $user->id;
+				$toadd['cash_report_no'] = "CRPT_D_{$num}";
 				$_rlg($toadd);
 				$created = null;
 				$created = DailyCashReport::create($toadd);
@@ -556,7 +666,12 @@ class CashReportController extends Controller{
 			} else {
 				$_msg('saving monthly report');
 				$toadd = $this->get_for_today($req,true,$res['runlog']);
-				unset($toadd['carry_over']);
+				$cnt = MonthlyCashReport::where('id','<>',null)->count();
+				$num = str_pad("$cnt",4,'0',STR_PAD_LEFT);
+				$toadd['added_by'] = $user->id;
+				$toadd['cash_report_no'] = "CRPT_M_{$num}";
+				$_rlg($toadd);
+				$created = null;
 				$created = MonthlyCashReport::create($toadd);
 
 				if($created == null){
