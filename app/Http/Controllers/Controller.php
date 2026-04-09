@@ -587,47 +587,21 @@ abstract class Controller{
 		return [
 			"last_update" => Carbon::parse(self::$sys_permissions_last_update),
 			"permissions" => [
-				"VIEW_DASHBOARD" => "view the staff dashboard",
-				"VIEW_ANALYTICS" => "view analytics dashboard",
-
-				// roles
-				"ADD_ROLE" => "add a user role",
-				"EDIT_ROLE" => "edit a user role",
-
-				// users
-				"ADD_USER" => "add a new user",
-				"EDIT_USER" => "edit user details",
-				"MANAGE_USERS" => "manage registered users",
-				"ACTIVATE_USER" => "activate / deactivate accounts",
-				"EDIT_PROFILE" => "modify account details",
-
-				// clients
-				"ADD_CLIENT" => "register a client",
-				"EDIT_CLIENT" => "modify client information",
-				"VIEW_CLIENT" => "view client information",
-				"MANAGE_CLIENTS" => "manage client information",
-				"MANAGE_CLIENT_CREDIT" => "change client's credit",
-
-				// tasks
-				"ADD_TASK" => "add a processing task",
-				"EDIT_TASK" => "handle job processing",
-				"VIEW_TASK" => "view job details",
-				"MANAGE_TASKS" => "manage tasks",
-				// "CANCEL_TASK" => "cancel a created tasks",
-
-				// samples
-				"MANAGE_SAMPLES" => "manage sample records",
-
-				// payments
-				"VIEW_PAYMENTS" => "view payments",
-				"GEN_REPORT" => "generate a report from a job",
-				"VIEW_REPORT" => "view generated reports internally",
-				// 'ADD_REPORT' => "",
-
-				// expenses
-				"VIEW_EXPENSES" => "view expense records",
-				"ADD_EXPENSE" => "add expense records",
-				"ADD_TRANSFER" => "add transfer records",
+				"view_dashboard" => 'view the admin dashboard',
+				"view_console" => 'view the normal user dashboard',
+				"manage_user_roles" => 'view the different user roles',
+				"manage_users" => 'view all registered users',
+				"manage_clients" => 'view all registered clients',
+				"manage_tasks" => 'view all tasks',
+				"add_task" => 'add a new task',
+				"manage_samples" => 'view all staff records',
+				"manage_payments" => 'view all payment records',
+				"manage_reports" => 'view all reports',
+				"manage_invoices" => 'view all invoices',
+				"manage_bizdata" => 'view business data interface',
+				"manage_expenses" => 'view expenses interface',
+				"manage_cashreports" => 'view cash reports interface',
+				"verify_files" => 'view file verification interface',
 			],
 		];
 	}

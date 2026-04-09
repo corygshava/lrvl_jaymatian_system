@@ -73,7 +73,7 @@ Route::prefix('/ui')->group(function (){
 });
 
 Route::prefix('/data')->group(function(){
-	Route::get('/user_roles', [UserRoleController::class,'get_all'])->middleware(['auth','verified']);
+	Route::get('/user_roles', [UserRoleController::class,'get_all'])->middleware(['auth','verified','check.permissions:manage_users,view_reports']);
 	Route::get('/cur_user', [UserController::class,'get_current'])->middleware(['auth','verified']);
 	Route::get('/users', [UserController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/allpermissions', [UserController::class,'showpermissions'])->middleware(['auth','verified']);
@@ -166,7 +166,9 @@ Route::prefix('/op')->group(function(){
 	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 
 	Route::post('/save_daily_report',[CashReportController::class, 'save_me'])->middleware(['auth','verified']);
-});
+})
+// ->middleware('')
+;
 
 Route::prefix('/media')->group(function(){
 	Route::get('/bizimg/{fyl}',[ViewController::class, 'showimg']);
