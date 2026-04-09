@@ -626,6 +626,15 @@
 					browseHistory.push(p);
 					fullHistory.push(p);
 					renderCrumbs();
+
+					window[fetch_bypass]('./api/log_intent',{intent: p.sidenote,path: p.template,ccsx: cur_user.id}).then(() => {
+						alert_silent('intent logged');
+						console.log('intent logged successfully');
+					})
+					.catch((err) => {
+						alert_silent(err.message);
+						console.error(err);
+					});
 					return;
 
 					// was quite buggy and i had already found a workaround so had to ignore it somehow
@@ -634,7 +643,19 @@
 							after();
 						},400);
 					}
-				}).finally(() => {
+				})
+				.catch(err => {
+					dynamic_ui.innerHTML = mekError('Error',`error loading interface: ${err.message}`,true);
+					window[fetch_bypass]('./api/log_error',{intent: p.sidenote,path: p.template,ccsx: cur_user.id,error: err.message}).then(() => {
+						alert_silent('error logged');
+						console.log('error logged successfully');
+					})
+					.catch((err) => {
+						alert_silent(err.message);
+						console.error(err);
+					});
+				})
+				.finally(() => {
 					activateSidebar(true);
 				});
 			},400);
