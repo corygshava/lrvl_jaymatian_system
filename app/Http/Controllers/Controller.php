@@ -603,7 +603,7 @@ abstract class Controller{
 					"MANAGE_EXPENSES" => 'view expenses interface',
 					"MANAGE_CASHREPORTS" => 'view cash reports interface',
 					"VERIFY_FILES" => 'view file verification interface',
-				//
+				// add more permissions later
 			],
 		];
 	}

@@ -246,7 +246,7 @@
 												</div>
 											</div>
 
-											<div class="job_stats border mb-4">
+											<div class="job_stats mb-4">
 												<table class="mytable ">
 													<tr>
 														<td>
@@ -291,7 +291,7 @@
 												</table>
 											</div>
 
-											<div class="sample_stats border">
+											<div class="sample_stats">
 												<table class="mytable ">
 													<thead>
 														<tr>
