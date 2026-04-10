@@ -593,6 +593,7 @@ abstract class Controller{
 					"MANAGE_USER_ROLES" => 'view the different user roles',
 					"MANAGE_USERS" => 'view all registered users',
 					"MANAGE_CLIENTS" => 'view all registered clients',
+					"VIEW_CLIENT" => 'view all registered clients',
 					"MANAGE_TASKS" => 'view all tasks',
 					"ADD_TASK" => 'add a new task',
 					"MANAGE_SAMPLES" => 'view all staff records',
