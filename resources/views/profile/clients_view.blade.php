@@ -1,5 +1,5 @@
 <?php
-// 	require_once __DIR__.'/piece_add_client_form.php';
+	// require_once __DIR__.'/piece_add_client_form.php';
 ?>
 
 {{-- <!-- --}}
@@ -162,7 +162,7 @@
 						</div>
 					</div>
 
-					<div>
+					<div class="spacy-sm">
 						<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
 					</div>
 

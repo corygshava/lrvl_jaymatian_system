@@ -40,6 +40,11 @@
 	    // Configure PDF.js worker
 		pdfjsLib.GlobalWorkerOptions.workerSrc = '_assets/_vendor/misc/pdf.worker.min.js';
 	</script>
+
+	<style>
+		[data-myrole="send_to_homepage"]{display: none;}
+		[data-myrole="permission"]{display: none;}
+	</style>
 </head>
 <body>
     {{ $slot }}

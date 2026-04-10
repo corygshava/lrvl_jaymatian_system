@@ -95,10 +95,10 @@
 		<div class="flowline overflow w3-center stats" data-subrole="stats">
 		</div>
 
-		<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16" data-subrole="xtra_stats">
+		<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16 w3-hide" data-subrole="xtra_stats">
 		</div>
 
-		<div>
+		<div class="spacy-sm">
 			<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
 		</div>
 	</div>

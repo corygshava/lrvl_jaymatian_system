@@ -53,9 +53,10 @@ class CheckPermissionsUI{
 				foreach ($permissions as $p) {
 					$s = $conEx->haspermission($p) ? 1 : 0;
 					$passed += $s;
+					$prms .= "$p,";
 				}
 
-				$_msg('you dont have permission to view this page');
+				$_msg("you dont have permission to view this page <kbd data-role=\"permission\">{$prms}</kbd>");
 				$keepon = $passed >= 1;
 
 				$status = $keepon ? 200 : 403;

@@ -70,8 +70,10 @@
 		 * @param {Object} userConfig - User configuration
 		 */
 		function init(userConfig) {
+			alert_info('loading information, please wait...');
+
 			config = { ...defaultConfig, ...userConfig };
-			perPage = Math.min(config.perPage, 300); // Enforce 300 max
+			perPage = Math.min(config.perPage, 300);
 			sortDirection = config.sortDirection;
 
 			// Validate required config
