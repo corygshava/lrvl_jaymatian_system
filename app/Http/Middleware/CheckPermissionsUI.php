@@ -49,6 +49,7 @@ class CheckPermissionsUI{
 			} else {
 				$res['success'] = true;
 				$_msg('checking permissions');
+				$prms = '';
 
 				foreach ($permissions as $p) {
 					$s = $conEx->haspermission($p) ? 1 : 0;

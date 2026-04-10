@@ -112,6 +112,7 @@
 				'expenses_mgt' : './ui/expenses_mgt',
 				'cash_reports' : './ui/cash_reports_mgt',
 				'print_cash_report' : './ui/gen_cash_report',
+				'view_user_roles' : './ui/user_roles',
 
 			// operations
 				'toggle_account_active' : './op/toggle_active',
@@ -272,7 +273,7 @@
 		menuItems = [
 			{caption: "dashboard", url: './ui/admin_console',icon: iconAtlas['admin_dash'],permissions: 'VIEW_DASHBOARD'},
 			{caption: "dashboard", url: './ui/console',icon: iconAtlas['staff_dash'],permissions: 'VIEW_CONSOLE'},
-			{caption: "User Roles", url: './ui/user_roles',icon: iconAtlas['user_roles'],permissions: 'MANAGE_USER_ROLES'},
+			{caption: "User Roles", url: linkAtlas['view_user_roles'],icon: iconAtlas['user_roles'],permissions: 'MANAGE_USER_ROLES'},
 			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt'],permissions: 'MANAGE_USERS'},
 			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile'],permissions: ''},
 			{caption: "client management", url: './ui/client_mgt',icon: iconAtlas['clients'],permissions: 'MANAGE_CLIENTS'},
