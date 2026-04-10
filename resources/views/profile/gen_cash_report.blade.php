@@ -786,7 +786,7 @@
 
 			// top finances section
 				let toshow_1 = {
-					"total_owed" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
+					// "total_debitors" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
 					"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
 					"income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
 					"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
@@ -842,13 +842,18 @@
 				`;
 
 				toshow_1 = drd.spend_data;
-				toshow_1['<b>Total_expenses</b>'] = `<b>${mekSpan(formatNumber(drd.expenditure))}</b>`;
 
-				Object.keys(toshow_1).forEach(f => {
+				let stuff = {};
+				expenditure_categories.forEach(d => {
+					stuff[d] = toshow_1 != undefined ? (toshow_1[d] != undefined ? toshow_1[d] : 0) : 0;
+				});
+				stuff['<b>Total_expenses</b>'] = `<b>${mekSpan(formatNumber(drd.expenditure))}</b>`;
+
+				Object.keys(stuff).forEach(f => {
 					expenses_outht += `
 							<tr>
 								<td>${mekSpan(f.split("_").join(' '))}</td>
-								<td>${mekSpan(toshow_1[f])}</td>
+								<td>${mekSpan(stuff[f])}</td>
 							</tr>
 					`;
 				});
@@ -926,7 +931,7 @@
 					drd.debt_pay_data.forEach(f => {
 						debtpay_outht += `
 							<tr>
-								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
 								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align w3-hide"><strong>${formatNumber(f.invoices_count)}</strong></td>
 								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
@@ -981,7 +986,7 @@
 					drd.debtors.forEach(f => {
 						debtors_outht += `
 							<tr>
-								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
 								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
 								<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
@@ -1010,7 +1015,7 @@
 				}
 
 			let outht = `
-				<div class="w3-center spacy-sm">
+				<div class="w3-center mb-2">
 					<h3 class="heading w3-center">JEYMATIAN MINERALS LABORATORY PRODUCTION SHEET [${thedate}]</h3>
 				</div>
 
@@ -1023,11 +1028,13 @@
 						${finances_outht}
 					</div>
 					<div>
-						${expenses_outht}
-					</div>
-					<div>
 						${cash_report_outht}
 					</div>
+					<div>
+						${expenses_outht}
+					</div>
+				</div>
+				<div class="dynacols">
 					<div>
 						${debtors_outht}
 					</div>
@@ -1201,7 +1208,7 @@
 					drd.debt_pay_data.forEach(f => {
 						debtpay_outht += `
 							<tr>
-								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td><span style="/* font-size: 1.1rem; */">${f.client_name}</span></td>
 								<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
 								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
