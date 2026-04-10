@@ -508,11 +508,17 @@
 			themenu.innerHTML = '';
 			let outht = '';
 			let ps = mypermissions;
+			let first_picked = false;
+			let useme = null;
 
 			menuItems.forEach((m,i) => {
 				let wegood = m.permissions == undefined ? true : ps.includes(m.permissions.toUpperCase() || '');
 
 				if(wegood){
+					if(!first_picked){
+						useme = m;
+						first_picked = true;
+					}
 					outht += `
 						<div>
 							<a href="#" class="menulink" data-runme="menuact" data-template='${m.url}' data-sidenote="${m.caption}">
@@ -526,15 +532,13 @@
 
 			themenu.innerHTML = outht;
 
-
-			menulinks = themenu.querySelectorAll('a');
-
-			console.log('menulinks: ',menulinks);
-
-			menulinks[0].classList.add('active');
+			if(useme == undefined){
+				alert_danger('sorry you have no permissions yet');
+				return;
+			}
 
 			setTimeout(() => {
-				window['menuact'](menulinks[0]);
+				loadPage({template: useme.url, sidenote: useme.caption});
 			},400);
 
 			refreshUI(200);
