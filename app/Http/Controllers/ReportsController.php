@@ -515,11 +515,11 @@ class ReportsController extends Controller{
 			}
 
 			$fhash = FileHash::where('myhash',$serial)->with('report')->first();
-			$savedhash = $fhash->myhash;
 
 			if($fhash == null){
 				$_msg('filehash not found');
 			} else {
+				$savedhash = $fhash->myhash;
 				$_msg('filehash found');
 
 				$report = $fhash->report;

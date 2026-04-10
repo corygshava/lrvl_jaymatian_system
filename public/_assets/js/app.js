@@ -18,6 +18,7 @@ const pref_auth = 'trybXP_comp_app_access_token';
 var curfun = "";
 
 var cache_lifetime_in_secs = 7200;
+let enableCache = true;
 // var cache_lifetime_in_secs = 24;
 
 // var confirm_modal = undefined;
@@ -244,7 +245,7 @@ if(window[curfun] == undefined){
 			let cache_saved = local_cache_version !== undefined && local_cache_version !== null;
 			let perms_saved = saved_perms !== undefined && saved_perms !== null;
 
-			if(cache_saved && perms_saved){
+			if(cache_saved && perms_saved && enableCache){
 				let local_cache = JSON.parse(local_cache_version);
 				let myperms = getitempermissions(p);
 

@@ -109,7 +109,8 @@
 			position: relative;
 		}
 		.tab .actions{
-			position: sticky;
+			/*position: sticky;*/
+			position: fixed;
 			bottom: 0;
 			/*background-image: linear-gradient(0deg,var(--clr-panelbg),transparent);*/
 			background-color: var(--clr-panelbg);
@@ -136,6 +137,10 @@
 
 		tr td{padding: 1px 3px !important;}
 		tr td>*{transform: translateY(-7px);}
+	/* masonry layout for the new daily report design */
+		.dynacols{columns: 2;margin-top: 12px;}
+		.dynacols>div{margin-bottom: 12px;display: inline-block;width: 100%;}
+		.dynacols>div .hed{color: var(--darkcolor);font-size: 1.1rem;font-weight: 700;}
 </style>
 
 <div class="container-fluid">
@@ -194,7 +199,10 @@
 			</div>
 
 			<div id="document_Holder" class="flow centroid">
-				<div data-role="report_setup">
+				<div data-role="report_setup" id="wanteddesign">
+				</div>
+
+				<div data-role="report_setup" class="w3-hide_ mt-4" id="newdesign">
 					<div class="page-section header rendercorrect" style="padding: 0 !important;">
 						<h1 class="w3-center dark_themetxt">JEYMATIAN MINERAL LABORATORY (JML) pre render</h1>
 						<div class="flowline gap-sm mylist">
@@ -282,7 +290,7 @@
 			</div>
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
-				<button class="mybtn secondary hideme"><i class="fa fa-arrow-left"></i> previous</button>
+				<!-- <button class="mybtn secondary hideme"><i class="fa fa-arrow-left"></i> previous</button> -->
 				<button class="mybtn primary" data-runme="pick_step_3" data-step="1" data-msg="rendering Cash report">render Cash report <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
@@ -541,6 +549,7 @@
 					}
 				}).catch(err => {
 					outht = `There was an error fetching business information: <br><b class="w3-text-red">${err.message}</b>`;
+					console.error(err);
 					showerror(outht);
 					errshown = true;
 				})
@@ -607,14 +616,23 @@
 
 			// elements
 			let holder = document_Holder;
-			let reportguy = holder.querySelector('[data-role="report_setup"]');
+			let reportguy = holder.querySelector('[data-role="report_setup"]#newdesign');
 			let datasect = holder.querySelector('[data-role="datasection"]');
+
+			// reportguy.classList.add('w3-red');
+			// return;
 			let header = reportguy.querySelector('.page-section.header');
+
 
 			let b_data = bizdata;
 			let bizdeets = b_data.business_details;
 			let bizimgs = b_data.business_images;
 
+			// render the wanted design
+			wanteddesign.innerHTML = '';
+			gen_html_wanted(crd,crd_typ,wanteddesign);
+
+			// render the other guys
 			// header
 			header.innerHTML = `
 				<h1 class="w3-center themetxt" style="font-size:2rem;">${bizdeets.biz_name}</h1>
@@ -716,6 +734,313 @@
 
 			debtors_xtraht.innerHTML = `<div data-copyme='[data-subrole="extrapage"]'></div>`;
 		}
+
+		window['gen_html_wanted'] = (d,range='today',item) => {
+			let drd = d;
+			let thedate = '';
+
+			if(drd.created_at == undefined){
+				thedate = `<b class="themetxt">${range.replace('_',' ')}</b>`;
+
+				if(drd.context !== undefined){
+					thedate = `<b class="themetxt">${drd.context}</b>`;
+				}
+			} else {
+				thedate = `<b class="themetxt">${formatDate(new Date(drd.created_at))}</b>`;
+			}
+
+			// debt payments subsection
+				let samples_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th>${mekSpan('Total samples')}</th>
+								<th>${mekSpan('Soil')}</th>
+								<th>${mekSpan('Rock')}</th>
+								<th>${mekSpan('carbon')}</th>
+								<th>${mekSpan('solution')}</th>
+								<th>${mekSpan('paid tasks')}</th>
+								<th>${mekSpan('unpaid tasks')}</th>
+								<th>${mekSpan('monthly')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				let s_dta = drd.sample_data;
+
+				samples_outht += `
+						<tr>
+							<td class="w3-right-align"><strong>${drd.samples_count || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['soil'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['rock'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['carbon'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['solution'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['paid_tasks'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['unpaid_tasks'] || 0}</strong></td>
+							<td class="w3-right-align"><strong>${s_dta['monthly'] || 0}</strong></td>
+						</tr>
+					</tbody>
+				</table>
+				`;
+
+			// top finances section
+				let toshow_1 = {
+					"total_owed" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
+					"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
+					"income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
+					"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
+					"total_daily_income" : `<b>KES ${formatNumber(drd.total_daily_cash)}</b>`,
+				};
+				let finances_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th colspan="12" class="hed">${mekSpan('Income Report')}</th>
+							</tr>
+							<tr>
+								<th>${mekSpan('Item')}</th>
+								<th>${mekSpan('Amount')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				Object.keys(toshow_1).forEach(f => {
+					finances_outht += `
+							<tr>
+								<td>${mekSpan(f.split("_").join(' '))}</td>
+								<td>${mekSpan(toshow_1[f])}</td>
+							</tr>
+					`;
+				});
+
+				finances_outht += `
+						</tbody>
+					</table>
+				`;
+
+			// outht setups
+				let expenses_outht = '';
+				let cash_report_outht = '';
+				let debtors_outht = '';
+				let debtpay_outht = '';
+
+			// expenses setup
+				expenses_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th colspan="12" class="hed">${mekSpan('Expenses Report')}</th>
+							</tr>
+							<tr>
+								<th>${mekSpan('Item')}</th>
+								<th>${mekSpan('Amount')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				toshow_1 = drd.spend_data;
+				toshow_1['<b>Total_expenses</b>'] = `<b>${mekSpan(formatNumber(drd.expenditure))}</b>`;
+
+				Object.keys(toshow_1).forEach(f => {
+					expenses_outht += `
+							<tr>
+								<td>${mekSpan(f.split("_").join(' '))}</td>
+								<td>${mekSpan(toshow_1[f])}</td>
+							</tr>
+					`;
+				});
+
+				if(Object.keys(toshow_1).length == 0){
+					expenses_outht += `
+						<tr>
+							<td colspan="12">${mekSpan('no expenses recorded')}</td>
+						</tr>
+					`;
+				}
+
+				expenses_outht += `
+						</tbody>
+					</table>
+				`;
+
+			// cash report setup
+				cash_report_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th colspan="12" class="hed">${mekSpan('Cash Report')}</th>
+							</tr>
+							<tr>
+								<th>${mekSpan('Item')}</th>
+								<th>${mekSpan('Amount')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				toshow_1 = {
+					"total_cash" : `<b class="themetxt">KES ${formatNumber(drd.total_cash)}</b>`,
+					"expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
+					"<b>total_balance_available</b>" : `<b class="w3-text-green">KES ${formatNumber(drd.total_balance_forward)}</b>`,
+				};
+
+				Object.keys(toshow_1).forEach(f => {
+					cash_report_outht += `
+							<tr>
+								<td>${mekSpan(f.split("_").join(' '))}</td>
+								<td>${mekSpan(toshow_1[f])}</td>
+							</tr>
+					`;
+				});
+
+				cash_report_outht += `
+						</tbody>
+					</table>
+				`;
+
+
+
+			// debt payments subsection
+				debtpay_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th colspan="12" class="hed">${mekSpan('Debt payments')}</th>
+							</tr>
+							<tr>
+								<th>${mekSpan('Name')}</th>
+								<th class="w3-hide">${mekSpan('Contact')}</th>
+								<th class="w3-hide">${mekSpan('unpaid invoices')}</th>
+								<th>${mekSpan('Total Paid')}</th>
+								<th>${mekSpan('Balance')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				if(drd.debt_pay_data !== undefined && drd.debt_pay_data.length > 0){
+					let tot_balance = 0;
+					drd.debt_pay_data.forEach(f => {
+						debtpay_outht += `
+							<tr>
+								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
+								<td class="w3-right-align w3-hide"><strong>${formatNumber(f.invoices_count)}</strong></td>
+								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
+								<td class="w3-right-align"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+							</tr>
+						`;
+
+						tot_balance += Number(f.credit_balance);
+					});
+
+					debtpay_outht += `
+							<tr>
+								<td colspan="1"><b style="font-size: 1.1rem;">Total</b></td>
+								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
+								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				} else {
+					debtpay_outht += `
+							<tr>
+								<td colspan="12">
+									<span style="font-size: 1.1rem;">
+										<i>${drd.created_at == undefined ? 'no debt payments found' : 'no debt payments recorded'}</i>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				}
+
+			// debtors subsection
+				debtors_outht = `
+					<table class="mytable">
+						<thead>
+							<tr>
+								<th colspan="12" class="hed">${mekSpan('Debtors')}</th>
+							</tr>
+							<tr>
+								<th>${mekSpan('Name')}</th>
+								<th class="w3-hide">${mekSpan('Contact')}</th>
+								<th>${mekSpan('unpaid invoices')}</th>
+								<th>${mekSpan('Total Owed')}</th>
+							</tr>
+						</thead>
+						<tbody>
+				`;
+
+				if(drd.debtors !== undefined && drd.debtors.length > 0){
+					drd.debtors.forEach(f => {
+						debtors_outht += `
+							<tr>
+								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
+								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
+								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
+								<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+							</tr>
+						`;
+					});
+
+					debtors_outht += `
+							<tr>
+								<td colspan="2"><b style="font-size: 1.1rem;">Total</b></td>
+								<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				} else {
+					debtors_outht += `
+							<tr>
+								<td colspan="12">
+									<span style="font-size: 1.1rem;"><i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					`;
+				}
+
+			let outht = `
+				<div class="w3-center spacy-sm">
+					<h3 class="heading w3-center">JEYMATIAN MINERALS LABORATORY PRODUCTION SHEET [${thedate}]</h3>
+				</div>
+
+				<div>
+					${samples_outht}
+				</div>
+
+				<div class="dynacols">
+					<div>
+						${finances_outht}
+					</div>
+					<div>
+						${expenses_outht}
+					</div>
+					<div>
+						${cash_report_outht}
+					</div>
+					<div>
+						${debtors_outht}
+					</div>
+
+					<div>
+						${debtpay_outht}
+					</div>
+				</div>
+			`;
+
+			item.innerHTML = outht;
+		};
+
 		window['gen_html'] = (d,range = 'today',item) => {
 			// let container = document.querySelector(sel);
 			let container = item;
@@ -740,7 +1065,7 @@
 
 			// top finances section
 			let xtra = drd.time_difference !== undefined ? {
-				"time_since_last_report" : `${formatNumber(drd.time_difference) || '--'} ${plural('hour',Math.floor(Number(drd.time_difference)))}`,
+				// "time_since_last_report" : `${formatNumber(drd.time_difference) || '--'} ${plural('hour',Math.floor(Number(drd.time_difference)))}`,
 			} : {};
 			let toshow_1 = {
 				...xtra,

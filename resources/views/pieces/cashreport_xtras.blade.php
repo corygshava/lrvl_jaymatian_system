@@ -146,6 +146,7 @@
 			"solution samples" : formatNumber(drd.sample_data['solution']),
 			"carbon samples" : formatNumber(drd.sample_data['carbon']),
 			"carbon activity samples" : formatNumber(drd.sample_data['carbon activity']),
+			"monthly samples" : drd.sample_data['monthly'] != undefined ? formatNumber(drd.sample_data['monthly']) : '--',
 		};
 		let samples_outht = '';
 

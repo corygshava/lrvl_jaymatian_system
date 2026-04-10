@@ -363,6 +363,7 @@ class CashReportController extends Controller{
 					$solution_samples = (clone $samples)->where('sample_type','solution')->get()->count();
 					$carbon_samples = (clone $samples)->where('sample_type','carbon')->get()->count();
 					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->get()->count();
+					$monthly_samples = Sample::timeRange('this_month')->get()->count();
 					$_msg('samples data fetched');
 
 					$sampledata = [
@@ -371,6 +372,7 @@ class CashReportController extends Controller{
 						'solution' => $solution_samples,
 						'carbon' => $carbon_samples,
 						'carbon activity' => $carbon_act_samples,
+						'monthly' => $monthly_samples,
 					];
 
 				// get cash data
@@ -461,6 +463,12 @@ class CashReportController extends Controller{
 					$total_expenses = Expense::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$unpaid_tasks = Task::query()->timeRange($t_range)->where('payment_status','<>',2)->get()->count();
 					$paid_tasks = Task::query()->timeRange($t_range)->where('payment_status',2)->get()->count();
+
+					$sampledata = [
+						...$sampledata,
+						'paid_tasks' => $paid_tasks,
+						'unpaid_tasks' => $unpaid_tasks,
+					];
 
 				$outdata = [
 					...$outdata,
