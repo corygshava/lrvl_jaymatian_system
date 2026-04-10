@@ -90,7 +90,7 @@ a{
 /* UI KIT */
 	/* ---------- 0. resets ---------- */
 		a{color:var(--clr-primary);text-decoration:none}
-		img{display: block;width: 100%;border-radius: var(--roundness);/*background-image: linear-gradient(80deg,cyan,var(--themecolor));*/}
+		img{display: block;width: 100%;/*border-radius: var(--roundness);background-image: linear-gradient(80deg,cyan,var(--themecolor));*/}
 		ul{list-style-type: none;}
 		li{list-style-type: none;}
 

@@ -378,6 +378,7 @@
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
 					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Invoice (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Invoice</button>
+					<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
 				</div>
 			</div>
 		</div>
@@ -592,12 +593,10 @@
 
 			invoice_runtime_data.file_link = filelink;
 
-			let encodedText = encodeURIComponent(filelink);
-			let imglink = `https://quickchart.io/qr?text=${encodedText}&size=100`;
-
-			let meimg = await fetch(`https://quickchart.io/qr?text=${encodedText}&size=100`);
-			let blb = await meimg.blob();
-			let objUrl = URL.createObjectURL(blb);
+			alert_dark('generatin QR code');
+			// let encodedText = encodeURIComponent(filelink);
+			let encodedText = filelink;
+			let objUrl = await mekQRCode(encodedText, 100);
 			myqrcodeium.src = objUrl;
 
 			final_step();
@@ -734,6 +733,8 @@
 		invoice_details.style.textTransform = "uppercase";
 		// invoice_details.classList.add('smallerCells');
 		// invoice_details.innerHTML = `damn, thats awesome`;
+
+		client_whatsapp.dataset.number = c_data.client_contact;
 
 		invoice_details.innerHTML = `
 			<div class="row">

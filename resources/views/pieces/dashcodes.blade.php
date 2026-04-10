@@ -66,6 +66,7 @@
 	<script>
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
+		const lastrefresh = '10/04/2026 02:10:37';
 
 		var menubar = undefined;
 		let themenu = undefined;
@@ -269,8 +270,8 @@
 		const fadein = [{opacity: 1},{opacity: 0}];
 
 		menuItems = [
-			{caption: "dashboard", url: linkAtlas['admin_dash'],icon: iconAtlas['admin_dash'],permissions: 'VIEW_DASHBOARD'},
-			{caption: "dashboard", url: linkAtlas['staff_dash'],icon: iconAtlas['staff_dash'],permissions: 'VIEW_CONSOLE'},
+			{caption: "dashboard", url: './ui/admin_console',icon: iconAtlas['admin_dash'],permissions: 'VIEW_DASHBOARD'},
+			{caption: "dashboard", url: './ui/console',icon: iconAtlas['staff_dash'],permissions: 'VIEW_CONSOLE'},
 			{caption: "User Roles", url: './ui/user_roles',icon: iconAtlas['user_roles'],permissions: 'MANAGE_USER_ROLES'},
 			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt'],permissions: 'MANAGE_USERS'},
 			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile'],permissions: ''},
@@ -292,6 +293,30 @@
 			{caption: "get roles", url: './data/user_roles',icon: 'fa fa-code'},
 			*/
 		];
+
+		window['getitempermissions'] = p => {
+			let wasfound = false;
+			let perms = undefined;
+
+			menuItems.forEach(mt => {
+				if(wasfound){
+					return;
+				}
+
+				let ur = mt.url.toLowerCase();
+				let comp = ur == p.toLowerCase();
+				console.log(`comparing ${p} and ${ur}: ${comp}`);
+
+				if(comp){
+					wasfound = true;
+					perms = mt.permissions;
+					console.log('found one');
+					console.log('permissions: ',perms,'guy: ',mt);
+				}
+			});
+
+			return perms;
+		}
 
 		function setUI() {
 			if(menubar == undefined){
@@ -484,7 +509,7 @@
 			let ps = mypermissions;
 
 			menuItems.forEach((m,i) => {
-				let wegood = ps.includes(m.permissions || '');
+				let wegood = m.permissions == undefined ? true : ps.includes(m.permissions.toUpperCase() || '');
 
 				if(wegood){
 					outht += `
@@ -500,7 +525,11 @@
 
 			themenu.innerHTML = outht;
 
+
 			menulinks = themenu.querySelectorAll('a');
+
+			console.log('menulinks: ',menulinks);
+
 			menulinks[0].classList.add('active');
 
 			setTimeout(() => {
@@ -1075,6 +1104,12 @@
 				printElement(sel,con).then(e => {
 					alert_success('document printed successfully');
 				});
+			}
+			window['open_whatsapp'] = (l) => {
+				openWhatsApp(l.dataset.number);
+			}
+			window['open_wa'] = (el) => {
+				open_whatsapp(el);
 			}
 			window['processNumber'] = (n) => {
 				let xtra = "";

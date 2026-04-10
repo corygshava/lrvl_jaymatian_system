@@ -17,6 +17,9 @@ const imagepath = `${mainhost}/res/images/`;
 const pref_auth = 'trybXP_comp_app_access_token';
 var curfun = "";
 
+var cache_lifetime_in_secs = 7200;
+// var cache_lifetime_in_secs = 24;
+
 // var confirm_modal = undefined;
 // var confirm_toggler = undefined;
 // var the_modal = undefined;
@@ -232,7 +235,45 @@ curfun = fetch_ui;
 if(window[curfun] == undefined){
 	window[curfun] = async (p,dta = {},mt = 'POST',skipappend = false,use_as_is=false) => {
 		try{
+			let now = formatDate0(new Date());
+			let mkey = `${pref_prefix}[${p}]`;
+			let pkey = `${pref_prefix}mypermissions`;
+			let local_cache_version = localStorage.getItem(mkey);
+			let saved_perms = localStorage.getItem(pkey);
+
+			let cache_saved = local_cache_version !== undefined && local_cache_version !== null;
+			let perms_saved = saved_perms !== undefined && saved_perms !== null;
+
+			if(cache_saved && perms_saved){
+				let local_cache = JSON.parse(local_cache_version);
+				let myperms = getitempermissions(p);
+
+				if(mypermissions.includes(myperms) || myperms == undefined){
+					let cache_age = getDateDiff(now, local_cache.saved_at);
+					let usecache = (cache_age <= cache_lifetime_in_secs);
+					let isvalid = saved_perms.toLowerCase() == JSON.stringify(mypermissions).toLowerCase();
+
+					if(usecache && isvalid){
+						alert_dark('loading from cache');
+						return local_cache.html;
+					} else {
+						if(!usecache){
+							// alert_dark(`cache is old [${cache_age} / ${cache_lifetime_in_secs}s old], disposing`,12);
+							localStorage.removeItem(mkey);
+						} else {
+							// alert_dark('cache is invalid');
+						}
+					}
+				} else {
+					// alert_dark('cache found but you dont have permissions');
+					// alert_dark(`permissions required: ${myperms}`);
+				}
+			} else {
+				// alert_dark('no cache found');
+			}
+
 			alert_silent({to: p,data: dta,method: mt});
+			alert_info('loading from server, please wait');
 
 			const prff = JSON.parse(localStorage.getItem(pref_auth));
 
@@ -257,6 +298,15 @@ if(window[curfun] == undefined){
 
 			let req = await fetch(p,s_data);
 			let final = await req.text();
+			let cache = {
+				saved_at: formatDate0(new Date()),
+				html: final
+			};
+			let cache_data = JSON.stringify(cache);
+
+			// save cache for fast loading later
+			localStorage.setItem(mkey,cache_data);
+			localStorage.setItem(pkey,JSON.stringify(mypermissions));
 
 			return final;
 		} catch (error){
@@ -900,31 +950,48 @@ function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warni
 }
 
 // utils (backups in case uiops or toappend isnt updating)
-if(window['objtoquery'] == undefined){
-	window['objtoquery'] = (obj, prefix = '') => {
-		// makes objects be sent via get if possible
-		const pairs = [];
+	if(window['objtoquery'] == undefined){
+		window['objtoquery'] = (obj, prefix = '') => {
+			// makes objects be sent via get if possible
+			const pairs = [];
 
-		for (const key in obj) {
-			if (obj.hasOwnProperty(key)) {
-				const fullKey = prefix ? `${prefix}[${key}]` : key;
-				const value = obj[key];
+			for (const key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					const fullKey = prefix ? `${prefix}[${key}]` : key;
+					const value = obj[key];
 
-				if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-					pairs.push(objtoquery(value, fullKey));
-				} else if (Array.isArray(value)) {
-					value.forEach(item => {
-						pairs.push(encodeURIComponent(fullKey + '[]') + '=' + encodeURIComponent(item));
-					});
-				} else {
-					pairs.push(encodeURIComponent(fullKey) + '=' + encodeURIComponent(value));
+					if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+						pairs.push(objtoquery(value, fullKey));
+					} else if (Array.isArray(value)) {
+						value.forEach(item => {
+							pairs.push(encodeURIComponent(fullKey + '[]') + '=' + encodeURIComponent(item));
+						});
+					} else {
+						pairs.push(encodeURIComponent(fullKey) + '=' + encodeURIComponent(value));
+					}
 				}
+			}
+
+			return pairs.join('&');
+		}
+	}
+
+	function clear_view_cache() {
+		let tokill = [];
+
+		for(let c = 0;c < localStorage.length;c++){
+			let key = localStorage.key(c);
+			if(key.includes(pref_prefix)){
+				tokill.push(key);
 			}
 		}
 
-		return pairs.join('&');
+		tokill.forEach(tk => {
+			localStorage.removeItem(tk);
+		})
+
+		alert_dark('all view cache cleared');
 	}
-}
 
 function formatDate0(date) {
 	if(!date){return '--';}

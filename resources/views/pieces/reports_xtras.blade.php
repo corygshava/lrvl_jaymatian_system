@@ -359,6 +359,9 @@
 					<a class="mybtn secondary sm w3-hide" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
 					// -->
 					<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+					<button class="mybtn primary sm" onclick="openWhatsApp('${report.owner.client_contact}')" data-openthis="clientinfo">
+						<i class="fab fa-whatsapp"></i> Client whatsapp
+					</button>
 				</div>
 			</div>
 

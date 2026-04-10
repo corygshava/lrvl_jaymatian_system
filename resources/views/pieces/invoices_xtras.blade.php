@@ -341,6 +341,9 @@
 					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_pdf']}/${invoice.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
 					// -->
 					<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print invoice</button>
+					<button class="mybtn primary sm" onclick="openWhatsApp('${invoice.client.client_contact}')" data-openthis="clientinfo">
+						<i class="fab fa-whatsapp"></i> Client whatsapp
+					</button>
 				</div>
 			</div>
 

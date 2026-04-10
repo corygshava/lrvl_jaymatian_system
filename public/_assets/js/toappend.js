@@ -173,6 +173,7 @@ function clamp01(n,min,max) {
 
 function openWhatsApp(number) {
 	const url = `https://wa.me/${number}`;
+	console.log('whatsapp url: ', url);
 	window.open(url, '_blank', 'noopener,noreferrer');
 }
 
@@ -408,8 +409,65 @@ function reverseLerp(min,max,val) {
 function getDateDiff(date1, date2) {
 	const time1 = new Date(date1).getTime();
 	const time2 = new Date(date2).getTime();
+
+	// console.log('di')
 	const diffInMs = Math.abs(time2 - time1);
 	const diffInSecs = Math.floor(diffInMs / 1000);
+	const secs = diffInMs / 254879076.93333334;
+	console.log('oldtime: ',time1,formatDate0(time1));
+	console.log('newtime: ',time2,formatDate0(time2));
+	// alert_dark(`diff in ms: ${diffInMs}`,14);
+	// alert_dark(`diff in secs: ${diffInSecs}`,14);
 
 	return diffInSecs;
 }
+
+
+/**
+ * Generates a QR code data URL from an encoded string
+ *
+ * requires qrcode.min.js [https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js]
+ * activate the corian block to prevent errors if you dont have
+ *
+ * @param {string} encodedText - The text/URL to encode in the QR code
+ * @param {number} size - Size of the QR code (default: 100)
+ * @returns {Promise<string>} - Data URL of the QR code image
+ */
+
+// /*
+function mekQRCode(encodedText, size = 100) {
+    return new Promise((resolve, reject) => {
+        try {
+            // Create temporary container
+            let tempDiv = document.createElement('div');
+            tempDiv.style.display = 'none';
+            document.body.appendChild(tempDiv);
+
+            // Generate QR code
+            let qrcode = new QRCode(tempDiv, {
+                text: encodedText,
+                width: size,
+                height: size,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Wait for QR code generation to complete
+            setTimeout(() => {
+                let canvas = tempDiv.querySelector('canvas');
+                if (canvas) {
+                    let dataUrl = canvas.toDataURL('image/png');
+                    document.body.removeChild(tempDiv);
+                    resolve(dataUrl);
+                } else {
+                    document.body.removeChild(tempDiv);
+                    reject(new Error('Failed to generate QR code'));
+                }
+            }, 100);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+// */

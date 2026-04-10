@@ -376,7 +376,7 @@
 							</div>
 							<div class="form-group w3-hide">
 								<label class="form-label" for="client_name">Generated PDF</label>
-								<input type="file" name="genfile" id="genfile" required>
+								<input type="file" data-name="genfile" id="genfile" required>
 							</div>
 							<div class="form-group">
 								<label class="form-label" for="client_name">Generated Report</label>
@@ -411,6 +411,7 @@
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
 					<button class="mybtn secondary sm" data-runme="downloadImg"><i class="fa fa-download"></i> download report (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print report</button>
+					<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
 				</div>
 			</div>
 		</div>
@@ -577,12 +578,10 @@
 			let filelink = `${pagelink}media/reports/img/${report_runtime_data.file_slug}`
 			report_runtime_data.file_link = filelink;
 
-			let encodedText = encodeURIComponent(filelink);
-			let imglink = `https://quickchart.io/qr?text=${encodedText}&size=100`;
-
-			let meimg = await fetch(`https://quickchart.io/qr?text=${encodedText}&size=100`);
-			let blb = await meimg.blob();
-			let objUrl = URL.createObjectURL(blb);
+			alert_dark('generatin QR code');
+			// let encodedText = encodeURIComponent(filelink);
+			let encodedText = filelink;
+			let objUrl = await mekQRCode(encodedText, 100);
 			myqrcodeium.src = objUrl;
 
 			final_step();
@@ -691,6 +690,9 @@
 		// the second section (aka the creditsguy)
 		taskinfo.style.textTransform = "uppercase";
 		taskinfo.classList.add('smallerCells');
+
+		client_whatsapp.dataset.number = s_data.owner.client_contact;
+
 		taskinfo.innerHTML = `
 			<tr>
 				<td style="padding: 2px !important;">

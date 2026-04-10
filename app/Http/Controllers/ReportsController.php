@@ -285,7 +285,7 @@ class ReportsController extends Controller{
 			'admin_password_mine' => ['required'],
 			'sampleid' => ['required'],
 			'report_no' => ['required'],
-			'genfile' => ['required','file'],
+			// 'genfile' => ['required','file'],
 			'genimage' => ['required','file'],
 			'bizdata' => ['required'],
 			'file_slug' => ['required'],
@@ -340,12 +340,14 @@ class ReportsController extends Controller{
 					$pdf_serial = '';
 
 					$fkey = 'genfile';
+					$fyls[$fkey] = '--';
+					/*
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
 						/*
 						$imghash = new pdfHashService();
 						$mfile = $req->file($fkey,null);
 						$pdf_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
-						// */
+						// /
 
 						$fyl = $req->file($fkey);
 						$myname = $file_link;
@@ -357,6 +359,7 @@ class ReportsController extends Controller{
 						$fyls[$fkey] = $fname;
 						// $pdf_serial = '';
 					};
+					// */
 
 					$fkey = 'genimage';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){

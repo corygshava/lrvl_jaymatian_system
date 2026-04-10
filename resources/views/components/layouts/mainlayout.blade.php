@@ -24,6 +24,7 @@
 	<script src="_assets/_vendor/misc/html2canvas.min.js"></script>
 	<script src="_assets/_vendor/misc/jspdf.umd.min.js"></script>
 	<script src="_assets/_vendor/misc/pdf.min.js"></script>
+	<script src="_assets/_vendor/misc/qrcode.min.js"></script>
 	<script src="_assets/js/chart.js"></script>
 	<script src="_assets/js/SuperScript.js"></script>
 	<script src="_assets/js/toappend.js"></script>
