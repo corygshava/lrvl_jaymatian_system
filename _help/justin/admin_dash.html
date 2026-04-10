@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyAdmin - Analytics Dashboard</title>
-    
+
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
+
     <!-- Font Awesome 5 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
+	<link rel="shortcut icon" href="favicon.png" type="image/png">
+
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -23,20 +24,20 @@
             --text-secondary: #a0a0b8;
             --border-color: #2a2a3e;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-primary);
             overflow-x: hidden;
         }
-        
+
         /* Sidebar Styles */
         .sidebar {
             position: fixed;
@@ -49,7 +50,7 @@
             z-index: 1000;
             border-right: 1px solid var(--border-color);
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
@@ -57,7 +58,7 @@
             font-size: 24px;
             font-weight: bold;
         }
-        
+
         .logo i {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
@@ -65,16 +66,16 @@
             margin-right: 10px;
             font-size: 28px;
         }
-        
+
         .nav-menu {
             list-style: none;
             padding: 0;
         }
-        
+
         .nav-item {
             margin: 5px 15px;
         }
-        
+
         .nav-link {
             display: flex;
             align-items: center;
@@ -84,28 +85,28 @@
             border-radius: 10px;
             transition: all 0.3s ease;
         }
-        
+
         .nav-link:hover {
             background-color: rgba(102, 126, 234, 0.1);
             color: var(--text-primary);
         }
-        
+
         .nav-link.active {
             background: var(--primary-gradient);
             color: var(--text-primary);
         }
-        
+
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
         }
-        
+
         .workstation-section {
             margin-top: 30px;
             padding: 0 20px;
         }
-        
+
         .workstation-title {
             font-size: 12px;
             text-transform: uppercase;
@@ -113,14 +114,14 @@
             margin-bottom: 15px;
             font-weight: 600;
         }
-        
+
         /* Main Content */
         .main-content {
             margin-left: 240px;
             padding: 30px;
             min-height: 100vh;
         }
-        
+
         /* Header */
         .header {
             display: flex;
@@ -128,12 +129,12 @@
             align-items: center;
             margin-bottom: 30px;
         }
-        
+
         .search-bar {
             position: relative;
             width: 400px;
         }
-        
+
         .search-bar input {
             width: 100%;
             padding: 12px 20px 12px 45px;
@@ -142,7 +143,7 @@
             border-radius: 10px;
             color: var(--text-primary);
         }
-        
+
         .search-bar i {
             position: absolute;
             left: 15px;
@@ -150,48 +151,48 @@
             transform: translateY(-50%);
             color: var(--text-secondary);
         }
-        
+
         .user-section {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-        
+
         .notification-icon {
             position: relative;
             color: var(--text-secondary);
             font-size: 20px;
             cursor: pointer;
         }
-        
+
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
         }
-        
+
         .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             background: var(--primary-gradient);
         }
-        
+
         .user-info {
             text-align: left;
         }
-        
+
         .user-name {
             font-size: 14px;
             font-weight: 600;
         }
-        
+
         .user-email {
             font-size: 12px;
             color: var(--text-secondary);
         }
-        
+
         /* Page Title Section */
         .page-header {
             display: flex;
@@ -199,17 +200,17 @@
             align-items: center;
             margin-bottom: 30px;
         }
-        
+
         .page-title {
             font-size: 32px;
             font-weight: 700;
         }
-        
+
         .filter-controls {
             display: flex;
             gap: 10px;
         }
-        
+
         .filter-btn {
             padding: 10px 20px;
             background-color: var(--card-bg);
@@ -221,7 +222,7 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         /* Stats Cards */
         .stats-grid {
             display: grid;
@@ -229,31 +230,31 @@
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .stat-card {
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 25px;
             border: 1px solid var(--border-color);
         }
-        
+
         .stat-card.gradient {
             background: var(--primary-gradient);
             border: none;
         }
-        
+
         .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .stat-tabs {
             display: flex;
             gap: 15px;
         }
-        
+
         .stat-tab {
             padding: 8px 15px;
             background-color: rgba(255, 255, 255, 0.1);
@@ -262,27 +263,27 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .stat-tab.active {
             background-color: rgba(255, 255, 255, 0.2);
         }
-        
+
         .stat-value {
             font-size: 48px;
             font-weight: 700;
             margin: 10px 0;
         }
-        
+
         .stat-label {
             font-size: 14px;
             color: var(--text-secondary);
             margin-bottom: 5px;
         }
-        
+
         .gradient .stat-label {
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         .stat-change {
             display: inline-flex;
             align-items: center;
@@ -292,14 +293,14 @@
             font-size: 13px;
             margin-left: 10px;
         }
-        
+
         /* Chart Container */
         .chart-container {
             position: relative;
             height: 200px;
             margin-top: 20px;
         }
-        
+
         /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
@@ -307,14 +308,14 @@
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .card {
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 25px;
             border: 1px solid var(--border-color);
         }
-        
+
         .card-title {
             display: flex;
             align-items: center;
@@ -322,12 +323,12 @@
             font-weight: 600;
             margin-bottom: 20px;
         }
-        
+
         .card-title i {
             margin-right: 10px;
             color: var(--text-secondary);
         }
-        
+
         /* Platform Stats */
         .platform-item {
             display: flex;
@@ -335,13 +336,13 @@
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .platform-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .platform-icon {
             width: 30px;
             height: 30px;
@@ -351,89 +352,89 @@
             justify-content: center;
             font-size: 14px;
         }
-        
+
         .platform-icon.google {
             background: linear-gradient(135deg, #ff6b6b, #ff8e53);
         }
-        
+
         .platform-icon.zoom {
             background: linear-gradient(135deg, #4facfe, #00f2fe);
         }
-        
+
         .platform-icon.teams {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
-        
+
         .progress-bar-container {
             flex: 1;
             margin: 0 15px;
         }
-        
+
         .progress {
             height: 8px;
             background-color: var(--border-color);
             border-radius: 10px;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 100%;
             transition: width 0.3s ease;
         }
-        
+
         .platform-percentage {
             font-weight: 600;
             min-width: 40px;
             text-align: right;
         }
-        
+
         /* Sentiment Chart */
         .sentiment-chart-container {
             position: relative;
             height: 200px;
             margin: 20px 0;
         }
-        
+
         .sentiment-legend {
             margin-top: 20px;
         }
-        
+
         .sentiment-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .sentiment-label {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .sentiment-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-        
+
         .sentiment-dot.positive {
             background: linear-gradient(135deg, #f093fb, #f5576c);
         }
-        
+
         .sentiment-dot.negative {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
-        
+
         .sentiment-dot.neutral {
             background: linear-gradient(135deg, #4facfe, #00f2fe);
         }
-        
+
         /* User Lists */
         .user-list {
             margin-top: 20px;
         }
-        
+
         .user-item {
             display: flex;
             align-items: center;
@@ -441,68 +442,68 @@
             padding: 15px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .user-item:last-child {
             border-bottom: none;
         }
-        
+
         .user-details {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .user-item-avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             background: var(--primary-gradient);
         }
-        
+
         .user-item-info h4 {
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 3px;
         }
-        
+
         .user-item-info p {
             font-size: 12px;
             color: var(--text-secondary);
             margin: 0;
         }
-        
+
         .user-stat {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        
+
         .stat-progress {
             width: 120px;
         }
-        
+
         .stat-number {
             min-width: 60px;
             text-align: right;
             font-size: 14px;
             color: var(--text-secondary);
         }
-        
+
         @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
         }
-        
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -516,7 +517,7 @@
             <i class="fas fa-robot"></i>
             <span>MyAdmin</span>
         </div>
-        
+
         <ul class="nav-menu">
             <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -555,7 +556,7 @@
                 </a>
             </li>
         </ul>
-        
+
         <div class="workstation-section">
             <div class="workstation-title">Workstation</div>
             <ul class="nav-menu">
@@ -580,7 +581,7 @@
             </ul>
         </div>
     </div>
-    
+
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header -->
@@ -589,7 +590,7 @@
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Find any discussion point...">
             </div>
-            
+
             <div class="user-section">
                 <div class="notification-icon">
                     <i class="fas fa-bell"></i>
@@ -603,7 +604,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Analytics</h1>
@@ -621,7 +622,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Stats Grid -->
         <div class="stats-grid">
             <!-- Total Meetings Card -->
@@ -645,7 +646,7 @@
                     <canvas id="meetingsChart"></canvas>
                 </div>
             </div>
-            
+
             <!-- Average Per Member Card -->
             <div class="stat-card gradient" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
                 <div class="stat-label">Avg. Per Member</div>
@@ -655,7 +656,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
             <!-- Time Spent in Meetings -->
@@ -670,7 +671,7 @@
                         <i class="fas fa-chart-bar"></i> Average 10h
                     </span>
                 </div>
-                
+
                 <div class="user-list">
                     <div class="user-item">
                         <div class="user-details">
@@ -689,7 +690,7 @@
                             <span class="stat-number">40h 10m</span>
                         </div>
                     </div>
-                    
+
                     <div class="user-item">
                         <div class="user-details">
                             <img src="https://ui-avatars.com/api/?name=Elina+Lopez&background=667eea&color=fff" alt="User" class="user-item-avatar">
@@ -707,7 +708,7 @@
                             <span class="stat-number">40h 10m</span>
                         </div>
                     </div>
-                    
+
                     <div class="user-item">
                         <div class="user-details">
                             <img src="https://ui-avatars.com/api/?name=Elina+Lopez&background=4facfe&color=fff" alt="User" class="user-item-avatar">
@@ -727,7 +728,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Right Column -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <!-- Platforms Card -->
@@ -736,7 +737,7 @@
                         <i class="fas fa-desktop"></i>
                         Platforms
                     </div>
-                    
+
                     <div class="platform-item">
                         <div class="platform-info">
                             <div class="platform-icon google">
@@ -751,7 +752,7 @@
                         </div>
                         <span class="platform-percentage">80%</span>
                     </div>
-                    
+
                     <div class="platform-item">
                         <div class="platform-info">
                             <div class="platform-icon zoom">
@@ -766,7 +767,7 @@
                         </div>
                         <span class="platform-percentage">60%</span>
                     </div>
-                    
+
                     <div class="platform-item">
                         <div class="platform-info">
                             <div class="platform-icon teams">
@@ -782,18 +783,18 @@
                         <span class="platform-percentage">50%</span>
                     </div>
                 </div>
-                
+
                 <!-- Sentiments Card -->
                 <div class="card">
                     <div class="card-title">
                         <i class="fas fa-smile"></i>
                         Sentiments
                     </div>
-                    
+
                     <div class="sentiment-chart-container">
                         <canvas id="sentimentChart"></canvas>
                     </div>
-                    
+
                     <div class="sentiment-legend">
                         <div class="sentiment-item">
                             <div class="sentiment-label">
@@ -820,7 +821,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Talk to Listen Ratio -->
         <div class="card">
             <div class="card-title">
@@ -836,7 +837,7 @@
                     <i class="fas fa-headphones"></i> Listen %
                 </span>
             </div>
-            
+
             <div class="user-list">
                 <div class="user-item">
                     <div class="user-details">
@@ -856,7 +857,7 @@
                         <span class="stat-number">26%</span>
                     </div>
                 </div>
-                
+
                 <div class="user-item">
                     <div class="user-details">
                         <img src="https://ui-avatars.com/api/?name=Elina+Lopez&background=667eea&color=fff" alt="User" class="user-item-avatar">
@@ -875,7 +876,7 @@
                         <span class="stat-number">20%</span>
                     </div>
                 </div>
-                
+
                 <div class="user-item">
                     <div class="user-details">
                         <img src="https://ui-avatars.com/api/?name=Elina+Lopez&background=4facfe&color=fff" alt="User" class="user-item-avatar">
@@ -897,14 +898,14 @@
             </div>
         </div>
     </div>
-    
+
     <!-- jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    
+
     <script>
         // Meetings Bar Chart
         const meetingsCtx = document.getElementById('meetingsChart').getContext('2d');
@@ -956,7 +957,7 @@
                 }
             }
         });
-        
+
         // Sentiment Doughnut Chart
         const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
         const sentimentChart = new Chart(sentimentCtx, {
@@ -991,28 +992,28 @@
                 }
             }
         });
-        
+
         // Add center text to doughnut chart
         const centerText = {
             id: 'centerText',
             afterDatasetsDraw(chart, args, options) {
                 const { ctx, chartArea: { left, right, top, bottom, width, height } } = chart;
                 ctx.save();
-                
+
                 ctx.font = 'bold 24px sans-serif';
                 ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('100%', width / 2, height / 2 + top - 10);
-                
+
                 ctx.font = '12px sans-serif';
                 ctx.fillStyle = '#a0a0b8';
                 ctx.fillText('Total', width / 2, height / 2 + top + 15);
             }
         };
-        
+
         sentimentChart.config.plugins.push(centerText);
-        
+
         // Interactive elements
         document.querySelectorAll('.stat-tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -1020,7 +1021,7 @@
                 this.classList.add('active');
             });
         });
-        
+
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 console.log('Filter clicked:', this.textContent.trim());
