@@ -605,6 +605,9 @@ abstract class Controller{
 					"MANAGE_CASHREPORTS" => 'view cash reports interface',
 					"VERIFY_FILES" => 'view file verification interface',
 				// add more permissions later
+					"TOGGLE_USER_ACTIVATE" => "activate / deactivate user accounts",
+					"CHANGE_PASSWORDS" => "change other users' passwords",
+					"CHANGE_OWN_PASSWORD" => "change their own password",
 			],
 		];
 	}

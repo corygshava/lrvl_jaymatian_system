@@ -275,7 +275,7 @@
 			{caption: "dashboard", url: './ui/console',icon: iconAtlas['staff_dash'],permissions: 'VIEW_CONSOLE'},
 			{caption: "User Roles", url: linkAtlas['view_user_roles'],icon: iconAtlas['user_roles'],permissions: 'MANAGE_USER_ROLES'},
 			{caption: "User Management", url: './ui/user_mgt',icon: iconAtlas['user_mgt'],permissions: 'MANAGE_USERS'},
-			{caption: "View Profile", url: './ui/view_user',icon: iconAtlas['user_profile'],permissions: ''},
+			{caption: "View Profile", url: linkAtlas['view_profile'],icon: iconAtlas['user_profile'],permissions: 'VIEW_PROFILE'},
 			{caption: "client management", url: './ui/client_mgt',icon: iconAtlas['clients'],permissions: 'MANAGE_CLIENTS'},
 			{caption: "Task Management", url: './ui/task_mgt',icon: iconAtlas['tasks'],permissions: 'MANAGE_TASKS'},
 			{caption: "Add new task", url: './ui/add_task',icon: iconAtlas['add_task'],permissions: 'ADD_TASK'},
@@ -727,8 +727,9 @@
 				data : window['cur_user'],
 			};
 
-			let mbtn = menubar.querySelector(`[data-template="${linkAtlas['view_profile']}"]`);
-			mbtn.click();
+			// let mbtn = menubar.querySelector(`[data-template="${linkAtlas['view_profile']}"]`);
+			// mbtn.click();
+			loadPage({template: linkAtlas['view_profile'],sidenote: 'your profile'});
 		};
 
 		// breadcrumbs ops

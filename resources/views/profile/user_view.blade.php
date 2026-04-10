@@ -69,7 +69,7 @@
 								<a class="dropdown-item spacy-tn" href="#" onclick="editProfile()">
 									<i class="fas fa-edit mr-2 text-muted"></i>Edit Profile
 								</a>
-								<a class="dropdown-item spacy-tn" href="#" onclick="changePassword()">
+								<a class="dropdown-item spacy-tn" id="password_changer" href="#" onclick="changePassword()">
 									<i class="fas fa-key mr-2 text-muted"></i>Change Password
 								</a>
 								<!-- <div class="dropdown-divider"></div> -->
@@ -200,6 +200,7 @@
 
 <script>
 	let userData = {};
+	let is_current = false;
 
 	window['killOnLeave'] = [
 
@@ -207,12 +208,6 @@
 
 	window['runOnAwake'] = () => {
 		to_user_mgt_btn.querySelector('a').dataset.link = linkAtlas['view_users'];
-
-		let cls = !(mypermissions.includes('MANAGE_USERS')) ? 'add' : 'remove';
-		to_user_mgt_btn.classList[cls]('w3-hide');
-
-		cls = !(mypermissions.includes('ACTIVATE_USER')) ? 'add' : 'remove';
-		deact_user_btn.classList[cls]('w3-hide');
 
 		if(window['cur_record'] !== undefined){
 			if(window['cur_record'].rectype !== "user"){
@@ -231,6 +226,23 @@
 	}
 
 	window['initializeUserProfile'] = (data) => {
+		// let is_current = false;
+
+		is_current = userData.id === cur_user.id;
+		let pass_condition = false;
+
+		if(is_current){
+			pass_condition = mypermissions.includes('CHANGE_OWN_PASSWORD');
+		} else {
+			pass_condition = mypermissions.includes('CHANGE_PASSWORDS');
+		}
+
+		if(!pass_condition){
+			password_changer.classList.add('is_inactive');
+		} else {
+			password_changer.classList.remove('is_inactive');
+		}
+
 		let con = (data.is_active)
 		let cls = !con ? 'remove' : 'add';
 		account_active_tag.classList[cls]('w3-hide');
@@ -240,6 +252,12 @@
 		deact_user_btn.innerHTML = content;
 		deact_user_btn.className = cls;
 		deact_user_btn.dataset.act = con ? 'deactivate' : 'activate';
+
+		cls = !(mypermissions.includes('MANAGE_USERS')) ? 'add' : 'remove';
+		to_user_mgt_btn.classList[cls]('w3-hide');
+
+		cls = !(mypermissions.includes('TOGGLE_USER_ACTIVATE')) ? 'add' : 'remove';
+		deact_user_btn.classList[cls]('w3-hide');
 
 		// hide placeholders
 		blank.classList.add('w3-hide');

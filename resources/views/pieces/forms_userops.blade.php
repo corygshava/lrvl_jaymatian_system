@@ -144,7 +144,21 @@
 			opt.textContent = r.role_name;
 
 			user_role_name.appendChild(opt);
-		})
+		});
+
+		alert_info('checking permissions');
+
+		if(!mypermissions.includes(getitempermissions(linkAtlas['view_user_roles']))){
+			user_role_name.classList.add('is_inactive');
+		} else {
+			user_role_name.classList.remove('is_inactive');
+		}
+
+		if(!mypermissions.includes('CHANGE_PASSWORDS')){
+			change_pw_modal_trig.classList.add('is_inactive');
+		} else {
+			change_pw_modal_trig.classList.remove('is_inactive');
+		}
 
 		return;
 	}
