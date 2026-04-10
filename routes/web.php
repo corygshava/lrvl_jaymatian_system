@@ -37,8 +37,8 @@ Route::prefix('test')->group(function () {
 Route::prefix('/ui')->group(function (){
 	Route::get('/datatables', [ViewController::class,'showdatatable']);
 	Route::get('/get_menu', [ViewController::class,'showpermissions'])->middleware(['auth', 'verified']);
-	Route::get('/console', [ViewController::class,'showconsole'])->middleware(['check.permissions.ui:view_dashboard'])->name('user_console');
-	Route::get('/admin_console', [ViewController::class,'showadminconsole'])->middleware(['check.permissions.ui:view_console'])->name('user_console');
+	Route::get('/console', [ViewController::class,'showconsole'])->middleware(['check.permissions.ui:view_console'])->name('user_console');
+	Route::get('/admin_console', [ViewController::class,'showadminconsole'])->middleware(['check.permissions.ui:view_dashboard'])->name('user_console');
 
 	// Route::get('/get_menu', [UserController::class,'getOptions'])->middleware(['auth', 'verified']);
 	Route::get('/user_roles', [ViewController::class,'showroles'])->middleware(['check.permissions.ui:manage_user_roles'])->name('user_roles');
