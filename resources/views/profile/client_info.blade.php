@@ -97,6 +97,10 @@
 
 		<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16" data-subrole="xtra_stats">
 		</div>
+
+		<div>
+			<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
+		</div>
 	</div>
 
 	<div id="loaderInterface" class="spacy-md flow centroid gap-sm">
@@ -569,6 +573,8 @@
 
 		let panel = the_brief.querySelector('[data-subrole="taskpanel"]');
 		let client = client_info_data.clientData;
+
+		client_whatsapp.dataset.number = client.client_contact;
 
 		panel.innerHTML = `
 			<div>

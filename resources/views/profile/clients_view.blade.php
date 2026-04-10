@@ -1,5 +1,5 @@
 <?php
-	// require_once __DIR__.'/piece_add_client_form.php';
+// 	require_once __DIR__.'/piece_add_client_form.php';
 ?>
 
 {{-- <!-- --}}
@@ -162,6 +162,10 @@
 						</div>
 					</div>
 
+					<div>
+						<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
+					</div>
+
 					<span class="text-uppercase text-muted font-weight-bold">Pricing Information</span>
 
 					<div class="distance-sm">
@@ -312,6 +316,9 @@
 			paymentBadge.className = 'badge w3-black ml-2';
 			zeclass = 'add';
 		}
+
+
+		client_whatsapp.dataset.number = data.client_contact;
 
 		// Credit balance
 		const creditBalance = parseFloat(data.credit_balance);
