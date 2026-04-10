@@ -754,7 +754,7 @@
 					<table class="mytable">
 						<thead>
 							<tr>
-								<th>${mekSpan('Total samples')}</th>
+								<th>${mekSpan('Total samples today')}</th>
 								<th>${mekSpan('Soil')}</th>
 								<th>${mekSpan('Rock')}</th>
 								<th>${mekSpan('carbon')}</th>
