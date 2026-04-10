@@ -947,7 +947,7 @@
 				} else {
 					debtors_outht += `
 							<tr>
-								<td colspan="3">
+								<td colspan="12">
 									<span style="font-size: 1.1rem;"><i>${drd.created_at == undefined ? 'no debtors found' : 'no debtors recorded'}</i></span>
 								</td>
 							</tr>

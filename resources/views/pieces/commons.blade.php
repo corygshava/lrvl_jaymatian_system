@@ -1,4 +1,10 @@
 @auth
+	<div id="loader_ui" class="flowline centroid pageloader_waiter">
+		<div>
+			loading page, please wait
+		</div>
+	</div>
+
 	{{-- modals area --}}
 		<button type="button" class="btn btn-primary btn-sm w3-hide" data-toggle="modal" data-target="#confirmerBox" data-role="toggleConfirmModal">Launch Dialog</button>
 

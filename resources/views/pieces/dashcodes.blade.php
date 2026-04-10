@@ -626,10 +626,17 @@
 
 			let timing_fast = {duration: 400, easing: "ease-out",fill: "forwards"};
 			maincon.animate([...fadein],{...timing_fast})
+			let timin = timing_fast;
 			maincon.style.pointerEvents = "none";
 			curArea.innerHTML = 'loading...';
 
 			document.body.classList.remove('modal-open');
+			loader_ui.classList.remove('w3-hide');
+			loader_ui.animate([
+				{opacity: 0,translate: '0 20px'},
+				{opacity: 1,translate: '0 0'},
+			],{...timin,fill: 'forwards'})
+			// loader_ui.
 
 			setTimeout(() => {
 				// TODO: add a loader logic here
@@ -698,6 +705,14 @@
 				})
 				.finally(() => {
 					activateSidebar(true);
+					loader_ui.animate([
+						{opacity: 0,translate: '0 20px'},
+						{opacity: 1,translate: '0 0'},
+					].reverse(),{...timin,fill: 'forwards'});
+
+					setTimeout(() => {
+						loader_ui.classList.add('w3-hide');
+					}, 400);
 				});
 			},400);
 		}
