@@ -6,6 +6,7 @@
 	<title>JayMatian Mineral Laboratory System</title>
 
 	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<link rel="shortcut icon" href="favicon.png" type="image/png">
 
 	<link rel="stylesheet" href="_assets/_vendor/BS4/css/bootstrap.min.css">
 	<link rel="stylesheet" href="_assets/css/fa-all.css">
