@@ -833,10 +833,12 @@
 							<tr>
 								<th colspan="12" class="hed">${mekSpan('Expenses Report')}</th>
 							</tr>
+							<!${'--'}
 							<tr>
 								<th>${mekSpan('Item')}</th>
 								<th>${mekSpan('Amount')}</th>
 							</tr>
+							${'--' + '>'}
 						</thead>
 						<tbody>
 				`;
@@ -858,7 +860,7 @@
 					`;
 				});
 
-				if(Object.keys(toshow_1).length == 0){
+				if(Object.keys(toshow_1).length == 0 && false){
 					expenses_outht += `
 						<tr>
 							<td colspan="12">${mekSpan('no expenses recorded')}</td>
@@ -1028,13 +1030,15 @@
 						${finances_outht}
 					</div>
 					<div>
-						${cash_report_outht}
-					</div>
-					<div>
 						${expenses_outht}
 					</div>
+					<div>
+						${cash_report_outht}
+					</div>
+				<!${'--'}
 				</div>
 				<div class="dynacols">
+				${'--' + '>'}
 					<div>
 						${debtors_outht}
 					</div>

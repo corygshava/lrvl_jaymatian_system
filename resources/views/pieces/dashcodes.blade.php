@@ -53,11 +53,7 @@
 
 		window['expenditure_categories'] = [
 			'Bank transfer',
-			'Boss expenditure',
-			'Lab expense',
-			'Salary',
-			'Government Issue',
-			'Home expense',
+			'Expenditure',
 		];
 
 		const min_loadtime = 400;
