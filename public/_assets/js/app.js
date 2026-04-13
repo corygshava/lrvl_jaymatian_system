@@ -236,7 +236,7 @@ curfun = fetch_ui;
 if(window[curfun] == undefined){
 	window[curfun] = async (p,dta = {},mt = 'POST',skipappend = false,use_as_is=false) => {
 		try{
-			let now = formatDate0(new Date());
+			let now = new Date();
 			let mkey = `${pref_prefix}[${p}]`;
 			let pkey = `${pref_prefix}mypermissions`;
 			let local_cache_version = localStorage.getItem(mkey);
@@ -300,7 +300,7 @@ if(window[curfun] == undefined){
 			let req = await fetch(p,s_data);
 			let final = await req.text();
 			let cache = {
-				saved_at: formatDate0(new Date()),
+				saved_at: (new Date()).toLocaleString(),
 				html: final
 			};
 			let cache_data = JSON.stringify(cache);

@@ -407,15 +407,19 @@ function reverseLerp(min,max,val) {
 	return (val - min) / (max - min);
 }
 function getDateDiff(date1, date2) {
-	const time1 = new Date(date1).getTime();
-	const time2 = new Date(date2).getTime();
+	console.log("date1: ",date1,typeof date1);
+	console.log("date2: ",date2,typeof date2);
+	const time1 = new Date(date1);
+	const time2 = new Date(date2);
 
 	// console.log('di')
 	const diffInMs = Math.abs(time2 - time1);
 	const diffInSecs = Math.floor(diffInMs / 1000);
 	const secs = diffInMs / 254879076.93333334;
-	console.log('oldtime: ',time1,formatDate0(time1));
-	console.log('newtime: ',time2,formatDate0(time2));
+
+	console.log('oldtime: ',time1.getTime(),formatDate0(time1));
+	console.log('newtime: ',time2.getTime(),formatDate0(time2));
+	// return 0;
 	// alert_dark(`diff in ms: ${diffInMs}`,14);
 	// alert_dark(`diff in secs: ${diffInSecs}`,14);
 

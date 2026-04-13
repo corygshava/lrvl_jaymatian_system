@@ -302,7 +302,7 @@
 
 				let ur = mt.url.toLowerCase();
 				let comp = ur == p.toLowerCase();
-				console.log(`comparing ${p} and ${ur}: ${comp}`);
+				// console.log(`comparing ${p} and ${ur}: ${comp}`);
 
 				if(comp){
 					wasfound = true;
