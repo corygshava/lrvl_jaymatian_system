@@ -639,7 +639,7 @@
 				window[fetch_bypass]('./api/log_intent',{intent: p.sidenote,path: p.template,ccsx: cur_user.id}).then(() => {
 					alert_silent('intent logged');
 					console.log('intent logged successfully');
-					alert_success('deta verified successfully');
+					alert_success('data verified successfully');
 				})
 				.catch((err) => {
 					alert_silent(err.message);
