@@ -634,6 +634,19 @@
 			],{...timin,fill: 'forwards'})
 			// loader_ui.
 
+			function rundataverify(){
+				alert_info('verifying recieved data');
+				window[fetch_bypass]('./api/log_intent',{intent: p.sidenote,path: p.template,ccsx: cur_user.id}).then(() => {
+					alert_silent('intent logged');
+					console.log('intent logged successfully');
+					alert_success('deta verified successfully');
+				})
+				.catch((err) => {
+					alert_silent(err.message);
+					console.error(err);
+				});
+			}
+
 			setTimeout(() => {
 				// TODO: add a loader logic here
 				maincon.innerHTML = '';
@@ -671,16 +684,9 @@
 					fullHistory.push(p);
 					renderCrumbs();
 
-					alert_info('verifying recieved data');
-					window[fetch_bypass]('./api/log_intent',{intent: p.sidenote,path: p.template,ccsx: cur_user.id}).then(() => {
-						alert_silent('intent logged');
-						console.log('intent logged successfully');
-						alert_success('deta verified successfully');
-					})
-					.catch((err) => {
-						alert_silent(err.message);
-						console.error(err);
-					});
+					setTimeout(() => {
+						rundataverify();
+					},min_loadtime + 200);
 					return;
 
 					// was quite buggy and i had already found a workaround so had to ignore it somehow
