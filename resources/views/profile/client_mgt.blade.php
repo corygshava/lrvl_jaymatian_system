@@ -460,7 +460,7 @@
 		<!-- Data Header -->
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Users' information</h5>
+				<h5 class="data-title" id="tableTitle">Client records</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">

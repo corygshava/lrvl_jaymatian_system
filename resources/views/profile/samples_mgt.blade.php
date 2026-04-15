@@ -382,7 +382,7 @@
 
 		<div class="data-header">
 			<div class="d-flex align-items-center gap-3">
-				<h5 class="data-title" id="tableTitle">Samples' information</h5>
+				<h5 class="data-title" id="tableTitle">Sample Records</h5>
 			</div>
 			<div class="data-actions">
 				<div class="search-box">
