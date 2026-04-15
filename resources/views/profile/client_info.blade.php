@@ -273,6 +273,8 @@
 
 		// get task
 		const step1 = () => {
+			load_txt.innerHTML = 'loading client details';
+
 			window[fetch_bypass](linkAtlas['get_client'],{id: c_id},'POST').then((d) => {
 				if(d.result){
 					showError(false);
@@ -297,7 +299,7 @@
 			client_fetched = true;
 
 			renderBrief();
-			load_txt.innerHTML = 'loading task samples';
+			load_txt.innerHTML = 'loading client samples';
 
 			// alert_info('loading individual stuff');
 			loadMe('samples',linkAtlas['get_samples'],c_pld,step3,'POST');
@@ -310,6 +312,8 @@
 			}
 			client_info_data.samplesData = d.sendme;
 			samples_fetched = true;
+
+			load_txt.innerHTML = 'loading client payments';
 			// render samples
 			// load payments
 			loadMe('payments',linkAtlas['get_payments'],c_pld,step4,'POST');
@@ -322,6 +326,7 @@
 			}
 			client_info_data.paymentData = d.sendme;
 			payments_fetched = true;
+			load_txt.innerHTML = 'loading client reports';
 			// render payments
 			// load reports
 			loadMe('reports',linkAtlas['get_reports'],c_pld,step5,'POST');
@@ -334,6 +339,7 @@
 			}
 			client_info_data.reportData = d.sendme;
 			reports_fetched = true;
+			load_txt.innerHTML = 'loading client invoices';
 			// render reports
 
 			loadMe('invoices',linkAtlas['get_invoices'],c_pld,step6,'POST');
@@ -345,6 +351,7 @@
 			}
 			client_info_data.invoiceData = d.sendme;
 			invoices_fetched = true;
+			load_txt.innerHTML = 'displaying data';
 			// run final step
 			final_step();
 

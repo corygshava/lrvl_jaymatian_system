@@ -502,6 +502,7 @@
 		// view specific data
 		let payment_state_filter = [];
 		let state_filter = [];
+
 		Object.keys(payment_state_atlas).forEach(k => {
 			let tmp = {value: k, label: payment_state_atlas[k]};
 			payment_state_filter.push(tmp);
@@ -697,10 +698,14 @@
 			// setup_form();
 		}
 
+		initstuff();
+
+		/*
 		window[fetch_bypass]('./data/user_roles',{},'get').then((d) => {
 			responseHandler(d,initstuff,d,true);
 			// alert_info('render this');
 		})
+		// */
 	};
 
 	// Page-specific action handlers

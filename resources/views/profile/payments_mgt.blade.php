@@ -647,10 +647,14 @@
 			// setup_form();
 		}
 
+		initstuff();
+
+		/*
 		window[fetch_bypass]('./data/user_roles',{},'get').then((d) => {
 			responseHandler(d,initstuff,d,true);
 			// alert_info('render this');
 		})
+		// */
 	};
 
 	// Page-specific action handlers

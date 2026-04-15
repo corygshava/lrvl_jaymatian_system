@@ -535,7 +535,9 @@
 
 			// alert_info('loading details');
 			// return;
+		}
 
+		const setup_stuff = () => {
 			LaravelDataTable.init({
 				// Required: Laravel API endpoint
 				apiEndpoint: './data/clients', // Change this to your endpoint
@@ -721,6 +723,8 @@
 			// updateUI();
 			setup_form();
 		}
+
+		setup_stuff();
 
 		window[fetch_bypass]('./data/user_roles',{},'get').then((d) => {
 			responseHandler(d,initstuff,d,true);
