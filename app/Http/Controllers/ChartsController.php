@@ -207,7 +207,7 @@ class ChartsController extends Controller{
 
 					for ($hour = 0; $hour < 24; $hour++) {
 						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
-						$data[] = $recs->whereBetween('created_at', [
+						$data[] = (clone $recs)->whereBetween('created_at', [
 								Carbon::today()->hour($hour)->minute(0)->second(0),
 								Carbon::today()->hour($hour)->minute(59)->second(59)
 							])
@@ -226,7 +226,7 @@ class ChartsController extends Controller{
 					for ($day = 0; $day < 7; $day++) {
 						$date = $startOfWeek->copy()->addDays($day);
 						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = $recs->whereDate('created_at', $date)->sum($thecol);
+						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
 					}
 					break;
 
@@ -241,7 +241,7 @@ class ChartsController extends Controller{
 					for ($day = 1; $day <= $daysInMonth; $day++) {
 						$date = $lastMonth->copy()->day($day);
 						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = $recs->whereDate('created_at', $date)->sum($thecol);
+						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
 					}
 					break;
 				case 'this_year':
@@ -253,7 +253,7 @@ class ChartsController extends Controller{
 
 					for ($month = 1; $month <= 12; $month++) {
 						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = $recs->whereYear('created_at', $lastYear)
+						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
 							->whereMonth('created_at', $month)
 							->sum($thecol);
 					}
@@ -268,7 +268,7 @@ class ChartsController extends Controller{
 					for ($day = 0; $day < 7; $day++) {
 						$date = $startOfWeek->copy()->addDays($day);
 						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = $recs->whereDate('created_at', $date)->sum($thecol);
+						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
 					}
 					break;
 
@@ -283,7 +283,7 @@ class ChartsController extends Controller{
 					for ($day = 1; $day <= $daysInMonth; $day++) {
 						$date = $lastMonth->copy()->day($day);
 						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = $recs->whereDate('created_at', $date)->sum($thecol);
+						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
 					}
 					break;
 
@@ -296,7 +296,7 @@ class ChartsController extends Controller{
 
 					for ($month = 1; $month <= 12; $month++) {
 						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = $recs->whereYear('created_at', $lastYear)
+						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
 							->whereMonth('created_at', $month)
 							->sum($thecol);
 					}
@@ -307,14 +307,14 @@ class ChartsController extends Controller{
 					$labels = [];
 					$data = [];
 
-					$years = Payment::selectRaw('YEAR(created_at) as year')
+					$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
 						->distinct()
 						->orderBy('year')
 						->pluck('year');
 
 					foreach ($years as $year) {
 						$labels[] = (string) $year;
-						$data[] = $recs->whereYear('created_at', $year)->sum($thecol);
+						$data[] = (clone $recs)->whereYear('created_at', $year)->sum($thecol);
 					}
 					break;
 
@@ -325,7 +325,7 @@ class ChartsController extends Controller{
 
 			return [$labels, $data];
 		}
-		private function getChartData_count(Builder $rec,$timeframe = "lifetime"){
+		private function getChartData_count(Builder $recs,$timeframe = "lifetime"){
 			switch ($timeframe) {
 				case 'today':
 					$labels = [];
@@ -333,7 +333,7 @@ class ChartsController extends Controller{
 
 					for ($hour = 0; $hour < 24; $hour++) {
 						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
-						$data[] = $rec->whereBetween('created_at', [
+						$data[] = (clone $recs)->whereBetween('created_at', [
 								Carbon::today()->hour($hour)->minute(0)->second(0),
 								Carbon::today()->hour($hour)->minute(59)->second(59)
 							])
@@ -352,7 +352,7 @@ class ChartsController extends Controller{
 					for ($day = 0; $day < 7; $day++) {
 						$date = $startOfWeek->copy()->addDays($day);
 						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = $rec->whereDate('created_at', $date)->count();
+						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
 					}
 					break;
 
@@ -367,7 +367,7 @@ class ChartsController extends Controller{
 					for ($day = 1; $day <= $daysInMonth; $day++) {
 						$date = $lastMonth->copy()->day($day);
 						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = $rec->whereDate('created_at', $date)->count();
+						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
 					}
 					break;
 
@@ -380,7 +380,7 @@ class ChartsController extends Controller{
 
 					for ($month = 1; $month <= 12; $month++) {
 						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = $rec->whereYear('created_at', $lastYear)
+						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
 							->whereMonth('created_at', $month)
 							->count();
 					}
@@ -396,7 +396,7 @@ class ChartsController extends Controller{
 					for ($day = 0; $day < 7; $day++) {
 						$date = $startOfWeek->copy()->addDays($day);
 						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = $rec->whereDate('created_at', $date)->count();
+						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
 					}
 					break;
 
@@ -411,7 +411,7 @@ class ChartsController extends Controller{
 					for ($day = 1; $day <= $daysInMonth; $day++) {
 						$date = $lastMonth->copy()->day($day);
 						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = $rec->whereDate('created_at', $date)->count();
+						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
 					}
 					break;
 
@@ -424,7 +424,7 @@ class ChartsController extends Controller{
 
 					for ($month = 1; $month <= 12; $month++) {
 						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = $rec->whereYear('created_at', $lastYear)
+						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
 							->whereMonth('created_at', $month)
 							->count();
 					}
@@ -435,14 +435,14 @@ class ChartsController extends Controller{
 					$labels = [];
 					$data = [];
 
-					$years = Task::selectRaw('YEAR(created_at) as year')
+					$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
 						->distinct()
 						->orderBy('year')
 						->pluck('year');
 
 					foreach ($years as $year) {
 						$labels[] = (string) $year;
-						$data[] = $rec->whereYear('created_at', $year)->count();
+						$data[] = (clone $recs)->whereYear('created_at', $year)->count();
 					}
 					break;
 
