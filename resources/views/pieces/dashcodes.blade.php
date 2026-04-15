@@ -279,9 +279,9 @@
 			{caption: "Payment management", url: './ui/payments_mgt',icon: iconAtlas['payments'],permissions: 'MANAGE_PAYMENTS'},
 			{caption: "Report management", url: './ui/reports_mgt',icon: iconAtlas['reports'],permissions: 'MANAGE_REPORTS'},
 			{caption: pageNames['invoices_mgt'], url: linkAtlas['invoices_mgt'],icon: iconAtlas['invoices'],permissions: 'MANAGE_INVOICES'},
-			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
 			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses'],permissions: 'MANAGE_EXPENSES'},
 			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
+			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
 			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},

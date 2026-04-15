@@ -354,7 +354,8 @@
 				</div>
 				<div class="border-left w3-hide-small"></div>
 				<div class="flowline centerline center spacy-sm">
-					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-download"></i> download as image</a>
+					<a class="mybtn secondary sm" target="blank" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-eye"></i> view report</a>
+					<a class="mybtn secondary sm" target="blank" download="[${report.task.task_no}] ${encodeURIComponent(report.owner.client_name)} - report.png" href="${linkAtlas['getreport_img']}/${report.image_link}"><i class="fa fa-download"></i> download</a>
 					<!--
 					<a class="mybtn secondary sm w3-hide" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
 					// -->

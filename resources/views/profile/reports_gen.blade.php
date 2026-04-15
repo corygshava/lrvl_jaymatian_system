@@ -871,7 +871,7 @@
 		if(outguy == undefined){alert_danger('output holder not found');return;}
 		if(genimage == undefined){alert_danger('generated image holder not found');return;}
 
-		alert_dark('rendering canvas');
+		alert_info('rendering report, please wait',22);
 
 		const options = {
 			allowTaint: false,
@@ -933,6 +933,7 @@
 					</div>
 				`;
 
+				clear_alerts();
 				alert_success('report rendered');
 			} catch (error) {
 				// outguy.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;

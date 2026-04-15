@@ -950,11 +950,14 @@
 		outguy = document.querySelector('#canvasHolder>.canvasguy');
 		statsDiv = document.querySelector('#statsguy');
 
+		// make the doc slightly seethrough
+		// el.style.opacity = 0.4;
+
 		if(el == undefined){alert_danger('document holder not found');return;}
 		if(outguy == undefined){alert_danger('output holder not found');return;}
 		if(genimage == undefined){alert_danger('generated image holder not found');return;}
 
-		alert_dark('rendering canvas');
+		alert_info('rendering invoice, please wait...',22);
 
 		const options = {
 			allowTaint: true,
@@ -1015,7 +1018,9 @@
 					</div>
 				`;
 
-				alert_success('Invoice rendered');
+				clear_alerts();
+				alert_success('Invoice rendered',5);
+				// el.style.opacity = 1;
 			} catch (error) {
 				output.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
 				console.error('Capture failed:', error);

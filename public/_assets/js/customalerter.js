@@ -166,6 +166,11 @@ function alert_dark(message,time) {showAlert(message,time,"dark");}
 function alert_quiet(message,time) {showAlert(message,time,"quiet");}
 function alert_silent(message,time) {showAlert(message,time,"quiet");}
 
+function clear_alerts() {
+	let alertContainer = document.getElementById('alertContainer');
+	alertContainer.innerHTML = '';
+}
+
 window.addEventListener('keydown',(e) => {
 	if(e.key != undefined && e.key.toLowerCase() == 'tab' && e.shiftKey){
 		let mystring = mekRandomString(16);

@@ -336,10 +336,8 @@
 				</div>
 				<div class="border-left w3-hide-small"></div>
 				<div class="flowline centerline center spacy-sm">
-					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-download"></i> download as image</a>
-					<!--
-					<a class="mybtn secondary sm" data-runme="downloadPdf" target="blank" href="${linkAtlas['getinvoice_pdf']}/${invoice.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
-					// -->
+					<a class="mybtn secondary sm" target="blank" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-eye"></i> view invoice</a>
+					<a class="mybtn secondary sm" target="blank" download="[${invoice.invoice_no}] ${encodeURIComponent(invoice.client.client_name)} - invoice.png" href="${linkAtlas['getinvoice_img']}/${invoice.image_link}"><i class="fa fa-download"></i> download</a>
 					<button class="mybtn primary sm" data-runme="printPdf"><i class="fa fa-print"></i> print invoice</button>
 					<button class="mybtn primary sm" onclick="openWhatsApp('${invoice.client.client_contact}')" data-openthis="clientinfo">
 						<i class="fab fa-whatsapp"></i> Client whatsapp
