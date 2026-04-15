@@ -571,8 +571,8 @@
 				},
 				{
 					field: 'client_name',
-					label: 'Name of receiving client',
-					placeholder: 'JML_0000',
+					label: 'Receiving client',
+					placeholder: 'name of the client it was meant for',
 					typ: 'text',
 					required: true,
 				},
