@@ -222,7 +222,7 @@
 								<thead>
 									<tr class="rslts_headings">
 										<th style="width: 40px;"><span></span></th>
-										<th style="width: 160px;"><span>date created</span></th>
+										<th style="width: 215px;"><span>date created</span></th>
 										<th style="width: 400px;"><span>Task No</span></th>
 										<!-- <th style="width: 400px;"><span>Sample type</span></th> -->
 										<th style="width: 190px;"><span>Samples delivered</span></th>
@@ -780,7 +780,7 @@
 		if(!advanced){
 			invTableHeadings.innerHTML = `
 				<th style="width: 40px;"><span></span></th>
-				<th style="width: 160px;"><span>date created</span></th>
+				<th style="width: 215px;"><span>date created</span></th>
 				<th style="width: 400px;"><span>Task No</span></th>
 				<th style="width: 190px;"><span>Samples delivered</span></th>
 				<th style="width: 90px;"><span>balance</span></th>
