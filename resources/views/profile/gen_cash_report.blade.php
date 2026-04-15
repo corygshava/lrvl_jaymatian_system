@@ -314,14 +314,23 @@
 				</div>
 				<div>
 					<div class="distance-sm w3-center flowline gap-sm center">
-						<button class="mybtn secondary" data-runme="download_me" data-me="debtors" data-myid="1"><i class="fa fa-download"></i> download image</button>
+						<button class="mybtn secondary" data-runme="download_me" data-me="system" data-myid="1"><i class="fa fa-download"></i> download image</button>
 						<button class="mybtn primary" data-runme="print_me" data-me="debtors" data-myid="1"><i class="fa fa-print"></i> print image</button>
+					</div>
+				</div>
+
+				<div class="canvasguy_3 slide-up flow centroid mt-4">
+				</div>
+				<div>
+					<div class="distance-sm w3-center flowline gap-sm center">
+						<button class="mybtn secondary" data-runme="download_me" data-me="debtors" data-myid="2"><i class="fa fa-download"></i> download image</button>
+						<button class="mybtn primary" data-runme="print_me" data-me="debtors" data-myid="2"><i class="fa fa-print"></i> print image</button>
 					</div>
 				</div>
 
 				<div class="distance-sm border panelbg themeround collapser slide-up">
 					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#statsguy" data-toggle="collapse" data-target="#statsguy">
-						<span class="text-uppercase text-muted font-weight-bold">Capture stats</span>
+						<span class="text-uppercase text-muted font-weight-bold">Capture stats (main cash report)</span>
 						<i class="fa fa-chevron-down myicon"></i>
 					</a>
 					<div class="collapse panelbg themeround spacy-sm" id="statsguy">
@@ -330,10 +339,19 @@
 
 				<div class="distance-sm border panelbg themeround collapser slide-up">
 					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#statsguy2" data-toggle="collapse" data-target="#statsguy2">
-						<span class="text-uppercase text-muted font-weight-bold">Capture stats (Debtors)</span>
+						<span class="text-uppercase text-muted font-weight-bold">Capture stats (System information)</span>
 						<i class="fa fa-chevron-down myicon"></i>
 					</a>
 					<div class="collapse panelbg themeround spacy-sm" id="statsguy2">
+					</div>
+				</div>
+
+				<div class="distance-sm border panelbg themeround collapser slide-up">
+					<a class="text-decoration-none spacy-sm flowline spread centerline" href="#statsguy3" data-toggle="collapse" data-target="#statsguy3">
+						<span class="text-uppercase text-muted font-weight-bold">Capture stats (Debtors extended)</span>
+						<i class="fa fa-chevron-down myicon"></i>
+					</a>
+					<div class="collapse panelbg themeround spacy-sm" id="statsguy3">
 					</div>
 				</div>
 			</div>
@@ -351,7 +369,7 @@
 				<div class="flowline gap-tn left">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
-					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Cash report (image)</button>
+					<button class="mybtn secondary sm" data-runme="download_rendered_img"><i class="fa fa-download"></i> download Cash report (image)</button>
 					<button class="mybtn secondary sm" data-runme="printPdf"><i class="fa fa-print"></i> print Cash report</button>
 				</div>
 			</div>
@@ -386,6 +404,7 @@
 								<label class="form-label" for="client_name">Generated Cash report</label>
 								<input type="file" name="genimage" id="genimage" required>
 								<input type="file" name="genimage2" id="genimage2" required>
+								<input type="file" name="genimage3" id="genimage3" required>
 							</div>
 						</div>
 						<button class="mybtn primary"><i class="fa fa-save"></i> save Cash report</button>
@@ -434,7 +453,7 @@
 		'gen_download',
 		'setuppdf_invoice',
 		'download_invoice_pdf',
-		'download_invoice_img',
+		'download_rendered_img',
 		'printPdf',
 		'generateSerial',
 		'pick_step',
@@ -1405,21 +1424,30 @@
 			let els = document.querySelectorAll('#document_Holder>[data-role="report_setup"]');
 			let el1 = els[0];
 			let el2 = els[1];
+			let el3 = els[2];
 
 			outguy = document.querySelector('#canvasHolder>.canvasguy');
 			outguy2 = document.querySelector('#canvasHolder>.canvasguy_2');
+			outguy3 = document.querySelector('#canvasHolder>.canvasguy_3');
 
 			statsDiv = document.querySelector('#statsguy');
 			statsDiv2 = document.querySelector('#statsguy2');
+			statsDiv3 = document.querySelector('#statsguy3');
 
 			if(el1 == undefined){alert_danger('main data panel not found');return;}
 			if(el2 == undefined){alert_danger('detors panel not found');return;}
+			if(el3 == undefined){alert_danger('detors panel not found');return;}
+
 			if(outguy == undefined){alert_danger('main output holder not found');return;}
 			if(outguy2 == undefined){alert_danger('detors output holder not found');return;}
+			if(outguy3 == undefined){alert_danger('detors output holder not found');return;}
+
 			if(genimage == undefined){alert_danger('main image holder not found');return;}
 			if(genimage2 == undefined){alert_danger('debtors image holder not found');return;}
+			if(genimage3 == undefined){alert_danger('debtors image holder not found');return;}
 
-			alert_dark('rendering canvas...');
+
+			alert_dark('rendering images, please wait...',22);
 
 			const options = {
 				allowTaint: true,
@@ -1491,17 +1519,21 @@
 				try{
 					console.log('canvases before: ', mycanvases);
 
-					const [canvas1, canvas2] = await Promise.all([
+					const [canvas1, canvas2, canvas3] = await Promise.all([
 						renderme(el1,outguy,statsDiv,genimage,'saved_image_main'),
-						renderme(el2,outguy2,statsDiv2,genimage2,'saved_image_debtors'),
+						renderme(el2,outguy2,statsDiv2,genimage2,'saved_image_system'),
+						renderme(el3,outguy3,statsDiv3,genimage3,'saved_image_debtors'),
 					]);
 
 					mycanvases = [
 						canvas1,
 						canvas2,
+						canvas3,
 					];
 
 					cashreport_runtime_data.canvases = mycanvases;
+					clear_alerts();
+					alert_info('all images rendered successfully');
 				} catch (error) {
 					output.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
 					console.error('Capture failed:', error);
@@ -1639,7 +1671,7 @@
 
 			alert_info('downloading generated pdf');
 		}
-		window['download_invoice_img'] = () => {
+		window['download_rendered_img'] = () => {
 			const invdata = {...cashreport_runtime_data};
 			const canvas = cashreport_runtime_data.renderedCanvas_main;
 
@@ -1649,7 +1681,7 @@
 
 			let a = document.createElement('a');
 			a.href = dataUrl;
-			a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] generated_invoice`;
+			a.download = `${encodeURIComponent(formatDate(new Date()).replaceAll('/',''))} generated cash report.png`;
 			document.body.appendChild(a);
 
 			a.click();
@@ -1718,6 +1750,13 @@
 			let me = el.dataset.me;
 			let c_id = Number(el.dataset.myid);
 			let canva = cashreport_runtime_data.canvases[c_id];
+			let drd = cashreport_runtime_data.cash_report_data;
+
+			let filenames = {
+				'debtors' : `[${(new Date()).getTime()}] ${drd.context == undefined ? '' : '(' + drd.context + ') - '} debtors_report.png`,
+				'system' : `[${(new Date()).getTime()}] ${drd.context == undefined ? '' : '(' + drd.context + ') - '} system_report.png`,
+				'mainone' : `[${(new Date()).getTime()}] ${drd.context == undefined ? '' : '(' + drd.context + ') - '} cash_report.png`,
+			}
 
 			if(canva == undefined){
 				alert_danger('invalid canvas, render the document again')
@@ -1726,7 +1765,7 @@
 			const imageDataUrl = canva.mycanvas.toDataURL('image/png');
 			let a = document.createElement('a');
 			a.href = imageDataUrl;
-			a.download = me == 'debtors' ? 'debtors_report_image' : 'cash_report_image.png';
+			a.download = filenames[me];
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
