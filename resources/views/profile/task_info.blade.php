@@ -460,6 +460,8 @@
 
 		// get task
 		const step1 = () => {
+			load_txt.innerHTML = 'loading task details';
+
 			window[fetch_bypass](linkAtlas['get_task'],{id: t_id},'POST').then((d) => {
 				responseHandler(d,step2,d);
 
@@ -485,6 +487,7 @@
 
 		const step3 = (d) => {
 			task_info_data.samplesData = d.sendme;
+			load_txt.innerHTML = 'loading task payments';
 			// render samples
 			// load payments
 			loadMe('payments',linkAtlas['get_payments'],c_pld,step4,'POST');
@@ -492,6 +495,7 @@
 
 		const step4 = (d) => {
 			task_info_data.paymentData = d.sendme;
+			load_txt.innerHTML = 'loading task reports';
 			// render payments
 			// load reports
 			loadMe('reports',linkAtlas['get_reports'],c_pld,step5,'POST');
@@ -499,6 +503,7 @@
 
 		const step5 = (d) => {
 			task_info_data.reportData = d.sendme;
+			load_txt.innerHTML = 'loading task worksheets';
 			// render payments
 			// load reports
 			loadMe('worksheets',linkAtlas['get_worksheets'],c_pld,step6,'POST');
@@ -506,6 +511,7 @@
 
 		const step6 = (d) => {
 			task_info_data.worksheets = d.sendme;
+			load_txt.innerHTML = 'displaying information';
 			// render reports
 			// run final step
 			final_step();
