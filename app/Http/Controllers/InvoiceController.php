@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BizData;
 use App\Models\Client;
 use App\Models\FileHash;
 use App\Models\Invoice;
@@ -901,12 +902,17 @@ class InvoiceController extends Controller{
 
 			$outdata = [];
 
-			$invoice = Invoice::where('invoice_no',$inv_no)->with('filehashes')->first();
+			$invoice = Invoice::where('invoice_no',$inv_no)->with('filehashes')->with('client')->first();
 
 			if($invoice == null){
 				$_msg('no invoice found with that Number');
 			} else {
 				$_msg('invoice found');
+
+				// get payment data from db
+				$bizdata = BizData::where('item_name','like',"%business_details%")->first();
+				$dta = $bizdata->item_data ?? ['mpesa' => '!!'];
+				$mpesa = $dta['mpesa'];
 
 				$outdata['invoice_no'] = $invoice->invoice_no;
 				$serial = '';
@@ -945,6 +951,11 @@ class InvoiceController extends Controller{
 					...$outdata,
 					'invoice_amt' => $invoice->total,
 					'invoice_date' => $invoice->created_at,
+					'invoice_tasks' => $invoice->tasks_count,
+					'client_name' => $invoice->client->client_name,
+					'client_contact' => $invoice->client->client_contact,
+					'mpesa_number' => $mpesa,
+					'invoice_tasks' => $invoice->tasks_count,
 					'invoice_tasks' => $invoice->tasks_count,
 					'file_link' => $f_name,
 				];

@@ -654,6 +654,15 @@
 							{value: 'true',label: 'paid'},
 							{value: 'false',label: 'not paid'},
 						]
+					},
+					{
+						name: 'has_reports',
+						label: 'Report status',
+						rawname: 'fully paid',
+						options: [
+							{value: 'has',label: 'Has reports'},
+							{value: 'doesnt',label: 'Without reports'},
+						]
 					}
 				],
 

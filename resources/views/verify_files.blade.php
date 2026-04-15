@@ -189,6 +189,8 @@
 			width: auto;
 		}
 
+		#loader_ui{display: none;}
+
 		/* finalize */
 			.info-row .info-label{width: 240px;}
 
@@ -499,6 +501,22 @@
 					required: true,
 				},
 				{
+					field: 'client_name',
+					label: 'Invoice Recipient',
+					placeholder: 'the name in the [invoice to] section',
+					typ: 'text',
+					required: true,
+					_inp_props: 'step=0.01',
+				},
+				{
+					field: 'client_contact',
+					label: 'Reciepient Contact',
+					placeholder: 'the contact in the [invoice to] section',
+					typ: 'text',
+					required: true,
+					_inp_props: 'step=0.01',
+				},
+				{
 					field: 'invoice_amt',
 					label: 'Invoice Amount',
 					placeholder: 'enter the given invoice amount',
@@ -507,13 +525,21 @@
 					_inp_props: 'step=0.01',
 				},
 				{
+					field: 'mpesa_number',
+					label: 'Mpesa Number',
+					placeholder: 'enter the Mpesa number specified on the Invoice',
+					typ: 'text',
+					required: true,
+					// _inp_props: 'step=0.01',
+				},
+				{
 					field: 'invoice_tasks',
 					label: 'Number of tasks',
-					placeholder: 'enter the number of tasks the invoice has',
+					placeholder: 'number of items written as JML_***',
 					typ: 'number',
 					required: true,
 					// _inp_props: 'step=0.01',
-				}
+				},
 			],
 			'report' : [
 				/*
@@ -972,6 +998,7 @@
 				let dta = d.data;
 
 				progress_panel.classList.remove('is_inactive');
+				results_summary.innerHTML = '';
 
 				const showverdict = (ver,txt) => {
 					let v = ver == 'good';
@@ -992,7 +1019,6 @@
 					showverdict('bad',`Invalid document: ${dta.message}`);
 					// return;
 				} else {
-					results_summary.innerHTML = '';
 
 					let outres = dta.sendme;
 					let vrf = {...verify_runtime_data};

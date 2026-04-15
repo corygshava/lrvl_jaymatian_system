@@ -35,6 +35,7 @@ class TaskController extends Controller{
 			$payment_status = $req->input('payment_status',null);
 			$task_status = $req->input('Status',null);
 			$is_paid = $req->input('is_paid',null);
+			$has_reports = $req->input('has_reports',null);
 
 			$res['runlog'][] = [
 				"perPage" => $perPage,
@@ -81,6 +82,17 @@ class TaskController extends Controller{
 			if($is_paid){
 				$paycon = $is_paid == "true";
 				$tasks = $tasks->where('is_paid',$paycon);
+			}
+
+			// filter for whether or not its paid
+			if($has_reports){
+				$hascon = $has_reports == "has";
+
+				if($hascon){
+					$tasks = $tasks->has('reports');
+				} else {
+					$tasks = $tasks->doesntHave('reports');
+				}
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

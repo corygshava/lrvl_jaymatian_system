@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\FileHash;
 use App\Models\ReportsGen;
 use App\Models\Sample;
+use App\Models\Task;
 use App\Services\ImageHashService;
 use App\services\pdfHashService;
 use Carbon\Carbon;
@@ -459,7 +460,7 @@ class ReportsController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			'filetype' => ['required'],
+			'filetype' => ['required','in:image'],
 			'task_no' => ['required'],
 			'sample_type' => ['required'],
 			'sample_count' => ['required','numeric'],
@@ -502,51 +503,95 @@ class ReportsController extends Controller{
 			$s_name = null;
 			$s_report_date = null;
 			$s_authorizer = null;
+			$flink = null;
+			$fslug = null;
+			$ismatch = false;
 
 			$mfile = $req->file('fileInput',null);
 			$outdata = [];
 			$savedhash = '';
 			$serial = '';
-			$flink = '';
 
-			if($ftype == "image"){
-				$imghash = new ImageHashService();
-				$serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
-			}
+			$task = Task::where('task_no',$task_no)->first();
 
-			$fhash = FileHash::where('myhash',$serial)->with('report')->first();
-
-			if($fhash == null){
-				$_msg('filehash not found');
+			if($task == null){
+				$_msg('invalid task number');
 			} else {
-				$savedhash = $fhash->myhash;
-				$_msg('filehash found');
+				$_msg('task found');
 
-				$report = $fhash->report;
-				$client = Client::where('id',$report->client_id)->first();
+				$tid = $task->id;
+				$reports = ReportsGen::where('task_id',$tid)->get();
+				$cnt = $reports->count();
 
-				$s_task_no = $report->task_no;
-				$s_sample_type = $report->sample_type;
-				$s_sample_count = $report->sample_count;
-				$s_name = $client->client_name;
-				$s_report_date = $report->date_compiled;
-				$s_authorizer = $report->authorizer;
+				if($cnt == 0){
+					$_msg('this task doesnt have reports yet');
+				} else {
+					$_msg($cnt.' reports found for this task');
+					$hashes = FileHash::query()->where('id','<>',null);
 
-				$flink = $report->file_slug;
+					foreach($reports as $r){
+						$hashes = $hashes->orWhere('report_id',$r->id);
+					}
 
-				$reslt = true;
+					$hashes = $hashes->get();
+					$cnt = $hashes->count();
+
+					if($cnt == 0){
+						$_msg('no filedata records found (scan QR code first)');
+					} else {
+						$_msg($cnt.' potential filedata records found');
+
+						if($ftype == 'image'){
+							$hasher = new ImageHashService();
+							$serial = $hasher->generateHash($mfile,$res['runlog'])['hex'];
+						}
+
+						$found = 0;
+						foreach($hashes as $h){
+							$toadd = $h->myhash == $serial ? 1 : 0;
+							$found += $toadd;
+						}
+
+						$_msg($found.' file matches found');
+
+						if($found == 0){
+							$_msg('no file matches were found');
+						} else {
+							$_msg('we found a file match');
+
+							$report = ReportsGen::where('task_id',$tid)->where('sample_type',$sample_type)->first();
+
+							if($report == null){
+								$_msg('sample type is incorrect, check and try again');
+							} else {
+								$_msg('We found a report, generating output');
+
+								$client = Client::where('id',$report->client_id)->first();
+
+								if($client == null){
+									$_msg("client records were deleted");
+								} else {
+									$flink = $report->file_slug;
+									$s_task_no = $report->task_no;
+									$s_sample_type = $report->sample_type;
+									$s_sample_count = $report->sample_count;
+									$s_name = $client->client_name;
+									$s_report_date = $report->date_compiled;
+									$s_authorizer = $report->authorizer;
+
+									$reslt = true;
+									$ismatch = true;
+								}
+							}
+						}
+					}
+				}
 			}
-
-			$outdata['matchdata'] = [
-				'passed' => $serial,
-				'saved' => $savedhash,
-			];
-
-			$ismatch = !($fhash == null);
 
 			$outdata = [
 				...$outdata,
 				'file_link' => $flink,
+				// 'slug' => $fslug,
 				'matchfile' => $ismatch,
 				'task_no' => $s_task_no,
 				'sample_type' => $s_sample_type,
