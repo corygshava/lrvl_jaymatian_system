@@ -166,8 +166,10 @@
 			// misc
 				'bizimages' : './media/bizimg',
 				'getreport_img' : './media/getreport/imgs',
+				'getreport_slug' : './media/reports/img',
 				'getreport_pdf' : './media/getreport/pdfs',
 				'getinvoice_img' : './media/getinvoice/imgs',
+				'getinvoice_slug' : './media/invoices/img',
 				'getinvoice_pdf' : './media/getinvoice/pdfs',
 		};
 		const pageNames = {

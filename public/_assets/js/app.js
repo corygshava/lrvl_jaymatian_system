@@ -17,7 +17,7 @@ const imagepath = `${mainhost}/res/images/`;
 const pref_auth = 'trybXP_comp_app_access_token';
 var curfun = "";
 
-var cache_lifetime_in_secs = 7200;
+var cache_lifetime_in_secs = 60 * 60 * 24;
 let enableCache = true;
 // var cache_lifetime_in_secs = 24;
 

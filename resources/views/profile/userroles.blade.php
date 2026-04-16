@@ -139,9 +139,9 @@
 	}
 </style>
 
-<div class="spacy-md_">
-	<div class="distance-sm flowline spread overflow">
-		<div>
+<div class="container-fluid">
+	<div class="page-header">
+		<div class="page-title">
 			<span class="text-muted h4">User Role management</span>
 			<p>Here you can view and modify all user roles and their permissions</p>
 		</div>
@@ -152,7 +152,7 @@
 		</div>
 	</div>
 
-	<section class="distance-sm">
+	<section class="distance-sm panelbg spacy-sm themeround">
 		<div class="data-panel w3-transparent animate-fade-in">
 			<!-- Data Header -->
 			<div class="data-header">
@@ -423,7 +423,7 @@
 
 	// autoruns
 	window['runOnAwake'] = () => {
-		alert_info('running initialiser');
+		alert_info('fetching user roles, please wait...',22);
 
 		const setroles = (d) => {
 			userRoles = d.sendme;
@@ -431,6 +431,7 @@
 
 		window[fetch_bypass_fyls]('./data/user_roles',{},'GET').then(d => {
 			// alert_dark('its done getting user roles');
+			clear_alerts();
 			alert_success(d.message);
 			responseHandler(d,setroles,d,true,true);
 			renderRoles();
