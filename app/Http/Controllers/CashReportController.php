@@ -312,7 +312,7 @@ class CashReportController extends Controller{
 
 				// calculate carry over cash
 				$haslast = !($lastrec == null);
-				$carry_over = $haslast ? 0 : $lastrec->total_balance_forward;
+				$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 				$_msg('carry over calculated');
 
 				// calculate sample counts
