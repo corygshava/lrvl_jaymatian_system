@@ -1,0 +1,2 @@
+save daily report
+	php artisan app:save-daily-report

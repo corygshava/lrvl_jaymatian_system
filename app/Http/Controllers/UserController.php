@@ -138,7 +138,7 @@ class UserController extends Controller{
 				"sortDirection" => $sortDirection,
 			];
 
-			$users = User::query();
+			$users = User::query()->where('id','<>',0);
 
 			if($search){
 				$users = $users
@@ -549,7 +549,7 @@ class UserController extends Controller{
 					$tmp_box = ['unpaid_invoices_total' => $s_done];
 					$outdata = [...$outdata,...$tmp_box];
 
-					$s_done = Task::where('id','<>',null)->where('payment_status',2)->count();
+					$s_done = Task::where('id','<>',null)->where('payment_status','<>',2)->count();
 					$tmp_box = ['unpaid_tasks_total' => $s_done];
 					$outdata = [...$outdata,...$tmp_box];
 

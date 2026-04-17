@@ -243,10 +243,10 @@ class CashReportController extends Controller{
     public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
 		$res = $this->dftres;
 		// $res = [...$res,...$oldres];
-		$alldata = $req->all();
+		// $alldata = $req->all();
 		$msg = "didnt even get to start";
 
-		// /*
+		/*
 		$passed = $req->validate([
 			't_range' => ['sometimes','in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime']
 		]);
@@ -268,7 +268,7 @@ class CashReportController extends Controller{
 			$update_runlog($w);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
@@ -306,14 +306,13 @@ class CashReportController extends Controller{
 			$_rlg(['timediff' => $timediff]);
 			$wegood = $timediff == null ? true : $timediff > 23;
 
-			if(!$wegood && false){
-				$_msg('you can only make one report per day');
-			} else {
+			if(true){
 				$_msg('you can make a daily report for today');
 				$t_range = $myrange == null ? 'today' : $myrange;
 
 				// calculate carry over cash
-				$carry_over = $lastrec == null ? 0 : $lastrec->total_balance_forward;
+				$haslast = !($lastrec == null);
+				$carry_over = $haslast ? 0 : $lastrec->total_balance_forward;
 				$_msg('carry over calculated');
 
 				// calculate sample counts
@@ -323,7 +322,7 @@ class CashReportController extends Controller{
 				;
 
 				// get total income
-				if($lastrec != null){
+				if($haslast){
 					$payemnts = Payment::query()
 						->where('id','<>',null)
 						->timeRange($t_range)
@@ -473,7 +472,7 @@ class CashReportController extends Controller{
 				$outdata = [
 					...$outdata,
 					'time_difference' => $timediff,
-					'carry_over' => $carry_over,
+					'carry_over' => floatval($carry_over),
 					'total_owed' => $total_debit,
 					'total_income' => $total_income,
 					'cash_from_debtors' => $cash_from_debtors,
@@ -531,15 +530,19 @@ class CashReportController extends Controller{
 		}
 	}
 
-	public function save_me(Request $req){
+	public function save_me(Request $req,$iscalled = false){
 		$res = $this->dftres;
-		$alldata = $req->all();
+		// $alldata = $req->all();
 		$msg = "didnt even get to start";
 
 		// /*
-		$passed = $req->validate([
-			'rptdata' => ['required'],
-		]);
+		$passed = $iscalled ?
+			["rptdata" => []]
+			:
+			$req->validate([
+				'rptdata' => ['required'],
+			])
+		;
 		// */
 
 		$update_runlog = function($wot) use (&$res){
@@ -558,7 +561,7 @@ class CashReportController extends Controller{
 			return $update_runlog($w);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
@@ -586,10 +589,12 @@ class CashReportController extends Controller{
 			} else {
 				$_msg('saving daily report');
 				$toadd = $this->get_for_today($req,true,$res['runlog']);
+				// $_rlg(['toadd' => $toadd]);
+
 				$cnt = DailyCashReport::where('id','<>',null)->count();
 				$num = str_pad("$cnt",4,'0',STR_PAD_LEFT);
 				// unset($toadd['carry_over']);
-				$toadd['added_by'] = $user->id;
+				$toadd['added_by'] = $iscalled ? 0 : $user->id;
 				$toadd['cash_report_no'] = "CRPT_D_{$num}";
 				$_rlg($toadd);
 				$created = null;
@@ -614,18 +619,24 @@ class CashReportController extends Controller{
 			}
 		}
 
+		if($iscalled){
+			return $res;
+		}
 		return response()->json($res);
 	}
 
-	public function save_me_monthly(Request $req){
+	public function save_me_monthly(Request $req,$iscalled = false){
 		$res = $this->dftres;
-		$alldata = $req->all();
 		$msg = "didnt even get to start";
 
 		// /*
-		$passed = $req->validate([
-			'rptdata' => ['required'],
-		]);
+		$passed = $iscalled ?
+			["rptdata" => []]
+			:
+			$req->validate([
+				'rptdata' => ['required'],
+			])
+		;
 		// */
 
 		$update_runlog = function($wot) use (&$res){
@@ -644,14 +655,14 @@ class CashReportController extends Controller{
 			return $update_runlog($w);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
 			$user = $this->cur_user();
 
 			$toadd = $passed['rptdata'];
-			$toadd['added_by'] = $user->id;
+			// $toadd['added_by'] = $iscalled ? 0 : $user->id;
 			$_msg('adding daily report');
 
 			$lastrec = MonthlyCashReport::query()
@@ -676,7 +687,7 @@ class CashReportController extends Controller{
 				$toadd = $this->get_for_today($req,true,$res['runlog']);
 				$cnt = MonthlyCashReport::where('id','<>',null)->count();
 				$num = str_pad("$cnt",4,'0',STR_PAD_LEFT);
-				$toadd['added_by'] = $user->id;
+				$toadd['added_by'] = $iscalled ? 0 : $user->id;
 				$toadd['cash_report_no'] = "CRPT_M_{$num}";
 				$_rlg($toadd);
 				$created = null;
@@ -701,6 +712,9 @@ class CashReportController extends Controller{
 			}
 		}
 
+		if($iscalled){
+			return $res;
+		}
 		return response()->json($res);
 	}
 }
