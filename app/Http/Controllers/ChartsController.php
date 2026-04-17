@@ -208,8 +208,8 @@ class ChartsController extends Controller{
 					for ($hour = 0; $hour < 24; $hour++) {
 						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
 						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::today()->hour($hour)->minute(0)->second(0),
-								Carbon::today()->hour($hour)->minute(59)->second(59)
+								Carbon::today()->hour($hour + 3)->minute(0)->second(0),
+								Carbon::today()->hour($hour + 3)->minute(59)->second(59)
 							])
 							->sum($thecol)
 						;
@@ -334,8 +334,8 @@ class ChartsController extends Controller{
 					for ($hour = 0; $hour < 24; $hour++) {
 						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
 						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::today()->hour($hour)->minute(0)->second(0),
-								Carbon::today()->hour($hour)->minute(59)->second(59)
+								Carbon::today()->hour($hour + 3)->minute(0)->second(0),
+								Carbon::today()->hour($hour + 3)->minute(59)->second(59)
 							])
 							->count()
 						;
