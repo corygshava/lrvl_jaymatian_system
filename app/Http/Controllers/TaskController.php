@@ -323,9 +323,18 @@ class TaskController extends Controller{
 					} else {
 						try{
 							// $newid = Task::whereDate('created_at', today())->count() + 1;
-							$newid = Task::where('id','<>',null)->count() + 1;
-							$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
-							$task_serial = 'JML_' . $suffix;
+							$newid = 0;
+							$suffix = '';
+							$task_serial = '';
+							$exist = true;
+
+							do {
+								$newid = Task::where('id','<>',null)->count() + 1;
+								$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
+								$task_serial = 'JML_' . $suffix;
+								$exist = Task::where('task_no',$task_serial)->exists();
+							} while ($exist);
+
 							$sample_count = 0;
 
 							$paystate = isset($sent['paymentStats']) ? ($sent['paymentStats']['balance'] == 0 ? 2 : 1) : 0;
