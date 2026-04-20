@@ -115,6 +115,27 @@
 
 	tr td{padding: 1px 3px !important;}
 	tr td>*{transform: translateY(-7px);}
+
+	tr:has(.removebtn){
+		position: relative;
+	}
+	.removebtn {
+	    background: transparent;
+	    position: absolute;
+	    right: 0;
+	    translate: 0 32px;
+	    opacity: 0;
+	    border: none;
+	    padding: 4px;
+	    font-size: 0.7rem;
+	}
+	tr:has(.removebtn):hover .removebtn{
+		opacity: 1;
+		translate: 0 7px;
+	}
+	tr:has(.removebtn):hover{
+		background: #eee;
+	}
 </style>
 
 <div class="container-fluid">
@@ -763,17 +784,23 @@
 
 		s_data.results.forEach((r,i) => {
 			outht += is_special ? `
-				<tr>
+				<tr data-role="result_entry" data-myid="${i}">
 					<td><span>${i + 1}</span></td>
 					<td><span>${r.sample_name}</span></td>
-					<td class="text-center"><span>${r.activity} %</span></td>
+					<td class="text-center">
+						<span>${r.activity} %</span>
+						<button data-subrole="entry_editor" data-runme="just_hide_this" data-myid="${i}" class="removebtn w3-red"><i class="fa fa-eye-slash"></i></button>
+					</td>
 				</tr>
 			` : `
-				<tr>
+				<tr data-role="result_entry" data-myid="${i}">
 					<td><span>${i + 1}</span></td>
 					<td><span>${r.sample_name}</span></td>
 					<td class="text-right"><span>${vonv(r.au_ppm)}</span></td>
-					<td class="text-right"><span>${vonv(r.cu_ppm)}</span></td>
+					<td class="text-right">
+						<span>${vonv(r.cu_ppm)}</span>
+						<button data-subrole="entry_editor" data-runme="just_hide_this" data-myid="${i}" class="removebtn w3-red"><i class="fa fa-eye-slash"></i></button>
+					</td>
 				</tr>
 			`;
 		})
@@ -860,393 +887,404 @@
 
 		return `${xtra}${proc.join("")}`;
 	}
+	window['just_hide_this'] = (el) => {
+		let id = el.dataset.myid;
+		let rows = document.querySelectorAll('[data-role="result_entry"]');
 
-	// operations
-	window['renderCanvas'] = async () => {
-		let el = document.querySelector('#document_Holder>[data-role="report_setup"]');
-		let outguy = document.querySelector('#canvasHolder>.canvasguy');
-		let statsDiv = document.querySelector('#statsguy');
-
-		if(el == undefined){alert_danger('document holder not found');return;}
-		if(outguy == undefined){alert_danger('output holder not found');return;}
-		if(genimage == undefined){alert_danger('generated image holder not found');return;}
-
-		alert_info('rendering report, please wait',22);
-
-		const options = {
-			allowTaint: false,
-			backgroundColor: null,
-			logging: false,
-			scale: 4,
-			useCORS: false
-		};
-
-		outguy.innerHTML = 'rendering, please wait';
-		// statsDiv.innerHTML = 'rendering, please wait';
-		statsDiv.innerHTML = "";
-
-		// outguy.classList.add('w3-hide');
-		// loader_render.classList.remove('w3-hide');
-
-		// setTimeout(async () => {
-			try{
-				const startTime = performance.now();
-
-				// capture element
-				const canvas = await html2canvas(el, options);
-				const endtime = performance.now();
-				const duration = (endtime - startTime).toFixed(2);
-
-				// outguy.classList.remove('w3-hide');
-				// loader_render.classList.add('w3-hide');
-				outguy.innerHTML = '';
-				outguy.appendChild(canvas);
-
-				report_runtime_data.renderedCanvas = canvas;
-
-				// /*
-				report_runtime_data.renderedCanvas.toBlob((blob) => {
-					const fyl = new File([blob],'generated_doc_image.png',{type: 'image/png'});
-					let dtr = new DataTransfer();
-					dtr.items.add(fyl);
-					genimage.files = dtr.files;
-				});
-				// */
-
-				let dur = duration + 400;
-				statsDiv.innerHTML += `
-					<div class="info-row">
-						<span class="info-label">Size:</span>
-						<span class="info-value">${canvas.width} × ${canvas.height} px</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Render Duration:</span>
-						<span class="info-value">${(dur / 1000).toFixed(2)} s</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Scale:</span>
-						<span class="info-value">${options.scale}x</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Background:</span>
-						<span class="info-value">${options.backgroundColor || 'initial'}</span>
-					</div>
-				`;
-
-				clear_alerts();
-				alert_success('report rendered');
-			} catch (error) {
-				// outguy.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
-				// statsDiv.innerHTML += `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
-				console.error('Capture failed:', error);
+		rows.forEach(r => {
+			if(r.dataset.myid == id){
+				r.classList.add('w3-hide');
 			}
-		// },400);
+		})
 	}
 
-	window['generatePdf'] = async () => {
-		if(report_runtime_data.renderedCanvas == undefined){
-			alert_danger('no document has been rendered yet');
-			return;
+	// doc ops
+		window['renderCanvas'] = async () => {
+			let el = document.querySelector('#document_Holder>[data-role="report_setup"]');
+			let outguy = document.querySelector('#canvasHolder>.canvasguy');
+			let statsDiv = document.querySelector('#statsguy');
+
+			if(el == undefined){alert_danger('document holder not found');return;}
+			if(outguy == undefined){alert_danger('output holder not found');return;}
+			if(genimage == undefined){alert_danger('generated image holder not found');return;}
+
+			alert_info('rendering report, please wait',22);
+
+			const options = {
+				allowTaint: false,
+				backgroundColor: null,
+				logging: false,
+				scale: 4,
+				useCORS: false
+			};
+
+			outguy.innerHTML = 'rendering, please wait';
+			// statsDiv.innerHTML = 'rendering, please wait';
+			statsDiv.innerHTML = "";
+
+			// outguy.classList.add('w3-hide');
+			// loader_render.classList.remove('w3-hide');
+
+			// setTimeout(async () => {
+				try{
+					const startTime = performance.now();
+
+					// capture element
+					const canvas = await html2canvas(el, options);
+					const endtime = performance.now();
+					const duration = (endtime - startTime).toFixed(2);
+
+					// outguy.classList.remove('w3-hide');
+					// loader_render.classList.add('w3-hide');
+					outguy.innerHTML = '';
+					outguy.appendChild(canvas);
+
+					report_runtime_data.renderedCanvas = canvas;
+
+					// /*
+					report_runtime_data.renderedCanvas.toBlob((blob) => {
+						const fyl = new File([blob],'generated_doc_image.png',{type: 'image/png'});
+						let dtr = new DataTransfer();
+						dtr.items.add(fyl);
+						genimage.files = dtr.files;
+					});
+					// */
+
+					let dur = duration + 400;
+					statsDiv.innerHTML += `
+						<div class="info-row">
+							<span class="info-label">Size:</span>
+							<span class="info-value">${canvas.width} × ${canvas.height} px</span>
+						</div>
+						<div class="info-row">
+							<span class="info-label">Render Duration:</span>
+							<span class="info-value">${(dur / 1000).toFixed(2)} s</span>
+						</div>
+						<div class="info-row">
+							<span class="info-label">Scale:</span>
+							<span class="info-value">${options.scale}x</span>
+						</div>
+						<div class="info-row">
+							<span class="info-label">Background:</span>
+							<span class="info-value">${options.backgroundColor || 'initial'}</span>
+						</div>
+					`;
+
+					clear_alerts();
+					alert_success('report rendered');
+				} catch (error) {
+					// outguy.innerHTML = `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
+					// statsDiv.innerHTML += `<div class="empty-state" style="color: #e53e3e;">Error: ${error.message}</div>`;
+					console.error('Capture failed:', error);
+				}
+			// },400);
 		}
 
-		let rcv = report_runtime_data.renderedCanvas;
-		let fwidth = rcv.width;
-		let fheight = rcv.height;
-
-		const imgData = rcv.toDataURL('image/png');
-
-		const { jsPDF } = window.jspdf;
-		const pdf = new jsPDF({
-			orientation: fwidth > fheight ? 'landscape' : 'portrait',
-			unit: 'px',
-			format: [fwidth, fheight]
-		});
-
-		pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
-
-		return pdf;
-	}
-
-	window['gen_download'] = async () => {
-		try {
+		window['generatePdf'] = async () => {
 			if(report_runtime_data.renderedCanvas == undefined){
-				throw new Error('no document has been rendered yet');
-			}
-			if(genfile == undefined){
-				throw new Error('the element to hold the document is missing');
+				alert_danger('no document has been rendered yet');
+				return;
 			}
 
-			const pdf = await generatePdf();
+			let rcv = report_runtime_data.renderedCanvas;
+			let fwidth = rcv.width;
+			let fheight = rcv.height;
 
-			if(!pdf){
-				throw new Error('something went wrong with generating the document.');
-			}
+			const imgData = rcv.toDataURL('image/png');
 
-			const theblob = pdf.output('blob');
-			const thefile = new File(
-				[theblob],
-				'generated_doc.pdf',
-				{type: 'application/pdf'}
-			);
-
-			const dtr = new DataTransfer();
-			dtr.items.add(thefile);
-
-			genfile.files = dtr.files;
-
-			// create a render of the first page to create a hash from
-			setuppdf(pdf,'fpreview').then((img) => {
-				report_runtime_data.filemade = true;
-				report_runtime_data.medFile = pdf;
-
-				// Download the PDF
-				// pdf.save('gen_doc.pdf');
-				// alert_danger('PDF downloaded successfully!', 'success');
+			const { jsPDF } = window.jspdf;
+			const pdf = new jsPDF({
+				// orientation: fwidth > fheight ? 'landscape' : 'portrait',
+				// unit: 'px',
+				format: [fwidth, fheight],
+				orientation: 'portrait',
 			});
-		} catch (error) {
-			console.error('Error:', error);
-			alert_danger('Error generating PDF: ' + error.message);
+
+			// pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
+			pdf.text('pdfs were outlawed due to forgery concerns, sorry', 10, 10);
+
+			return pdf;
 		}
-	}
-	window['setuppdf'] = async (pdfFile,inputId = 'fileInput') => {
-	    try {
-	    	return null;
-	        // Read the PDF file
-	        const arrayBuffer = await pdfFile.arrayBuffer();
-	        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-	        const page = await pdf.getPage(1);
 
-	        // Set up canvas for rendering
-	        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
-	        const canvas = document.createElement('canvas');
-	        const context = canvas.getContext('2d');
-	        canvas.width = viewport.width;
-	        canvas.height = viewport.height;
+		window['gen_download'] = async () => {
+			try {
+				if(report_runtime_data.renderedCanvas == undefined){
+					throw new Error('no document has been rendered yet');
+				}
+				if(genfile == undefined){
+					throw new Error('the element to hold the document is missing');
+				}
 
-	        // Render PDF page to canvas
-	        await page.render({
-	            canvasContext: context,
-	            viewport: viewport
-	        }).promise;
+				const pdf = await generatePdf();
 
-	        // Convert canvas to blob
-	        const blob = await new Promise(resolve => {
-	            canvas.toBlob(resolve, 'image/png', 0.95);
-	        });
+				if(!pdf){
+					throw new Error('something went wrong with generating the document.');
+				}
 
-	        // Create new file for the read page
-	        const originalName = pdfFile.name.replace('.pdf', '');
-	        const newFileName = `${originalName} [converted]`;
-	        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+				const theblob = pdf.output('blob');
+				const thefile = new File(
+					[theblob],
+					'generated_doc.pdf',
+					{type: 'application/pdf'}
+				);
 
-	        // Create a DataTransfer object to assign to the input
-	        const dataTransfer = new DataTransfer();
-	        dataTransfer.items.add(imageFile);
+				const dtr = new DataTransfer();
+				dtr.items.add(thefile);
 
-	        // Assign to file input
-	        const fileInput = document.getElementById(inputId);
-	        if(fileInput !== undefined){
-	        	fileInput.files = dataTransfer.files;
-	        }
+				genfile.files = dtr.files;
 
-	        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-	        return imageFile;
-	    } catch (error) {
-	        console.error('Error converting PDF to image:', error);
-	        throw error;
-	    }
-	}
+				// create a render of the first page to create a hash from
+				setuppdf(pdf,'fpreview').then((img) => {
+					report_runtime_data.filemade = true;
+					report_runtime_data.medFile = pdf;
 
-	window['downloadPdf'] = () => {
-		return;
-		if(report_runtime_data.medFile == undefined){
-			alert_danger('no pdf has been generated yet');
+					// Download the PDF
+					// pdf.save('gen_doc.pdf');
+					// alert_danger('PDF downloaded successfully!', 'success');
+				});
+			} catch (error) {
+				console.error('Error:', error);
+				alert_danger('Error generating PDF: ' + error.message);
+			}
+		}
+		window['setuppdf'] = async (pdfFile,inputId = 'fileInput') => {
+		    try {
+		    	return null;
+		        // Read the PDF file
+		        const arrayBuffer = await pdfFile.arrayBuffer();
+		        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+		        const page = await pdf.getPage(1);
+
+		        // Set up canvas for rendering
+		        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+		        const canvas = document.createElement('canvas');
+		        const context = canvas.getContext('2d');
+		        canvas.width = viewport.width;
+		        canvas.height = viewport.height;
+
+		        // Render PDF page to canvas
+		        await page.render({
+		            canvasContext: context,
+		            viewport: viewport
+		        }).promise;
+
+		        // Convert canvas to blob
+		        const blob = await new Promise(resolve => {
+		            canvas.toBlob(resolve, 'image/png', 0.95);
+		        });
+
+		        // Create new file for the read page
+		        const originalName = pdfFile.name.replace('.pdf', '');
+		        const newFileName = `${originalName} [converted]`;
+		        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+
+		        // Create a DataTransfer object to assign to the input
+		        const dataTransfer = new DataTransfer();
+		        dataTransfer.items.add(imageFile);
+
+		        // Assign to file input
+		        const fileInput = document.getElementById(inputId);
+		        if(fileInput !== undefined){
+		        	fileInput.files = dataTransfer.files;
+		        }
+
+		        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+		        return imageFile;
+		    } catch (error) {
+		        console.error('Error converting PDF to image:', error);
+		        throw error;
+		    }
+		}
+
+		window['downloadPdf'] = () => {
 			return;
+			if(report_runtime_data.medFile == undefined){
+				alert_danger('no pdf has been generated yet');
+				return;
+			}
+
+			if(report_runtime_data.sampleData == undefined){
+				alert_danger('sample data missing, refresh the page to fix',4);
+				return;
+			}
+
+			report_runtime_data.medFile.save(`${report_runtime_data.sampleData.task.task_no}_generated_report.pdf`);
+
+			alert_info('downloading generated pdf');
 		}
+		window['downloadImg'] = () => {
+			const rptdata = {...report_runtime_data};
+			const canvas = report_runtime_data.renderedCanvas;
 
-		if(report_runtime_data.sampleData == undefined){
-			alert_danger('sample data missing, refresh the page to fix',4);
-			return;
+			// Create a new window for printing
+			const printWindow = window.open('', '_blank');
+
+			// Get the canvas as a data URL
+			const dataUrl = canvas.toDataURL();
+
+			let a = document.createElement('a');
+			a.href = dataUrl;
+			a.download = `${rptdata.sampleData.sample_no}_generated_report`;
+			document.body.appendChild(a);
+
+			a.click();
+			document.body.removeChild(a);
+
+			// a.click();
 		}
+		window['printPdf'] = () => {
+			// Get the canvas element
+			// const canvasId = 'mycanvas';
+			// const canvas = document.getElementById(canvasId);
+			const canvas = report_runtime_data.renderedCanvas;
 
-		report_runtime_data.medFile.save(`${report_runtime_data.sampleData.task.task_no}_generated_report.pdf`);
+			// Create a new window for printing
+			const printWindow = window.open('', '_blank');
 
-		alert_info('downloading generated pdf');
-	}
-	window['downloadImg'] = () => {
-		const rptdata = {...report_runtime_data};
-		const canvas = report_runtime_data.renderedCanvas;
+			// Get the canvas as a data URL
+			const dataUrl = canvas.toDataURL();
 
-		// Create a new window for printing
-		const printWindow = window.open('', '_blank');
-
-		// Get the canvas as a data URL
-		const dataUrl = canvas.toDataURL();
-
-		let a = document.createElement('a');
-		a.href = dataUrl;
-		a.download = `${rptdata.sampleData.sample_no}_generated_report`;
-		document.body.appendChild(a);
-
-		a.click();
-		document.body.removeChild(a);
-
-		// a.click();
-	}
-	window['printPdf'] = () => {
-		// Get the canvas element
-		// const canvasId = 'mycanvas';
-		// const canvas = document.getElementById(canvasId);
-		const canvas = report_runtime_data.renderedCanvas;
-
-		// Create a new window for printing
-		const printWindow = window.open('', '_blank');
-
-		// Get the canvas as a data URL
-		const dataUrl = canvas.toDataURL();
-
-		// Write HTML to the print window
-		printWindow.document.write(`
-			<!DOCTYPE html>
-			<html>
-				<head>
-					<title>Print Canvas</title>
-					<style>
-						body {
-							margin: 0;
-							padding: 0;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							min-height: 100vh;
-						}
-						img {
-							max-width: 100%;
-							height: auto;
-						}
-						@media print {
+			// Write HTML to the print window
+			printWindow.document.write(`
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<title>Print Canvas</title>
+						<style>
 							body {
 								margin: 0;
+								padding: 0;
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								min-height: 100vh;
 							}
 							img {
 								max-width: 100%;
 								height: auto;
-								page-break-inside: avoid;
 							}
-						}
-					</style>
-				</head>
-				<body>
-					<img src="${dataUrl}" onload="printme()" />
-					<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
-				</body>
-			</html>
-		`);
-
-		printWindow.document.close();
-	}
-	window['generateSerial'] = (b) => {
-		let serial = `RPT_${(report_runtime_data.reports_count).toString().padStart(4,'0')}`;
-		report_runtime_data.report_no = serial;
-		return serial;
-	}
+							@media print {
+								body {
+									margin: 0;
+								}
+								img {
+									max-width: 100%;
+									height: auto;
+									page-break-inside: avoid;
+								}
+							}
+						</style>
+					</head>
+					<body>
+						<img src="${dataUrl}" onload="printme()" />
+						<script>const printme=()=>{setTimeout(()=>{window.print(); window.close();},1200)};<\/script>
+					</body>
+				</html>
+			`);
+			printWindow.document.close();
+		}
+		window['generateSerial'] = (b) => {
+			let serial = `RPT_${(report_runtime_data.reports_count).toString().padStart(4,'0')}`;
+			report_runtime_data.report_no = serial;
+			return serial;
+		}
 
 	// navops
-	window['pick_step'] = (n) => {
-		progressLine.style.width = `${spans[n]}%`;
-		// render_all_data();
+		window['pick_step'] = (n) => {
+			progressLine.style.width = `${spans[n]}%`;
+			// render_all_data();
 
-		checks.forEach((w,id) => {
-			if(id == n){
-				w.classList.add('active');
-			}else {
-				w.classList.remove('active');
-			}
+			checks.forEach((w,id) => {
+				if(id == n){
+					w.classList.add('active');
+				}else {
+					w.classList.remove('active');
+				}
 
-			if(id < n){
-				w.classList.add('completed');
+				if(id < n){
+					w.classList.add('completed');
+				} else {
+					w.classList.remove('completed');
+				}
+			})
+
+			tabs.forEach(el => {
+				el.style.display = 'none';
+			})
+
+			let it = tabs[n];
+			if(it !== undefined){
+				it.style.display = 'block';
 			} else {
-				w.classList.remove('completed');
-			}
-		})
-
-		tabs.forEach(el => {
-			el.style.display = 'none';
-		})
-
-		let it = tabs[n];
-		if(it !== undefined){
-			it.style.display = 'block';
-		} else {
-			alert('tab doesnt exist');
-		}
-	}
-	window['pick_step_2'] = (g, skipchecks = false) => {
-		let n = Number(g.dataset.step);
-
-		// alert_warning('knadwjnwadkjwad');
-
-		// if(!skipchecks){
-			if(report_runtime_data.renderedCanvas == undefined && n > 0){
-				alert_danger('render a report first');
-				return;
-			}
-			if(report_runtime_data.filemade == undefined && n > 1){
-				alert_danger('generate a pdf first');
-				return;
-			}
-		// }
-
-		pick_step(n);
-	}
-	window['pick_step_3'] = async (g) => {
-		let n = Number(g.dataset.step);
-		alert_info(g.dataset.msg || 'running operation...');
-		// alert('whaadadadad');
-
-		if(n < steps.length){
-			let mystep = steps[n];
-
-			if(window[mystep] !== undefined){
-				alert_dark(`running: ${mystep}`);
-				// pick_step_2(g,true);
-
-				window[mystep]().then(w => {
-					pick_step_2(g);
-				});
+				alert('tab doesnt exist');
 			}
 		}
-	}
+		window['pick_step_2'] = (g, skipchecks = false) => {
+			let n = Number(g.dataset.step);
+
+			// alert_warning('knadwjnwadkjwad');
+
+			// if(!skipchecks){
+				if(report_runtime_data.renderedCanvas == undefined && n > 0){
+					alert_danger('render a report first');
+					return;
+				}
+				if(report_runtime_data.filemade == undefined && n > 1){
+					alert_danger('generate a pdf first');
+					return;
+				}
+			// }
+
+			pick_step(n);
+		}
+		window['pick_step_3'] = async (g) => {
+			let n = Number(g.dataset.step);
+			alert_info(g.dataset.msg || 'running operation...');
+			// alert('whaadadadad');
+
+			if(n < steps.length){
+				let mystep = steps[n];
+
+				if(window[mystep] !== undefined){
+					alert_dark(`running: ${mystep}`);
+					// pick_step_2(g,true);
+
+					window[mystep]().then(w => {
+						pick_step_2(g);
+					});
+				}
+			}
+		}
 
 	// afterwork stuff
-	window['upload_stuff'] = (el) => {
-		const step2 = (d) => {
-			alert_info('uploading report...');
-			el.report_no.value = generateSerial();
-			el.file_slug.value = report_runtime_data.file_slug;
-			el.sampleid.value = report_runtime_data.sampleData.id;
-			el.admin_password_mine.value = d.admin_password;
-			el.bizdata.value = JSON.stringify(bizdata);
-			pick_step(3);
+		window['upload_stuff'] = (el) => {
+			const step2 = (d) => {
+				alert_info('uploading report...');
+				el.report_no.value = generateSerial();
+				el.file_slug.value = report_runtime_data.file_slug;
+				el.sampleid.value = report_runtime_data.sampleData.id;
+				el.admin_password_mine.value = d.admin_password;
+				el.bizdata.value = JSON.stringify(bizdata);
+				pick_step(3);
 
-			sendform(el,step3,step2b);
+				sendform(el,step3,step2b);
+			}
+
+			const step2b = (d) => {
+				pick_step(2);
+				alert_danger('there was an error uploading the report');
+			}
+
+			const step3 = (d) => {
+				pick_step(4);
+				// confirmAction(mekHeading('report generated successfully','h4'),'the report has been generated successfully',() => {});
+				alert_success('report uploaded successfully');
+			}
+
+			const step1 = () => {
+				awaitConfirmPass(step2);
+			}
+
+			step1();
 		}
-
-		const step2b = (d) => {
-			pick_step(2);
-			alert_danger('there was an error uploading the report');
-		}
-
-		const step3 = (d) => {
-			pick_step(4);
-			// confirmAction(mekHeading('report generated successfully','h4'),'the report has been generated successfully',() => {});
-			alert_success('report uploaded successfully');
-		}
-
-		const step1 = () => {
-			awaitConfirmPass(step2);
-		}
-
-		step1();
-	}
 </script>
