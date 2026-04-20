@@ -766,14 +766,20 @@
 			<tr>
 				<th style="width: 40px;"><span>SN</span></th>
 				<th style="width: 300px;"><span>SAMPLE ID</span></th>
-				<th style="width: 230px;text-align:center;"><span>CARBON ACTIVITY</span></th>
+				<th style="width: 230px;text-align:center;">
+					<span>CARBON ACTIVITY</span>
+					<button data-subrole="entry_editor" data-runme="unhide_stuff" class="removebtn w3-blue"><i class="fa fa-sync-alt"></i></button>
+				</th>
 			</tr>
 		` : `
 			<tr>
 				<th style="width: 40px;"><span>SN</span></th>
 				<th style="width: 400px;"><span>SAMPLE ID</span></th>
 				<th style="width: 90px;"><span>Au ppm</span></th>
-				<th style="width: 90px;"><span>Cu ppm</span></th>
+				<th style="width: 90px;">
+					<span>Cu ppm</span>
+					<button data-subrole="entry_editor" data-runme="unhide_stuff" class="removebtn w3-blue"><i class="fa fa-sync-alt"></i></button>
+				</th>
 			</tr>
 		`;
 
@@ -896,6 +902,17 @@
 				r.classList.add('w3-hide');
 			}
 		})
+
+		alert_dark('result hidden');
+	}
+	window['unhide_stuff'] = (el) => {
+		let rows = document.querySelectorAll('[data-role="result_entry"]');
+
+		rows.forEach(r => {
+			r.classList.remove('w3-hide');
+		})
+
+		alert_info('all results are now visible');
 	}
 
 	// doc ops
