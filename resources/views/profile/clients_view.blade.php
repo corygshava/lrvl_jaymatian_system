@@ -1,5 +1,7 @@
 <?php
-	// require_once __DIR__.'/piece_add_client_form.php';
+	/*
+	require_once __DIR__.'/piece_add_client_form.php';
+	// */
 ?>
 
 {{-- <!-- --}}
@@ -64,7 +66,7 @@
 
 				<div class="card-body">
 					<div class="flowline overflow w3-center stats">
-						<div class="stat">
+						<div class="stat w3-hide">
 							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client ID</small>
 							<b class="text-primary font-weight-bold"><span id="client-id">2</span></b>
 						</div>
@@ -80,6 +82,13 @@
 							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Last Updated</small>
 							<span class="text-dark font-weight-bold" id="last-updated">--</span>
 						</div>
+						<div class="stat">
+							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">total paid</small>
+							<b class="text-dark font-weight-bold"><span id="total-paid">12</span></b>
+						</div>
+					</div>
+
+					<div class="flowline overflow w3-center stats" data-role="morestats">
 					</div>
 
 					<!-- Quick Actions Section -->
@@ -124,7 +133,7 @@
 							</div>
 							<div class="col-md-3 col-sm-6 mb-3">
 								<div class="action-card card themeround text-center p-3" onclick="viewPayments()">
-									<div class="action-icon bg-info text-white mx-auto">
+									<div class="action-icon w3-green text-white mx-auto">
 										<i data-myicon="payments"></i>
 									</div>
 									<h6 class="mb-0 font-weight-bold">View Payments</h6>
@@ -322,16 +331,21 @@
 
 		// Credit balance
 		const creditBalance = parseFloat(data.credit_balance);
-		const balanceSpan = document.getElementById('credit-balance');
+		let balanceSpan = document.getElementById('credit-balance');
 		balanceSpan.textContent = creditBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
 		if(creditBalance > 0) {
-			balanceSpan.parentElement.classList.remove('text-danger');
-			balanceSpan.parentElement.classList.add('text-success');
-		} else if(creditBalance < 0) {
 			balanceSpan.parentElement.classList.remove('text-success');
-			balanceSpan.parentElement.classList.add('text-danger');
+			balanceSpan.parentElement.classList.add('w3-text-orange');
+		} else if(creditBalance <= 0) {
+			balanceSpan.parentElement.classList.remove('w3-text-orange');
+			balanceSpan.parentElement.classList.add('text-success');
 		}
+
+		// total paid
+		const totalPaid = parseFloat(data.payments_sum_amount);
+		balanceSpan = document.getElementById('total-paid');
+		balanceSpan.textContent = totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
 		// Format dates
 		const createdDate = new Date(data.created_at);
@@ -339,6 +353,28 @@
 
 		document.getElementById('member-since').textContent = formatDate0(createdDate);
 		document.getElementById('last-updated').textContent = formatDate0(updatedDate);
+
+		// more stats
+		let moreStats = document.querySelector('[data-role="morestats"]');
+
+		moreStats.innerHTML = `
+			<div class="stat w3-hide_">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">total visits</small>
+				<b class="text-primary font-weight-bold"><span id="client-id">${data.tasks_count}</span></b>
+			</div>
+			<div class="stat w3-hide_">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">total samples</small>
+				<b class="text-primary font-weight-bold"><span id="client-id">${data.samples_count}</span></b>
+			</div>
+			<div class="stat w3-hide_">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">total reports</small>
+				<b class="text-primary font-weight-bold"><span id="client-id">${data.reports_count}</span></b>
+			</div>
+			<div class="stat w3-hide_">
+				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">total payments</small>
+				<b class="text-primary font-weight-bold"><span id="client-id">${data.payments_count}</span></b>
+			</div>
+		`;
 
 		// Additional details
 		document.getElementById('kra-pin-detail').textContent = data.kra_pin || 'Not provided';
@@ -470,6 +506,7 @@
 		// window['lastClientEditResult'] = m;
 		clientData = m.data.sendme;
 		initializeClientProfile(clientData);
+		// alert_info('done updating')
 	}
 
 	// Quick Action handlers

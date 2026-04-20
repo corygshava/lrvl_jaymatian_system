@@ -345,6 +345,7 @@ class SamplesController extends Controller{
 	}
 
 	// setters
+	/*
 	public function add_results(Request $req) {
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -354,7 +355,7 @@ class SamplesController extends Controller{
 			'sample_id' => ['required'],
 			'results' => ['required'],
 		]);
-		// */
+		// * /
 
 
 		if($this->ili()){
@@ -433,4 +434,5 @@ class SamplesController extends Controller{
 
 		return response()->json($res);
 	}
+	// */
 }

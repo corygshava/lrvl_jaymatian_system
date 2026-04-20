@@ -97,6 +97,8 @@ class ClientController extends Controller{
 				->withCount('samples')
 				->withCount('payments')
 				->withCount('reports')
+				->withCount('tasks')
+				->withSum('payments','amount')
 				->with('mycreator')
 				->orderBy($sortBy, $sortDirection)
 				->paginate($perPage)
@@ -188,12 +190,27 @@ class ClientController extends Controller{
 					$msg = "phone number is already taken";
 				}
 			} else {
-				$changed = Client::where('id',$recid)->with('mycreator')->first();
-				$changed->update($tosend);
-				$changed->refresh();
+				$changed = Client::where('id',$recid)->first();
+				if($changed == null){
+					$msg = "invalid client";
+				} else {
+					$changed->update($tosend);
+					// $changed->refresh();
 
-				$reslt = true;
-				$msg = "Client updated successfully";
+					$changed = Client::where('id',$recid)
+						->withCount('samples')
+						->withCount('payments')
+						->withCount('reports')
+						->withCount('tasks')
+						->withSum('payments','amount')
+						->with('mycreator')
+						->withCount('tasks')
+						->first()
+					;
+
+					$reslt = true;
+					$msg = "Client updated successfully";
+				}
 			}
 
 			// return response()->json(['changed' => $changed,'perms' => $perms]);
@@ -212,6 +229,7 @@ class ClientController extends Controller{
 		return response()->json($res);
 	}
 
+	/*
 	public function change_credit(Request $req){
 		// return $this->log_my_payload($req);
 		$res = $this->dftres;
@@ -226,7 +244,7 @@ class ClientController extends Controller{
 			'credit_action' => ['required'],
 		]);
 		$recid = $req->input('recid',null);
-		// */
+		// * /
 
 
 		if($this->ili()){
@@ -306,6 +324,7 @@ class ClientController extends Controller{
 
 		return response()->json($res);
 	}
+	// */
 
 	public function get_one(Request $req){
 		// return $this->log_my_payload($req);
@@ -324,13 +343,16 @@ class ClientController extends Controller{
 			$res['success'] = true;
 			$msg = "fetching permissions";
 			$reslt = false;
+			$recid = $passed['id'];
 
-			$task = Client::query()
-				->where('id',$passed['id'])
+			$task = Client::where('id',$recid)
 				->withCount('samples')
 				->withCount('payments')
 				->withCount('reports')
+				->withCount('tasks')
+				->withSum('payments','amount')
 				->with('mycreator')
+				->withCount('tasks')
 				->first()
 			;
 
@@ -374,12 +396,16 @@ class ClientController extends Controller{
 			$res['success'] = true;
 			$msg = "fetching permissions";
 			$reslt = false;
+			$recid = $passed['recid'];
 
-			$client = Client::where('id',$passed['recid'])
+			$client = Client::where('id',$recid)
 				->withCount('samples')
 				->withCount('payments')
 				->withCount('reports')
+				->withCount('tasks')
+				->withSum('payments','amount')
 				->with('mycreator')
+				->withCount('tasks')
 				->first()
 			;
 

@@ -98,8 +98,9 @@
 		<div class="flowline overflow w3-center stats border-top distance-sm w3-padding-16 w3-hide" data-subrole="xtra_stats">
 		</div>
 
-		<div class="spacy-sm">
+		<div class="spacy-sm flowline center">
 			<button class="mybtn secondary sm" data-runme="open_wa" id="client_whatsapp"><i class="fab fa-whatsapp"></i> open client whatsapp</button>
+			<button class="mybtn primary sm" data-runme="createNewTask" id="add_task_btn"><i data-myicon="add_task"></i> new task</button>
 		</div>
 	</div>
 
@@ -380,540 +381,548 @@
 	}
 
 	// ops
-	window['load_samples'] = () => {}
+		window['load_samples'] = () => {}
 
 	// navops
-	window['pick_step'] = (n) => {
-		// alert_info('loading step: ' + n);
-		// refreshUI(300);
-	}
-	window['initUIs'] = (m) => {
-		// ---
-	}
+		window['pick_step'] = (n) => {
+			// alert_info('loading step: ' + n);
+			// refreshUI(300);
+		}
+		window['initUIs'] = (m) => {
+			// ---
+		}
 
 	// utilities
-	window['showError'] = (con = true,d) => {
-		let dft = {
-			heading: 'Error',
-			text: 'something went wrong, reload page'
-		};
-		d = {...dft,...d};
+		window['showError'] = (con = true,d) => {
+			let dft = {
+				heading: 'Error',
+				text: 'something went wrong, reload page'
+			};
+			d = {...dft,...d};
 
-		let cl = con ? 'remove' : 'add';
-		err_box.classList[cl]('w3-hide');
-		err_box.querySelector('span').innerHTML = d.heading;
-		err_box.querySelector('p').innerHTML = d.text;
-	}
-	window['showmainLoader'] = () => {
-		loaderInterface.classList.remove('w3-hide');
-		info_stuff.classList.add('w3-hide');
-		the_brief.classList.add('w3-hide');
-	}
-	window['hidemainLoader'] = () => {
-		loaderInterface.classList.add('w3-hide');
-	}
-	window['showstuffUI'] = () => {
-		render_all_data();
-		hidemainLoader();
-		info_stuff.classList.remove('w3-hide');
-	}
+			let cl = con ? 'remove' : 'add';
+			err_box.classList[cl]('w3-hide');
+			err_box.querySelector('span').innerHTML = d.heading;
+			err_box.querySelector('p').innerHTML = d.text;
+		}
+		window['showmainLoader'] = () => {
+			loaderInterface.classList.remove('w3-hide');
+			info_stuff.classList.add('w3-hide');
+			the_brief.classList.add('w3-hide');
+		}
+		window['hidemainLoader'] = () => {
+			loaderInterface.classList.add('w3-hide');
+		}
+		window['showstuffUI'] = () => {
+			render_all_data();
+			hidemainLoader();
+			info_stuff.classList.remove('w3-hide');
+		}
 
 	// actions
-	window['refresh_data'] = () => {
-		alert_info('refreshing information');
-		init_task();
-	}
-	window['loadMe'] = (wot,path,payld,f,method='post') => {
-		let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
-
-		window[fetch_bypass](path,payld,method).then((d) => {
-			responseHandler(d,fn,d,true,true);
-		}).catch(d => {
-			hidemainLoader();
-			showError(true,{heading: `Error Getting ${wot}`,text: d.message});
-		});
-	}
-
-	window['view_rec'] = (el) => {
-		if(el == undefined){
-			alert_danger('invalid view_rec call');
-			return;
+		window['refresh_data'] = () => {
+			alert_info('refreshing information');
+			init_task();
 		}
-		let wot = el.dataset.rectype || 'nothing';
-		let n = el.dataset.myid || 0;
-		let callme = `view_${wot}`;
+		window['loadMe'] = (wot,path,payld,f,method='post') => {
+			let fn = typeof f === 'function' ? f : (d) => {alert_info(`${wot} loaded`)};
 
-		alert_dark(`viewing record for: ${wot}`);
-
-		window[callme](el,n,wot);
-	}
-	window['view_nothing'] = (el,id,w) => {alert_danger('invalid record procedure!');}
-
-	window['view_sample'] = (el,id,w) => {
-		let who = {
-			rectype: w,
+			window[fetch_bypass](path,payld,method).then((d) => {
+				responseHandler(d,fn,d,true,true);
+			}).catch(d => {
+				hidemainLoader();
+				showError(true,{heading: `Error Getting ${wot}`,text: d.message});
+			});
 		}
 
-		let rec = client_info_data.samplesData[id];
-		who.data = rec;
+		window['view_rec'] = (el) => {
+			if(el == undefined){
+				alert_danger('invalid view_rec call');
+				return;
+			}
+			let wot = el.dataset.rectype || 'nothing';
+			let n = el.dataset.myid || 0;
+			let callme = `view_${wot}`;
 
-		view_samples_modal_trig.click();
-		renderSampleData(who);
-	}
-	window['view_payment'] = (el,id,w) => {
-		let who = {
-			rectype: w,
+			alert_dark(`viewing record for: ${wot}`);
+
+			window[callme](el,n,wot);
+		}
+		window['view_nothing'] = (el,id,w) => {alert_danger('invalid record procedure!');}
+
+		window['view_sample'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+
+			let rec = client_info_data.samplesData[id];
+			who.data = rec;
+
+			view_samples_modal_trig.click();
+			renderSampleData(who);
+		}
+		window['view_payment'] = (el,id,w) => {
+			let who = {
+				rectype: w,
+			}
+
+			let rec = client_info_data.paymentData[id];
+			who.data = rec;
+
+			view_payment_modal_trig.click();
+			renderPayData(who);
+		}
+		window['view_report'] = (el,id,w) => {
+			let myn = client_info_data.reportData[id];
+
+			let cur = {
+				rectype: 'report',
+				data: myn,
+			}
+
+			// copytext1(JSON.stringify(cur,null,4));
+			view_report_modal_trig.click();
+			renderReportData(cur);
+		}
+		window['view_invoice'] = (el,id,w) => {
+			let myn = client_info_data.invoiceData[id];
+
+			let cur = {
+				rectype: 'invoice',
+				data: myn,
+			}
+
+			// copytext1(JSON.stringify(cur,null,4));
+			view_invoice_modal_trig.click();
+			renderInvoiceData(cur);
 		}
 
-		let rec = client_info_data.paymentData[id];
-		who.data = rec;
+		window['showthis'] = (wot) => {
+			// alert_dark('showthis called');
 
-		view_payment_modal_trig.click();
-		renderPayData(who);
-	}
-	window['view_report'] = (el,id,w) => {
-		let myn = client_info_data.reportData[id];
+			let theid = `#${wot}-tab`;
+			let tabid = `#${wot}`;
+			let btn = document.querySelector(theid);
 
-		let cur = {
-			rectype: 'report',
-			data: myn,
+			if(btn !== undefined){
+				btn.click();
+
+				setTimeout(() => {
+					window.location.assign(btn.href);
+				},200);
+			}
 		}
 
-		// copytext1(JSON.stringify(cur,null,4));
-		view_report_modal_trig.click();
-		renderReportData(cur);
-	}
-	window['view_invoice'] = (el,id,w) => {
-		let myn = client_info_data.invoiceData[id];
+		window['add_payment'] = (el) => {
+			let task = client_info_data.taskData;
+			let tid = task.id;
 
-		let cur = {
-			rectype: 'invoice',
-			data: myn,
+			if(task.balance <= 0){
+				alert_danger('all payments were completed');
+				return;
+			}
+
+			add_payment_trig.click();
+			setup_payment_form(tid,'init_task');
+		}
+		window['add_notes'] = (el) => {
+			let task = client_info_data.taskData;
+			let tid = task.id;
+			let note = task.notes;
+
+			// setup_note_form(tid,'init_task');
+			add_note_form.taskid.value = tid;
+
+			if(note !== '' || note !== undefined){
+				add_note_form.note.value = note;
+			}
+
+			add_note_trig.click();
 		}
 
-		// copytext1(JSON.stringify(cur,null,4));
-		view_invoice_modal_trig.click();
-		renderInvoiceData(cur);
-	}
-
-	window['showthis'] = (wot) => {
-		// alert_dark('showthis called');
-
-		let theid = `#${wot}-tab`;
-		let tabid = `#${wot}`;
-		let btn = document.querySelector(theid);
-
-		if(btn !== undefined){
-			btn.click();
-
-			setTimeout(() => {
-				window.location.assign(btn.href);
-			},200);
+		window['refreshTaskAssocs'] = () => {
+			showmainLoader();
+			refreshAllData();
 		}
-	}
-
-	window['add_payment'] = (el) => {
-		let task = client_info_data.taskData;
-		let tid = task.id;
-
-		if(task.balance <= 0){
-			alert_danger('all payments were completed');
-			return;
+		window['refreshAllData'] = () => {
+			init_task();
 		}
+		window['view_client'] = () => {
+			let cur = {
+				rectype: 'client',
+				data: client_info_data.clientData,
+			}
 
-		add_payment_trig.click();
-		setup_payment_form(tid,'init_task');
-	}
-	window['add_notes'] = (el) => {
-		let task = client_info_data.taskData;
-		let tid = task.id;
-		let note = task.notes;
-
-		// setup_note_form(tid,'init_task');
-		add_note_form.taskid.value = tid;
-
-		if(note !== '' || note !== undefined){
-			add_note_form.note.value = note;
+			window['cur_record'] = cur;
+			loadPage({
+				template: linkAtlas['view_client'],
+				sidenote: pageNames['view_client'],
+			});
 		}
+		window['createNewTask'] = () => {
+			window['task_client_data'] = client_info_data.clientData;
 
-		add_note_trig.click();
-	}
-
-	window['refreshTaskAssocs'] = () => {
-		showmainLoader();
-		refreshAllData();
-	}
-	window['refreshAllData'] = () => {
-		init_task();
-	}
-	window['view_client'] = () => {
-		let cur = {
-			rectype: 'client',
-			data: client_info_data.clientData,
+			loadPage({
+				template: linkAtlas['add_task'],
+				sidenote: pageNames['add_task'],
+			});
 		}
-
-		window['cur_record'] = cur;
-		loadPage({
-			template: linkAtlas['view_client'],
-			sidenote: pageNames['view_client'],
-		});
-	}
 
 	// renderers
-	window['render_all_data'] = () => {
-		// alert_dark('hiding loader');
-		// hidemainLoader();
-		renderBrief();
+		window['render_all_data'] = () => {
+			// alert_dark('hiding loader');
+			// hidemainLoader();
+			renderBrief();
 
-		renderStats();
-		renderSamples();
-		renderPayments();
-		renderReports();
-		renderInvoices();
+			renderStats();
+			renderSamples();
+			renderPayments();
+			renderReports();
+			renderInvoices();
 
-		refreshUI(200);
-	}
+			refreshUI(200);
+		}
 
-	window['renderBrief'] = () => {
-		// alert_info('showing task brief');
-		the_brief.classList.remove('w3-hide');
+		window['renderBrief'] = () => {
+			// alert_info('showing task brief');
+			the_brief.classList.remove('w3-hide');
 
-		let panel = the_brief.querySelector('[data-subrole="taskpanel"]');
-		let client = client_info_data.clientData;
+			let panel = the_brief.querySelector('[data-subrole="taskpanel"]');
+			let client = client_info_data.clientData;
 
-		client_whatsapp.dataset.number = client.client_contact;
+			client_whatsapp.dataset.number = client.client_contact;
 
-		panel.innerHTML = `
-			<div>
-				<div class="flowline overflow left">
-					<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">${client.client_name}</strong>
-					<button class="mybtn trans border w3-hide" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
-				</div>
-			</div>
-			<div class="w3-display-right spacy-md" style="z-index: 0">
-				<div class="dropdown w3-hide_">
-					<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
-						<i class="fas fa-ellipsis-v"></i>
-					</button>
-					<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
-						<a class="dropdown-item spacy-tn" href="#" data-runme="generateInvoice">
-							<i class="fa fa-file-invoice mr-2 text-muted"></i>make invoice
-						</a>
-						<a class="dropdown-item spacy-tn" href="#" data-runme="view_client">
-							<i class="fas fa-info-circle mr-2 text-muted"></i>View all details
-						</a>
+			panel.innerHTML = `
+				<div>
+					<div class="flowline overflow left">
+						<strong class="h3" id="task-number" style="display: inline-block;width: auto !important;">${client.client_name}</strong>
+						<button class="mybtn trans border w3-hide" data-copythis="#task-number"><i class="fa fa-copy"></i></button>
 					</div>
 				</div>
-			</div>
-		`;
+				<div class="w3-display-right spacy-md" style="z-index: 0">
+					<div class="dropdown w3-hide_">
+						<button class="btn btn-link text-white" type="button" data-toggle="dropdown">
+							<i class="fas fa-ellipsis-v"></i>
+						</button>
+						<div class="dropdown-menu dropdown-menu-right themeround panelbg border-0 w3-card">
+							<a class="dropdown-item spacy-tn" href="#" data-runme="generateInvoice">
+								<i class="fa fa-file-invoice mr-2 text-muted"></i>make invoice
+							</a>
+							<a class="dropdown-item spacy-tn" href="#" data-runme="view_client">
+								<i class="fas fa-info-circle mr-2 text-muted"></i>View all details
+							</a>
+						</div>
+					</div>
+				</div>
+			`;
 
-		return;
+			return;
 
-		// extra stuff (for convenience planning)
-		// payment_ops.style.display = client_info_data.taskData.balance <= 0 ? 'none' : 'block';
-	}
-	window['renderStats'] = () => {
-		let stats = the_brief.querySelector('[data-subrole="stats"]');
-		let xtra_stats = the_brief.querySelector('[data-subrole="xtra_stats"]');
+			// extra stuff (for convenience planning)
+			// payment_ops.style.display = client_info_data.taskData.balance <= 0 ? 'none' : 'block';
+		}
+		window['renderStats'] = () => {
+			let stats = the_brief.querySelector('[data-subrole="stats"]');
+			let xtra_stats = the_brief.querySelector('[data-subrole="xtra_stats"]');
 
-		let client = client_info_data.clientData;
-		let samples = client_info_data.samplesData;
-		let payments = client_info_data.paymentData;
-		let reports = client_info_data.reportData;
-		let invoices = client_info_data.invoiceData;
+			let client = client_info_data.clientData;
+			let samples = client_info_data.samplesData;
+			let payments = client_info_data.paymentData;
+			let reports = client_info_data.reportData;
+			let invoices = client_info_data.invoiceData;
 
-		stats.innerHTML = `
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client Credit</small>
-				<span class="font-weight-bold" id="client-name">KES ${(Math.floor(client.credit_balance)).toLocaleString()}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
-				<span class="font-weight-bold" id="samples_count">${samples.length}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payments</small>
-				<span class="font-weight-bold" id="payments_count">${payments.length}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Reports</small>
-				<span class="font-weight-bold" id="reports_count">${reports.length}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Invoices</small>
-				<span class="font-weight-bold" id="invoices_count">${invoices.length}</span>
-			</div>
-		`;
+			stats.innerHTML = `
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client Credit</small>
+					<span class="font-weight-bold" id="client-name">KES ${(Math.floor(client.credit_balance)).toLocaleString()}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
+					<span class="font-weight-bold" id="samples_count">${samples.length}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payments</small>
+					<span class="font-weight-bold" id="payments_count">${payments.length}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Reports</small>
+					<span class="font-weight-bold" id="reports_count">${reports.length}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Invoices</small>
+					<span class="font-weight-bold" id="invoices_count">${invoices.length}</span>
+				</div>
+			`;
 
-		return;
-		xtra_stats.innerHTML = `
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
-				<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge"></span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
-				<span class="font-weight-bold" id="task_cost">${Math.floor(task.cost).toLocaleString()}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
-				<span class="font-weight-bold" id="task_paid">${Math.floor(task.paid).toLocaleString()}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
-				<span class="font-weight-bold" id="task_balance">${Math.floor(task.balance).toLocaleString()}</span>
-			</div>
-			<div class="stat">
-				<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
-				<span class="font-weight-bold hideicon" id="task_payment_report"><b class="themetxt">${Math.floor(task.paid).toLocaleString()}</b> / ${Math.floor(task.cost).toLocaleString()}</span>
-			</div>
-			${paybtn}
-		`;
-	}
-	window['renderSamples'] = () => {
-		const data = {
-			data: client_info_data.samplesData,
-			cols: [
-				{
-					field: 'id',
-					cap: '',
-					show: (v,row,n) => {
-						return n + 1;
-					}
-				},
-				{
-					field: 'sample_no',
-					cap: 'sample Number',
-				},
-				{
-					field: 'sample_type',
-					cap: 'sample type',
-					show: (v,r) => {
-						return `
-							<span class="sample-type-badge type-${v}">${v}</span>
-						`;
-					}
-				},
-				{
-					field: 'sample_count',
-					cap: 'processed',
-					show: (v,row) => {
-						return `<b>${row['results_count']} / ${row['sample_count']}</b>`;
-					}
-				},
-				{
-					field: 'status',
-					cap: 'Status',
-					show: (v) => {
-						return `<b class="mybadge ${invoice_state_classes[v]}">${sample_state_atlas[v]}</b>`;
-					}
-				},
-			],
-			tablename: 'samples_table',
-			caption: 'samples',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="sample"',
-		};
-		render_simpleTable(data);
-	}
-	window['renderPayments'] = () => {
-		const data = {
-			data: client_info_data.paymentData,
-			cols: [
-				{
-					field: 'id',
-					cap: '',
-					show: (v,row,n) => {
-						return n + 1;
-					}
-				},
-				{
-					field: 'owner',
-					cap: 'Client name',
-					show: (v) => {
-						return v.client_name;
-					}
-				},
-				{
-					field: 'amount',
-					cap: 'Amount',
-					show: (v) => {
-						return `<b>KES ${Math.floor(v).toLocaleString()}</b>`;
-					}
-				},
-				{
-					field: 'method',
-					cap: 'Method'
-				},
-				{
-					field: 'payment_type',
-					cap: 'Purpose',
-					show: (v) => {
-						return `<b class="mybadge ${pay_type_classes[v]}">${v}</b>`;
-					}
-				},
-				{
-					field: 'transaction_time',
-					cap: 'Transaction Time',
-					show: (v) => {
-						return formatDate0(v);
-					}
-				},
-				/*{
-					field: 'status',
-					cap: 'Status',
-					show: (v) => {
-						return `<b>${sample_state_atlas[v]}</b>`;
-					}
-				},*/
-			],
-			tablename: 'payments_table',
-			caption: 'payments',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="payment"',
-		};
-
-		/*
-		payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = client_info_data.clientData || true ? 'none' : 'block';
-		// */
-
-		render_simpleTable(data);
-	}
-	window['renderReports'] = () => {
-		const data = {
-			data: client_info_data.reportData,
-			cols: [
-				{
-					cap: '',
-					field: 'id',
-					width: '50px',
-					show: (v,row,n) => {
-						return n + 1;
-					}
-				},
-				{
-					cap: 'Sample number',
-					field: 'sample',
-					show: function(value) {
-						return `<strong>${value.sample_no}</strong>`;
-					}
-				},
-				{
-					cap: 'Client name',
-					field: 'owner',
-					show: function(value) {
-						return `<strong>${value.client_name}</strong>`;
-					}
-				},
-				{
-					cap: 'Date added',
-					field: 'created_at',
-					show: function(value) {
-						return formatDate0(value);
-						// return `<span class="badge ${value}">${value}</span>`;
-					}
-				},
-				/*
-				{
-					cap: 'Actions',
-					field: 'id',
-					width: '200px',
-					show: function(value, row) {
-						return `
-							<div class="action-btns">
-								<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
-									<i class="fas fa-eye"></i> View
-								</button>
-							</div>
-						`;
-					}
-				}
-				// */
-			],
-			tablename: 'reports_table',
-			caption: 'reports',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="report"',
-		};
-		render_simpleTable(data);
-	}
-	window['renderInvoices'] = () => {
-		const data = {
-			data: client_info_data.invoiceData,
-			cols: [
-				{
-					cap: '',
-					field: 'id',
-					width: '50px',
-					show: (v,row,n) => {
-						return n + 1;
+			return;
+			xtra_stats.innerHTML = `
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment status</small>
+					<span class="font-weight-bold hideicon" data-copyme="#payment-status-badge"></span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Price</small>
+					<span class="font-weight-bold" id="task_cost">${Math.floor(task.cost).toLocaleString()}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Amount Paid</small>
+					<span class="font-weight-bold" id="task_paid">${Math.floor(task.paid).toLocaleString()}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Balance</small>
+					<span class="font-weight-bold" id="task_balance">${Math.floor(task.balance).toLocaleString()}</span>
+				</div>
+				<div class="stat">
+					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Payment Report</small>
+					<span class="font-weight-bold hideicon" id="task_payment_report"><b class="themetxt">${Math.floor(task.paid).toLocaleString()}</b> / ${Math.floor(task.cost).toLocaleString()}</span>
+				</div>
+				${paybtn}
+			`;
+		}
+		window['renderSamples'] = () => {
+			const data = {
+				data: client_info_data.samplesData,
+				cols: [
+					{
+						field: 'id',
+						cap: '',
+						show: (v,row,n) => {
+							return n + 1;
+						}
 					},
-				},
-				{
-					cap: 'Invoice number',
-					field: 'invoice_no',
-					show: function(value) {
-						return `<strong>${value}</strong>`;
-					}
-				},
-				{
-					cap: 'Payment Progress',
-					field: 'balance',
-					// sortable: true,
-					show: function(value,row) {
-						let myprogress = (row.total_paid / row.total) * 100;
-						return `
-							<div>
-								<div style="padding: 4px">
-									<b class="themetxt">${formatNumber(row.total_paid)}</b> / <b>${formatNumber(row.total)}</b>
-									<span>[${Math.floor(myprogress)} %]</span>
+					{
+						field: 'sample_no',
+						cap: 'sample Number',
+					},
+					{
+						field: 'sample_type',
+						cap: 'sample type',
+						show: (v,r) => {
+							return `
+								<span class="sample-type-badge type-${v}">${v}</span>
+							`;
+						}
+					},
+					{
+						field: 'sample_count',
+						cap: 'processed',
+						show: (v,row) => {
+							return `<b>${row['results_count']} / ${row['sample_count']}</b>`;
+						}
+					},
+					{
+						field: 'status',
+						cap: 'Status',
+						show: (v) => {
+							return `<b class="mybadge ${invoice_state_classes[v]}">${sample_state_atlas[v]}</b>`;
+						}
+					},
+				],
+				tablename: 'samples_table',
+				caption: 'samples',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="sample"',
+			};
+			render_simpleTable(data);
+		}
+		window['renderPayments'] = () => {
+			const data = {
+				data: client_info_data.paymentData,
+				cols: [
+					{
+						field: 'id',
+						cap: '',
+						show: (v,row,n) => {
+							return n + 1;
+						}
+					},
+					{
+						field: 'owner',
+						cap: 'Client name',
+						show: (v) => {
+							return v.client_name;
+						}
+					},
+					{
+						field: 'amount',
+						cap: 'Amount',
+						show: (v) => {
+							return `<b>KES ${Math.floor(v).toLocaleString()}</b>`;
+						}
+					},
+					{
+						field: 'method',
+						cap: 'Method'
+					},
+					{
+						field: 'payment_type',
+						cap: 'Purpose',
+						show: (v) => {
+							return `<b class="mybadge ${pay_type_classes[v]}">${v}</b>`;
+						}
+					},
+					{
+						field: 'transaction_time',
+						cap: 'Transaction Time',
+						show: (v) => {
+							return formatDate0(v);
+						}
+					},
+					/*{
+						field: 'status',
+						cap: 'Status',
+						show: (v) => {
+							return `<b>${sample_state_atlas[v]}</b>`;
+						}
+					},*/
+				],
+				tablename: 'payments_table',
+				caption: 'payments',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="payment"',
+			};
+
+			/*
+			payment_ops.querySelector('[data-subrole="add_pay_btn"]').style.display = client_info_data.clientData || true ? 'none' : 'block';
+			// */
+
+			render_simpleTable(data);
+		}
+		window['renderReports'] = () => {
+			const data = {
+				data: client_info_data.reportData,
+				cols: [
+					{
+						cap: '',
+						field: 'id',
+						width: '50px',
+						show: (v,row,n) => {
+							return n + 1;
+						}
+					},
+					{
+						cap: 'Sample number',
+						field: 'sample',
+						show: function(value) {
+							return `<strong>${value.sample_no}</strong>`;
+						}
+					},
+					{
+						cap: 'Client name',
+						field: 'owner',
+						show: function(value) {
+							return `<strong>${value.client_name}</strong>`;
+						}
+					},
+					{
+						cap: 'Date added',
+						field: 'created_at',
+						show: function(value) {
+							return formatDate0(value);
+							// return `<span class="badge ${value}">${value}</span>`;
+						}
+					},
+					/*
+					{
+						cap: 'Actions',
+						field: 'id',
+						width: '200px',
+						show: function(value, row) {
+							return `
+								<div class="action-btns">
+									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+										<i class="fas fa-eye"></i> View
+									</button>
 								</div>
-								<div class="progress themeround except" style="height:0.5rem;">
-									<div class="progress-bar bg-primary bg-striped" style="width: ${myprogress}%"></div>
+							`;
+						}
+					}
+					// */
+				],
+				tablename: 'reports_table',
+				caption: 'reports',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="report"',
+			};
+			render_simpleTable(data);
+		}
+		window['renderInvoices'] = () => {
+			const data = {
+				data: client_info_data.invoiceData,
+				cols: [
+					{
+						cap: '',
+						field: 'id',
+						width: '50px',
+						show: (v,row,n) => {
+							return n + 1;
+						},
+					},
+					{
+						cap: 'Invoice number',
+						field: 'invoice_no',
+						show: function(value) {
+							return `<strong>${value}</strong>`;
+						}
+					},
+					{
+						cap: 'Payment Progress',
+						field: 'balance',
+						// sortable: true,
+						show: function(value,row) {
+							let myprogress = (row.total_paid / row.total) * 100;
+							return `
+								<div>
+									<div style="padding: 4px">
+										<b class="themetxt">${formatNumber(row.total_paid)}</b> / <b>${formatNumber(row.total)}</b>
+										<span>[${Math.floor(myprogress)} %]</span>
+									</div>
+									<div class="progress themeround except" style="height:0.5rem;">
+										<div class="progress-bar bg-primary bg-striped" style="width: ${myprogress}%"></div>
+									</div>
 								</div>
-							</div>
-						`;
+							`;
+						}
+					},
+					{
+						cap: 'Date added',
+						field: 'created_at',
+						show: function(value) {
+							return formatDate0(value);
+							// return `<span class="badge ${value}">${value}</span>`;
+						}
+					},
+					{
+						cap: 'Status',
+						field: 'status',
+						show: function(value) {
+							return `<b class="mybadge ${invoice_state_classes[value]}">${invoice_state_atlas[value]}</b>`;
+						}
+					},
+					/*
+					{
+						cap: 'Actions',
+						field: 'id',
+						width: '200px',
+						show: function(value, row) {
+							return `
+								<div class="action-btns">
+									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+										<i class="fas fa-eye"></i> View
+									</button>
+								</div>
+							`;
+						}
 					}
-				},
-				{
-					cap: 'Date added',
-					field: 'created_at',
-					show: function(value) {
-						return formatDate0(value);
-						// return `<span class="badge ${value}">${value}</span>`;
-					}
-				},
-				{
-					cap: 'Status',
-					field: 'status',
-					show: function(value) {
-						return `<b class="mybadge ${invoice_state_classes[value]}">${invoice_state_atlas[value]}</b>`;
-					}
-				},
-				/*
-				{
-					cap: 'Actions',
-					field: 'id',
-					width: '200px',
-					show: function(value, row) {
-						return `
-							<div class="action-btns">
-								<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
-									<i class="fas fa-eye"></i> View
-								</button>
-							</div>
-						`;
-					}
-				}
-				// */
-			],
-			tablename: 'invoices_table',
-			caption: 'invoices',
-			viewcall: 'view_rec',
-			rowprops: 'data-rectype="invoice"',
-		};
-		render_simpleTable(data);
-	}
+					// */
+				],
+				tablename: 'invoices_table',
+				caption: 'invoices',
+				viewcall: 'view_rec',
+				rowprops: 'data-rectype="invoice"',
+			};
+			render_simpleTable(data);
+		}
 
 	// MUST BE LAST
 	window['add_note_form_afterfx'] = (d) => {

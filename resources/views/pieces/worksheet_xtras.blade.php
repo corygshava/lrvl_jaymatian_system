@@ -157,20 +157,20 @@
 			let weightval = noweight ? '--' : _data.weight == undefined ? "!!" : _data.weight;
 
 			let show_weight = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="${is_special ? 'initial' : 'weight'} ${n}" value="${weightval == '--' ? 0.01 : weightval}" ${noweight ? '' : 'required'}>
+				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="${is_special ? 'initial' : 'weight'} ${n}" value="${weightval == '--' ? 0.01 : weightval}" ${noweight ? '' : 'required'}>
 				` : `<span>${weightval}</span>`;
 			let show_au_reading = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'sample' : 'au_reading'} ${n}" value="${_data.au_reading || ""}" required>
+				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'sample' : 'au_reading'} ${n}" value="${_data.au_reading || ""}" required>
 				` : `<span>${_data.au_reading || "!!"}</span>`;
 			let show_cu_reading = !cur_sheet.is_published ?
-				`<input type="number" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'virgin' : 'cu_reading'} ${n}" value="${_data.cu_reading || ""}" required>
+				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'virgin' : 'cu_reading'} ${n}" value="${_data.cu_reading || ""}" required>
 				` : `<span>${_data.cu_reading || "!!"}</span>`;
 			let show_remarks = !cur_sheet.is_published ?
-				`<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
+				`<input type="text" oninput="update_readings_preview(${x})" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
 				` : `<span>${_data.remarks || "--"}</span>`;
 
 			return `
-				<tr ${is_reference ? 'data-refcol' : ''}>
+				<tr ${is_reference ? 'data-refcol' : ''} data-rowid="${x}" data-subrole="readings_entry">
 					<td>
 						<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}" style="${toggle_radio}${toggle_editable}">
 					</td>
@@ -194,8 +194,10 @@
 						</div>
 					</td>
 					<td>
-						<div>
+						<div class="w3-hide">
 							${show_remarks}
+						</div>
+						<div data-subrole="results_preview" data-myid="${x}">
 						</div>
 					</td>
 				</tr>
@@ -269,6 +271,10 @@
 			}
 
 			table_body.innerHTML = outht;
+
+			setTimeout(() => {
+				update_readings_preview();
+			}, 400);
 		};
 
 		if(m.toLowerCase() == 'create'){
@@ -446,6 +452,124 @@
 
 		// alert_info('savin readings');
 		step1();
+	}
+	window['update_readings_preview'] = (n) => {
+		let myrow = document.querySelectorAll('[data-subrole="readings_entry"]');
+
+		myrow.forEach(myrow => {
+			let s_type = cur_sheet.sample_type.toLowerCase();
+			let preview = myrow.querySelector('[data-subrole="results_preview"]');
+
+			let npt_w = myrow.querySelector('input[data-subrole="weight"]');
+			let npt_au_read = myrow.querySelector('input[data-subrole="au_reading"]');
+			let npt_cu_read = myrow.querySelector('input[data-subrole="cu_reading"]');
+
+			let weight = npt_w.value == '' ? 0 : Number(npt_w.value);
+			let au_reading = npt_au_read.value == '' ? 0 : Number(npt_au_read.value);
+			let cu_reading = npt_cu_read.value == '' ? 0 : Number(npt_cu_read.value);
+
+			let [AU_ppm, CU_ppm, activity] = run_calculator(s_type,weight,au_reading,cu_reading);
+
+			preview.innerHTML = s_type.includes('activity') ? `
+					<div>
+						<b>Activity: </b>
+						<span>${activity.toFixed(2)}%</span>
+					</div>
+				` : `
+				<div>
+					<b>AU ppm: </b>
+					<span>${AU_ppm.toFixed(2)}</span>
+				</div>
+				<div>
+					<b>CU ppm: </b>
+					<span>${CU_ppm.toFixed(2)}</span>
+				</div>
+			`;
+		})
+	}
+
+	window['run_calculator'] = (typ,weight,au_reading,cu_reading) => {
+		// alert_dark('running calc');
+		console.log('inputs: ',`
+			weight => ${weight},
+			au_reading => ${au_reading},
+			cu_reading => ${cu_reading},
+		`);
+
+		let au_ppm = Math.random().toFixed(2);
+		let cu_ppm = Math.random().toFixed(2);
+		let activity = Math.random().toFixed(2) * 95.566;
+
+		let calc_cu_ppm = 0;
+		let calc_au_ppm = 0;
+
+		$calculate_nermal = () => {
+			if(weight == 0){
+				au_ppm = cu_ppm = 0;
+				return;
+			}
+			au_ppm = (au_reading * 4 * (250 - (0.35 * weight))) / (weight * 50);
+			cu_ppm = (300 / weight) * cu_reading;
+		};
+		$calculate_soil = () => {
+			return $calculate_nermal();
+		};
+		$calculate_solution = () => {
+			au_ppm = au_reading;
+			cu_ppm = cu_reading;
+		};
+		$calculate_carbon = () => {
+			au_ppm = au_reading * 100;
+			cu_ppm = cu_reading * 100;
+		};
+		$calculate_carbon_activity = () => {
+			let initial = weight;
+			let virgin = au_reading;
+			let sample = cu_reading;
+
+			let i = Number(initial);
+			let v = Number(virgin);
+			let s = Number(sample);
+
+			let nume = (i - s);
+			let deno = (i - v);
+			let clc = deno / nume;
+
+			activity = clc * 90;
+		};
+
+		let stype = typ.toLowerCase();
+
+		switch (stype) {
+			case 'soil':
+				$calculate_soil();
+				break;
+			case 'carbon':
+				$calculate_carbon();
+				break;
+			case 'solution':
+				$calculate_solution();
+				break;
+			case 'carbon activity':
+				// $update_runlog('processing carbon_activity');
+				$calculate_carbon_activity();
+				break;
+			default:
+				$calculate_nermal();
+				break;
+		}
+
+		console.log([
+			au_ppm,
+			cu_ppm,
+			activity,
+		])
+
+		return [
+			au_ppm,
+			cu_ppm,
+			activity,
+		];
 	}
 
 	setTimeout(() => {

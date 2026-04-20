@@ -12,7 +12,7 @@
 			</div>
 			<div class="modal-body">
 				<!-- Multiple inputs -->
-				<form id="add_edit_form" action="./op/clients" data-onsubmit="add_edit_client" data-blockdefault="yes" data-callback="form_afterfx" method="post">
+				<form id="add_edit_form" action="./op/clients" data-onsubmit="add_edit_client" data-blockdefault="yes" data-callback="form_afterfx" method="post" data-trigger="add_edit_modal_trig">
 					<input type="hidden" name="recid" value="">
 					<input type="hidden" name="opname" value="add">
 					<input type="hidden" name="bizdata_pricing" value="add">

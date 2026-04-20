@@ -143,7 +143,7 @@ Route::prefix('/op')->group(function(){
 	Route::post('/save_worksheet_readings',[WorksheetsController::class, 'save_readings'])->middleware(['auth','verified']);
 	Route::post('/publish_worksheet',[WorksheetsController::class, 'publish_one'])->middleware(['auth','verified']);
 
-	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
+	// Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 
 	Route::post('/update_bizdata',[BizdataController::class, 'update_sth'])->middleware(['auth','verified']);
 	Route::post('/update_bizdata_images',[BizdataController::class, 'update_sth_2'])->middleware(['auth','verified']);
@@ -163,7 +163,7 @@ Route::prefix('/op')->group(function(){
 	;
 
 	Route::post('/add_expense',[ExpenseController::class, 'add_new'])->middleware(['auth','verified']);
-	Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
+	// Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 
 	Route::post('/save_daily_report',[CashReportController::class, 'save_me'])->middleware(['auth','verified']);
 })

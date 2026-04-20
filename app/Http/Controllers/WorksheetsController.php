@@ -439,8 +439,7 @@ class WorksheetsController extends Controller{
 							$au_reading = $r['au_reading'];
 							$cu_reading = $r['cu_reading'];
 
-							// TODO: modify it to accomodate different sample types
-							// calculate results based on sample type [incomplete]
+							// calculate results based on sample type [done]
 							$calculate_nermal = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
 								$calc_au_ppm = ($au_reading * 4 * (250 - (0.35 * $weight))) / ($weight * 50);
 								$calc_cu_ppm = (300 / $weight) * $cu_reading;
