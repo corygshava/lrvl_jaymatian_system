@@ -327,12 +327,15 @@ class TaskController extends Controller{
 							$suffix = '';
 							$task_serial = '';
 							$exist = true;
+							$addme = 1;
 
+							// added addme to prevent an infinite loop
 							do {
-								$newid = Task::where('id','<>',null)->count() + 1;
+								$newid = Task::where('id','<>',null)->count() + $addme;
 								$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
 								$task_serial = 'JML_' . $suffix;
 								$exist = Task::where('task_no',$task_serial)->exists();
+								$addme += 1;
 							} while ($exist);
 
 							$sample_count = 0;
