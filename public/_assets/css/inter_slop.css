@@ -44,18 +44,18 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 
 	.pageloader_waiter {
 		opacity: 0;
-		position: fixed;
-		bottom: 20px;
-		right: 0;
-		z-index: 200;
-		width: 100%;
-		/*animation-fill-mode: forwards;*/
-		animation-duration: 300ms;
+	    position: fixed;
+	    bottom: 20px;
+	    right: 0;
+	    z-index: 200;
+	    width: 100%;
+	    /*animation-fill-mode: forwards;*/
+	    animation-duration: 300ms;
 	}
 	.pageloader_waiter>div {
-		padding: 8px 16px;
-		background: black;
-		color: #fff;
+	    padding: 8px 16px;
+	    background: black;
+	    color: #fff;
 		min-width: 200px;
 		border-radius: var(--roundness);
 	}
@@ -1011,7 +1011,7 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 
 /* report_setup */
 	[data-role="report_setup"] {
-		padding: 32px 48px;
+		padding: 64px 48px;
 		background: #fff;
 		--r_border: #000;
 		--w: 824px;
@@ -1106,6 +1106,37 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 	}
 	.samples_holder .samplebox .actions{
 		padding: 8px 0;
+	}
+
+/* sample type badges */
+	.sample-type-badge {
+		display: inline-block;
+		padding: 4px 10px;
+		border-radius: 4px;
+		font-size: 12px;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	.type-solution {
+		background-color: #e3f2fd;
+		color: #1976d2;
+	}
+	.type-soil {
+		background-color: #fff3e0;
+		color: #f57c00;
+	}
+	.type-carbon {
+		background-color: #f3e5f5;
+		color: #7b1fa2;
+	}
+	.type-carbon.activity {
+	    background-color: #f18ed13d;
+	    color: #e3004b;
+	}
+	.type-rock {
+		background: grey;
+		color: #fff;
 	}
 
 /* reusables */

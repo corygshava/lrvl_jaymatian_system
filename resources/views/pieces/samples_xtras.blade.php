@@ -147,32 +147,6 @@
 	.results-table tbody tr:hover {
 		background-color: #e9ecef;
 	}
-
-	.sample-type-badge {
-		display: inline-block;
-		padding: 4px 10px;
-		border-radius: 4px;
-		font-size: 12px;
-		font-weight: 600;
-		text-transform: uppercase;
-	}
-
-	.type-solution {
-		background-color: #e3f2fd;
-		color: #1976d2;
-	}
-	.type-soil {
-		background-color: #fff3e0;
-		color: #f57c00;
-	}
-	.type-carbon {
-		background-color: #f3e5f5;
-		color: #7b1fa2;
-	}
-	.type-rock {
-		background: grey;
-		color: #fff;
-	}
 </style>
 
 <button class="mybtn primary w3-hide" id="view_samples_modal_trig" data-toggle="modal" data-target="#samples_info_modal">
