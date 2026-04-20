@@ -1042,13 +1042,14 @@
 
 		const { jsPDF } = window.jspdf;
 		const pdf = new jsPDF({
-			orientation: fwidth > fheight ? 'landscape' : 'portrait',
-			unit: 'px',
-			format: [fwidth, fheight]
+			// orientation: fwidth > fheight ? 'landscape' : 'portrait',
+			// unit: 'px',
+			format: [1200, 300],
+			orientation: 'portrait',
 		});
 
-		pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
-
+		// pdf.addImage(imgData, 'png',0, 0, fwidth, fheight);
+		pdf.text('pdfs were outlawed due to forgery concerns, sorry', 10, 10);
 		return pdf;
 	}
 
@@ -1061,6 +1062,8 @@
 				throw new Error('the element to hold the document is missing');
 			}
 
+			// const pdf = await generatePdf();
+			// contents = 'sorry, PDFs were outlawed';
 			const pdf = await generatePdf();
 
 			if(!pdf){
