@@ -596,7 +596,7 @@ abstract class Controller{
 					"VIEW_CLIENT" => 'view all registered clients',
 					"MANAGE_TASKS" => 'view all tasks',
 					"ADD_TASK" => 'add a new task',
-					"MANAGE_SAMPLES" => 'view all staff records',
+					"MANAGE_SAMPLES" => 'view all sample records',
 					"MANAGE_PAYMENTS" => 'view all payment records',
 					"MANAGE_REPORTS" => 'view all reports',
 					"MANAGE_INVOICES" => 'view all invoices',
