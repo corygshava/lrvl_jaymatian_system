@@ -1118,23 +1118,23 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 		text-transform: uppercase;
 	}
 
-	.type-solution {
+	.type-solution, .type-Solution {
 		background-color: #e3f2fd;
 		color: #1976d2;
 	}
-	.type-soil {
+	.type-soil, .type-Soil {
 		background-color: #fff3e0;
 		color: #f57c00;
 	}
-	.type-carbon {
+	.type-carbon, .type-Carbon {
 		background-color: #f3e5f5;
 		color: #7b1fa2;
 	}
-	.type-carbon.activity {
+	.type-carbon.activity, .type-Carbon.activity {
 	    background-color: #f18ed13d;
 	    color: #e3004b;
 	}
-	.type-rock {
+	.type-rock, .type-Rock {
 		background: grey;
 		color: #fff;
 	}
