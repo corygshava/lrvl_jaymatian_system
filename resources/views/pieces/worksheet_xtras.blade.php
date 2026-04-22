@@ -96,10 +96,10 @@
 			let entries = cur_sheet.sample_data;
 			let entry = entries[x];
 			let edit_sample = !(cur_sheet.has_readings);
-			let editht = edit_sample ?
+			let editht = edit_sample ? 
 				`<div>
 					<input type="text" class="form-control-custom" data-subrole="sample_id" name="sample_id_${x}" data-myid="${x}" placeholder="sample ${n}" value="${entry.sample_id}" required>
-				</div>` :
+				</div>` : 
 				`<div>
 					<span>${entry.sample_id}</span>
 				</div>`
@@ -142,10 +142,10 @@
 			let mgg = is_reference ? 'w3-text-red' : 'w3-text-orange';
 			mgg = '';
 
-			let editht = edit_sample ?
+			let editht = edit_sample ? 
 				`<div class="w3-hide">
 					<input type="text" class="form-control-custom" data-subrole="sample_id" name="sample_id_${x}" data-myid="${x}" placeholder="sample ${x + 1}" value="${_data.sample_id}" required>
-				</div>` :
+				</div>` : 
 				`<div>
 					<span class="${mgg}" data-subrole="sample_id"><b>${prefix}</b> ${givenid || '??'}</span>
 				</div>`
@@ -156,17 +156,17 @@
 			let noweight = cur_sheet.sample_type.toLowerCase() == 'solution';
 			let weightval = noweight ? '--' : _data.weight == undefined ? "!!" : _data.weight;
 
-			let show_weight = !cur_sheet.is_published ?
-				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="${is_special ? 'initial' : 'weight'} ${n}" value="${weightval == '--' ? 0.01 : weightval}" ${noweight ? '' : 'required'}>
+			let show_weight = !cur_sheet.is_published ? 
+				`<input type="number" oninput="update_readings_preview('${x}')" step="0.01" class="form-control-custom" data-subrole="weight" name="weight_${x}" data-myid="${x}" placeholder="${is_special ? 'initial' : 'weight'} ${n}" value="${weightval == '--' ? 0.01 : weightval}" ${noweight ? '' : 'required'}>
 				` : `<span>${weightval}</span>`;
-			let show_au_reading = !cur_sheet.is_published ?
-				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'sample' : 'au_reading'} ${n}" value="${_data.au_reading || ""}" required>
+			let show_au_reading = !cur_sheet.is_published ? 
+				`<input type="number" oninput="update_readings_preview('${x}')" step="0.01" class="form-control-custom" data-subrole="au_reading" name="au_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'sample' : 'au_reading'} ${n}" value="${_data.au_reading || ""}" required>
 				` : `<span>${_data.au_reading || "!!"}</span>`;
-			let show_cu_reading = !cur_sheet.is_published ?
-				`<input type="number" oninput="update_readings_preview(${x})" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'virgin' : 'cu_reading'} ${n}" value="${_data.cu_reading || ""}" required>
+			let show_cu_reading = !cur_sheet.is_published ? 
+				`<input type="number" oninput="update_readings_preview('${x}')" step="0.01" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_${x}" data-myid="${x}" placeholder="${is_special ? 'virgin' : 'cu_reading'} ${n}" value="${_data.cu_reading || ""}" required>
 				` : `<span>${_data.cu_reading || "!!"}</span>`;
-			let show_remarks = !cur_sheet.is_published ?
-				`<input type="text" oninput="update_readings_preview(${x})" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
+			let show_remarks = !cur_sheet.is_published ? 
+				`<input type="text" oninput="update_readings_preview('${x}')" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
 				` : `<span>${_data.remarks || "--"}</span>`;
 
 			return `
