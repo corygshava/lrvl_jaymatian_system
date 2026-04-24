@@ -920,10 +920,14 @@ abstract class Controller{
 		return $fl::safewrite_txt($fpath,$tosave,true,24);
 	}
 
-    public static function verifyPassword($pw,&$rl = null){
+    public static function verifyPassword($pw,&$rl = null,$urec = null){
 		$decrypted_pw = EncController::decryptme($pw,4,'cwaizy',19);
 		$rl = $decrypted_pw;
-        return Hash::check($decrypted_pw,Auth::user()->password);
+		if($urec == null){
+			return Hash::check($decrypted_pw,Auth::user()->password);
+		} else {
+			return Hash::check($decrypted_pw,$urec->password);
+		}
     }
 
 	// Templates
