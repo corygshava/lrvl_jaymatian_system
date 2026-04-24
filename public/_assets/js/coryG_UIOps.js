@@ -1064,7 +1064,12 @@ var callOnDocLoad = [];
 	window.addEventListener('load',() => {
 		callOnLoad.forEach(f => {
 			if(typeof f['act'] == 'function'){
-				f['act'](f['args']);
+				try{
+					f['act'](f['args']);
+				} catch(err) {
+					console.error(err);
+					alert_danger(err.message);
+				}
 				// alert_info('loading something');
 			} else {
 				alert_danger('invalid function assigned to loader');
@@ -1074,7 +1079,12 @@ var callOnDocLoad = [];
 	document.addEventListener('DOMContentLoaded',() => {
 		callOnDocLoad.forEach(f => {
 			if(typeof f['act'] == 'function'){
-				f['act'](f['args']);
+				try{
+					f['act'](f['args']);
+				} catch(err) {
+					console.error(err);
+					alert_danger(err.message);
+				}
 				// alert_info('loading something');
 			} else {
 				alert_danger('invalid function assigned to loader');

@@ -902,7 +902,7 @@
 			samples.forEach((s,x) => {
 				btns += `
 					<button class="tabnav ${x == 0 ? 'active' : ''}" data-runme="change_sample" data-myid="${x}">
-						Sample ${x + 1} <span class="sample-type-badge type-${s.sample_type}">${s.sample_type}</span>
+						Sample ${x + 1} <span class="sample-type-badge type-${s.sample_type.toLowerCase()}">${s.sample_type}</span>
 					</button>
 				`;
 			})
@@ -1002,7 +1002,7 @@
 				${alertht}
 				<div>
 					<b>Job No:</b>
-					<span>${task.task_no}</span>
+					<span>${thesample.sample_tag}</span>
 				</div>
 				<div>
 					<b>Client Name: </b>
@@ -1052,7 +1052,7 @@
 				<tr>
 					<td>
 						<b>Job No: </b>
-						<span>${task.task_no}</span>
+						<span>${thesample.sample_tag}</span>
 					</td>
 					<td>
 						<b>Client Name: </b>
@@ -1258,7 +1258,7 @@
 						cap: 'sample type',
 						show: (v,r) => {
 							return `
-								<span class="sample-type-badge type-${v}">${v}</span>
+								<span class="sample-type-badge type-${v.toLowerCase()}">${v}</span>
 							`;
 						}
 					},
