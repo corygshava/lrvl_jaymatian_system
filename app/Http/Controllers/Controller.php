@@ -923,6 +923,7 @@ abstract class Controller{
     public static function verifyPassword($pw,&$rl = null,$urec = null){
 		$decrypted_pw = EncController::decryptme($pw,4,'cwaizy',19);
 		$rl = $decrypted_pw;
+
 		if($urec == null){
 			return Hash::check($decrypted_pw,Auth::user()->password);
 		} else {

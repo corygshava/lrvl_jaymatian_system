@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\FileopsController;
+use App\Http\Controllers\WorksheetsController;
+use App\Models\Sample;
 use App\Models\User;
 
 class ApiController extends Controller{
@@ -151,25 +153,27 @@ class ApiController extends Controller{
 		]);
 		// */
 
-		$update_runlog = function($wot) use (&$res){
-			$res['runlog'][] = $wot;
-		};
-		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
-			$msg = $wot;
-			if($logit){
-				$update_runlog($wot);
-			}
-		};
-		$_msg = function($w,$l = true) use (&$update_msg){
-			$update_msg($w,$l);
-		};
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
 
-		$logdata = [
-			'where' => 'Jaytools_login',
-			'intent' => 'checkuser',
-			'path' => './api/checkuser',
-			'uname' => 'API_guest',
-		];
+			$logdata = [
+				'where' => 'Jaytools_login',
+				'intent' => 'checkuser',
+				'path' => './api/checkuser',
+				'uname' => 'API_guest',
+				'source' => $passed['source'],
+			];
 
 		if(true){
 			$res['success'] = true;
@@ -194,6 +198,381 @@ class ApiController extends Controller{
 					$_msg('user details fetched successfully');
 					$reslt = true;
 					$outcome = $user->toArray();
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function get_all_clients(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping stuff
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_get_clients',
+				'intent' => 'get_all_clients',
+				'path' => './api/get_clients_motherlode',
+				'uname' => 'unauthorized User',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details verified');
+					$reslt = true;
+
+					// get all clients the same way client mgt gets users
+					// or just modify clients mgt to return the stuff you need
+					$cl = new ClientController();
+					$outcome = $cl->get_everything($req,true);
+					$_msg('all clients fetched');
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_client(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_login',
+				'intent' => 'checkuser',
+				'path' => './api/checkuser',
+				'uname' => 'API_guest',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+
+					$cl = new ClientController();
+					$adder = $cl->add_edit($req,true,$user);
+
+					$reslt = true;
+					$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+					$outt = $adder['sendme'];
+					$msg = $adder['message'];
+					$outcome = $outt->toArray();
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_task(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_addtask',
+				'intent' => 'add_task',
+				'path' => './api/add_task',
+				'uname' => 'API_guest',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+
+					$cl = new TaskController();
+					$adder = $cl->add_new_task($req,true,$user);
+
+					$reslt = true;
+					$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+					$outt = $adder['sendme'];
+					$msg = $adder['message'];
+					$outcome = $outt->toArray();
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function save_worksheet(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+			's_data' => ['required','array'],
+			'sample_count' => ['required'],
+			'sample_tag' => ['required'],
+			'sample_type' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_addtask',
+				'intent' => 'add_task',
+				'path' => './api/add_task',
+				'uname' => 'API_guest',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+
+					// run a complex 3 part magni search to find the sample
+					$s_amt = $passed['sample_count'];
+					$s_tag = $passed['sample_tag'];
+					$s_type = $passed['sample_type'];
+
+					$mysample = Sample::query()
+						->where('sample_type',$s_type)
+						->where('sample_count',$s_amt)
+						->where('sample_tag',$s_tag)
+						->where('status',0)
+						->first()
+					;
+
+					if($mysample == null){
+						$_msg('invalid sample details');
+					} else {
+						$_msg('sample found');
+
+						$s_id = $mysample->id;
+						// $req['sample_id_injected'] = $s_id;
+						$xtradata = ['s_id' => $s_id,'uid' => $user->id];
+
+						$update_runlog($xtradata);
+						$cl = new WorksheetsController();
+						$adder = $cl->add_edit($req,true,$user,$xtradata);
+						// $adder = $res;
+
+						$update_runlog(['from worksheet' => $adder]);
+
+						// $update_runlog([''])
+						$reslt = $adder['result'];
+						$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+						$outt = $adder['sendme'];
+						$msg = $adder['message'];
+						// $outcome = $outt->toArray();
+						$outcome = $outt;
+					}
 				}
 			}
 

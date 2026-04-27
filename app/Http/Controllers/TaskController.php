@@ -242,7 +242,7 @@ class TaskController extends Controller{
 	}
 
 	// set ops
-	public function add_new_task(Request $req){
+	public function add_new_task(Request $req,$iscalled = false,$p_user=null){
 		$res = $this->dftres;
 		$sent = $req->input('sentdata',null);
 
@@ -250,10 +250,10 @@ class TaskController extends Controller{
 			$res['runlog'][] = $wot;
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "fetching permissions";
-			$user = $this->cur_user();
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 			$uid = $user->id;
 			$reslt = false;
 			$task = null;
@@ -297,7 +297,7 @@ class TaskController extends Controller{
 						if(!isset($sent['admin_password'])){
 							$msg = "pass an admin password first";
 						} else {
-							$wegood = $this->verifyPassword($sent['admin_password']);
+							$wegood = $iscalled ? true : $this->verifyPassword($sent['admin_password']);
 							$res['runlog'][] = $wegood;
 							$cango = $wegood;
 							$msg = $wegood ? "valid admin password" : "invalid admin password";
@@ -307,7 +307,7 @@ class TaskController extends Controller{
 							if(!isset($sent['admin_password'])){
 								$msg = "pass an admin password first";
 							} else {
-								$wegood = $this->verifyPassword($sent['admin_password']);
+								$wegood = $iscalled ? true : $this->verifyPassword($sent['admin_password']);
 								$msg = $wegood ? "valid admin password" : "invalid admin password";
 								$cango = $wegood;
 							}
@@ -464,6 +464,9 @@ class TaskController extends Controller{
 			}
 		}
 
+		if($iscalled){
+			return $res;
+		}
 		return response()->json($res);
 	}
 	public function add_payment(Request $req){

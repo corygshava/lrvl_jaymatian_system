@@ -227,36 +227,59 @@ class WorksheetsController extends Controller{
 	}
 
 	// set ops
-	public function add_edit(Request $req){
+	public function add_edit(Request $req,$iscalled = false,$p_user = null,$xtra = []){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
 		// /*
 		$passed = $req->validate([
 			's_data' => ['required','array'],
-			'sample_id' => ['required','numeric'],
+			// 'source' => ['required'],
+			// 'sample_id' => ['required','numeric'],
 		]);
 		// */
 
-		if($this->ili()){
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_addtask',
+				'intent' => 'add_task',
+				'path' => './api/add_task',
+				'uname' => 'API_guest',
+				'source' => $req->input('source', null),
+			];
+
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "saving worksheet";
 			$reslt = false;
 			$w_sheet = null;
-			$user = $this->cur_user();
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 
-			$s_id = $passed['sample_id'];
+			$s_id = $req->input('sample_id',null);
 			$s_data = $passed['s_data'];
+
+			$s_id = isset($xtra['s_id']) ? $xtra['s_id'] : $s_id;
 
 			// check sample
 			$thesample = Sample::where('id',$s_id)->first();
 
 			if($thesample == null){
-				$msg = "invalid sample id";
-				$res['runlog'][] = $msg;
+				$_msg("invalid sample id");
 			} else {
-				$msg = "sample found";
-				$res['runlog'][] = $msg;
+				$_msg("sample found");
 
 				$taskid = $thesample->task_id;
 				$clientid = $thesample->client_id;
@@ -274,44 +297,53 @@ class WorksheetsController extends Controller{
 
 				$sheet = Worksheet::where('sample_id',$s_id)->first();
 
-				if($sheet == null){
-					$msg = "no worksheet found, creating";
-					$res['runlog'][] = $msg;
+				// $res['runlog'][] = (['sheet' => $sheet]);
+				$_msg('sheet has been found');
+				$update_runlog(['user_id' => $user->id]);
+				// return $res;
 
-					$toadd['created_by'] = $user->id;
-					$toadd['last_updated_by'] = $user->id;
+				if(!false){
+					$_msg('commencing database modificato');
+					if($sheet == null){
+						$_msg("no worksheet found, creating");
 
-					$w_sheet = Worksheet::create($toadd);
-					$reslt = true;
-					$msg = "worksheet created successfully";
-					$res['runlog'][] = $msg;
-				} else {
-					$msg = "worksheet found, running black magic to update";
-					$res['runlog'][] = $msg;
-					$i = 0;
-					$new_data = [];
+						$toadd['created_by'] = $user->id;
+						$toadd['last_updated_by'] = $user->id;
 
-					if(count($sheet->sample_data) != count($s_data)){
-						$msg = "wrong sample id";
-						$res['runlog'][] = $msg;
-					} else {
-						foreach ($s_data as $entry) {
-							$rec = $sheet[$i];
-							$rec['sample_id'] = $entry['sample_id'];
-
-							$new_data[] = $rec;
-							$i += 1;
-						}
-
-						$sheet->sample_data = $new_data;
-						$sheet->save();
-						$sheet->refresh();
-
-						$w_sheet = $sheet;
+						$w_sheet = Worksheet::create($toadd);
 						$reslt = true;
-						$msg = "worksheet updated successfully";
-						$res['runlog'][] = $msg;
+						$_msg("worksheet created successfully");
+					} else {
+						$_msg("worksheet found, running black magic to update");
+						$i = 0;
+						$new_data = [];
+
+						if(count($sheet->sample_data) != count($s_data)){
+							$_msg("wrong sample id");
+						} else {
+							foreach ($s_data as $entry) {
+								$rec = $sheet[$i];
+								$rec['sample_id'] = $entry['sample_id'];
+
+								$new_data[] = $rec;
+								$i += 1;
+							}
+
+							$sheet->sample_data = $new_data;
+							$sheet->last_updated_by = $user->id;
+
+							$update_runlog(['sheet before update' => $sheet]);
+							$sheet->save();
+							$sheet->refresh();
+
+							$w_sheet = $sheet;
+							$reslt = true;
+							$msg = "worksheet updated successfully";
+							$res['runlog'][] = $msg;
+						}
 					}
+				} else {
+					$_msg('skipping the entire database adding process');
 				}
 
 				$res['runlog'][] = $toadd;
@@ -328,7 +360,11 @@ class WorksheetsController extends Controller{
 			}
 		}
 
-		return response()->json($res);
+		if($iscalled){
+			return $res;
+		} else {
+			return response()->json($res);
+		}
 	}
 
 	public function save_readings(Request $req){

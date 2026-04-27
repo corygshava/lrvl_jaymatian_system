@@ -8,6 +8,81 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ClientController extends Controller{
+	public function get_everything(Request $req,$iscalled = false){
+		$res = $this->dftres;
+		$alldata = $req->all();
+
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$res['message'] = "all clients retrieved";
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search',null);
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$payment_plan = $req->input('payment_plan',null);
+			$client_gender = $req->input('client_gender',null);
+			$has_credit_balance = $req->input('with_credit_balance',null);
+			$invoice_status = $req->input('has_invoice',null);
+
+			$search = $search == '*' ? null : $search;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"payment_plan" => $payment_plan,
+				"client_gender" => $client_gender,
+				"credit_balance" => $has_credit_balance,
+			];
+
+			$clients = Client::query();
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$clients = $clients
+				->where('id', '<>', null)
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->withCount('tasks')
+				->withSum('payments','amount')
+				->with('mycreator')
+				->get()
+				// ->orderBy($sortBy, $sortDirection)
+				// ->paginate($perPage)
+			;
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$res['result'] = true;
+			$res['sendme'] = $clients;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if($iscalled){
+			return $res['sendme'];
+		} else {
+			return response()->json($res);
+		}
+	}
+
     public function get_all(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -126,7 +201,7 @@ class ClientController extends Controller{
 		return response()->json($res);
 	}
 
-	public function add_edit(Request $req){
+	public function add_edit(Request $req,$iscalled = false,$p_user = null){
 		// return $this->log_my_payload($req);
 
 		$res = $this->dftres;
@@ -145,12 +220,12 @@ class ClientController extends Controller{
 		$pdata = json_decode($praw,true);
 		// */
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "starting procedure";
 			$reslt = false;
 
-			$user = $this->cur_user();
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 			$uid = $user->id;
 			$client_name = strip_tags($passed['client_name']);
 			$client_contact = strip_tags($passed['client_contact']);
@@ -226,7 +301,11 @@ class ClientController extends Controller{
 			}
 		}
 
-		return response()->json($res);
+		if($iscalled){
+			return $res;
+		} else {
+			return response()->json($res);
+		}
 	}
 
 	/*

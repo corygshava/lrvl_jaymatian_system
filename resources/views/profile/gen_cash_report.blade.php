@@ -1059,11 +1059,10 @@
 				<div class="dynacols">
 				${'--' + '>'}
 					<div>
-						${debtors_outht}
-					</div>
-
-					<div>
 						${debtpay_outht}
+					</div>
+					<div>
+						${debtors_outht}
 					</div>
 				</div>
 			`;
