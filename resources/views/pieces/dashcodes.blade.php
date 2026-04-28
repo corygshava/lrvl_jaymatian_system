@@ -165,12 +165,13 @@
 
 			// misc
 				'bizimages' : './media/bizimg',
+				'getreport_pdf' : './media/getreport/pdfs',
 				'getreport_img' : './media/getreport/imgs',
 				'getreport_slug' : './media/reports/img',
-				'getreport_pdf' : './media/getreport/pdfs',
+
+				'getinvoice_pdf' : './media/getinvoice/pdfs',
 				'getinvoice_img' : './media/getinvoice/imgs',
 				'getinvoice_slug' : './media/invoices/img',
-				'getinvoice_pdf' : './media/getinvoice/pdfs',
 		};
 		const pageNames = {
 			'view_users' : 'user information',
@@ -214,6 +215,7 @@
 			'cash_report_data' : `cash_rpt_dta_${mekRandomString(8)}`,
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
+			'last_used_password' : `${mekRandomString(8)}_${mekRandomString(4)}`,
 		};
 
 		// shortener ops
@@ -1044,6 +1046,18 @@
 					return;
 				}
 
+				let pw = window[variableAtlas['last_used_password']];
+
+				if(pw != undefined){
+					if(pw.email.toLowerCase() == cur_user.email.toLowerCase()){
+						// you need to enter your password again every 3 hours
+						if(getDateDiff(pw.when,(new Date()) < (60 * 60 * 3))){
+							callback(pw.data);
+							return;
+						}
+					}
+				}
+
 				// create a ghost process to call when password is confirmed
 				window['confirmPasswordCallback'] = callback;
 				password_confo_trig.click();
@@ -1053,12 +1067,17 @@
 				password_confo_trig.click();
 
 				let topass = encryptme(m.admin_password.value,encsetup.offset,encsetup.salt,encsetup.chunks);
+				let datashape = {admin_password: topass};
+				window[variableAtlas['last_used_password']] = {when: new Date(),email: cur_user.email.toLowerCase(),data: datashape};
 
-				window['confirmPasswordCallback']({admin_password: topass});
+				window['confirmPasswordCallback'](datashape);
 				killghost('confirmPasswordCallback');
 			}
 			window['password_confo_clearghost'] = () => {
 				killghost('confirmPasswordCallback');
+			}
+			window['reset_saved_password'] = () => {
+				killghost(variableAtlas['last_used_password']);
 			}
 
 		// logout operations
