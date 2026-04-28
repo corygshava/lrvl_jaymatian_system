@@ -1099,9 +1099,9 @@
 						<th style="width:35px;">${mekSpan('sn')}</th>
 						<th style="width:60px;">${mekSpan('beaker')}</th>
 						<th>${mekSpan('Sample ids')}</th>
-						<th style="width:78px;">${mekSpan('initial reading')}</th>
-						<th style="width:92px;">${mekSpan('Sample reading')}</th>
-						<th style="width:92px;">${mekSpan('Virgin reading')}</th>
+						<th style="width:92px;">${mekSpan('activated')}</th>
+						<th style="width:92px;">${mekSpan('Virgin')}</th>
+						<th style="width:78px;">${mekSpan('initial')}</th>
 						<th style="width:96px;">${mekSpan('Remark')}</th>
 					</tr>
 				`;

@@ -501,9 +501,9 @@ class WorksheetsController extends Controller{
 								// */
 							};
 							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog,&$calc_activity){
-								$initial = $weight;
+								$sample = $weight;
 								$virgin = $au_reading;
-								$sample = $cu_reading;
+								$initial = $cu_reading;
 
 								$i = $initial;
 								$v = $virgin;
