@@ -267,6 +267,7 @@ class TaskController extends Controller{
 				'clientData' => 'required|array',
 				'clientData.id' => 'required|integer',
 				'clientData.client_name' => 'required|string',
+				'clientData.client_contact' => 'required|string',
 				'sampleData' => 'required|array|min:1',
 				'sampleData.*.typ' => 'required|string',
 				'sampleData.*.amt' => 'required|numeric',
@@ -283,11 +284,12 @@ class TaskController extends Controller{
 				// $msg = "error in the payload";
 				$msg = $validator->messages();
 			} else {
-				$client =  Client::find($sent['clientData']['id']);
+				$client =  Client::where('client_contact', $sent['clientData']['client_contact'])->first();
 
 				if(!$client){
 					$msg = "Invalid client data";
 				} else {
+					$update_runlog('client data found');
 					$haspaydata = isset($sent['paymentData']) && !empty($sent['paymentData']);
 					$msg = "problem verifying payment data, try again";
 					$cango = false;

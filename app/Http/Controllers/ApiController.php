@@ -340,7 +340,7 @@ class ApiController extends Controller{
 
 		if(true){
 			$res['success'] = true;
-			$update_msg('starting the procedure');
+			$_msg('starting the procedure');
 			$reslt = false;
 
 			$email = $passed['email'];
@@ -352,6 +352,7 @@ class ApiController extends Controller{
 			if($user == null){
 				$_msg('user not found');
 			} else {
+				$_msg('user found');
 				$wegood = $this->verifyPassword($pw,$newpw,$user);
 				$logdata['uname'] = $user->name;
 
@@ -363,11 +364,11 @@ class ApiController extends Controller{
 					$cl = new ClientController();
 					$adder = $cl->add_edit($req,true,$user);
 
-					$reslt = true;
+					$reslt = $adder['result'];
 					$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
 					$outt = $adder['sendme'];
 					$msg = $adder['message'];
-					$outcome = $outt->toArray();
+					$outcome = ($outt == null) ? null : $outt->toArray();
 				}
 			}
 
@@ -449,11 +450,12 @@ class ApiController extends Controller{
 					$cl = new TaskController();
 					$adder = $cl->add_new_task($req,true,$user);
 
-					$reslt = true;
+					$reslt = $adder['result'];
 					$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
 					$outt = $adder['sendme'];
 					$msg = $adder['message'];
-					$outcome = $outt->toArray();
+					// $outcome = ($outt == null) ? null : $outt->toArray();
+					$outcome = $outt;
 				}
 			}
 
@@ -570,7 +572,7 @@ class ApiController extends Controller{
 						$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
 						$outt = $adder['sendme'];
 						$msg = $adder['message'];
-						// $outcome = $outt->toArray();
+						// $outcome = ($outt == null) ? null : $outt->toArray();
 						$outcome = $outt;
 					}
 				}
