@@ -19,6 +19,7 @@
 {{-- --> --}}
 
 <style>
+	span[data-subrole="sample_id_entry"]{display:none;}
 	.profile_card{
 		max-width: 100vw;
 		/*overflow: hidden;*/
@@ -960,7 +961,7 @@
 					return `
 						<tr>
 							<td><span>${x}</span></td>
-							<td><span><b>${prefix}</b> ${_data.sample_id}</span></td>
+							<td><span data-subrole="sample_id_entry"><b>${prefix}</b> ${_data.sample_id}</span></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -971,7 +972,7 @@
 					<tr>
 						<td><span>${x}</span></td>
 						<td></td>
-						<td><span><b>${prefix}</b> ${_data.sample_id}</span></td>
+						<td><span data-subrole="sample_id_entry"><b>${prefix}</b> ${_data.sample_id}</span></td>
 						<td></td>
 						<td></td>
 						<td></td>
