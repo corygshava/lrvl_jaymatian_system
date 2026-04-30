@@ -411,7 +411,7 @@ class CashReportController extends Controller{
 					}
 
 				// get debtors
-					$d_clients = Client::where('credit_balance','>',0);
+					$d_clients = Client::query()->whereHas('tasks',function($q) use($t_range){$q->timeRange($t_range);})->where('credit_balance','>',0);
 					$total_debit = (clone $d_clients)->sum('credit_balance');
 					$guys = (clone $d_clients)->get();
 					$debtors = [];
