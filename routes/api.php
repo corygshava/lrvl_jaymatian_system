@@ -19,4 +19,6 @@ Route::post('/add_client',[ApiController::class,'add_client'])->middleware('thro
 Route::post('/add_task',[ApiController::class,'add_task'])->middleware('throttle:25,1');
 Route::post('/save_worksheet',[ApiController::class,'save_worksheet'])->middleware('throttle:25,1');
 
+Route::post('/get_samples_motherlode',[ApiController::class,'get_all_samples'])->middleware('throttle:25,1');
+
 // Route::post('/verify_file')

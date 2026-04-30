@@ -10,6 +10,127 @@ use Mavinoo\Batch\Batch;
 
 class SamplesController extends Controller{
 	// getters
+	public function get_everything(Request $req, $iscalled = false){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		// housekeeping stuff
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$_msg("all samples retrieved");
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search');
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$status = $req->input('status',null);
+			$with_results = $req->input('with_results',null);
+			$sample_typ = $req->input('sample_type',null);
+			$pay_status = $req->input('payment_status',null);
+
+			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"status" => $status,
+				"with_results" => $with_results,
+			];
+
+			// clean up sortBy to prevent issues
+			if($sortBy == 'owner'){
+				$sortBy = 'client_id';
+			} elseif($sortBy == 'task'){
+				$sortBy = 'task_id';
+			}
+
+			// return response()->json($res);
+
+			$records = Sample::query()
+				->with('worksheets')
+				->with('results')
+				->withCount('results')
+				->withCount('reports')
+				->with('mycreator')
+				->with('owner')
+				->with('task')
+			;
+
+			// filter for task status
+			if($status !== null){
+				$res['runlog'][] = "added status filter";
+				$records = $records->where('status',$status);
+			}
+
+			// filter for whether or not its paid
+			if($with_results){
+				$con = $with_results == 'yes';
+
+				if($con){
+					$records = $records->has('results');
+				} else {
+					$records = $records->doesntHave('results');
+				}
+			}
+
+			if($pay_status){
+				$con = $pay_status;
+
+				$records = $records->whereHas('task', function($q) use ($con){
+					$q->where('payment_status',"$con");
+				});
+			}
+
+			if($sample_typ){
+				$records = $records->where('sample_type',$sample_typ);
+			}
+
+			$records = $records->get();
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if($iscalled){
+			return $res;
+		}
+
+		return response()->json($res);
+	}
+
 	public function get_all(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();

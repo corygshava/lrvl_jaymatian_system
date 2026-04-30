@@ -502,7 +502,7 @@
 					},
 					{
 						title: 'Sample number',
-						data: 'sample_no',
+						data: 'sample_tag',
 						sortable: true,
 						render: function(value) {
 							return `<strong>${value}</strong>`;

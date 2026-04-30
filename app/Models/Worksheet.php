@@ -19,6 +19,7 @@ class Worksheet extends Model{
         'sample_data',
         'sample_type',
         'sample_count',
+        'sample_tag',
 		'readings',
 		'has_readings',
 		'is_published',
