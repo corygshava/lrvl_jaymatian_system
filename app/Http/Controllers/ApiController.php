@@ -528,6 +528,7 @@ class ApiController extends Controller{
 			$email = $passed['email'];
 			$pw = $passed['pw'];
 			$newpw = null;
+			$mysample = null;
 
 			$user = User::where('email',$email)->with('myRoles')->first();
 
@@ -553,6 +554,17 @@ class ApiController extends Controller{
 						->where('sample_count',$s_amt)
 						->where('sample_tag',$s_tag)
 						->where('status',0)
+						->timeRange('this_month')
+						// for consistency when saving
+						->with('worksheets')
+						->with('results')
+						->withCount('results')
+						->withCount('reports')
+						->with('mycreator')
+						->with('owner')
+						->with('task')
+
+						// get only one
 						->first()
 					;
 
@@ -579,6 +591,7 @@ class ApiController extends Controller{
 						$msg = $adder['message'];
 						// $outcome = ($outt == null) ? null : $outt->toArray();
 						$outcome = $outt;
+						$mysample->refresh();
 					}
 				}
 			}
@@ -586,6 +599,7 @@ class ApiController extends Controller{
 			$res['result'] = $reslt;
 			$res['sendme'] = $outcome;
 			$res['message'] = $msg;
+			$res['extra'] = ['sample' => $mysample];
 		}
 
 		$this->log_intent($req,$logdata);

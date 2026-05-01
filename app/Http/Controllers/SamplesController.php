@@ -71,6 +71,7 @@ class SamplesController extends Controller{
 				->with('mycreator')
 				->with('owner')
 				->with('task')
+				->timeRange('this_month')
 			;
 
 			// filter for task status

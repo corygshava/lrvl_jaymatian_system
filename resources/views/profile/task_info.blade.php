@@ -19,7 +19,7 @@
 {{-- --> --}}
 
 <style>
-	span[data-subrole="sample_id_entry"]{display:none;}
+	/*span[data-subrole="sample_id_entry"]{display:none;}*/
 	.profile_card{
 		max-width: 100vw;
 		/*overflow: hidden;*/
@@ -985,6 +985,8 @@
 			cur_rec_sample_id = cur_sample.id;
 			cur_sheet = getmysheet(thesample);
 
+			let pay_verdict = cur_sample.task.is_paid ? 'paid' : 'not paid';
+
 			// render stats
 			e_jinfo.innerHTML = '';
 
@@ -1019,7 +1021,7 @@
 				</div>
 				<div>
 					<b>Payment Status: </b>
-					<span><b class="text-muted">${pay_state_atlas[task.payment_status]}</b></span>
+					<span><b class="text-muted">${pay_verdict}</b></span>
 				</div>
 				<div>
 					<b>Recieved Date and time: </b>
@@ -1073,7 +1075,7 @@
 				<tr>
 					<td>
 						<b>Payment Status: </b>
-						<span><b class="text-muted">${pay_state_atlas[task.payment_status]}</b></span>
+						<span><b class="text-muted">${pay_verdict}</b></span>
 					</td>
 					<td>
 						<b>Recieved Date and time: </b>
