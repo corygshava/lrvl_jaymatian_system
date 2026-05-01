@@ -1147,7 +1147,7 @@
 
 			let a = document.createElement('a');
 			a.href = dataUrl;
-			a.download = `${rptdata.sampleData.sample_no}_generated_report`;
+			a.download = `[${rptdata.sampleData.sample_tag}] - (${report_runtime_data.sampleData.owner.client_name}) generated_report`;
 			document.body.appendChild(a);
 
 			a.click();

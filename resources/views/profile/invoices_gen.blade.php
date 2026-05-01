@@ -301,6 +301,11 @@
 					<span class="h4">Generated document</span>
 				</div>
 
+				<div class="spacy-sm flowline center gap-sm">
+					<button class="mybtn secondary" data-runme="download_invoice_img"><i class="fas fa-download"></i> download image</button>
+					<button class="mybtn primary" data-runme="printPdf"><i class="fas fa-print"></i> print document</button>
+				</div>
+
 				<div class="canvasguy slide-up flow centroid">
 				</div>
 
@@ -1171,7 +1176,7 @@
 
 		let a = document.createElement('a');
 		a.href = dataUrl;
-		a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] generated_invoice`;
+		a.download = `[INV_${(invdata.invoices).toString().padStart(4,'0')}] - (${invoice_runtime_data.clientData.client_name}) generated_invoice`;
 		document.body.appendChild(a);
 
 		a.click();
