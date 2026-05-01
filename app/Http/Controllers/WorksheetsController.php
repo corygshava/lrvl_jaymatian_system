@@ -274,7 +274,7 @@ class WorksheetsController extends Controller{
 			$s_id = isset($xtra['s_id']) ? $xtra['s_id'] : $s_id;
 
 			// check sample
-			$thesample = Sample::where('id',$s_id)->first();
+			$thesample = Sample::where('id', $s_id)->first();
 
 			if($thesample == null){
 				$_msg("invalid sample id");
@@ -285,6 +285,7 @@ class WorksheetsController extends Controller{
 				$clientid = $thesample->client_id;
 				$s_type = $thesample->sample_type;
 				$s_count = $thesample->sample_count;
+				$s_tag = $thesample->sample_tag;
 
 				$toadd = [
 					'task_id' => $taskid,
@@ -293,6 +294,7 @@ class WorksheetsController extends Controller{
 					'sample_data' => $s_data,
 					'sample_type' => $s_type,
 					'sample_count' => $s_count,
+					'sample_tag' => $s_tag,
 				];
 
 				$sheet = Worksheet::where('sample_id',$s_id)->first();

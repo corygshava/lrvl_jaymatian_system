@@ -23,7 +23,7 @@
 			position: absolute;
 			top: 0;
 			right: 0;
-			transform: translate(61%,-68px) scale(0.7);
+			transform: translate(67%,-58px) scale(0.85);
 			/* transform: rotate(12deg); */
 		}
 		.stamp_image {
@@ -44,7 +44,7 @@
 			left: 35px;
 			background: #fff;
 			padding: 1px 1px;
-			/* transform: rotate(10deg) scale(0.8); */
+			transform: translate;
 			font-size: 1.2rem;
 			border-radius: 5px;
 		}
