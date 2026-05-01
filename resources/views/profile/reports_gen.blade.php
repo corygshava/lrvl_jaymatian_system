@@ -355,6 +355,11 @@
 					<span class="h4">Generated document</span>
 				</div>
 
+				<div class="spacy-sm flowline center gap-sm">
+					<button class="mybtn secondary" data-runme="downloadImg"><i class="fas fa-download"></i> download image</button>
+					<button class="mybtn primary" data-runme="printPdf"><i class="fas fa-print"></i> print document</button>
+				</div>
+
 				<div class="canvasguy slide-up flow centroid" id="output">
 				</div>
 
@@ -370,6 +375,7 @@
 
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary" data-runme="pick_step_2" data-step="0"><i class="fa fa-arrow-left"></i> previous</button>
+				<button class="mybtn secondary" data-runme="printPdf"><i class="fas fa-print"></i> print document</button>
 				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
