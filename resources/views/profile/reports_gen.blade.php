@@ -1071,52 +1071,52 @@
 			}
 		}
 		window['setuppdf'] = async (pdfFile,inputId = 'fileInput') => {
-		    try {
-		    	return null;
-		        // Read the PDF file
-		        const arrayBuffer = await pdfFile.arrayBuffer();
-		        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-		        const page = await pdf.getPage(1);
+			try {
+				return null;
+				// Read the PDF file
+				const arrayBuffer = await pdfFile.arrayBuffer();
+				const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+				const page = await pdf.getPage(1);
 
-		        // Set up canvas for rendering
-		        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
-		        const canvas = document.createElement('canvas');
-		        const context = canvas.getContext('2d');
-		        canvas.width = viewport.width;
-		        canvas.height = viewport.height;
+				// Set up canvas for rendering
+				const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+				const canvas = document.createElement('canvas');
+				const context = canvas.getContext('2d');
+				canvas.width = viewport.width;
+				canvas.height = viewport.height;
 
-		        // Render PDF page to canvas
-		        await page.render({
-		            canvasContext: context,
-		            viewport: viewport
-		        }).promise;
+				// Render PDF page to canvas
+				await page.render({
+					canvasContext: context,
+					viewport: viewport
+				}).promise;
 
-		        // Convert canvas to blob
-		        const blob = await new Promise(resolve => {
-		            canvas.toBlob(resolve, 'image/png', 0.95);
-		        });
+				// Convert canvas to blob
+				const blob = await new Promise(resolve => {
+					canvas.toBlob(resolve, 'image/png', 0.95);
+				});
 
-		        // Create new file for the read page
-		        const originalName = pdfFile.name.replace('.pdf', '');
-		        const newFileName = `${originalName} [converted]`;
-		        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+				// Create new file for the read page
+				const originalName = pdfFile.name.replace('.pdf', '');
+				const newFileName = `${originalName} [converted]`;
+				const imageFile = new File([blob], newFileName, { type: 'image/png' });
 
-		        // Create a DataTransfer object to assign to the input
-		        const dataTransfer = new DataTransfer();
-		        dataTransfer.items.add(imageFile);
+				// Create a DataTransfer object to assign to the input
+				const dataTransfer = new DataTransfer();
+				dataTransfer.items.add(imageFile);
 
-		        // Assign to file input
-		        const fileInput = document.getElementById(inputId);
-		        if(fileInput !== undefined){
-		        	fileInput.files = dataTransfer.files;
-		        }
+				// Assign to file input
+				const fileInput = document.getElementById(inputId);
+				if(fileInput !== undefined){
+					fileInput.files = dataTransfer.files;
+				}
 
-		        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-		        return imageFile;
-		    } catch (error) {
-		        console.error('Error converting PDF to image:', error);
-		        throw error;
-		    }
+				// fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+				return imageFile;
+			} catch (error) {
+				console.error('Error converting PDF to image:', error);
+				throw error;
+			}
 		}
 
 		window['downloadPdf'] = () => {
