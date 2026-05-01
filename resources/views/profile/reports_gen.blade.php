@@ -44,7 +44,7 @@
 			left: 35px;
 			background: #fff;
 			padding: 1px 1px;
-			transform: translate;
+			transform: translate(0px,-7px);
 			font-size: 1.2rem;
 			border-radius: 5px;
 		}
