@@ -333,9 +333,9 @@ class ApiController extends Controller{
 			};
 
 			$logdata = [
-				'where' => 'Jaytools_login',
-				'intent' => 'checkuser',
-				'path' => './api/checkuser',
+				'where' => 'Jaytools_add_client',
+				'intent' => 'add_client',
+				'path' => './api/add_client',
 				'uname' => 'API_guest',
 				'source' => $passed['source'],
 			];
@@ -513,10 +513,10 @@ class ApiController extends Controller{
 			};
 
 			$logdata = [
-				'where' => 'Jaytools_addtask',
-				'intent' => 'add_task',
-				'path' => './api/add_task',
-				'uname' => 'API_guest',
+				'where' => 'Jaytools_save_worksheet',
+				'intent' => 'save_worksheet',
+				'path' => './api/save_worksheet',
+				'uname' => 'Unauthorized User',
 				'source' => $passed['source'],
 			];
 
@@ -613,6 +613,267 @@ class ApiController extends Controller{
 		return response()->json($res);
 	}
 
+	public function save_worksheet_readings(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+		$xtr = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+			'readings' => ['required','array'],
+			'sample_tag' => ['required'],
+			'sample_id' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_save_worksheet_readings',
+				'intent' => 'save_worksheet_readings',
+				'path' => './api/save_worksheet_readings',
+				'uname' => 'API_guest',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+			$mysample = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+
+					// run a complex 3 part magni search to find the sample
+					$s_id = $passed['sample_id'];
+
+					$mysample = Sample::query()
+						->where('id',$s_id)
+						->timeRange('this_month')
+
+						// for consistency when saving
+						->with('worksheets')
+						->with('results')
+						->withCount('results')
+						->withCount('reports')
+						->with('mycreator')
+						->with('owner')
+						->with('task')
+
+						// get only one
+						->first()
+					;
+
+					if($mysample == null){
+						$_msg('invalid sample details');
+					} else {
+						$_msg('sample found');
+
+						$s_id = $mysample->id;
+						// $req['sample_id_injected'] = $s_id;
+						$xtradata = ['s_id' => $s_id,'uid' => $user->id];
+
+						$update_runlog($xtradata);
+						$cl = new WorksheetsController();
+						$adder = $cl->save_readings($req,true,$user,$xtradata);
+						// $adder = $res;
+
+						$update_runlog(['from worksheet' => $adder]);
+
+						// $update_runlog([''])
+						$reslt = $adder['result'];
+						$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+						$outt = $adder['sendme'];
+						$msg = $adder['message'];
+						$xtr = $adder['extra'];
+						// $outcome = ($outt == null) ? null : $outt->toArray();
+						$outcome = $outt;
+						$mysample->refresh();
+					}
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+			$res['extra'] = ['sample' => $mysample,...$xtr];
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function publish_worksheet(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+		$xtr = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+			'sample_tag' => ['required'],
+			'sample_id' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_publish_worksheet',
+				'intent' => 'publish_worksheet',
+				'path' => './api/publish_worksheet',
+				'uname' => 'Unauthorized User',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+			$mysample = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+
+					// run a complex 3 part magni search to find the sample
+					$s_id = $passed['sample_id'];
+
+					$mysample = Sample::query()
+						->where('id',$s_id)
+						->timeRange('this_month')
+
+						// for consistency when saving
+						->with('worksheets')
+						->with('results')
+						->withCount('results')
+						->withCount('reports')
+						->with('mycreator')
+						->with('owner')
+						->with('task')
+
+						// get only one
+						->first()
+					;
+
+					if($mysample == null){
+						$_msg('invalid sample details');
+					} else {
+						$_msg('sample found');
+
+						$s_id = $mysample->id;
+						// $req['sample_id_injected'] = $s_id;
+						$xtradata = ['s_id' => $s_id,'uid' => $user->id];
+
+						$update_runlog($xtradata);
+						$cl = new WorksheetsController();
+						$adder = $cl->publish_one($req,true,$user,$xtradata);
+						// $adder = $res;
+
+						$update_runlog(['from worksheet' => $adder]);
+
+						// $update_runlog([''])
+						$reslt = $adder['result'];
+						$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+						$outt = $adder['sendme'];
+						$msg = $adder['message'];
+						$xtr = $adder['extra'];
+						// $outcome = ($outt == null) ? null : $outt->toArray();
+						$outcome = $outt;
+						$mysample->refresh();
+					}
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+			$res['extra'] = ['sample' => $mysample,...$xtr];
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
 	public function get_all_samples(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -681,6 +942,180 @@ class ApiController extends Controller{
 					$res = [...$res,...$outres];
 					$outcome = $outres['sendme'];
 					$_msg('all samples fetched');
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function get_reports_count(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping stuff
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_get_reports_count',
+				'intent' => 'get_reports_count',
+				'path' => './api/get_reports_count',
+				'uname' => 'unauthorized User',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details verified');
+					$reslt = true;
+
+					// get all clients the same way client mgt gets users
+					// or just modify clients mgt to return the stuff you need
+					$cl = new ReportsController();
+					$outres = $cl->get_count($req,true);
+					$res = [...$res,...$outres];
+					$outcome = $outres['sendme'];
+					$_msg('reports count fetched');
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function get_bizdata(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping stuff
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_get_bizdata',
+				'intent' => 'get_bizdata',
+				'path' => './api/get_bizdata',
+				'uname' => 'unauthorized User',
+				'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details verified');
+					$reslt = true;
+
+					// get all clients the same way client mgt gets users
+					// or just modify clients mgt to return the stuff you need
+					$cl = new BizdataController();
+					$outres = $cl->get_all($req,true);
+					$res = [...$res,...$outres];
+					$outcome = $outres['sendme'];
+					$_msg('bizdata fetched');
 				}
 			}
 

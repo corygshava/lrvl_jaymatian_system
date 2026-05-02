@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class BizdataController extends Controller{
-	public function get_all(Request $req){
+	public function get_all(Request $req,$iscalled = false){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
@@ -18,7 +18,7 @@ class BizdataController extends Controller{
 		// */
 
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "fetching business data";
 			$reslt = false;
@@ -35,6 +35,10 @@ class BizdataController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);

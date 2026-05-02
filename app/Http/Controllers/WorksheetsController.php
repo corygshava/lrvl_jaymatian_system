@@ -369,8 +369,9 @@ class WorksheetsController extends Controller{
 		}
 	}
 
-	public function save_readings(Request $req){
+	public function save_readings(Request $req,$iscalled = false,$p_user = null,$xtra = []){
 		$res = $this->dftres;
+		$res['extra'] = ['sheet' => null];
 		$alldata = $req->all();
 
 		// /*
@@ -393,9 +394,9 @@ class WorksheetsController extends Controller{
 			$update_msg($w,$l);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
-			$user = $this->cur_user();
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 			$msg = "fetching permissions";
 			$update_runlog($msg);
 			$reslt = false;
@@ -403,8 +404,10 @@ class WorksheetsController extends Controller{
 
 			$s_id = $passed['sample_id'];
 			$s_readings = $passed['readings'];
+			$mysheet = [];
 
-			$thesample = Sample::where('id',$s_id)
+			$thesample = Sample::query()
+				->where('id',$s_id)
 				->with('worksheets')
 				->with('results')
 				->withCount('results')
@@ -615,10 +618,12 @@ class WorksheetsController extends Controller{
 
 			if($thesample !== null){
 				$thesample->refresh();
+				$mysheet->refresh();
 			}
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $thesample;
+			$res['extra'] = ['sheet' => $mysheet];
 			$res['message'] = $msg;
 		}
 
@@ -628,11 +633,17 @@ class WorksheetsController extends Controller{
 			}
 		}
 
+		if($iscalled){
+			return $res;
+		}
+
 		return response()->json($res);
 	}
 
-	public function publish_one(Request $req){
+	public function publish_one(Request $req,$iscalled = false,$p_user = null,$xtra = []){
 		$res = $this->dftres;
+		$res['extra'] = ['sheet' => []];
+		$mysheet = [];
 		$alldata = $req->all();
 
 		// /*
@@ -645,7 +656,7 @@ class WorksheetsController extends Controller{
 			$res['runlog'][] = $wot;
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "fetching permissions";
 			$update_runlog($msg);
@@ -701,12 +712,17 @@ class WorksheetsController extends Controller{
 			$res['result'] = $reslt;
 			$res['sendme'] = $thesample;
 			$res['message'] = $msg;
+			$res['extra'] = $mysheet;
 		}
 
 		if(!self::$showlogs){
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);

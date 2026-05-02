@@ -103,11 +103,11 @@ class ReportsController extends Controller{
 
 		return response()->json($res);
 	}
-	public function get_count(Request $req){
+	public function get_count(Request $req,$iscalled = false){
 		$res = $this->dftres;
 		// $alldata = $req->all();
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "all Reports retrieved";
 
@@ -124,6 +124,10 @@ class ReportsController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);
