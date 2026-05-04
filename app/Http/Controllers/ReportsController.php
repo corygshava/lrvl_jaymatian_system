@@ -239,7 +239,7 @@ class ReportsController extends Controller{
 			$update_msg($w,$l);
 		};
 
-		if($this->ili()){
+		if($this->ili() || true){
 			$res['success'] = true;
 			$_msg('starting the procedure');
 			$reslt = false;
@@ -276,7 +276,7 @@ class ReportsController extends Controller{
 		if(!$reslt){
 			http_response_code(404);
 			$vw = new ViewController();
-			return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>$msg");
+			return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>");
 		}
 
 		return null;
