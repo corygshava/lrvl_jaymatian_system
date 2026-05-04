@@ -218,6 +218,7 @@ class ReportsController extends Controller{
 		$res = $this->dftres;
 		$alldata = $req->all();
 		$msg = "didnt even get to start";
+		$reslt = false;
 
 		/*
 		$passed = $req->validate([
