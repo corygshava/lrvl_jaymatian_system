@@ -276,7 +276,7 @@ class ReportsController extends Controller{
 		if(!$reslt){
 			http_response_code(404);
 			$vw = new ViewController();
-			return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>$msg");
+			return $vw->showerror($req,"Error getting the report file with serial: <b style=\"color:dodgerblue\">$slug</b><br>$msg");
 		}
 
 		return null;
