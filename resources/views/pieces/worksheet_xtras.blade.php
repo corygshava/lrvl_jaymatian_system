@@ -523,19 +523,24 @@
 			cu_ppm = cu_reading * 100;
 		};
 		$calculate_carbon_activity = () => {
-			let sample = weight;
+			let act = weight;
 			let virgin = au_reading;
 			let initial = cu_reading;
 
 			let i = Number(initial);
 			let v = Number(virgin);
-			let s = Number(sample);
+			let a = Number(act);
 
-			let nume = (i - s);
-			let deno = (i - v);
-			let clc = deno / nume;
+			let top = (i - a).toFixed(3);
+			let bottom = (i - v).toFixed(3);
+			let clc = top / bottom;
 
-			activity = clc * 90;
+			// console.log(`(i - a) => (${i} - ${a}) => ${top}`)
+			// console.log(`(i - v) => (${i} - ${v}) => ${bottom}`)
+			// console.log(`calc => (top / bottom) => (${top} / ${bottom}) => ${clc}`)
+			// console.log(`act => (calc * 90) => (${clc} * 90) => ${clc * 85}`)
+
+			activity = clc * 85;
 		};
 
 		let stype = typ.toLowerCase();

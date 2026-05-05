@@ -506,23 +506,23 @@ class WorksheetsController extends Controller{
 								// */
 							};
 							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog,&$calc_activity){
-								$sample = $weight;
+								$act = $weight;
 								$virgin = $au_reading;
 								$initial = $cu_reading;
 
 								$i = $initial;
 								$v = $virgin;
-								$s = $sample;
+								$a = $act;
 
-								$nume = ($i - $s);
-								$deno = ($i - $v);
-								$clc = (float) $deno / $nume;
-								$calc_activity = $clc * 90;
+								$top = ($i - $a);
+								$bottom = ($i - $v);
+								$clc = (float) $top / $bottom;
+								$calc_activity = $clc * 85;
 
 								// /*
-								$update_runlog("clc sum: ($deno / $nume) = $clc");
+								$update_runlog("clc sum: ($top / $bottom) = $clc");
 								$update_runlog("calc: $clc");
-								$update_runlog("sum: $clc * 90");
+								$update_runlog("sum: $clc * 85");
 								$update_runlog("final: $calc_activity");
 								// */
 							};
