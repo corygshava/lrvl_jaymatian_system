@@ -24,6 +24,7 @@ Route::post('/publish_worksheet',[ApiController::class,'publish_worksheet'])->mi
 Route::post('/get_samples_motherlode',[ApiController::class,'get_all_samples'])->middleware('throttle:25,1');
 
 Route::post('/get_reports_count',[ApiController::class,'get_reports_count'])->middleware('throttle:25,1');
+Route::post('/save_report',[ApiController::class,'mek_new_report'])->middleware('throttle:25,1');
 
 Route::post('/get_bizdata',[ApiController::class,'get_bizdata'])->middleware('throttle:25,1');
 

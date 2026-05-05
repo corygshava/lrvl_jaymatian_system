@@ -514,14 +514,18 @@
 						sortable: false,
 						// width: '200px',
 						render: function(value, row) {
+							let payht = row.status == 2 ? '' : `
+								<button class="mybtn primary sm" data-runme="make_invoice_payment" data-myid="${value}" title="Make payment record">
+									<i class="${iconAtlas['payments']}"></i> Make payment
+								</button>
+							`;
+
 							return `
 								<div class="action-btns">
 									<a class="mybtn primary sm" target="blank" href="${linkAtlas['getinvoice_img']}/${row.image_link}" title="View">
 										<i class="fas fa-eye"></i> View
 									</a>
-									<button class="mybtn primary sm" data-runme="make_invoice_payment" data-myid="${value}" title="Make payment record">
-										<i class="${iconAtlas['payments']}"></i> Make payment
-									</button>
+									${payht}
 								</div>
 							`;
 						}

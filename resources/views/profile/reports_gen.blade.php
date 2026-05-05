@@ -136,6 +136,11 @@
 	tr:has(.removebtn):hover{
 		background: #eee;
 	}
+	tr.border-bottom{border-bottom: 1px solid var(--r_border) !important;}
+	tr td:has([contenteditable="true"]){
+		background: lightcoral;
+		color: #000;
+	}
 </style>
 
 <div class="container-fluid">
@@ -376,7 +381,7 @@
 			<div class="actions flowline spread slide-up" style="animation-delay: 300ms;opacity: 0;animation-fill-mode: forwards;">
 				<button class="mybtn secondary" data-runme="pick_step_2" data-step="0"><i class="fa fa-arrow-left"></i> previous</button>
 				<button class="mybtn secondary" data-runme="printPdf"><i class="fas fa-print"></i> print document</button>
-				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="generating pdf">finalize document <i class="fa fa-arrow-right"></i></button>
+				<button class="mybtn primary" data-runme="pick_step_3" data-step="2" data-msg="finalizing document">finalize document <i class="fa fa-arrow-right"></i></button>
 			</div>
 		</div>
 
@@ -403,7 +408,7 @@
 							</div>
 							<div class="form-group w3-hide">
 								<label class="form-label" for="client_name">Generated PDF</label>
-								<input type="file" data-name="genfile" id="genfile" required>
+								<input type="file" data-name="genfile" id="genfile">
 							</div>
 							<div class="form-group">
 								<label class="form-label" for="client_name">Generated Report</label>
@@ -474,29 +479,30 @@
 		'pick_step_3',
 		'upload_stuff',
 	];
+	let canEditName = false;
 
 	/*
-	report_runtime_data = {
-		tosend: {
-			'task_id' : undefined,
-			'sample_id' : undefined,
-			'created_by' : undefined,
-			'client_id' : undefined,
+		report_runtime_data = {
+			tosend: {
+				'task_id' : undefined,
+				'sample_id' : undefined,
+				'created_by' : undefined,
+				'client_id' : undefined,
 
-			'company_contact' : undefined,
-			'sample_type' : undefined,
-			'sample_count' : undefined,
-			'date_received' : undefined,
-			'date_compiled' : undefined,
-			'task_no' : undefined,
-			'technical_staff_name' : undefined,
-			'analytical_report' : undefined,
-			'deviation_data' : undefined,
-			'business_logo_img' : undefined,
-			'pdf_link' : undefined,
-			'image_link' : undefined,
+				'company_contact' : undefined,
+				'sample_type' : undefined,
+				'sample_count' : undefined,
+				'date_received' : undefined,
+				'date_compiled' : undefined,
+				'task_no' : undefined,
+				'technical_staff_name' : undefined,
+				'analytical_report' : undefined,
+				'deviation_data' : undefined,
+				'business_logo_img' : undefined,
+				'pdf_link' : undefined,
+				'image_link' : undefined,
+			}
 		}
-	}
 	*/
 
 	let tabs = document.querySelectorAll('.tabs .tab');
@@ -722,9 +728,10 @@
 
 		taskinfo.innerHTML = `
 			<tr>
-				<td style="padding: 2px !important;">
+				<td style="padding: 2px !important;position: relative" class="floatHolder">
 					<b>Client \\ Company name: </b>
-					<span data-subrole="user_name">${s_data.owner.client_name}</span>
+					<span data-subrole="client_name">${s_data.owner.client_name}</span>
+					<button class="w3-display-topright removebtn w3-blue" data-runme="toggle_edit_client"><i class="fa fa-edit"></i></button>
 				</td>
 				<td style="padding: 2px !important;">
 					<b>Number of samples: </b>
@@ -800,7 +807,7 @@
 					<td><span>${i + 1}</span></td>
 					<td><span>${r.sample_name}</span></td>
 					<td class="text-center">
-						<span>${r.activity} %</span>
+						<span>${Math.floor(r.activity)} %</span>
 						<button data-subrole="entry_editor" data-runme="just_hide_this" data-myid="${i}" class="removebtn w3-red"><i class="fa fa-eye-slash"></i></button>
 					</td>
 				</tr>
@@ -906,6 +913,22 @@
 		rows.forEach(r => {
 			if(r.dataset.myid == id){
 				r.classList.add('w3-hide');
+			}
+		})
+
+		let fnd = false;
+		[...rows].reverse().forEach(r => {
+			r.classList.remove('border-bottom');
+
+			if(!fnd){
+				let hiden = r.className.includes('w3-hide');
+
+				if(!hiden){
+					r.classList.add('border-bottom');
+					fnd = true;
+				} else {
+					// r.classList.remove('border-bottom');
+				}
 			}
 		})
 
@@ -1031,6 +1054,8 @@
 
 		window['gen_download'] = async () => {
 			try {
+				report_runtime_data.filemade = true;
+				return;
 				if(report_runtime_data.renderedCanvas == undefined){
 					throw new Error('no document has been rendered yet');
 				}
@@ -1253,7 +1278,7 @@
 					return;
 				}
 				if(report_runtime_data.filemade == undefined && n > 1){
-					alert_danger('generate a pdf first');
+					alert_danger('finalize the document first');
 					return;
 				}
 			// }
@@ -1309,5 +1334,17 @@
 			}
 
 			step1();
+		}
+		window['toggle_edit_client'] = (el) => {
+			canEditName = !canEditName;
+			let span = document.querySelector('[data-subrole="client_name"]');
+			let msg = canEditName ? 'you can now edit the client\'s name' : 'name editing blocked';
+			let ico = canEditName ? 'fa fa-times' : 'fa fa-edit';
+			span.setAttribute('contenteditable',canEditName);
+
+			let i = el.querySelector('i');
+			i.className = ico;
+
+			alert_info(msg);
 		}
 </script>

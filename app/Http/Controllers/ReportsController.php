@@ -282,7 +282,7 @@ class ReportsController extends Controller{
 		return null;
 		return response()->json($res);
 	}
-	public function add_new(Request $req) {
+	public function add_new(Request $req,$iscalled = false, $p_user = null) {
 		$res = $this->dftres;
 		$alldata = $req->all();
 
@@ -305,15 +305,31 @@ class ReportsController extends Controller{
 
 		$b_deets = $bizdata['business_details'];
 
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
 		// $res['runlog'][] = json_decode($bizdata);
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
-			$msg = "business information updated successfully";
+			$msg = "saving the report";
 			$reslt = false;
-			$wegood = $this->verifyPassword($passed['admin_password_mine']);
-			$user = $this->cur_user();
+			$ppw = null;
+			$wegood = $this->verifyPassword($passed['admin_password_mine'],$ppw,$p_user);
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 			$showthis = null;
+			$sample = null;
 
 			if(!$wegood){
 				$msg = "invalid admin password";
@@ -348,25 +364,26 @@ class ReportsController extends Controller{
 					$fkey = 'genfile';
 					$fyls[$fkey] = '--';
 					/*
-					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
-						/*
-						$imghash = new pdfHashService();
-						$mfile = $req->file($fkey,null);
-						$pdf_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
-						// /
+						if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
+							/*
+							$imghash = new pdfHashService();
+							$mfile = $req->file($fkey,null);
+							$pdf_serial = $imghash->generateHash($mfile,$res['runlog'])['hex'];
+							// /
 
-						$fyl = $req->file($fkey);
-						$myname = $file_link;
-						$ext = $fyl->getClientOriginalExtension();
-						$date = date('y_m');
-						$daname = "{$myname}.{$ext}";
-						$fname = "[{$date}] {$daname}";
-						$fyl->move(storage_path(self::$report_files_path),$fname);
-						$fyls[$fkey] = $fname;
-						// $pdf_serial = '';
-					};
+							$fyl = $req->file($fkey);
+							$myname = $file_link;
+							$ext = $fyl->getClientOriginalExtension();
+							$date = date('y_m');
+							$daname = "{$myname}.{$ext}";
+							$fname = "[{$date}] {$daname}";
+							$fyl->move(storage_path(self::$report_files_path),$fname);
+							$fyls[$fkey] = $fname;
+							// $pdf_serial = '';
+						};
 					// */
 
+					$_msg('saving report image');
 					$fkey = 'genimage';
 					if($req->hasFile($fkey) && $req->file($fkey)->isValid()){
 						$imghash = new ImageHashService();
@@ -384,6 +401,7 @@ class ReportsController extends Controller{
 					};
 
 					$pdf_serial = $img_serial;
+					// $rno
 
 					// $res['runlog'][] = ['sample' => $sample];
 
@@ -413,6 +431,7 @@ class ReportsController extends Controller{
 					];
 
 					// $res['runlog'][] = ["newrec" => $toadd];
+					$_msg('saving report');
 
 					$report = ReportsGen::create($toadd);
 
@@ -433,10 +452,13 @@ class ReportsController extends Controller{
 						]
 					];
 
+					$_msg('saving hashes');
 					for($x = 0;$x < count($add_to_hashes);$x++){
 						FileHash::create($add_to_hashes[$x]);
 					}
 
+					$_msg("all filehashes saved");
+					$_msg("report saved successfully");
 					$showthis = $report;
 					$reslt = true;
 				}
@@ -444,6 +466,7 @@ class ReportsController extends Controller{
 
 			$res['result'] = $reslt;
 			$res['sendme'] = $showthis;
+			$res['extra'] = ['sample' => $sample,"rcount" => ReportsGen::all()->count()];
 			$res['message'] = $msg;
 		}
 
@@ -451,6 +474,10 @@ class ReportsController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);

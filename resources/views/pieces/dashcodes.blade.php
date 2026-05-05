@@ -397,6 +397,8 @@
 
 		window[variableAtlas['initstuff']] = () => {
 			const step1 = (w) => {
+				clearStorage();
+
 				// sets permissions
 				permissions = w.sendme;
 
@@ -1169,6 +1171,20 @@
 				})
 
 				return `${xtra}${proc.join("")}`;
+			}
+			window['clearStorage'] = (n) => {
+				let lcs = JSON.parse(JSON.stringify(localStorage));
+				window['temp_debug_var'] = lcs;
+
+				Object.keys(lcs).forEach(k => {
+					if(k.includes(pref_prefix)){
+						if(!(['jaymatt_mis_saved_task'].includes(k.toLowerCase()))){
+							localStorage.removeItem(k);
+						}
+					}
+				})
+
+				alert_info('cleared view cache');
 			}
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});

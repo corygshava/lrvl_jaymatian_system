@@ -70,22 +70,39 @@ class InvoiceController extends Controller{
 				->withCount('payments')
 			;
 
-			if($search){
-				$records = $records
-					->whereHas('client', function($q) use ($search){
-						$q->where('client_name','like',"%{$search}%");
-					})
-					->orWhereHas('tasks', function($q) use ($search){
-						$q->where('task_no','LIKE',"%{$search}%");
-					})
-					->orWhere('invoice_no','LIKE',"%{$search}%")
-				;
-				$res['runlog'][] = "added search filter";
-			}
-
 			// place for filters
 			if($status){
-				$records = $records->where('status',$status);
+				$records = $records->where('status',"=","$status");
+			}
+
+			if($search){
+				if($status){
+					$records = $records
+						->whereHas('client', function($q) use ($search){
+							$q->where('client_name','like',"%{$search}%")
+								->orWhere('client_contact','like',"%{$search}%")
+							;
+						})
+						->orWhereHas('tasks', function($q) use ($search){
+							$q->where('task_no','LIKE',"%{$search}%");
+						})
+						->orWhere('invoice_no','LIKE',"%{$search}%")
+						->where('status',"$status")
+					;
+				} else {
+					$records = $records
+						->whereHas('client', function($q) use ($search){
+							$q->where('client_name','like',"%{$search}%")
+								->orWhere('client_contact','like',"%{$search}%")
+							;
+						})
+						->orWhereHas('tasks', function($q) use ($search){
+							$q->where('task_no','LIKE',"%{$search}%");
+						})
+						->orWhere('invoice_no','LIKE',"%{$search}%")
+					;
+				}
+				$res['runlog'][] = "added search filter";
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
@@ -93,7 +110,8 @@ class InvoiceController extends Controller{
 
 			$records = $records
 				->orderBy($sortBy, $sortDirection)
-				->paginate($perPage);
+				->paginate($perPage)
+			;
 
 			$res['result'] = true;
 			$res['sendme'] = $records;
@@ -902,7 +920,7 @@ class InvoiceController extends Controller{
 
 			$outdata = [];
 
-			$invoice = Invoice::where('invoice_no',$inv_no)->with('filehashes')->with('client')->first();
+			$invoice = Invoice::query()->where('invoice_no',$inv_no)->with('filehashes')->with('client')->first();
 
 			if($invoice == null){
 				$_msg('no invoice found with that Number');
@@ -910,7 +928,7 @@ class InvoiceController extends Controller{
 				$_msg('invoice found');
 
 				// get payment data from db
-				$bizdata = BizData::where('item_name','like',"%business_details%")->first();
+				$bizdata = BizData::query()->where('item_name','like',"%business_details%")->first();
 				$dta = $bizdata->item_data ?? ['mpesa' => '!!'];
 				$mpesa = $dta['mpesa'];
 
