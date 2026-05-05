@@ -557,6 +557,17 @@
 							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
 						}
 					},
+					{
+						title: 'Has report',
+						data: 'id',
+						sortable: false,
+						render: function(value, row) {
+							let s_con = row.has_report;
+							let cls = s_con == true ? "w3-green" : "w3-black";
+							let con = s_con == true ? "yes" : "no";
+							return `<strong class="w3-tag themeround ${cls}">${con}</strong>`;
+						}
+					},
 					// */
 					{
 						title: 'Actions',

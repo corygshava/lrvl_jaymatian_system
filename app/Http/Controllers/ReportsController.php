@@ -457,6 +457,10 @@ class ReportsController extends Controller{
 						FileHash::create($add_to_hashes[$x]);
 					}
 
+					$sample->has_report = true;
+					$sample->save();
+					$sample->refresh();
+
 					$_msg("all filehashes saved");
 					$_msg("report saved successfully");
 					$showthis = $report;
