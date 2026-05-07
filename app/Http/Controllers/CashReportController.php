@@ -356,12 +356,12 @@ class CashReportController extends Controller{
 				$_msg("calculated expenses");
 
 				// get samples data
-					$mysamples = (clone $samples)->get()->count();
-					$soil_samples = (clone $samples)->where('sample_type','soil')->get()->count();
-					$rock_samples = (clone $samples)->where('sample_type','rock')->get()->count();
-					$solution_samples = (clone $samples)->where('sample_type','solution')->get()->count();
-					$carbon_samples = (clone $samples)->where('sample_type','carbon')->get()->count();
-					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->get()->count();
+					$mysamples = (clone $samples)->sum('sample_count');
+					$soil_samples = (clone $samples)->where('sample_type','soil')->sum('sample_count');
+					$rock_samples = (clone $samples)->where('sample_type','rock')->sum('sample_count');
+					$solution_samples = (clone $samples)->where('sample_type','solution')->sum('sample_count');
+					$carbon_samples = (clone $samples)->where('sample_type','carbon')->sum('sample_count');
+					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->sum('sample_count');
 					$monthly_samples = Sample::timeRange('this_month')->get()->count();
 					$_msg('samples data fetched');
 
