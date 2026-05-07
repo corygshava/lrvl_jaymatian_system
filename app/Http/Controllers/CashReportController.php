@@ -419,7 +419,8 @@ class CashReportController extends Controller{
 					// figure out how many unpaid invoices each debtor has
 					foreach($guys->toArray() as $dd){
 						$tmg = $dd;
-						$tmg['invoices_count'] = Invoice::where('client_id',$tmg['id'])->where('status','<>',2)->count();
+						$tmg['credit_balance'] = Task::query()->timeRange($t_range)->where('client_id',$dd['id'])->sum('balance');
+						$tmg['invoices_count'] = Invoice::query()->where('client_id',$tmg['id'])->where('status','<>',2)->count();
 
 						$debtors[] = $tmg;
 					}
