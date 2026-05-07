@@ -26,7 +26,7 @@ class ChartsController extends Controller{
 			$reslt = false;
 			$timeframe = $passed['t_range'];
 
-			$records = Task::query();
+			$records = Task::query()->where('is_paid',true);
 			[$labels, $data] = $this->getChartData_count($records,$timeframe);
 			$outres = [
 				'labels' => $labels,
