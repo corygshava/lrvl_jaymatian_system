@@ -362,7 +362,7 @@ class CashReportController extends Controller{
 					$solution_samples = (clone $samples)->where('sample_type','solution')->sum('sample_count');
 					$carbon_samples = (clone $samples)->where('sample_type','carbon')->sum('sample_count');
 					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->sum('sample_count');
-					$monthly_samples = Sample::timeRange('this_month')->get()->count();
+					$monthly_samples = Sample::timeRange('this_month')->sum('sample_count');
 					$_msg('samples data fetched');
 
 					$sampledata = [
