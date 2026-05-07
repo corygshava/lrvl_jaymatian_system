@@ -74,7 +74,7 @@ class ChartsController extends Controller{
 			$timeframe = $passed['t_range'];
 
 			$s_query = Sample::query();
-			[$labels, $data] = $this->getChartData_count($s_query,$timeframe);
+			[$labels, $data] = $this->getChartData_sum($s_query,'sample_count',$timeframe);
 			$outres = [
 				'labels' => $labels,
 				'datasets' => [
