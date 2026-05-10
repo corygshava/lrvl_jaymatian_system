@@ -50,6 +50,10 @@ Route::post('/save_report',[ApiController::class,'mek_new_report'])
 	// ->middleware('throttle:60,1')
 ;
 
+Route::post('/save_payment',[ApiController::class,'add_payment'])
+	// ->middleware('throttle:60,1')
+;
+
 Route::post('/get_bizdata',[ApiController::class,'get_bizdata'])->middleware('throttle:60,1');
 
 // Route::post('/verify_file')

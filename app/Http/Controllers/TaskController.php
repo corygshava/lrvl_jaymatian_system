@@ -242,7 +242,7 @@ class TaskController extends Controller{
 	}
 
 	// set ops
-	public function add_new_task(Request $req,$iscalled = false,$p_user=null){
+	public function add_new_task(Request $req,$iscalled = false,$p_user = null){
 		$res = $this->dftres;
 		$sent = $req->input('sentdata',null);
 
@@ -471,7 +471,7 @@ class TaskController extends Controller{
 		}
 		return response()->json($res);
 	}
-	public function add_payment(Request $req){
+	public function add_payment(Request $req,$iscalled = false,$p_user = null){
 		$res = $this->dftres;
 		$alldata = $req->all();
 
@@ -488,14 +488,20 @@ class TaskController extends Controller{
 			$res['runlog'][] = $wot;
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$msg = "fetching permissions";
 			$update_runlog($msg);
 			$reslt = false;
 			$task = null;
 
-			$wegood = self::verifyPassword($passed['admin_password'],$outps);
+			$wegood = false;
+
+			if($p_user == null){
+				$wegood = self::verifyPassword($passed['admin_password'], $outps);
+			} else {
+				$wegood = self::verifyPassword($passed['admin_password'], $outps, $p_user);
+			}
 
 			// $res['runlog'][] = ['decrypted_pw' => $outps];
 
@@ -524,7 +530,7 @@ class TaskController extends Controller{
 					$cost = $task['cost'];
 					$paid = $task['paid'];
 					$amt = $passed['amount'];
-					$user = $this->cur_user();
+					$user = $p_user == null ? $this->cur_user() : $p_user;
 
 					$c_id = $task->client_id;
 					$client = Client::where('id',$c_id)->first();
@@ -611,6 +617,10 @@ class TaskController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);
