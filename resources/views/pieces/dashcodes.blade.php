@@ -228,7 +228,7 @@
 		};
 
 		const iconAtlas = {
-			'admin_dash' : 'fa fa-home',
+			'admin_dash' : 'fa fa-th-large',
 			'staff_dash' : 'fa fa-house-user',
 			'user_roles' : 'fa fa-user-lock',
 			'user_mgt' : 'fa fa-user-cog',
@@ -1183,8 +1183,6 @@
 						}
 					}
 				})
-
-				alert_info('cleared view cache');
 			}
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});
