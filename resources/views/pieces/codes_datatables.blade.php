@@ -13,7 +13,7 @@
 		// Private variables
 		let config = {};
 		let currentPage = 1;
-		let perPage = 10;
+		let perPage = 20;
 		let totalRecords = 0;
 		let currentFilters = {};
 		let searchQuery = '';
