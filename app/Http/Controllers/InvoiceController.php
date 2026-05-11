@@ -17,6 +17,128 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
 class InvoiceController extends Controller{
+	public function get_everything(Request $req, $iscalled = false){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		// housekeeping stuff
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$_msg("all samples retrieved");
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search');
+			$sortBy = $req->input('sort_by', 'created_at');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$status = $req->input('status',null);
+			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"status" => $status,
+			];
+
+			// clean up sortBy to prevent issues
+			if($sortBy == 'owner'){
+				$sortBy = 'client_id';
+			} elseif($sortBy == 'task'){
+				$sortBy = 'task_id';
+			}
+
+			// return response()->json($res);
+
+			$records = Invoice::query()
+				->with('client')
+				->with('creator')
+				->with('tasks')
+				->withCount('tasks')
+				->with('payments')
+				->withCount('payments')
+			;
+
+
+			// place for filters
+			if($status){
+				$records = $records->where('status',"=","$status");
+			}
+
+			if($search){
+				if($status){
+					$records = $records
+						->whereHas('client', function($q) use ($search){
+							$q->where('client_name','like',"%{$search}%")
+								->orWhere('client_contact','like',"%{$search}%")
+							;
+						})
+						->orWhereHas('tasks', function($q) use ($search){
+							$q->where('task_no','LIKE',"%{$search}%");
+						})
+						->orWhere('invoice_no','LIKE',"%{$search}%")
+						->where('status',"$status")
+					;
+				} else {
+					$records = $records
+						->whereHas('client', function($q) use ($search){
+							$q->where('client_name','like',"%{$search}%")
+								->orWhere('client_contact','like',"%{$search}%")
+							;
+						})
+						->orWhereHas('tasks', function($q) use ($search){
+							$q->where('task_no','LIKE',"%{$search}%");
+						})
+						->orWhere('invoice_no','LIKE',"%{$search}%")
+					;
+				}
+				$res['runlog'][] = "added search filter";
+			}
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			$records = $records->get();
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if($iscalled){
+			return $res;
+		}
+
+		return response()->json($res);
+	}
 	public function get_all(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
@@ -124,6 +246,35 @@ class InvoiceController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		return response()->json($res);
+	}
+	public function get_count(Request $req,$iscalled = false){
+		$res = $this->dftres;
+		// $alldata = $req->all();
+
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$msg = "all Invoices retrieved";
+
+			$records = Invoice::all()->count();
+
+			$res['result'] = true;
+			$res['sendme'] = $records;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);
@@ -357,6 +508,8 @@ class InvoiceController extends Controller{
 		$alldata = $req->all();
 		$msg = "didnt even get to start";
 
+		// return 'nada';
+
 		/*
 		$passed = $req->validate([
 			'condition' => ['required']
@@ -376,7 +529,7 @@ class InvoiceController extends Controller{
 			$update_msg($w,$l);
 		};
 
-		if($this->ili()){
+		if($this->ili() || true){
 			$res['success'] = true;
 			$_msg('starting the procedure');
 			$reslt = false;
@@ -397,6 +550,7 @@ class InvoiceController extends Controller{
 					$reslt = true;
 					return response()->file($path);
 				}
+				$report = $path;
 			}
 
 			$res['result'] = $reslt;
@@ -410,13 +564,16 @@ class InvoiceController extends Controller{
 			}
 		}
 
+		$vw = new ViewController();
+
 		if(!$reslt){
 			http_response_code(404);
-			$vw = new ViewController();
 			return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>$msg");
 		}
 
-		return null;
+		return $vw->showerror($req,"the invoice file serial: <b>$slug</b> doesnt exist<br>$msg");
+
+		// return null;
 		return response()->json($res);
 	}
 

@@ -50,10 +50,22 @@ Route::post('/save_report',[ApiController::class,'mek_new_report'])
 	// ->middleware('throttle:60,1')
 ;
 
+Route::post('/get_invoices_count',[ApiController::class,'get_invoices_count'])
+	// ->middleware('throttle:60,1')
+;
+Route::post('/save_invoice',[ApiController::class,'mek_new_invoice'])
+	// ->middleware('throttle:60,1')
+;
+Route::post('/get_invoices_motherlode',[ApiController::class,'get_all_invoices'])
+	// ->middleware('throttle:60,1')
+;
+
 Route::post('/save_payment',[ApiController::class,'add_payment'])
 	// ->middleware('throttle:60,1')
 ;
 
-Route::post('/get_bizdata',[ApiController::class,'get_bizdata'])->middleware('throttle:60,1');
+Route::post('/get_bizdata',[ApiController::class,'get_bizdata'])
+	// ->middleware('throttle:60,1')
+;
 
 // Route::post('/verify_file')
