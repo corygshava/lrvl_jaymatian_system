@@ -443,6 +443,7 @@
 	];
 	let samples_filter = [];
 	let pay_state_filter = [];
+	let timerange_filter = [];
 
 	window['runOnAwake'] = () => {
 		Object.keys(sample_state_atlas).forEach((k,id) => {
@@ -455,6 +456,8 @@
 			let tmp = {value: k, label: k};
 			samples_filter.push(tmp);
 		});
+
+		timerange_filter = [...timeranges].map(r => {return {value: r,label: r.replaceAll('_',' ')}});
 
 		Object.keys(payment_state_atlas).forEach((k,id) => {
 			// if(id == 0){return;}
@@ -625,6 +628,12 @@
 						label: 'Sample Type',
 						rawname: 'sample type',
 						options: samples_filter
+					},
+					{
+						name: 'timerange',
+						label: 'Creation time range',
+						rawname: 'sample type',
+						options: timerange_filter
 					}
 				],
 

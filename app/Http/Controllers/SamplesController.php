@@ -150,6 +150,7 @@ class SamplesController extends Controller{
 			$with_results = $req->input('with_results',null);
 			$sample_typ = $req->input('sample_type',null);
 			$pay_status = $req->input('payment_status',null);
+			$t_range = $req->input('timerange',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
@@ -222,6 +223,10 @@ class SamplesController extends Controller{
 
 			if($sample_typ){
 				$records = $records->where('sample_type',$sample_typ);
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
