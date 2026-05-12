@@ -210,6 +210,16 @@
 								<div class="border spacy-sm themeround">
 									<div class="job_deets" data-subrole="job_deets">
 									</div>
+									<div class="distance-sm">
+										<div>
+											<!-- <b>extra actions</b> -->
+										</div>
+										<div class="flowline gap-tn left" data-subrole="sheet_acts">
+											<button class="btn btn-outline-primary btn-sm themeround" data-runme="autofill_entries"><i class="fa fa-magic"></i> autofill</button>
+											<button class="btn btn-outline-primary btn-sm themeround" data-runme="clear_entries"><i class="fa fa-eraser"></i> clear entries</button>
+											<button class="btn btn-outline-primary btn-sm themeround" data-submitme="#worksheetform"><i class="fa fa-save"></i> save worksheet</button>
+										</div>
+									</div>
 
 									<div class="table-responsive distance-sm themeround border" data-subrole="thetable">
 										<form id="worksheetform" action="defined:save_worksheet" data-onsubmit="save_worksheet_sampleids" data-callback="worksheet_update_callback" data-blockdefault="yes">
@@ -422,6 +432,8 @@
 	let task = {};
 	let c_pld = {};
 	let cur_sample_id = 0;
+
+	window['was_warned'] = window['was_warned'] == undefined ? false : window['was_warned'];
 
 	let task_payment_state_atlas = payment_state_atlas;
 
@@ -1394,6 +1406,83 @@
 				rowprops: 'data-rectype="report"',
 			};
 			render_simpleTable(data);
+		}
+
+	// fun and games (little tiny touches i added, coz why not)
+		window['autofill_entries'] = (el) => {
+			// fill entries based on the first sample_id input
+			let frm = document.querySelector('#worksheetform');
+			let npts = frm.querySelectorAll('input');
+
+			let starter = '';
+			let seed = '';
+			let lone = false;
+
+			if(npts.length == 0){
+				alert_danger('there was an error rendering the worksheet');
+				return;
+			} else if(npts.length == 1){
+				seed = cur_sheet.sample_type.toUpperCase();
+				lone = true;
+			} else {
+				starter = npts[0].value;
+				let spl = starter.split(" ");
+
+				if(spl.length > 1){
+					let l = [...spl].pop();
+
+					if(Number(l) != NaN){
+						seed = `${spl[0]} `;
+					} else {
+						seed = starter;
+					}
+				} else {
+					if(starter == '1'){
+						seed = '';
+					} else if(starter.length == 1){
+						seed = starter;
+					} else {
+						let ltrs = [...(starter.split(''))];
+						let last_l = [...ltrs].pop();
+
+						console.log('ltrs: ',ltrs);
+						console.log('last_l: ',last_l);
+
+						if(Number(last_l) != NaN){
+							seed = ltrs.splice(0,ltrs.length - 1);
+						} else {
+							seed = starter;
+						}
+					}
+				}
+			}
+
+			function doit() {
+				was_warned = true;
+				npts.forEach((n,i) => {
+					n.value = !lone ? `${seed}${i + 1}` : `${seed}`;
+					// update_sample_names(n);
+				});
+
+
+				alert_info('entries generated');
+			}
+
+			if(was_warned){
+				doit();
+			} else {
+				confirmAction(mekHeading('autofill entries'),'this will generate sample names based on the first one you entered',() => {doit();});
+			}
+		}
+		window['clear_entries'] = (el) => {
+			let frm = document.querySelector('#worksheetform');
+			let npts = frm.querySelectorAll('input');
+
+			npts.forEach(n => {
+				n.value = '';
+			});
+
+			alert_info('entries cleared');
 		}
 
 	// MUST BE LAST (utilities all functions call at some point, put last for easy access)

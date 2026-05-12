@@ -9,7 +9,6 @@
 	}
 </style>
 
-
 <div>
 	<button class="mybtn primary w3-hide" id="save_daily_modal_trig" data-toggle="modal" data-target="#save_daily_modal">
 		<i class="fas fa-plus"></i>
@@ -300,9 +299,14 @@
 			`;
 
 			if(drd.debtors !== undefined && drd.debtors.length > 0){
+				let tdt = 0;
+
 				drd.debtors.forEach(f => {
+					tdt += f.credit_balance;
+
 					debtors_outht += `
 						<tr>
+
 							<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
 							<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
 							<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
@@ -314,7 +318,7 @@
 				debtors_outht += `
 						<tr>
 							<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
-							<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+							<td><strong class="themetxt">KES ${formatNumber(tdt,2)}</strong></td>
 						</tr>
 					</tbody>
 				</table>

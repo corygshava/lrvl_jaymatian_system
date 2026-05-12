@@ -59,6 +59,9 @@ Route::post('/save_invoice',[ApiController::class,'mek_new_invoice'])
 Route::post('/get_invoices_motherlode',[ApiController::class,'get_all_invoices'])
 	// ->middleware('throttle:60,1')
 ;
+Route::post('/save_invoice_payment',[ApiController::class,'add_invoice_payment'])
+	// ->middleware('throttle:60,1')
+;
 
 Route::post('/save_payment',[ApiController::class,'add_payment'])
 	// ->middleware('throttle:60,1')

@@ -260,15 +260,15 @@
 						<div class="input-group-custom">
 							<div class="form-group">
 								<label class="form-label" for="sample_count">Sample count</label>
-								<input type="number" class="form-control-custom" id="sample_count" name="sample_count" placeholder="enter number of samples" required>
+								<input type="number" class="form-control-custom" id="sample_count" name="sample_count" placeholder="enter number of samples" oninput="infer_max(this)" required>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="input-group-custom">
 							<div class="form-group">
-								<label class="form-label" for="sample_tag">Sample Tag (optional)</label>
-								<input type="tel" class="form-control-custom" id="sample_tag" name="sample_tag" placeholder="enter a name to easily mark it">
+								<label class="form-label" for="sample_tag">Sample Tag <b>[VERY IMPORTANT!]</b></label>
+								<input type="tel" class="form-control-custom" id="sample_tag" name="sample_tag" placeholder="enter a name to easily mark it" required>
 							</div>
 						</div>
 					</div>
@@ -551,6 +551,40 @@
 	};
 	let picked_client = {};
 
+	window['killOnLeave'] = [
+		'setupUIs',
+		'setupListeners',
+		'init_task_creation_process',
+		'loadSavedTask',
+		'saveTaskData',
+		'preserve_details',
+		'continueFromLast',
+		'pick_step',
+		'pick_step_2',
+		'run_search_listener',
+		'run_search_client',
+		'render_client_search',
+		'pick_client',
+		'select_client',
+		'add_sample',
+		'edit_sample',
+		'remove_sample',
+		'set_discount',
+		'update_cur_discount',
+		'add_payment',
+		'deduct_from_credit',
+		'edit_payment',
+		'remove_payment',
+		'finalize_task_creation',
+		'render_all_data',
+		'render_client_data',
+		'render_samples_data',
+		'render_samples_stats',
+		'render_payments_data',
+		'render_payments_stats',
+		'infer_max',
+	];
+
 	window['runOnAwake'] = () => {
 		setupUIs();
 		setupListeners();
@@ -562,21 +596,6 @@
 	window['runOnLeave'] = () => {
 		if(search_interval !== undefined){clearTimeout(search_interval);}
 		if(save_inter !== undefined){clearInterval(save_inter);}
-
-		// kill all locally made functions and variables to prevent unused ghost variables
-		delete(window['task_runtime_data']);
-		delete(window['runOnLeave']);
-		delete(window['pick_step_2']);
-		delete(window['run_search_listener']);
-		delete(window['run_search_client']);
-		delete(window['pick_client']);
-		delete(window['add_sample']);
-		delete(window['edit_sample']);
-		delete(window['remove_sample']);
-		delete(window['add_payment']);
-		delete(window['deduct_from_credit']);
-		delete(window['edit_payment']);
-		delete(window['remove_payment']);
 	}
 
 	function setupUIs() {
@@ -1068,6 +1087,7 @@
 			// console.log("saved: ",saved_payments,"sample: ",sampleobj);
 		}
 		window['deduct_from_credit'] = (el) => {
+			return null;
 			// alert_info('payment will be deducted from their balance');
 
 			let c_bal = task_runtime_data.clientData.credit_balance;
@@ -1593,5 +1613,39 @@
 				balance : showthis[3],
 				client_credit : showthis[4],
 			};
+		}
+
+	// utils
+		window['infer_max'] = (npt,iscalled = false) => {
+			if(sample_type.value == ''){
+				sample_type.focus();
+				alert_warning('pick a sample type first');
+				npt.value = '';
+				return;
+			}
+
+			let limits = {
+				'solution' : 27,
+				'soil': 13,
+				'rock': 13,
+				'carbon': 9,
+				'carbon activity': 27,
+			};
+
+			let limit = limits[sample_type.value.toLowerCase()];
+			let val = Number(npt.value);
+			npt.setAttribute('max',limit);
+
+			if(val != NaN){
+				if(val > limit){
+					alert_warning(`${sample_type.value} can only take ${limit} entries per worksheet`);
+				}
+			} else {
+				val = 0;
+			}
+
+			if(iscalled){
+				return val > limit;
+			}
 		}
 </script>

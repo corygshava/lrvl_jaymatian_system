@@ -8,6 +8,7 @@ use App\Models\FileHash;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Task;
+use App\Models\User;
 use App\Services\ImageHashService;
 use App\services\pdfHashService;
 use Carbon\Carbon;
@@ -883,7 +884,7 @@ class InvoiceController extends Controller{
 
 		return response()->json($res);
 	}
-	public function add_payment(Request $req) {
+	public function add_payment(Request $req,bool $iscalled = false,User $p_user = null) {
 		$res = $this->dftres;
 		$alldata = $req->all();
 		$msg = "didnt even start";
@@ -910,19 +911,20 @@ class InvoiceController extends Controller{
 			$update_msg($wot,$logit);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
 			$invoice = null;
-			$user = $this->cur_user();
+			$user = $p_user == null ? $this->cur_user() : $p_user;
 
 			$inv_id = $passed['invoice_id'];
 			$admin_password = $passed['admin_password'];
 			$pay_method = $passed['pay_method'];
 			$amount = (float) $passed['amount'];
+			$ppw = 'nadapass';
 
-			if(!$this->verifyPassword($admin_password)){
+			if(!$this->verifyPassword($admin_password,$ppw,$p_user)){
 				$_msg('invalid admin password');
 			} else {
 				$invoice = Invoice::where('id',$inv_id)
@@ -1029,6 +1031,10 @@ class InvoiceController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);

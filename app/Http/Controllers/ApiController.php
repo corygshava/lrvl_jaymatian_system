@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\FileopsController;
 use App\Http\Controllers\WorksheetsController;
+use App\Models\Invoice;
 use App\Models\Sample;
 use App\Models\User;
 
@@ -1412,6 +1413,119 @@ class ApiController extends Controller{
 			$res['result'] = $reslt;
 			$res['sendme'] = $outcome;
 			$res['message'] = $msg;
+		}
+
+		$this->log_intent($req,$logdata);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
+	public function add_invoice_payment(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$res['indata'] = $alldata;
+		$msg = "didnt even get to start";
+		$outcome = [];
+		$xtra = $outcome;
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+			'invoice_id' => ['required'],
+			// 'source' => ['required'],
+		]);
+		// */
+
+		// housekeeping
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+
+			$logdata = [
+				'where' => 'Jaytools_add_report',
+				'intent' => 'mek_new_report',
+				'path' => './api/save_report',
+				'uname' => 'Unauthorized User',
+				// 'source' => $passed['source'],
+			];
+
+		if(true){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$_msg('user found');
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details fetched successfully');
+					$i_id = $passed['invoice_id'];
+
+					$invoice = Invoice::query()
+						->where('id',$i_id)
+						->with('client')
+						->with('creator')
+						->with('tasks')
+						->withCount('tasks')
+						->with('payments')
+						->withCount('payments')
+						->first()
+					;
+
+					if($invoice == null){
+						$_msg("invalid invoice details");
+					} else {
+						$_msg('invoice found, trying the other stuff');
+
+						$cl = new InvoiceController();
+						$adder = $cl->add_payment($req,true,$user);
+
+						$reslt = $adder['result'];
+						$res['runlog'] = [...$res['runlog'],...$adder['runlog']];
+						$outt = $adder['sendme'];
+						$msg = $adder['message'];
+						$xtra = isset($adder['extra']) ? $adder['extra'] : [];
+
+						$invoice->refresh();
+						$outcome = $invoice;
+						// $outcome = ($outt == null) ? null : $outt->toArray();
+					}
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $outcome;
+			$res['message'] = $msg;
+			$res['extra'] = $xtra;
 		}
 
 		$this->log_intent($req,$logdata);
