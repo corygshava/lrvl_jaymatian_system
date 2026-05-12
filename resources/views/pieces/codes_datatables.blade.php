@@ -23,6 +23,8 @@
 		let debounceTimer = null;
 		let timeranges = [
 			"today",
+			"yesterday",
+			"juzi",
 			"this_week",
 			"this_month",
 			"this_year",

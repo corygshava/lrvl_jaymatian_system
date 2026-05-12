@@ -6,6 +6,8 @@ use Carbon\Carbon;
 trait TimeRangeScope{
 	public $rangeAtlas = [
 		'today',
+		'yesterday',
+		'juzi',
 		'this_week',
 		'this_month',
 		'this_year',
@@ -37,6 +39,9 @@ trait TimeRangeScope{
 
 		return match($range){
 			'today' => $q->whereDate('created_at', Carbon::today()),
+			'yesterday' => $q->whereDate('created_at', Carbon::yesterday()),
+			'juzi' => $q->whereDate('created_at',Carbon::now()->subDays(2)),
+			'kabla_juzi' => $q->whereDate('created_at',Carbon::now()->subDays(3)),
 			'this_week' => $q->whereBetween('created_at', [
 				Carbon::now()->startOfWeek(),
 				Carbon::now()->endOfWeek(),
