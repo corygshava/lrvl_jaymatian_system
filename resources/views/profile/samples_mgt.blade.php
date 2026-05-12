@@ -590,7 +590,7 @@
 				],
 
 				// Optional: Items per page (max 300)
-				perPage: 10,
+				perPage: 20,
 
 				// Optional: Enable features
 				enableSearch: true,
