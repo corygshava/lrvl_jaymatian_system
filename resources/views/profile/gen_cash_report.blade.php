@@ -1004,7 +1004,10 @@
 				`;
 
 				if(drd.debtors !== undefined && drd.debtors.length > 0){
+					let tdt = 0;
+
 					drd.debtors.forEach(f => {
+						tdt += Number(f.credit_balance);
 						debtors_outht += `
 							<tr>
 								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
@@ -1018,7 +1021,7 @@
 					debtors_outht += `
 							<tr>
 								<td colspan="2"><b style="font-size: 1.1rem;">Total</b></td>
-								<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+								<td><strong class="themetxt">KES ${formatNumber(tdt, 2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -1142,11 +1145,11 @@
 			// cash flow subsection
 			let toshow_3 = {
 				"income via mpesa" : `<b>KES ${formatNumber(drd.cash_data["income mpesa"])}</b>`,
-	            "income via cash" : `<b>KES ${formatNumber(drd.cash_data["income cash"])}</b>`,
-	            "debt paid via mpesa" : `<b>KES ${formatNumber(drd.cash_data["debt mpesa"])}</b>`,
-	            "debt paid via cash" : `<b>KES ${formatNumber(drd.cash_data["debt cash"])}</b>`,
-	            "total mpesa" : `<b>KES ${formatNumber(drd.cash_data["total mpesa"])}</b>`,
-	            "total cash" : `<b>KES ${formatNumber(drd.cash_data["total cash"])}</b>`,
+				"income via cash" : `<b>KES ${formatNumber(drd.cash_data["income cash"])}</b>`,
+				"debt paid via mpesa" : `<b>KES ${formatNumber(drd.cash_data["debt mpesa"])}</b>`,
+				"debt paid via cash" : `<b>KES ${formatNumber(drd.cash_data["debt cash"])}</b>`,
+				"total mpesa" : `<b>KES ${formatNumber(drd.cash_data["total mpesa"])}</b>`,
+				"total cash" : `<b>KES ${formatNumber(drd.cash_data["total cash"])}</b>`,
 			};
 			let deets_3_outht = '';
 
@@ -1606,52 +1609,52 @@
 			}
 		}
 		window['setuppdf_invoice'] = async (pdfFile,inputId = 'fileInput') => {
-		    try {
-		    	return null;
-		        // Read the PDF file
-		        const arrayBuffer = await pdfFile.arrayBuffer();
-		        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-		        const page = await pdf.getPage(1);
+			try {
+				return null;
+				// Read the PDF file
+				const arrayBuffer = await pdfFile.arrayBuffer();
+				const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+				const page = await pdf.getPage(1);
 
-		        // Set up canvas for rendering
-		        const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
-		        const canvas = document.createElement('canvas');
-		        const context = canvas.getContext('2d');
-		        canvas.width = viewport.width;
-		        canvas.height = viewport.height;
+				// Set up canvas for rendering
+				const viewport = page.getViewport({ scale: 2.0 }); // 2x scale for better quality
+				const canvas = document.createElement('canvas');
+				const context = canvas.getContext('2d');
+				canvas.width = viewport.width;
+				canvas.height = viewport.height;
 
-		        // Render PDF page to canvas
-		        await page.render({
-		            canvasContext: context,
-		            viewport: viewport
-		        }).promise;
+				// Render PDF page to canvas
+				await page.render({
+					canvasContext: context,
+					viewport: viewport
+				}).promise;
 
-		        // Convert canvas to blob
-		        const blob = await new Promise(resolve => {
-		            canvas.toBlob(resolve, 'image/png', 0.95);
-		        });
+				// Convert canvas to blob
+				const blob = await new Promise(resolve => {
+					canvas.toBlob(resolve, 'image/png', 0.95);
+				});
 
-		        // Create new file for the read page
-		        const originalName = pdfFile.name.replace('.pdf', '');
-		        const newFileName = `${originalName} [converted]`;
-		        const imageFile = new File([blob], newFileName, { type: 'image/png' });
+				// Create new file for the read page
+				const originalName = pdfFile.name.replace('.pdf', '');
+				const newFileName = `${originalName} [converted]`;
+				const imageFile = new File([blob], newFileName, { type: 'image/png' });
 
-		        // Create a DataTransfer object to assign to the input
-		        const dataTransfer = new DataTransfer();
-		        dataTransfer.items.add(imageFile);
+				// Create a DataTransfer object to assign to the input
+				const dataTransfer = new DataTransfer();
+				dataTransfer.items.add(imageFile);
 
-		        // Assign to file input
-		        const fileInput = document.getElementById(inputId);
-		        if(fileInput !== undefined){
-		        	fileInput.files = dataTransfer.files;
-		        }
+				// Assign to file input
+				const fileInput = document.getElementById(inputId);
+				if(fileInput !== undefined){
+					fileInput.files = dataTransfer.files;
+				}
 
-		        // fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-		        return imageFile;
-		    } catch (error) {
-		        console.error('Error converting PDF to image:', error);
-		        throw error;
-		    }
+				// fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+				return imageFile;
+			} catch (error) {
+				console.error('Error converting PDF to image:', error);
+				throw error;
+			}
 		}
 
 		window['download_invoice_pdf'] = () => {

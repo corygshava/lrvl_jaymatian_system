@@ -302,7 +302,7 @@
 				let tdt = 0;
 
 				drd.debtors.forEach(f => {
-					tdt += f.credit_balance;
+					tdt += Number(f.credit_balance);
 
 					debtors_outht += `
 						<tr>
