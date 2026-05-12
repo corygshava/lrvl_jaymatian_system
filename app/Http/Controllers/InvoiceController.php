@@ -162,6 +162,7 @@ class InvoiceController extends Controller{
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
 			$sortDirection = $req->input('sort_direction', 'desc');
+			$t_range = $req->input('timerange',null);
 
 			// filters
 			// $task_status = $req->input('Status',null);
@@ -226,6 +227,10 @@ class InvoiceController extends Controller{
 					;
 				}
 				$res['runlog'][] = "added search filter";
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

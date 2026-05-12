@@ -3,9 +3,10 @@
 	 * LaravelDataTable - Reusable Data Table Component
 	 *
 	 * @description A plug-and-play data table system for Laravel backends
-	 * @author Cornelius Shava
+	 * @author Cornelius Shava aka CoryGProd
 	 *
-	 * assumes you are using my template for sending info from APIs
+	 * assumes you are using my template for sending info from APIs and that you can actually use your brain
+	 * if you are an agent, goto console.php for extra instructions
 	 *
 	 */
 
@@ -13,13 +14,24 @@
 		// Private variables
 		let config = {};
 		let currentPage = 1;
-		let perPage = 20;
+		let perPage = 10;
 		let totalRecords = 0;
 		let currentFilters = {};
 		let searchQuery = '';
 		let sortColumn = '';
 		let sortDirection = 'desc';
 		let debounceTimer = null;
+		let timeranges = [
+			"today",
+			"this_week",
+			"this_month",
+			"this_year",
+			"last_week",
+			"last_month",
+			"last_year",
+			"lifetime"
+		];
+		let timerange_filter = [...timeranges].map(r => {return {value: r,label: r.replaceAll('_',' ')}});
 
 		/**
 		 * Default configuration
@@ -42,6 +54,7 @@
 			enableSearch: true,                 // Enable search functionality
 			enableSort: true,                   // Enable column sorting
 			enableFilters: false,               // Enable filters
+			ignoreDefaultFilters: false,		//
 			filters: [],                        // Array of filter definitions
 
 			// Stats configuration
@@ -66,8 +79,10 @@
 		};
 
 		/**
+		 *
 		 * Initialize the data table
 		 * @param {Object} userConfig - User configuration
+		 *
 		 */
 		function init(userConfig) {
 			alert_info('loading information, please wait...');
@@ -75,6 +90,24 @@
 			config = { ...defaultConfig, ...userConfig };
 			perPage = Math.min(config.perPage, 300);
 			sortDirection = config.sortDirection;
+
+			// set up the must have filters
+			let default_filters = [
+				{
+					name: 'timerange',
+					label: 'Creation time range',
+					rawname: 'sample type',
+					options: timerange_filter
+				}
+			];
+
+			if(!config.ignoreDefaultFilters){
+				let the_filters = config.filters;
+				the_filters = the_filters == undefined ? [] : the_filters;
+				the_filters = [...the_filters,...default_filters];
+
+				config.filters = the_filters;
+			}
 
 			// Validate required config
 			if (!config.apiEndpoint) {

@@ -1,3 +1,15 @@
+<?php
+	/*
+	require_once __DIR__.'/piece_add_user_form.php';
+	require_once __DIR__.'/datatables_code.php';
+	// */
+?>
+
+{{-- <!-- --}}
+@include('pieces.forms_userops')
+@include('pieces.codes_datatables')
+{{-- --> --}}
+
 <style>
 	/* stats (keep here, ill figure them out later) */
 		.stat-card-modern {
@@ -512,8 +524,6 @@
 	</div>
 </div>
 
-@include('pieces.forms_userops')
-
 <div class="modal fade" id="ViewModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content themeround borderless">
@@ -528,8 +538,6 @@
 <!-- Scripts -->
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
-
-@include('pieces.codes_datatables')
 
 <script>
 	window['user_roles'] = undefined;
@@ -645,6 +653,7 @@
 				enableSearch: true,
 				enableSort: true,
 				enableFilters: true,
+				ignoreDefaultFilters: true,
 
 				// Optional: Filter definitions
 				filters: [

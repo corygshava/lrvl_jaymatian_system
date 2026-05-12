@@ -19,6 +19,7 @@ class ExpenseController extends Controller{
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
 			$sortDirection = $req->input('sort_direction', 'desc');
+			$t_range = $req->input('timerange',null);
 
 			// filters
 			$ex_type = $req->input('expense_type',null);
@@ -60,6 +61,10 @@ class ExpenseController extends Controller{
 			// filter for task status
 			if($ex_type){
 				$records = $records->where('purpose',$ex_type);
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

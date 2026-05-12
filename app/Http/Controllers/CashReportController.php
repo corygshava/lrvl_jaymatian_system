@@ -39,9 +39,10 @@ class CashReportController extends Controller{
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
 			$sortDirection = $req->input('sort_direction', 'desc');
+			// $t_range = $req->input('timerange',null);
 
 			// filters
-			$timegap = $req->input('timegap',null);
+			$timegap = $req->input('timerange',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 

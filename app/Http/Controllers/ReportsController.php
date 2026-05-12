@@ -28,6 +28,7 @@ class ReportsController extends Controller{
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
 			$sortDirection = $req->input('sort_direction', 'desc');
+			$t_range = $req->input('timerange',null);
 
 			// filters
 			// $task_status = $req->input('Status',null);
@@ -79,6 +80,10 @@ class ReportsController extends Controller{
 			// place for filters
 			if($sample_type){
 				$records = $records->where('sample_type',$sample_type);
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

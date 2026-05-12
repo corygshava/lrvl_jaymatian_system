@@ -23,6 +23,7 @@ class PaymentsController extends Controller{
 			$task_status = $req->input('status',null);
 			$pay_method = $req->input('method',null);
 			$pay_type = $req->input('payment_type',null);
+			$t_range = $req->input('timerange',null);
 
 			$sortBy = $sortBy == null ? 'created_at' : $sortBy;
 
@@ -81,6 +82,10 @@ class PaymentsController extends Controller{
 			// filter for whether or not its paid
 			if($pay_method){
 				$records = $records->where('method',$pay_method);
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

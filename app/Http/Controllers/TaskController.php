@@ -36,6 +36,7 @@ class TaskController extends Controller{
 			$task_status = $req->input('Status',null);
 			$is_paid = $req->input('is_paid',null);
 			$has_reports = $req->input('has_reports',null);
+			$t_range = $req->input('timerange',null);
 
 			$res['runlog'][] = [
 				"perPage" => $perPage,
@@ -93,6 +94,10 @@ class TaskController extends Controller{
 				} else {
 					$tasks = $tasks->doesntHave('reports');
 				}
+			}
+
+			if($t_range){
+				$tasks = $tasks->timeRange($t_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
