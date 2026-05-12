@@ -865,7 +865,7 @@
 					to our office whatsapp at <b style="display: inline-block;" class="themetxt">${processNumber(bizdeets.phone)}</b>
 				</p>
 				<p>
-					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${processNumber(bizdeets.mpesa)})</b> our office and the transaction code provided is what will be used to verify your payment
+					All payments must be made via cash or to our official Mpesa <b class="themetxt">(${processNumber(bizdeets.mpesa)})</b> and the transaction code provided is what will be used to verify your payment
 				</p>
 			</div>
 		`;
