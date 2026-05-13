@@ -42,6 +42,9 @@ Route::post('/publish_worksheet',[ApiController::class,'publish_worksheet'])
 Route::post('/get_samples_motherlode',[ApiController::class,'get_all_samples'])
 	// ->middleware('throttle:60,1')
 ;
+Route::post('/change_sample_tag',[ApiController::class,'change_sample_tag'])
+	// ->middleware('throttle:60,1')
+;
 
 Route::post('/get_reports_count',[ApiController::class,'get_reports_count'])
 	// ->middleware('throttle:60,1')

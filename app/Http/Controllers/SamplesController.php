@@ -472,6 +472,80 @@ class SamplesController extends Controller{
 	}
 
 	// setters
+	public function change_sample_tag(Request $req,$iscalled = false,$p_user = null){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $req->validate([
+			'admin_password' => ['required'],
+			'sample_tag' => ['required'],
+			'sample_id' => ['required'],
+		]);
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$s_id = $passed['sample_id'];
+			$s_tag = $passed['sample_tag'];
+			$user = $p_user == null ? $this->cur_user() : $p_user;
+			$adminpass = $passed['admin_password'];
+			$ppw = '';
+
+			$sample = Sample::query()->where('id',$s_id)->first();
+
+			if($sample == null){
+				$_msg("sample not found");
+			} else {
+				$_msg("sample found");
+
+				$wegood = $this->verifyPassword($adminpass,$ppw,$user);
+
+				if(!$wegood){
+					$_msg("invalid admin password");
+				} else {
+					$_msg("valid password");
+
+					$sample->sample_tag = $s_tag;
+					$sample->save();
+					$sample->refresh();
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $sample;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		if($iscalled){
+			return $res;
+		}
+
+		return response()->json($res);
+	}
 	/*
 	public function add_results(Request $req) {
 		$res = $this->dftres;
