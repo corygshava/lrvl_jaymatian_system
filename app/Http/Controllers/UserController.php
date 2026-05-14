@@ -418,7 +418,8 @@ class UserController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+			// 't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime',
+			't_range' => 'required',
 		]);
 		// */
 

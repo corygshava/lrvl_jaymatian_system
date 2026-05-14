@@ -16,7 +16,8 @@ class ChartsController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+			// 't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime',
+			't_range' => 'required',
 		]);
 		// */
 
@@ -63,7 +64,8 @@ class ChartsController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+			// 't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime',
+			't_range' => 'required',
 		]);
 		// */
 
@@ -110,7 +112,8 @@ class ChartsController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+			// 't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime',
+			't_range' => 'required',
 		]);
 		// */
 
@@ -157,7 +160,8 @@ class ChartsController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-			't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime'
+			// 't_range' => 'required|in:today,this_week,this_month,this_year,last_week,last_month,last_year,lifetime',
+			't_range' => 'required',
 		]);
 		// */
 
@@ -210,6 +214,48 @@ class ChartsController extends Controller{
 						$data[] = (clone $recs)->whereBetween('created_at', [
 								Carbon::today()->hour($hour - 3)->minute(0)->second(0),
 								Carbon::today()->hour($hour - 3)->minute(59)->second(59)
+							])
+							->sum($thecol)
+						;
+					}
+					break;
+				case 'yesterday':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
+								Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
+							])
+							->sum($thecol)
+						;
+					}
+					break;
+				case 'juzi':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
+								Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
+							])
+							->sum($thecol)
+						;
+					}
+					break;
+				case 'kabla_juzi':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
+								Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
 							])
 							->sum($thecol)
 						;
@@ -336,6 +382,48 @@ class ChartsController extends Controller{
 						$data[] = (clone $recs)->whereBetween('created_at', [
 								Carbon::today()->hour($hour - 3)->minute(0)->second(0),
 								Carbon::today()->hour($hour - 3)->minute(59)->second(59)
+							])
+							->count()
+						;
+					}
+					break;
+				case 'yesterday':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
+								Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
+							])
+							->count()
+						;
+					}
+					break;
+				case 'juzi':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
+								Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
+							])
+							->count()
+						;
+					}
+					break;
+				case 'kabla_juzi':
+					$labels = [];
+					$data = [];
+
+					for ($hour = 0; $hour < 24; $hour++) {
+						$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
+						$data[] = (clone $recs)->whereBetween('created_at', [
+								Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
+								Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
 							])
 							->count()
 						;

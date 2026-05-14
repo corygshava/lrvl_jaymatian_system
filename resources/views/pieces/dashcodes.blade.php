@@ -40,15 +40,16 @@
 			2 : 'paid',
 		};
 		window['timeranges'] = [
-			'today',
-			'this_week',
-			'this_month',
-			'this_year',
-
-			'last_week',
-			'last_month',
-			'last_year',
-			'lifetime',
+			"today",
+			"yesterday",
+			"juzi",
+			"this_week",
+			"this_month",
+			"this_year",
+			"last_week",
+			"last_month",
+			"last_year",
+			"lifetime"
 		];
 
 		window['expenditure_categories'] = [

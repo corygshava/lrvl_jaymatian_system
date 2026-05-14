@@ -43,14 +43,8 @@ trait TimeRangeScope{
 				Carbon::yesterday()->startOfDay(),
 				Carbon::yesterday()->endOfDay(),
 			]),
-			'juzi' => $q->whereBetween('created_at', [
-				Carbon::now()->subDays(2)->startOfDay(),
-				Carbon::now()->subDays(2)->endOfDay(),
-			]),
-			'kabla_juzi' => $q->whereBetween('created_at', [
-				Carbon::now()->subDays(3)->startOfDay(),
-				Carbon::now()->subDays(3)->endOfDay(),
-			]),
+			'juzi' => $q->whereDate('created_at', Carbon::now()->subDays(2)),
+			'kabla_juzi' => $q->whereDate('created_at', Carbon::now()->subDays(3)),
 			'this_week' => $q->whereBetween('created_at', [
 				Carbon::now()->startOfWeek(),
 				Carbon::now()->endOfWeek(),
