@@ -20,7 +20,7 @@ class PaymentsController extends Controller{
 			$sortDirection = $req->input('sort_direction', 'desc');
 
 			// filters
-			$task_status = $req->input('status',null);
+			$pay_status = $req->input('status',null);
 			$pay_method = $req->input('method',null);
 			$pay_type = $req->input('payment_type',null);
 			$t_range = $req->input('timerange',null);
@@ -32,7 +32,7 @@ class PaymentsController extends Controller{
 				"search" => $search,
 				"sortBy" => $sortBy,
 				"sortDirection" => $sortDirection,
-				"task_status" => $task_status,
+				"task_status" => $pay_status,
 				"pay_method" => $pay_method,
 			];
 
@@ -69,10 +69,12 @@ class PaymentsController extends Controller{
 				$res['runlog'][] = "added search filter";
 			}
 
+			/*
 			// filter for task status
-			if($task_status){
-				$records = $records->where('status',$task_status);
+			if($pay_status !== null){
+				$records = $records->where('status',$pay_status);
 			}
+			// */
 
 			// filter for task status
 			if($pay_type){

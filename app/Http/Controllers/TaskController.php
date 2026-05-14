@@ -75,7 +75,7 @@ class TaskController extends Controller{
 			}
 
 			// filter for task status
-			if($task_status){
+			if($task_status !== null){
 				$tasks = $tasks->where('status',$task_status);
 			}
 

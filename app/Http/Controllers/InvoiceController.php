@@ -195,7 +195,7 @@ class InvoiceController extends Controller{
 			;
 
 			// place for filters
-			if($status){
+			if($status !== null){
 				$records = $records->where('status',"=","$status");
 			}
 
