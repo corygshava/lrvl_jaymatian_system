@@ -395,7 +395,7 @@ class CashReportController extends Controller{
 
 				// get expenditure data
 					$spend_data = [];
-					$new_spend_data = Expense::timeRange($t_range) // if you're using your TimeRangeScope trait
+					$new_spend_data = Expense::query()->timeRange($t_range)
 						->selectRaw('purpose, SUM(amount) as total_amount')
 						->groupBy('purpose')
 						->get()
