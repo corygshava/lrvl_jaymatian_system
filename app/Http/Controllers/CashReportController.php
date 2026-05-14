@@ -412,7 +412,7 @@ class CashReportController extends Controller{
 					}
 
 				// get debtors
-					$d_clients = Client::query()->whereHas('tasks',function($q) use($t_range){$q->timeRange($t_range);})->where('credit_balance','>',0);
+					$d_clients = Client::query()->whereHas('tasks',function($q) use($t_range){$q->timeRange($t_range)->where('payment_status','<>',2);})->where('credit_balance','>',0);
 					$total_debit = (clone $d_clients)->sum('credit_balance');
 					$guys = (clone $d_clients)->get();
 					$debtors = [];
@@ -420,10 +420,13 @@ class CashReportController extends Controller{
 					// figure out how many unpaid invoices each debtor has
 					foreach($guys->toArray() as $dd){
 						$tmg = $dd;
-						$tmg['credit_balance'] = Task::query()->timeRange($t_range)->where('client_id',$dd['id'])->sum('balance');
+						$bal = Task::query()->timeRange($t_range)->where('client_id',$dd['id'])->sum('balance');
+						$tmg['credit_balance'] = $bal;
 						$tmg['invoices_count'] = Invoice::query()->where('client_id',$tmg['id'])->where('status','<>',2)->count();
 
-						$debtors[] = $tmg;
+						if($bal > 0){
+							$debtors[] = $tmg;
+						}
 					}
 
 				// get debt payment data
