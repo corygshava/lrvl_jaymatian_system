@@ -70,7 +70,7 @@ class TaskController extends Controller{
 			}
 
 			// filter for payment status
-			if($payment_status){
+			if($payment_status !== null){
 				$tasks = $tasks->where('payment_status',$payment_status);
 			}
 
