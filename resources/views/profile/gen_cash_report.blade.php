@@ -793,7 +793,7 @@
 							<td class="w3-right-align"><strong>${drd.samples_count || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['soil'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['rock'] || 0}</strong></td>
-							<td class="w3-right-align"><strong>${(s_dta['carbon'] || 0) + (s_dta['carbon activity'] || 0)}</strong></td>
+							<td class="w3-right-align"><strong>${Number(s_dta['carbon'] || 0) + Number(s_dta['carbon activity'] || 0)}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['solution'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['paid_tasks'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['unpaid_tasks'] || 0}</strong></td>
