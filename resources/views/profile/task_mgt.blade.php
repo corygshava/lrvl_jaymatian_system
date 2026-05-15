@@ -578,10 +578,19 @@
 						title: 'payment status',
 						data: 'payment_status',
 						sortable: true,
-						render: function(value) {
-							let cls = value == '2' ? "w3-text-green" : "w3-black_";
-							// let con = value == 'monthly' ? "yes" : "no";
-							return `<strong class="${cls}">${payment_state_atlas[value]}</strong>`;
+						render: function(value,row) {
+							let pid = row.payment_status;
+							let pstate = payment_state_atlas[pid];
+							let cls = pstate_classes[pid];
+							let xtraht = pid == 2 ? '' : `
+								<div class="w3-small" style="margin-top: 4px;">
+									<b class="themetxt">${Number(row.paid).toLocaleString()}</b> / ${Number(row.cost).toLocaleString()}
+								</div>
+							`;
+							return `
+								<strong class="${cls}">${pstate}</strong>
+								${xtraht}
+							`;
 						}
 					},
 					{
