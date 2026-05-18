@@ -1561,7 +1561,7 @@ class ApiController extends Controller{
 			$pw = $passed['pw'];
 			$newpw = null;
 
-			$user = User::where('email',$email)->with('myRoles')->first();
+			$user = User::query()->where('email',$email)->with('myRoles')->first();
 
 			if($user == null){
 				$_msg('user not found');

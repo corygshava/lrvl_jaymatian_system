@@ -263,6 +263,8 @@ class TaskController extends Controller{
 			$reslt = false;
 			$task = null;
 
+			$mekdate = $req->input('date_added',null);
+
 			$validator = Validator::make($sent,[
 				'paymentStats' => 'required|array',
 				'paymentStats.pays_made' => 'sometimes|integer',
@@ -329,6 +331,18 @@ class TaskController extends Controller{
 						$reslt = false;
 					} else {
 						try{
+							// try figuring out if its a reconciler task
+							$t_notes = $sent['note'];
+							$mekdate = Carbon::now();
+
+							if($t_notes !== ''){
+								if(str_contains($t_notes,'reco_date- ')){
+									$split = explode('- ',$t_notes);
+									$datetext = $split[1];
+									$mekdate = Carbon::createFromFormat('d/m/y H:i:s',$datetext);
+								}
+							}
+
 							// $newid = Task::whereDate('created_at', today())->count() + 1;
 							$newid = 0;
 							$suffix = '';
@@ -338,10 +352,10 @@ class TaskController extends Controller{
 
 							// added addme to prevent an infinite loop
 							do {
-								$newid = Task::where('id','<>',null)->count() + $addme;
+								$newid = Task::query()->where('id','<>',null)->count() + $addme;
 								$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
 								$task_serial = 'JML_' . $suffix;
-								$exist = Task::where('task_no',$task_serial)->exists();
+								$exist = Task::query()->where('task_no',$task_serial)->exists();
 								$addme += 1;
 							} while ($exist);
 
@@ -365,7 +379,7 @@ class TaskController extends Controller{
 								$sample_count += $cnt;
 							}
 
-							$task = Task::create([
+							$newrecdata = [
 								'task_no' => $task_serial,
 								'added_by' => $uid,
 								'client_id' => $client->id,
@@ -380,7 +394,10 @@ class TaskController extends Controller{
 								'full_cost' => $f_cost,
 								'balance' => $balance,
 								'sample_count' => $sample_count,
-							]);
+								'created_at' => $mekdate,
+							];
+
+							$task = Task::create($newrecdata);
 
 							$samples = [];
 							$cols = [];
@@ -394,6 +411,7 @@ class TaskController extends Controller{
 									'sample_tag' => $s_info['tag'],
 									'sample_type' => $s_info['typ'],
 									'sample_count' => $cnt,
+									'created_at' => $mekdate,
 								];
 
 								$cols = array_keys($samples[0]);
@@ -426,6 +444,7 @@ class TaskController extends Controller{
 											'added_via' => 'portal',
 										]),
 										'transaction_time' => Carbon::parse($pd['timestamp']),
+										'created_at' => $mekdate,
 									];
 
 									$cols = array_keys($payments[0]);
@@ -501,6 +520,7 @@ class TaskController extends Controller{
 			$task = null;
 
 			$wegood = false;
+			$paydate = $req->input('date_added',null);
 
 			if($p_user == null){
 				$wegood = self::verifyPassword($passed['admin_password'], $outps);
@@ -538,7 +558,7 @@ class TaskController extends Controller{
 					$user = $p_user == null ? $this->cur_user() : $p_user;
 
 					$c_id = $task->client_id;
-					$client = Client::where('id',$c_id)->first();
+					$client = Client::query()->where('id',$c_id)->first();
 
 					if($client == null){
 						$msg = "invalid client details";
@@ -548,9 +568,7 @@ class TaskController extends Controller{
 						$update_runlog($msg);
 
 						$payamt = (float) $passed['amount'];
-
-						// /*
-						Payment::create([
+						$newrec = [
 							'added_by' => $user->id,
 							'task_id' => $task->id,
 							'client_id' => $task->client->id,
@@ -559,7 +577,16 @@ class TaskController extends Controller{
 							'status' => 1,
 							'extra_details' => ['added_via' => 'task_info'],
 							'transaction_time' => Carbon::now(),
-						]);
+							'created_at' => Carbon::now(),
+						];
+
+						if($paydate !== null){
+							$newrec['transaction_time'] = Carbon::parse($paydate);
+							$newrec['created_at'] = Carbon::parse($paydate);
+						}
+
+						// /*
+						Payment::create($newrec);
 						// */
 
 						$newbal = $bal - $amt;
@@ -606,7 +633,7 @@ class TaskController extends Controller{
 						if($task->status == 1){
 							$tochange['status'] = 0;
 						}
-						Task::where('id',$task->id)->update($tochange);
+						Task::query()->where('id',$task->id)->update($tochange);
 
 						$reslt = true;
 					}

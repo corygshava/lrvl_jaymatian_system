@@ -928,11 +928,13 @@ class InvoiceController extends Controller{
 			$pay_method = $passed['pay_method'];
 			$amount = (float) $passed['amount'];
 			$ppw = 'nadapass';
+			$paydate = $req->input('date_added',null);
 
 			if(!$this->verifyPassword($admin_password,$ppw,$p_user)){
 				$_msg('invalid admin password');
 			} else {
-				$invoice = Invoice::where('id',$inv_id)
+				$invoice = Invoice::query()
+					->where('id',$inv_id)
 					->with('client')
 					->with('creator')
 					->with('tasks')
@@ -982,7 +984,7 @@ class InvoiceController extends Controller{
 
 							$_msg('all tasks updated accordingly');
 
-							Payment::create([
+							$newrec = [
 								'added_by' => $user->id,
 								// 'task_id' => -1,
 								'invoice_id' => $invoice->id,
@@ -993,7 +995,21 @@ class InvoiceController extends Controller{
 								'payment_type' => 'invoice',
 								'extra_details' => ['added_via' => 'invoice_payment'],
 								'transaction_time' => Carbon::now(),
-							]);
+							];
+
+							if($paydate !== null){
+								$newrec['transaction_time'] = Carbon::parse($paydate);
+								$newrec['created_at'] = Carbon::parse($paydate);
+							}
+
+
+							$savedrec = Payment::create($newrec);
+
+							if($paydate !== null){
+								$savedrec->created_at = Carbon::parse($paydate);
+								$savedrec->save();
+							}
+
 
 							$_msg('added payment record');
 
