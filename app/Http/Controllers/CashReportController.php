@@ -294,7 +294,7 @@ class CashReportController extends Controller{
 			} else {
 				$lastrec = $lastrec
 					->timeRange($myrange)
-					->orderBy('created_at','asc')
+					->orderBy('created_at','desc')
 					->first()
 				;
 				$carry_over_rec = $lastrec
