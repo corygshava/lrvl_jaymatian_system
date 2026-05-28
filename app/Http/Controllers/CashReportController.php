@@ -284,6 +284,7 @@ class CashReportController extends Controller{
 			$lastrec = DailyCashReport::query()
 				->where('id','<>',null)
 			;
+			$carry_over_rec = null;
 
 			if($myrange == null || strtolower("$myrange") == 'today'){
 				$lastrec = $lastrec
@@ -294,6 +295,11 @@ class CashReportController extends Controller{
 				$lastrec = $lastrec
 					->timeRange($myrange)
 					->orderBy('created_at','asc')
+					->first()
+				;
+				$carry_over_rec = $lastrec
+					->timeRange($myrange)
+					->orderBy('created_at','desc')
 					->first()
 				;
 			}
@@ -313,7 +319,14 @@ class CashReportController extends Controller{
 
 				// calculate carry over cash
 				$haslast = !($lastrec == null);
-				$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
+				$carry_over = 0;
+
+				if($carry_over_rec == null){
+					$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
+				} else {
+					$carry_over = $haslast ? $carry_over_rec->total_balance_forward : 0;
+				}
+
 				$_msg('carry over calculated');
 
 				// calculate sample counts
