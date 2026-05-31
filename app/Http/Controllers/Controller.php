@@ -931,6 +931,61 @@ abstract class Controller{
 		}
     }
 
+	public static function getPreviousDay(string $range): array{
+		[$start, $end] = match($range) {
+			'today' => [
+				Carbon::today()->subDay()->startOfDay(),
+				Carbon::today()->subDay()->endOfDay(),
+			],
+			'yesterday' => [
+				Carbon::yesterday()->subDay()->startOfDay(),
+				Carbon::yesterday()->subDay()->endOfDay(),
+			],
+			'juzi' => [
+				Carbon::today()->subDays(2)->subDay()->startOfDay(),
+				Carbon::today()->subDays(2)->subDay()->endOfDay(),
+			],
+			'kabla_juzi' => [
+				Carbon::today()->subDays(3)->subDay()->startOfDay(),
+				Carbon::today()->subDays(3)->subDay()->endOfDay(),
+			],
+			'this_week' => [
+				Carbon::now()->startOfWeek()->subDay()->startOfDay(),
+				Carbon::now()->endOfWeek()->subDay()->endOfDay(),
+			],
+			'this_month' => [
+				Carbon::now()->startOfMonth()->subDay()->startOfDay(),
+				Carbon::now()->endOfMonth()->subDay()->endOfDay(),
+			],
+			'this_year' => [
+				Carbon::now()->startOfYear()->subDay()->startOfDay(),
+				Carbon::now()->endOfYear()->subDay()->endOfDay(),
+			],
+			'last_week' => [
+				Carbon::now()->subWeek()->startOfWeek()->subDay()->startOfDay(),
+				Carbon::now()->subWeek()->endOfWeek()->subDay()->endOfDay(),
+			],
+			'last_month' => [
+				Carbon::now()->subMonth()->startOfMonth()->subDay()->startOfDay(),
+				Carbon::now()->subMonth()->endOfMonth()->subDay()->endOfDay(),
+			],
+			'last_year' => [
+				Carbon::now()->subYear()->startOfYear()->subDay()->startOfDay(),
+				Carbon::now()->subYear()->endOfYear()->subDay()->endOfDay(),
+			],
+			default => [null, null],
+		};
+
+		if (!$start) {
+			return ['error' => "Unknown range '{$range}'"];
+		}
+
+		return [
+			'start' => $start->toDateTimeString(),
+			'end'   => $end->toDateTimeString(),
+		];
+	}
+
 	// Templates
 	public function ReqTemplate(Request $req){
 		$res = $this->dftres;

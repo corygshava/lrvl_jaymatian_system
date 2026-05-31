@@ -285,24 +285,40 @@ class CashReportController extends Controller{
 				->where('id','<>',null)
 			;
 			$carry_over_rec = null;
+			$haslast = false;
 
 			if($myrange == null || strtolower("$myrange") == 'today'){
 				$lastrec = $lastrec
 					->latest()
 					->first()
 				;
+				$haslast = !($lastrec == null);
 			} else {
 				$lastrec = $lastrec
 					->timeRange($myrange)
 					->orderBy('created_at','desc')
 					->first()
 				;
-				$carry_over_rec = $lastrec
-					->timeRange($myrange)
-					->orderBy('created_at','desc')
-					->first()
-				;
+				$r = $this->getPreviousDay($myrange);
+				$redone_range = $r['start'];
+				$carry_over_rec = null;
+
+				if($lastrec !== null){
+					$carry_over_rec = $lastrec
+						->timeRange($redone_range)
+						->orderBy('created_at','desc')
+						->first()
+					;
+				}
+
+				$dbg = [
+					'prev_date' => $redone_range,
+					'carry_over_rec' => $carry_over_rec == null ? $carry_over_rec : $carry_over_rec->toArray(),
+				];
+				$_rlg($dbg);
+				$haslast = !($carry_over_rec == null);
 			}
+
 			$_rlg($lastrec);
 			$timediff = null;
 
@@ -318,10 +334,9 @@ class CashReportController extends Controller{
 				$t_range = $myrange == null ? 'today' : $myrange;
 
 				// calculate carry over cash
-				$haslast = !($lastrec == null);
 				$carry_over = 0;
 
-				if($carry_over_rec == null){
+				if($carry_over_rec == null || ($myrange == null || strtolower("$myrange") == 'today')){
 					$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 				} else {
 					$carry_over = $haslast ? $carry_over_rec->total_balance_forward : 0;

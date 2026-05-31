@@ -43,8 +43,14 @@ trait TimeRangeScope{
 				Carbon::yesterday()->startOfDay(),
 				Carbon::yesterday()->endOfDay(),
 			]),
-			'juzi' => $q->whereDate('created_at', Carbon::now()->subDays(2)),
-			'kabla_juzi' => $q->whereDate('created_at', Carbon::now()->subDays(3)),
+			'juzi' => $q->whereBetween('created_at', [
+				Carbon::today()->subDays(2)->startOfDay(),
+				Carbon::today()->subDays(2)->endOfDay(),
+			]),
+			'kabla_juzi' => $q->whereBetween('created_at', [
+				Carbon::today()->subDays(3)->startOfDay(),
+				Carbon::today()->subDays(3)->endOfDay(),
+			]),
 			'this_week' => $q->whereBetween('created_at', [
 				Carbon::now()->startOfWeek(),
 				Carbon::now()->endOfWeek(),
@@ -64,7 +70,7 @@ trait TimeRangeScope{
 		};
 	}
 
-	private function isDate($value): bool{
+	private function isDate(string $value): bool{
 		if (!is_string($value)) {
 			return false;
 		}
