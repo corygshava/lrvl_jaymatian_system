@@ -178,6 +178,7 @@
 </button>
 
 <script>
+	let task_pay_state = window['payment_state_atlas'];
 	let sample = {};
 	window['temp_results'] = [];
 

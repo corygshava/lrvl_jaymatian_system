@@ -423,11 +423,6 @@
 
 <script>
 	// view specific data
-	let task_pay_state = {
-		0 : 'pending',
-		1 : 'incomplete',
-		2 : 'paid',
-	};
 	let state_classes = [
 		'w3-black',
 		'w3-blue',

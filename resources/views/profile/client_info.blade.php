@@ -223,6 +223,11 @@
 		1 : 'w3-orange',
 		2 : 'w3-green',
 	};
+	let sample_state_classes = {
+		0 : 'w3-black',
+		1 : 'w3-orange',
+		2 : 'w3-green',
+	};
 
 	window['client_info_data'] = {};
 	window['killOnLeave'] = [
@@ -691,15 +696,15 @@
 						}
 					},
 					{
-						field: 'sample_no',
-						cap: 'sample Number',
+						field: 'sample_tag',
+						cap: 'Job Number',
 					},
 					{
 						field: 'sample_type',
 						cap: 'sample type',
 						show: (v,r) => {
 							return `
-								<span class="sample-type-badge type-${v}">${v}</span>
+								<span class="sample-type-badge type-${v.toLowerCase()}">${v}</span>
 							`;
 						}
 					},
@@ -711,10 +716,28 @@
 						}
 					},
 					{
+						field: 'task',
+						cap: 'Payment Status',
+						show: function(v) {
+							// console.log({sample_task: v});
+							let pid = v.payment_status;
+							let pstate = task_pay_state[pid];
+							let cls = pstate_classes[pid];
+							return `<strong class="${cls}">${pstate}</strong>`;
+						}
+					},
+					{
 						field: 'status',
 						cap: 'Status',
 						show: (v) => {
-							return `<b class="mybadge ${invoice_state_classes[v]}">${sample_state_atlas[v]}</b>`;
+							return `<b class="mybadge ${sample_state_classes[v]}">${sample_state_atlas[v]}</b>`;
+						}
+					},
+					{
+						field: 'created_at',
+						cap: 'date delivered',
+						show: (v,row,n) => {
+							return formatDate0(v);
 						}
 					},
 				],
