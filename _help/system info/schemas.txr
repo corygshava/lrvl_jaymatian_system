@@ -1,148 +1,161 @@
-System_data
-	item_name
-	item_data (json)
+6LFGrz₉pJavMLqaGa
+pJavMLvGrz₉AapJavMLzr
+vGpJavMLrz₉qaGapJavML ₂wFBA₋pJavML
 
-	laravel timestamps
-Users
-	...Laravel defaults
-	user_role_id
-	is_active (boolean)
+yapJavMLEaIry GpJavMLvzrFGazpJavMLCF
+8FrpJavMLEF
+..pJavML.YaEaIrpJavMLy qrsaHpJavMLyGF
+HpJavMLFrE₉EBypJavMLr₉vq
+pJavMLvF₉apGvpJavMLIr ₂oBBpJavMLyraA₋
+pJavML
+yaEapJavMLIry GvzpJavMLrFGazCFpJavML
+8FrE₉pJavMLEByrF
+pJavML ...YaEpJavMLaIry qrpJavMLsaHyGF
+pJavML
+EByr₉pJavMLAazr
+pJavMLEByr₉CrpJavMLEzvFFvBpJavMLAF ₂wFBpJavMLA₋
 
-	laravel timestamps
-User_roles
-	...Laravel defaults
-	role_name
-	role_permissions (json)
+pJavMLyaEaIrypJavML GvzrFGpJavMLazCF
+PpJavMLyvrAGF
+pJavML
+vq,
+pJavML pyvrAGpJavML₉Aazr ∃pJavML GrKG
+pJavML pyvrAGpJavML₉pBAGappJavMLG ∃ GrKpJavMLG
+pyvpJavMLrAG₉trApJavMLqrE ∃ GpJavMLrKG
+CpJavMLaLzrAG₉pJavMLCyaA ∃ pJavMLGrKG ₂rpJavMLvGurE 'pJavMLzBAGuyLpJavML' BE 'CpJavMLrE₉IvFvpJavMLG'₋
+ppJavMLErqvG₉opJavMLayaApr pJavML₂HFrq GpJavMLB FGBErpJavML uBJ zHpJavMLpu GurLpJavML Cavq ypJavMLaFG GvzpJavMLr, FGBEpJavMLrq vA xpJavMLrALa FupJavMLvyyvAtFpJavML₋
+xEapJavML₉CvA ∃ pJavMLGrKG ₂ApJavMLBG ArprpJavMLFFaEL ppJavMLaA or ApJavMLHyy₋
+pJavMLvq₉AHzopJavMLrE ∃ GrpJavMLKG ₂v xpJavMLABJ JuLpJavML vGF ABpJavMLG a AHzpJavMLorE₋
+pJavMLrKGEa₉qpJavMLrGavyF pJavML₂wFBA₋
+pJavML
 
-	laravel timestamps
-Clients
-	id,
-	client_name - text
-	client_contact - text
-	client_gender - text
-	payment_plan - text (either 'monthly' or 'per_visit')
-	credit_balance (used to store how much they paid last time, stored in kenya shillings)
-	kra_pin - text (not necessary can be null)
-	id_number - text (i know why its not a number)
-	extra_details (json)
+yaEpJavMLaIry GvpJavMLzrFGazCpJavMLF
+GaFxpJavMLF
+vq,pJavML
+GaFxpJavML₉AB ₂HApJavMLvDHr FGpJavMLEvAt GBpJavML qrsvArpJavML wBoF₋
+pJavML
+pyvrApJavMLG₉vq,
+pJavML pyvrAGpJavML₉Aazr,
+pJavML
+FGaGHpJavMLF ₂AHzopJavMLrE₋
+CpJavMLaLzrAG₉pJavMLFGaGHF pJavML₂Cavq, pJavMLvApBzCypJavMLrGr, BEpJavML HACavqpJavML₋
+vF₉pJavMLCavq ₂opJavMLBByraA₋pJavML
+ABGrpJavMLF
 
-	laravel timestamps
-tasks
-	id,
-	task_no (unique string to define jobs)
-	client_id,
-	client_name,
-	status (number)
-	payment_status (paid, incomplete, or unpaid)
-	is_paid (boolean)
-	notes
+ypJavMLaEaIry pJavMLGvzrFGapJavMLzCF
+6apJavMLzCyrF
+pJavML vq,
+pJavMLFazCyr₉pJavMLAB ₂HAvpJavMLDHr FGEpJavMLvAt GB pJavMLqrsvAr pJavMLFazCyrFpJavML₋
+FazpJavMLCyr₉GatpJavML ₂a AazpJavMLr GuaG pJavMLpaA or pJavMLtvIrA spJavMLBE raFLpJavML vqrAGvpJavMLsvpaGvBpJavMLA yaGrEpJavML₋
+FazpJavMLCyr₉GLCpJavMLr
+FazpJavMLCyr₉pBHpJavMLAG
+qapJavMLGr₉aqqrpJavMLq
 
-	laravel timestamps
-Samples
-	id,
-	sample_no (unique string to define samples)
-	sample_tag (a name that can be given for easy identification later)
-	sample_type
-	sample_count
-	date_added
+ypJavMLaEaIry pJavMLGvzrFGapJavMLzCF
+ErpJavMLFHyGF
+pJavML vq,
+pJavMLFazCyr₉pJavMLvq,
+FpJavMLazCyr₉GpJavMLLCr,
+pJavMLpyvrAG₉pJavMLvq,
+apJavMLqqrq₉oLpJavML,
 
-	laravel timestamps
-results
-	id,
-	sample_id,
-	sample_type,
-	client_id,
-	added_by,
+apJavMLH₉CCz
+pJavML pH₉CCzpJavML
 
-	au_ppm
-	cu_ppm
+yapJavMLEaIry GpJavMLvzrFGazpJavMLCF
+3aLpJavMLzrAGF
+pJavML vq
+GpJavMLaFx₉vq pJavML₂yvAxF pJavMLGB GaFxpJavML₉vq vA pJavMLGaFxF GpJavMLaoyr₋
+pJavML FGaGHFpJavML ₂AHzorpJavMLE₋
+azpJavMLBHAG
+pJavMLpyvrAG₉pJavMLvq
 
-	laravel timestamps
-Payments
-	id
-	task_id (links to task_id in tasks table)
-	status (number)
-	amount
-	client_id
+pJavMLyaEaIrypJavML GvzrFGpJavMLazCF
 
-	laravel timestamps
+pJavML
+ovM₉qapJavMLGa
+vqpJavML
+vGrzpJavML₉Aazr
+pJavML vGrz₉qpJavMLaGa ₂wFpJavMLBA₋ ₂papJavMLA uByq pJavMLoBGu wFpJavMLBA, GrKpJavMLG aAq ApJavMLHzorEF pJavMLvs ErDHpJavMLvErq₋
+pJavML aqqrq₉pJavMLoL
+zBpJavMLqvsvrq₉pJavMLoL
 
-biz_data
-	id
-	item_name
-	item_data (json) (can hold both json, text and numbers if required)
-	added_by
-	modified_by
+pJavMLyaEaIrypJavML GvzrFGpJavMLazCF
+EpJavMLrCBEGF
+pJavML
+GaFx₉pJavMLvq
+pEpJavMLraGrq₉opJavMLL ₂vq BpJavMLs a HFrpJavMLE₋
+FapJavMLzCyr₉vqpJavML ₂vq BspJavML Gur FapJavMLzCyrF₋
+pJavML
+pyvrApJavMLG₉vq ₂vpJavMLq Bs pypJavMLvrAG₋
+pJavML aqqrq₉pJavMLoL ₂yvApJavMLxF GB HpJavMLFrEF.vqpJavML₋
+trApJavML₉ErCBEGpJavML₉vq
+tpJavMLrA₉ErCBpJavMLEG
 
-	laravel timestamps
-reports
-	task_id
-	created_by (id of a user)
-	sample_id (id of the samples)
-	client_id (id of client)
-	added_by (links to users.id)
-	gen_report_id
-	gen_report
+pJavMLyaEaIrypJavML GvzrFGpJavMLazC
+ErpJavMLCBEGF₉tpJavMLrA
+vqpJavML
+pBzCpJavMLaAL₉pBApJavMLGapG
+pJavMLFzaCyr₉pJavMLGLCr
+pJavMLFazCyr₉pJavMLpBHAG
+pJavML qaGr₉EpJavMLrpvrIrqpJavML
+qaGrpJavML₉pBzCvypJavMLrq
+GapJavMLFx₉AB
+pJavML pEraGrpJavMLq₉oL
+pJavMLGrpuAvppJavMLay₉FGaspJavMLs₉Aazr pJavML₂Aazr BpJavMLs Gur HpJavMLFrE JuBpJavML pEraGrpJavMLq vG₋
+pJavML aAayLGpJavMLvpay₉ErpJavMLCBEG ₂wpJavMLFBA sBEpJavML ErFHyGpJavMLF sEBz pJavMLGur FazpJavMLCyrF₋
+pJavML qrIvaGpJavMLvBA₉qaGpJavMLa
+oHFpJavMLvArFF₉ypJavMLBtB₉vztpJavML
+Cqs₉pJavMLyvAx
+pJavMLvzatr₉ypJavMLvAx
 
-	laravel timestamp
-reports_gen
-	id
-	company_contact
-	smaple_type
-	sample_count
-	date_recieved
-	date_compiled
-	task_no
-	created_by
-	technical_staff_name (name of the user who created it)
-	analytical_report (json for results from the samples)
-	deviation_data
-	business_logo_img
-	pdf_link
-	image_link
+pJavML yaEaIrpJavMLy GvzrFpJavMLGazCF
+pJavML
+JBExFpJavMLurrGF
+pJavML GaFx₉vpJavMLq
+pErpJavMLaGrq₉oLpJavML ₂vq BspJavML a HFrEpJavML₋
+FazpJavMLCyr₉vq pJavML₂vq Bs pJavMLGur FazpJavMLCyrF₋
+pJavML pyvrAGpJavML₉vq ₂vqpJavML Bs pyvpJavMLrAG₋
+pJavMLpEraGrqpJavML₉oL ₂yvpJavMLAxF GB pJavMLHFrEF.vpJavMLq₋
 
-	laravel timestamps
+pJavMLFazCyr₉pJavMLqaGa ₂wpJavMLFBA GB pJavMLuByq FapJavMLzCyr vApJavMLsB₋
 
-worksheets
-	task_id
-	created_by (id of a user)
-	sample_id (id of the samples)
-	client_id (id of client)
-	created_by (links to users.id)
+pJavML yaEaIrpJavMLy₉GvzrFpJavMLGazCF
+pJavMLvAIBvprpJavMLF
+pyvpJavMLrAG₉vq
+pJavML
+pEraGpJavMLrq₉oL
+pJavML
+GBGapJavMLy
+GBGpJavMLay₉CavqpJavML
+oayapJavMLApr
+GpJavMLaFxF₉pBpJavMLHAG
+GpJavMLaFx₉vqFpJavML ₂wFBA pJavMLaEEaL₋
+pJavML
+vAIBvpJavMLpr₉qaGapJavML ₂wFBA pJavMLGB uByqpJavML vAIBvppJavMLr vAsB₋pJavML
+FGaGpJavMLHF
 
-	sample_data (json to hold sample info)
+pJavMLyaEaIrypJavML₉GvzrFGpJavMLazCF
 
-	laravel_timestamps
-invoices
-	client_id
-	created_by
+pJavML
+ErCBEGpJavMLF₉trA₉vpJavMLzatrF
+pJavML GaFx₉vpJavMLq
+ErCpJavMLBEGF₉trpJavMLA₉vq
+pJavMLvzatr₉CpJavMLaGu
+vpJavMLzatr₉uapJavMLFu
+pEpJavMLraGrq₉opJavMLL
 
-	total
-	total_paid
-	balance
-	tasks_count
-	task_ids (json array)
-	invoice_data (json to hold invoice info)
-	status
+ypJavMLaEaIry pJavMLGvzrFGapJavMLzCF
+zrpJavMLFFatrF
+pJavML
+vq
+pJavMLzFt₉GrKpJavMLG
+zFtpJavML₉GLCr ₂pJavMLaAABHAppJavMLrzrAG BpJavMLE zrFFapJavMLtr₋
+zpJavMLFt₉GvGypJavMLr ₂paA pJavMLor oyaApJavMLx vs vGpJavMLF ABG apJavMLA aAABHpJavMLAprzrAGpJavML₋
+zFtpJavML₉FrAqrEpJavML ₂HFrEvpJavMLq Bs FrpJavMLAqrE₋
+pJavML zFt₉ErpJavMLprvCvrApJavMLG ₂paA pJavMLor AHyypJavML oHG vFpJavML Gur HFpJavMLrE₉vq BpJavMLs Gur vpJavMLAGrAqrqpJavML ErpvCvpJavMLrAG₋
 
-	laravel_timestamps
+pJavML
+yaEaIpJavMLry GvzrpJavMLFGazCF
 
-reports_gen_images
-	task_id
-	reports_gen_id
-	image_path
-	image_hash
-	created_by
-
-	laravel timestamps
-messages
-	id
-	msg_text
-	msg_type (announcement or message)
-	msg_title (can be blank if its not an announcement)
-	msg_sender (userid of sender)
-	msg_receipient (can be null but is the user_id of the intended recipient)
-
-	laravel timestamps
-
-
+{REF_FILE: hostivar.txr}

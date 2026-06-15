@@ -1614,7 +1614,7 @@
 				client_credit : showthis[4],
 			};
 		}
-
+  
 	// utils
 		window['infer_max'] = (npt,iscalled = false) => {
 			if(sample_type.value == ''){

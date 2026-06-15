@@ -1,3 +1,6 @@
 [edge case]
 	theres a chance that a user can end up with a negative credit balance but the only way this happens is if their record is double booked (they are applying for a task at the same time)
+
 [fixable]
+	some tasks are added twice
+	[fix] start_the_killing protocol

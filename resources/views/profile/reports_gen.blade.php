@@ -761,7 +761,7 @@
 			<tr>
 				<td>
 					<b>Job No: </b>
-					<span>${s_data.task.task_no}</span>
+					<span>${s_data.sample_tag}</span>
 				</td>
 				<td>
 					<b>Status: </b>

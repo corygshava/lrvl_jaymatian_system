@@ -1,13 +1,3 @@
 2do
 make all images both print and download link to the file slug so that the browser can cache it
 	figure out how to save a blob file to cache programatically
-
-fix the stats misinformation issue in system aggregates
-
-[undone]
-	modify reports editor to allow changing of report recipient
-	make it that cash reports show debtors for that timeframe
-
-[nice_to_have but not_necessary]
-	add a request serial to every add request to prevent double booking
-
