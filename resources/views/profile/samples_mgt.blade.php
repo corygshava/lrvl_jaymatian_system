@@ -515,11 +515,19 @@
 						title: 'Payment status',
 						data: 'task',
 						sortable: false,
-						render: function(value) {
+						render: function(value,row) {
 							let pid = value.payment_status;
 							let pstate = task_pay_state[pid];
 							let cls = pstate_classes[pid];
-							return `<strong class="${cls}">${pstate}</strong>`;
+							let xtraht = value.payment_status == 2 ? '' : `
+								<div class="w3-small" style="margin-top: 4px;">
+									<b class="themetxt">${Number(row.task.paid).toLocaleString()}</b> / ${Number(row.task.cost).toLocaleString()}
+								</div>
+							`;
+							return `
+								<strong class="${cls}">${pstate}</strong>
+								${xtraht}
+							`;
 						}
 					},
 					{

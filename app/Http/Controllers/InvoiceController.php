@@ -976,6 +976,12 @@ class InvoiceController extends Controller{
 
 									$t->paid += $addme;
 									$t->balance -= $addme;
+
+									if($t->balance <= 0){
+										$t->payment_status = 2;
+										$t->is_paid = true;
+									}
+
 									$t->save();
 
 									$toremove -= $addme;
