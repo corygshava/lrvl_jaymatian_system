@@ -750,4 +750,57 @@ class CashReportController extends Controller{
 		}
 		return response()->json($res);
 	}
+
+	// recreator setup
+	public function recreate_from_date(Request $req,$iscalled = false){
+		// recreates reports from a specified date till the present, might be very slow if starting from a far date
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+
+		// /*
+		$passed = $iscalled ?
+			["start_date" => '']
+			:
+			$req->validate([
+				'start_date' => ['required','datetime'],
+			])
+		;
+		// */
+
+		$update_runlog = function($wot) use (&$res){
+			$res['runlog'][] = $wot;
+		};
+		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+			$msg = $wot;
+			if($logit){
+				$update_runlog($wot);
+			}
+		};
+		$_msg = function($w,$l = true) use (&$update_msg){
+			$update_msg($w,$l);
+		};
+
+		if($this->ili()){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$cmdt = self::commondata();
+			$mdta = random_int(0,14);
+			$reslt = $mdta >= 7;
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $cmdt['permissions'];
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
 }

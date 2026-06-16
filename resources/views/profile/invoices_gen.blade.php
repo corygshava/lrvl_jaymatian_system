@@ -806,7 +806,8 @@
 				<th style="width: 40px;"><span></span></th>
 				<th style="width: 200px;"><span>date delivered</span></th>
 				<th style="width: 190px;"><span>Samples type</span></th>
-				<th style="width: 190px;"><span>Samples delivered</span></th>
+				<th style="width: 190px;"><span>Samples</span></th>
+				<th style="width: 190px;"><span>Charge</span></th>
 				<th style="width: 120px;"><span>Task No</span></th>
 				<th style="width: 90px;"><span>balance</span></th>
 			`;
@@ -824,6 +825,7 @@
 						<td>${mekSpan(formatDate0(r.created_at))}</td>
 						<td>${mekSpan(r.sample_type)}</td>
 						<td>${mekSpan(r.sample_count)}</td>
+						<td>${formatNumber(Number(invoice_runtime_data.clientData.payment_data[r.sample_type]))}</td>
 						<td ${bigone}>${mekSpan(r.task_no)}</td>
 						<td ${bigone}>${mekSpan(formatNumber(r.balance))}</td>
 					</tr>
@@ -831,7 +833,7 @@
 			})
 		}
 
-		let inv_results_headings = advanced ? 6 : 5;
+		let inv_results_headings = advanced ? 7 : 5;
 
 		outht += `
 			<tr>
