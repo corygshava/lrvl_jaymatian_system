@@ -300,6 +300,7 @@ class CashReportController extends Controller{
 					->first()
 				;
 				$r = $this->getPreviousDay($myrange);
+				// $redone_range = $r['start'] ?? null;
 				$redone_range = $r['start'];
 				$carry_over_rec = null;
 

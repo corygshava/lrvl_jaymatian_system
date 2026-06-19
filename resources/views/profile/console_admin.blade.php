@@ -53,11 +53,10 @@
 
 				<div class="flowline spread in_fullwidth centerline overflow">
 					<div class="spacy-tn border themeround">
-						<div class="flowline gap-tn overflow except scopebtns">
+						<div class="flowline left gap-tn overflow except scopebtns">
 							<button class="btn btn-outline-primary active" data-runme="reset_timerange" data-myid="0">daily</button>
 							<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="1">weekly</button>
 							<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="2">monthly</button>
-							<button class="btn btn-outline-primary" data-runme="reset_timerange" data-myid="3">lifetime</button>
 						</div>
 					</div>
 
@@ -261,6 +260,15 @@
 					</button>
 				`;
 			})
+
+			outht += `
+				<button class="btn btn-outline-primary" data-runme="change_date">
+					<i class="fa fa-calendar"></i>
+				</button>
+				<button class="btn btn-outline-primary w3-hide" data-runme="change_date_range">
+					<i class="fa fa-calendar-alt"></i>
+				</button>
+			`;
 
 			bx.innerHTML = outht;
 		}
@@ -515,28 +523,65 @@
 		window['refreshData'] = () => {
 			initdashsetup();
 		}
-		window['reset_timerange'] = (el) => {
+		window['reset_timerange'] = (el,use_as_is = false) => {
 			if(el == undefined){
 				alert_danger('invalid procedure call');
 				return;
 			}
 
-			let id = el.dataset.myid == undefined ? 0 : Number(el.dataset.myid);
+			if(!use_as_is){
+				let id = el.dataset.myid == undefined ? 0 : Number(el.dataset.myid);
 
-			if(isNaN(id)){
-				alert_danger('invalid timerange pass');
-				return;
-			}
-			if(id >= timerange_atlas.length){
-				alert_danger('invalid timerange');
+				if(isNaN(id)){
+					alert_danger('invalid timerange pass');
+					return;
+				}
+				if(id >= timerange_atlas.length){
+					alert_danger('invalid timerange');
+				}
+
+				timerange = timerange_atlas[id];
+			} else {
+				timerange = el.dataset.myid;
 			}
 
-			timerange = timerange_atlas[id];
 			refreshData();
 
 			let btns = document.querySelectorAll('.scopebtns>.btn');
 			btns.forEach(l => {l.classList.remove('active');})
 			el.classList.add('active');
+		}
+		window['change_date'] = (el) => {
+			//
+			alert_info('changing date');
+
+			let _input = {
+				label: 'pick a date',
+				field: 'chosen_date',
+				typ: 'date',
+				// placeholder: 'pick the date to '
+				required: true,
+			};
+			get_input('select date',[_input], send_to_sys);
+
+			function send_to_sys(b) {
+				console.log(b);
+				alert_dark('gotten input');
+
+				el.dataset.myid = b.chosen_date;
+
+				reset_timerange(el,true);
+			}
+		}
+		window['change_date_range'] = (el) => {
+			//
+			alert_info('changing date range');
+			get_input('selected date range',[{},{}], send_to_sys);
+
+			function send_to_sys(b) {
+				console.log(b);
+				alert_dark(`gotten input: ${JSON.stringify(b)}`);
+			}
 		}
 
 		// samples ops
