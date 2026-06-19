@@ -932,6 +932,13 @@ abstract class Controller{
     }
 
 	public static function getPreviousDay(string $range): array{
+		if (self::isDate($range)) {
+			return [
+				"start" => Carbon::parse($range)->subDay()->startOfDay(),
+				"end" => Carbon::parse($range)->subDay()->endOfDay(),
+			];
+		}
+
 		[$start, $end] = match($range) {
 			'today' => [
 				Carbon::today()->subDay()->startOfDay(),
@@ -984,6 +991,18 @@ abstract class Controller{
 			'start' => $start->toDateTimeString(),
 			'end'   => $end->toDateTimeString(),
 		];
+	}
+	public static function isDate(string $value): bool{
+		if (!is_string($value)) {
+			return false;
+		}
+
+		try {
+			Carbon::parse($value);
+			return true;
+		} catch (\Exception $e) {
+			return false;
+		}
 	}
 
 	// Templates

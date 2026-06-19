@@ -204,339 +204,369 @@ class ChartsController extends Controller{
 
 	// utilities
 		private function getChartData_sum(Builder $recs, $thecol = 'amount', $timeframe = 'lifetime'){
-			switch ($timeframe) {
-				case 'today':
-					$labels = [];
-					$data = [];
+			if(self::isDate($timeframe)){
+				$labels = [];
+				$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::today()->hour($hour - 3)->minute(0)->second(0),
-								Carbon::today()->hour($hour - 3)->minute(59)->second(59)
-							])
-							->sum($thecol)
-						;
-					}
-					break;
-				case 'yesterday':
-					$labels = [];
-					$data = [];
+				for ($hour = 0; $hour < 24; $hour++) {
+					$labels[] = Carbon::parse($timeframe)->addHours($hour)->format('H:00');
+					$data[] = (clone $recs)->whereBetween('created_at', [
+							Carbon::parse($timeframe)->hour($hour - 3)->minute(0)->second(0),
+							Carbon::parse($timeframe)->hour($hour - 3)->minute(59)->second(59)
+						])
+						->sum($thecol)
+					;
+				}
+			} else {
+				switch ($timeframe) {
+					case 'today':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
-								Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
-							])
-							->sum($thecol)
-						;
-					}
-					break;
-				case 'juzi':
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::today()->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::today()->hour($hour - 3)->minute(0)->second(0),
+									Carbon::today()->hour($hour - 3)->minute(59)->second(59)
+								])
+								->sum($thecol)
+							;
+						}
+						break;
+					case 'yesterday':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
-								Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
-							])
-							->sum($thecol)
-						;
-					}
-					break;
-				case 'kabla_juzi':
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
+									Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
+								])
+								->sum($thecol)
+							;
+						}
+						break;
+					case 'juzi':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
-								Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
-							])
-							->sum($thecol)
-						;
-					}
-					break;
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
+									Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
+								])
+								->sum($thecol)
+							;
+						}
+						break;
+					case 'kabla_juzi':
+						$labels = [];
+						$data = [];
 
-				case 'this_week':
-					// Daily breakdown for last week
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
+									Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
+								])
+								->sum($thecol)
+							;
+						}
+						break;
 
-					$startOfWeek = Carbon::now()->startOfWeek();
+					case 'this_week':
+						// Daily breakdown for last week
+						$labels = [];
+						$data = [];
 
-					for ($day = 0; $day < 7; $day++) {
-						$date = $startOfWeek->copy()->addDays($day);
-						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
-					}
-					break;
+						$startOfWeek = Carbon::now()->startOfWeek();
 
-				case 'this_month':
-					// Daily breakdown for last month
-					$labels = [];
-					$data = [];
+						for ($day = 0; $day < 7; $day++) {
+							$date = $startOfWeek->copy()->addDays($day);
+							$labels[] = $date->format('D'); // Mon, Tue, Wed...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
+						}
+						break;
 
-					$lastMonth = Carbon::now();
-					$daysInMonth = $lastMonth->daysInMonth;
+					case 'this_month':
+						// Daily breakdown for last month
+						$labels = [];
+						$data = [];
 
-					for ($day = 1; $day <= $daysInMonth; $day++) {
-						$date = $lastMonth->copy()->day($day);
-						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
-					}
-					break;
-				case 'this_year':
-					// Monthly breakdown for last year
-					$labels = [];
-					$data = [];
+						$lastMonth = Carbon::now();
+						$daysInMonth = $lastMonth->daysInMonth;
 
-					$lastYear = Carbon::now()->year;
+						for ($day = 1; $day <= $daysInMonth; $day++) {
+							$date = $lastMonth->copy()->day($day);
+							$labels[] = $date->format('M d'); // Jan 01, Jan 02...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
+						}
+						break;
+					case 'this_year':
+						// Monthly breakdown for last year
+						$labels = [];
+						$data = [];
 
-					for ($month = 1; $month <= 12; $month++) {
-						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
-							->whereMonth('created_at', $month)
-							->sum($thecol);
-					}
-					break;
-				case 'last_week':
-					// Daily breakdown for last week
-					$labels = [];
-					$data = [];
+						$lastYear = Carbon::now()->year;
 
-					$startOfWeek = Carbon::now()->subWeek()->startOfWeek();
+						for ($month = 1; $month <= 12; $month++) {
+							$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
+							$data[] = (clone $recs)->whereYear('created_at', $lastYear)
+								->whereMonth('created_at', $month)
+								->sum($thecol);
+						}
+						break;
+					case 'last_week':
+						// Daily breakdown for last week
+						$labels = [];
+						$data = [];
 
-					for ($day = 0; $day < 7; $day++) {
-						$date = $startOfWeek->copy()->addDays($day);
-						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
-					}
-					break;
+						$startOfWeek = Carbon::now()->subWeek()->startOfWeek();
 
-				case 'last_month':
-					// Daily breakdown for last month
-					$labels = [];
-					$data = [];
+						for ($day = 0; $day < 7; $day++) {
+							$date = $startOfWeek->copy()->addDays($day);
+							$labels[] = $date->format('D'); // Mon, Tue, Wed...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
+						}
+						break;
 
-					$lastMonth = Carbon::now()->subMonth();
-					$daysInMonth = $lastMonth->daysInMonth;
+					case 'last_month':
+						// Daily breakdown for last month
+						$labels = [];
+						$data = [];
 
-					for ($day = 1; $day <= $daysInMonth; $day++) {
-						$date = $lastMonth->copy()->day($day);
-						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
-					}
-					break;
+						$lastMonth = Carbon::now()->subMonth();
+						$daysInMonth = $lastMonth->daysInMonth;
 
-				case 'last_year':
-					// Monthly breakdown for last year
-					$labels = [];
-					$data = [];
+						for ($day = 1; $day <= $daysInMonth; $day++) {
+							$date = $lastMonth->copy()->day($day);
+							$labels[] = $date->format('M d'); // Jan 01, Jan 02...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->sum($thecol);
+						}
+						break;
 
-					$lastYear = Carbon::now()->subYear()->year;
+					case 'last_year':
+						// Monthly breakdown for last year
+						$labels = [];
+						$data = [];
 
-					for ($month = 1; $month <= 12; $month++) {
-						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
-							->whereMonth('created_at', $month)
-							->sum($thecol);
-					}
-					break;
+						$lastYear = Carbon::now()->subYear()->year;
 
-				case 'lifetime':
-					// Yearly breakdown for all time
-					$labels = [];
-					$data = [];
+						for ($month = 1; $month <= 12; $month++) {
+							$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
+							$data[] = (clone $recs)->whereYear('created_at', $lastYear)
+								->whereMonth('created_at', $month)
+								->sum($thecol);
+						}
+						break;
 
-					$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
-						->distinct()
-						->orderBy('year')
-						->pluck('year');
+					case 'lifetime':
+						// Yearly breakdown for all time
+						$labels = [];
+						$data = [];
 
-					foreach ($years as $year) {
-						$labels[] = (string) $year;
-						$data[] = (clone $recs)->whereYear('created_at', $year)->sum($thecol);
-					}
-					break;
+						$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
+							->distinct()
+							->orderBy('year')
+							->pluck('year');
 
-				default:
-					$labels = [];
-					$data = [];
+						foreach ($years as $year) {
+							$labels[] = (string) $year;
+							$data[] = (clone $recs)->whereYear('created_at', $year)->sum($thecol);
+						}
+						break;
+
+					default:
+						$labels = [];
+						$data = [];
+				}
 			}
 
 			return [$labels, $data];
 		}
 		private function getChartData_count(Builder $recs,$timeframe = "lifetime"){
-			switch ($timeframe) {
-				case 'today':
-					$labels = [];
-					$data = [];
+			if(self::isDate($timeframe)){
+				$labels = [];
+				$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::today()->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::today()->hour($hour - 3)->minute(0)->second(0),
-								Carbon::today()->hour($hour - 3)->minute(59)->second(59)
-							])
-							->count()
-						;
-					}
-					break;
-				case 'yesterday':
-					$labels = [];
-					$data = [];
+				for ($hour = 0; $hour < 24; $hour++) {
+					$labels[] = Carbon::parse($timeframe)->addHours($hour)->format('H:00');
+					$data[] = (clone $recs)->whereBetween('created_at', [
+							Carbon::parse($timeframe)->hour($hour - 3)->minute(0)->second(0),
+							Carbon::parse($timeframe)->hour($hour - 3)->minute(59)->second(59)
+						])
+						->count()
+					;
+				}
+			} else {
+				switch ($timeframe) {
+					case 'today':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
-								Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
-							])
-							->count()
-						;
-					}
-					break;
-				case 'juzi':
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::today()->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::today()->hour($hour - 3)->minute(0)->second(0),
+									Carbon::today()->hour($hour - 3)->minute(59)->second(59)
+								])
+								->count()
+							;
+						}
+						break;
+					case 'yesterday':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
-								Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
-							])
-							->count()
-						;
-					}
-					break;
-				case 'kabla_juzi':
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::yesterday()->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::yesterday()->hour($hour - 3)->minute(0)->second(0),
+									Carbon::yesterday()->hour($hour - 3)->minute(59)->second(59)
+								])
+								->count()
+							;
+						}
+						break;
+					case 'juzi':
+						$labels = [];
+						$data = [];
 
-					for ($hour = 0; $hour < 24; $hour++) {
-						$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
-						$data[] = (clone $recs)->whereBetween('created_at', [
-								Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
-								Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
-							])
-							->count()
-						;
-					}
-					break;
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::now()->subDays(2)->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::now()->subDays(2)->hour($hour - 3)->minute(0)->second(0),
+									Carbon::now()->subDays(2)->hour($hour - 3)->minute(59)->second(59)
+								])
+								->count()
+							;
+						}
+						break;
+					case 'kabla_juzi':
+						$labels = [];
+						$data = [];
 
-				case 'this_week':
-					// Daily breakdown for this week
-					$labels = [];
-					$data = [];
+						for ($hour = 0; $hour < 24; $hour++) {
+							$labels[] = Carbon::now()->subDays(3)->addHours($hour)->format('H:00');
+							$data[] = (clone $recs)->whereBetween('created_at', [
+									Carbon::now()->subDays(3)->hour($hour - 3)->minute(0)->second(0),
+									Carbon::now()->subDays(3)->hour($hour - 3)->minute(59)->second(59)
+								])
+								->count()
+							;
+						}
+						break;
 
-					$startOfWeek = Carbon::now()->startOfWeek();
+					case 'this_week':
+						// Daily breakdown for this week
+						$labels = [];
+						$data = [];
 
-					for ($day = 0; $day < 7; $day++) {
-						$date = $startOfWeek->copy()->addDays($day);
-						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
-					}
-					break;
+						$startOfWeek = Carbon::now()->startOfWeek();
 
-				case 'this_month':
-					// Daily breakdown for this month
-					$labels = [];
-					$data = [];
+						for ($day = 0; $day < 7; $day++) {
+							$date = $startOfWeek->copy()->addDays($day);
+							$labels[] = $date->format('D'); // Mon, Tue, Wed...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->count();
+						}
+						break;
 
-					$lastMonth = Carbon::now();
-					$daysInMonth = $lastMonth->daysInMonth;
+					case 'this_month':
+						// Daily breakdown for this month
+						$labels = [];
+						$data = [];
 
-					for ($day = 1; $day <= $daysInMonth; $day++) {
-						$date = $lastMonth->copy()->day($day);
-						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
-					}
-					break;
+						$lastMonth = Carbon::now();
+						$daysInMonth = $lastMonth->daysInMonth;
 
-				case 'this_year':
-					// Monthly breakdown for this year
-					$labels = [];
-					$data = [];
+						for ($day = 1; $day <= $daysInMonth; $day++) {
+							$date = $lastMonth->copy()->day($day);
+							$labels[] = $date->format('M d'); // Jan 01, Jan 02...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->count();
+						}
+						break;
 
-					$lastYear = Carbon::now()->year;
+					case 'this_year':
+						// Monthly breakdown for this year
+						$labels = [];
+						$data = [];
 
-					for ($month = 1; $month <= 12; $month++) {
-						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
-							->whereMonth('created_at', $month)
-							->count();
-					}
-					break;
+						$lastYear = Carbon::now()->year;
 
-				case 'last_week':
-					// Daily breakdown for last week
-					$labels = [];
-					$data = [];
+						for ($month = 1; $month <= 12; $month++) {
+							$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
+							$data[] = (clone $recs)->whereYear('created_at', $lastYear)
+								->whereMonth('created_at', $month)
+								->count();
+						}
+						break;
 
-					$startOfWeek = Carbon::now()->subWeek()->startOfWeek();
+					case 'last_week':
+						// Daily breakdown for last week
+						$labels = [];
+						$data = [];
 
-					for ($day = 0; $day < 7; $day++) {
-						$date = $startOfWeek->copy()->addDays($day);
-						$labels[] = $date->format('D'); // Mon, Tue, Wed...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
-					}
-					break;
+						$startOfWeek = Carbon::now()->subWeek()->startOfWeek();
 
-				case 'last_month':
-					// Daily breakdown for last month
-					$labels = [];
-					$data = [];
+						for ($day = 0; $day < 7; $day++) {
+							$date = $startOfWeek->copy()->addDays($day);
+							$labels[] = $date->format('D'); // Mon, Tue, Wed...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->count();
+						}
+						break;
 
-					$lastMonth = Carbon::now()->subMonth();
-					$daysInMonth = $lastMonth->daysInMonth;
+					case 'last_month':
+						// Daily breakdown for last month
+						$labels = [];
+						$data = [];
 
-					for ($day = 1; $day <= $daysInMonth; $day++) {
-						$date = $lastMonth->copy()->day($day);
-						$labels[] = $date->format('M d'); // Jan 01, Jan 02...
-						$data[] = (clone $recs)->whereDate('created_at', $date)->count();
-					}
-					break;
+						$lastMonth = Carbon::now()->subMonth();
+						$daysInMonth = $lastMonth->daysInMonth;
 
-				case 'last_year':
-					// Monthly breakdown for last year
-					$labels = [];
-					$data = [];
+						for ($day = 1; $day <= $daysInMonth; $day++) {
+							$date = $lastMonth->copy()->day($day);
+							$labels[] = $date->format('M d'); // Jan 01, Jan 02...
+							$data[] = (clone $recs)->whereDate('created_at', $date)->count();
+						}
+						break;
 
-					$lastYear = Carbon::now()->subYear()->year;
+					case 'last_year':
+						// Monthly breakdown for last year
+						$labels = [];
+						$data = [];
 
-					for ($month = 1; $month <= 12; $month++) {
-						$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
-						$data[] = (clone $recs)->whereYear('created_at', $lastYear)
-							->whereMonth('created_at', $month)
-							->count();
-					}
-					break;
+						$lastYear = Carbon::now()->subYear()->year;
 
-				case 'lifetime':
-					// Yearly breakdown for all time
-					$labels = [];
-					$data = [];
+						for ($month = 1; $month <= 12; $month++) {
+							$labels[] = Carbon::create($lastYear, $month, 1)->format('M'); // Jan, Feb, Mar...
+							$data[] = (clone $recs)->whereYear('created_at', $lastYear)
+								->whereMonth('created_at', $month)
+								->count();
+						}
+						break;
 
-					$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
-						->distinct()
-						->orderBy('year')
-						->pluck('year');
+					case 'lifetime':
+						// Yearly breakdown for all time
+						$labels = [];
+						$data = [];
 
-					foreach ($years as $year) {
-						$labels[] = (string) $year;
-						$data[] = (clone $recs)->whereYear('created_at', $year)->count();
-					}
-					break;
+						$years = (clone $recs)->selectRaw('YEAR(created_at) as year')
+							->distinct()
+							->orderBy('year')
+							->pluck('year');
 
-				default:
-					$labels = [];
-					$data = [];
+						foreach ($years as $year) {
+							$labels[] = (string) $year;
+							$data[] = (clone $recs)->whereYear('created_at', $year)->count();
+						}
+						break;
+
+					default:
+						$labels = [];
+						$data = [];
+				}
 			}
 
 			return [$labels, $data];
