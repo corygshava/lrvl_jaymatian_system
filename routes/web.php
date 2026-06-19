@@ -142,6 +142,8 @@ Route::prefix('/op')->group(function(){
 	Route::post('/save_worksheet',[WorksheetsController::class, 'add_edit'])->middleware(['auth','verified']);
 	Route::post('/save_worksheet_readings',[WorksheetsController::class, 'save_readings'])->middleware(['auth','verified']);
 	Route::post('/publish_worksheet',[WorksheetsController::class, 'publish_one'])->middleware(['auth','verified']);
+	Route::post('/change_sample_tag',[SamplesController::class, 'change_sample_tag'])->middleware(['auth','verified']);
+	Route::post('/send_sample_payment',[TaskController::class, 'add_payment'])->middleware(['auth','verified']);
 
 	// Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 

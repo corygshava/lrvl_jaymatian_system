@@ -23,8 +23,8 @@ let enableCache = true;
 
 // var confirm_modal = undefined;
 // var confirm_toggler = undefined;
-// var the_modal = undefined;
-// var the_modal_toggler = undefined;
+var the_modal = undefined;
+var the_modal_toggler = undefined;
 
 // UI elements
 var dft_holder = undefined;
@@ -368,7 +368,9 @@ if(window[curfun] == undefined){
 curfun = "mekXtras";
 if(window[curfun] == undefined){
 	window[curfun] = (m) => {
-				dft_holder = document.querySelector('#app_ui');
+		// alert_info('xtras made');
+		console.log('made the xtras');
+		dft_holder = document.querySelector('#app_ui');
 
 		// alert_info('making extras');
 		alert_silent('making extras');
@@ -421,44 +423,50 @@ if(window[curfun] == undefined){
 
 		b = document.createElement('div');
 
-		b.className = "mymodal fade";
+		b.className = "modal _mymodal fade";
 		b.style.display = "none";
 		b.id = conid;
 		b.dataset.shown = "0";
 		b.innerHTML = `
-			<div class="modal-content modal-sm w3-animate-opacity" role="document" style="width: 90vw;max-width: 800px;">
-				<button type="button" class="close w3-right w3-btn" data-toggler="${desig}" aria-label="Close">
-					<i class="fa fa-times"></i>
-				</button>
-				<div class="flow gap-sm">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content panelbg modal-md borderless themeround">
 					<div class="modal-header">
-						<span class="modal-title h3">nn</span>
-						<p class="modal-subtitle">--</p>
+						<div>
+							<span class="modal-title h4" id="d_mdl_title">Modal title</span>
+							<span class="modal-subtitle" style="font-size: 0.9rem" id="d_mdl_subtitle">default modal subtitle</span>
+						</div>
+						<button type="button themetxt" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
 					<div class="modal-body">
-						do you want to delete this
+						default modal contents
 					</div>
-					<div class="modal-footer w3-left-align w3-hide">
-						<button type="button" class="btn outline except" data-toggler="${desig}" data-subrole="cancel">cancel</button>
-						<button class="btn primary except" data-subrole="continue">continue &raquo;</button>
+					<div class="modal-footer">
+						<button type="button" class="mybtn secondary sm" data-dismiss="modal" data-subrole="cancel">cancel</button>
+						<button type="button" class="mybtn primary sm" data-subrole="continue">continue &raquo;</button>
+						<div class="xtra"></div>
 					</div>
 				</div>
 			</div>
 		`;
 
-		btn = document.createElement('button');
-		btn.classList.add('w3-hide');
-		btn.dataset.toggler = desig;
-		btn.dataset.onshow = "flex";
+		let btnguy = document.createElement('div');
+		btnguy.id = 'common_modal_toggler_holder';
+		btnguy.classList.add('w3-hide');
+		btnguy.innerHTML = `
+			<button type="button" class="btn btn-primary btn-sm w3-hide" id="common_modal_toggler" data-toggle="modal" data-target="${desig}" data-role="toggleModal">Launch Modal</button>
+		`;
 
 		document.body.appendChild(b);
-		document.body.appendChild(btn);
+		document.body.appendChild(btnguy);
 
 		// alert_info('med modal');
 		alert_silent('med modal');
-		the_modal = b;
-		the_modal_toggler = btn;
-
+		setTimeout(() => {
+			the_modal = b;
+			the_modal_toggler = btnguy.querySelector('button');
+		},300);
 
 		// refresh UI when everything is done
 		refreshUI(100);
@@ -659,17 +667,21 @@ function mekButton(pr = {caption: "",type: "button",icon:"",_props: "",_class:""
 	let type = pr.type || "button";
 	let icon = pr.icon || "";
 	let _props = pr._props || "data-genui";
-	let _class = pr._class || "xx";
+	let og_class = pr._class || "xx";
+	let _class = '';
 	let mytype = pr.btype || "x";
 	let act = pr.act || undefined;
 
 	if(mytype != undefined){
-		_class = `btn ${mytype}`;
+		_class += `mybtn ${mytype}`;
 	} else if(mytype == "x"){
-		_class = _class == "xx" ? "btn primary" : _class;
+		_class += "mybtn primary";
+	} else if(mytype == null){
+		_class += '';
 	}
 
 	let mfun_code = undefined;
+	_class = `${og_class} ${_class}`;
 
 	if(typeof act == "function"){
 		// create a function stored in the window property so that it can be run later via clicking the button
@@ -755,7 +767,8 @@ function mekForm(m) {
 		props: `data-mymessage="info submitted successfully"`,
 		extrahtml_pre: '',
 		extrahtml_post: '',
-		blockDefault: false
+		blockDefault: false,
+		showbutton: true,
 	};
 
 	let use = {...dftdata,...m};
@@ -769,6 +782,7 @@ function mekForm(m) {
 		<form class="formguy" action="${use.action}" method="${use.method}" ${_props} ${_submitter} data-blockdefault="${_block}">
 			${use.extrahtml_pre}
 	`;
+	let submitBtn = use.showbutton ? mekButton({caption: "submit data",btype: "primary",type:"submit"}) : '';
 
 	use.inputs.forEach(i => {
 		outht += mekInputholder(i);
@@ -777,7 +791,7 @@ function mekForm(m) {
 	outht += `
 			${use.extrahtml_post}
 			<div class="distance-sm">
-				${mekButton({caption: "submit data",btype: "primary",type:"submit"})}
+				${submitBtn}
 			</div>
 		</form>
 	`;
@@ -857,7 +871,8 @@ const mekCards = (actions) => {
 }
 
 const mekModal = (d) => {
-	const dft = {title: 'modal',sub: ' ',content: ' '};
+	alert_dark('making the modal');
+	const dft = {title: 'modal',sub: '<i>blank modal</i>',content: 'modal content appears here',has_cancel: true, has_continue: true,extra_footer: ''};
 	d = {...dft,...d};
 
 	let mdl = the_modal;
@@ -866,11 +881,41 @@ const mekModal = (d) => {
 	const subtitle = mdl.querySelector('.modal-subtitle');
 	const con = mdl.querySelector('.modal-body');
 
+	// modal content
 	title.innerHTML = d.title;
 	subtitle.innerHTML = d.sub;
 	con.innerHTML = d.content;
 
+	// modal interface
+	let con_btn = mdl.querySelector(`[data-subrole="continue"]`);
+	let cancel_btn = mdl.querySelector(`[data-subrole="cancel"]`);
+	let cls_con_btn = d.has_continue ? 'remove' : 'add';
+	let cls_cancel_btn = d.has_cancel ? 'remove' : 'add';
+
+	con_btn.classList[cls_con_btn]('w3-hide');
+	cancel_btn.classList[cls_cancel_btn]('w3-hide');
+
+	let mdl_footer = mdl.querySelector('.modal-footer');
+	mdl_footer.querySelector('.xtra').innerHTML = d.extra_footer;
+
+	// con_btn.innerHTML = cls_con_btn;
+	// cancel_btn.innerHTML = cls_cancel_btn;
+
+	// little touches
+	let con_cls = (!(d.has_cancel) && !(d.has_continue) && (d.extra_footer == undefined || d.extra_footer == ''));
+
+	let cls_mdl_footer = con_cls ? 'add' : 'remove';
+	mdl_footer.classList[cls_mdl_footer]('border-0');
+
+	let mdl_header = mdl.querySelector('.modal-header');
+	let cls_mdl_header = con_cls ? 'add' : 'remove';
+	mdl_header.classList[cls_mdl_header]('border-bottom');
+
+	// alert_danger('what is this')
+
+	// finalizer
 	the_modal_toggler.click();
+	refreshUI(200);
 }
 
 function mekHeading(content,type){

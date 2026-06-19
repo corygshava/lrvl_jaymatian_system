@@ -131,6 +131,8 @@
 				'update_invoice_image' : './op/change_invoice_image',
 				'add_expense' : './op/add_expense',
 				'save_daily_report' : './op/save_daily_report',
+				'change_sample_tag' : './op/change_sample_tag',
+				'send_sample_payment' : './op/send_sample_payment',
 
 			// datalinks
 				'search_clients' : './data/search_clients',
@@ -217,6 +219,7 @@
 			'task_info_act' : `task_info_next_act`,
 			'task_info_act_args' : 'task_info_next_act_args',
 			'last_used_password' : `${mekRandomString(8)}_${mekRandomString(4)}`,
+			'get_input_inter' : `${mekRandomString(8)}_${mekRandomString(4)}`,
 		};
 
 		// shortener ops
@@ -1184,6 +1187,149 @@
 						}
 					}
 				})
+			}
+
+
+		// on probation (to be added to toappend)
+			window['save_as_fyl'] = async (dta,name,opts = undefined) => {
+				// wrapper for saving files
+				if(opts == undefined){
+					opts = {type: 'application/json'};
+				}
+
+				let blb = new Blob([JSON.stringify(dta,null,4)], opts);
+				let a = document.createElement('a');
+				a.href = URL.createObjectURL(blb);
+				a.download = name;
+				document.body.appendChild(a);
+
+				a.click();
+				document.body.removeChild(a);
+			}
+			window['get_text_fields'] = (el) => {
+				if(!(el instanceof HTMLFormElement)){
+					alert_danger('invalid procedure for get_text_fields');
+					return {};
+				}
+
+				const fdata = new FormData(el);
+				const _json = fdata2json(fdata);
+
+				function fdata2json(fdta) {
+					const json = {};
+
+					for (const [key, value] of fdta.entries()) {
+						// Skip File objects
+						if (value instanceof File) {
+							continue;
+						}
+
+						// Handle multiple values for the same key (checkboxes, multi-select)
+						if (json[key] !== undefined) {
+							if (!Array.isArray(json[key])) {
+								json[key] = [json[key]];
+							}
+							json[key].push(value);
+						} else {
+							json[key] = value;
+						}
+					}
+
+					return json;
+				}
+
+				return _json;
+			}
+			window['get_input'] = (title,fields = [],callback) => {
+				alert_dark('getting input');
+				let modalBtn = the_modal_toggler;
+				let dashmodal = the_modal;
+				let d_content = dashmodal.querySelector('.modal-content');
+
+				let formsel = 'data-subrole="gobtn"';
+				let mod_ht = mekForm({
+					inputs: fields,
+					action: "",
+					method: "post",
+					onsubmit: "get_input_callback",
+					props: `${formsel} data-mymessage="info submitted successfully"`,
+					extrahtml_pre: '',
+					extrahtml_post: '',
+					blockDefault: true,
+					showbutton: false,
+				});
+
+				setTimeout(() => {
+					mekModal({
+						title: title,
+						sub: 'enter the required value to continue',
+						content: mod_ht,
+						has_cancel: false,
+						has_continue: false,
+						extra_footer: mekButton({
+							btype: 'primary',
+							caption: 'continue <i class="fa fa-angle-double-right"></i>',
+							_props: ` data-submitme='[${formsel}]'`,
+						})
+					});
+				},700);
+
+				window[variableAtlas['get_input_inter']] = callback;
+
+				return;
+				// from runtime stuff
+
+				d_content.innerHTML = '';
+
+				// set up the modal
+				d_content.innerHTML = mekForm({
+					inputs: fields,
+					action: "",
+					method: "post",
+					onsubmit: "get_input_callback",
+					props: `${formsel} data-mymessage="info submitted successfully"`,
+					extrahtml_pre: '',
+					extrahtml_post: '',
+					blockDefault: true,
+					showbutton: false,
+				});
+				modalBtn.click();
+
+				// this code spawns a form with fields
+				// that takes inputs and a calls
+
+				window[variableAtlas['get_input_inter']] = callback;
+
+				refreshUI(100);
+			}
+
+			window['get_input_callback'] = (el) => {
+				let cl_btn = the_modal_toggler;
+
+				if(cl_btn == undefined){
+					alert_danger('close button not found')
+					return;
+				} else {
+					// console.log('button: ',cl_btn);
+					// return;
+				}
+
+				cl_btn.click();
+
+				let fdata = get_text_fields(el);
+				alert_info('gotten input info');
+				console.log('data from get_input: ',fdata);
+
+				window[variableAtlas['get_input_inter']](fdata);
+			}
+
+			function formatLocalDateTime(date) {
+				const year = date.getFullYear();
+				const month = String(date.getMonth() + 1).padStart(2, '0');
+				const day = String(date.getDate()).padStart(2, '0');
+				const hours = String(date.getHours()).padStart(2, '0');
+				const minutes = String(date.getMinutes()).padStart(2, '0');
+				return `${year}-${month}-${day}T${hours}:${minutes}`;
 			}
 
 		callOnDocLoad.push({act: window[variableAtlas['initstuff']]});

@@ -586,7 +586,7 @@ class TaskController extends Controller{
 						}
 
 						// /*
-						Payment::create($newrec);
+						$payrec = Payment::create($newrec);
 						// */
 
 						$newbal = $bal - $amt;
@@ -633,6 +633,7 @@ class TaskController extends Controller{
 						if($task->status == 1){
 							$tochange['status'] = 0;
 						}
+
 						Task::query()->where('id',$task->id)->update($tochange);
 
 						$reslt = true;

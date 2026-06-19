@@ -172,14 +172,71 @@
 	</div>
 </div>
 
-<button class="mybtn primary w3-hide" id="add_result_trig" data-toggle="modal" data-target="#addResultModal">
+<!-- <button class="mybtn primary w3-hide" id="add_result_trig" data-toggle="modal" data-target="#addResultModal">
 	<i class="fas fa-plus"></i>
 	add results
+</button> -->
+
+<!-- add sample payment setup -->
+
+<button class="mybtn primary w3-hide" id="add_sample_payment_trig" data-toggle="modal" data-target="#add_sample_payment_modal">
+	<i class="fas fa-plus"></i>
+	Add payment
 </button>
+
+<div class="modal fade" id="add_sample_payment_modal" tabindex="-1" role="dialog" aria-labelledby="add_sample_payment_title" aria-hidden="true" style="z-index: 102;">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content themeround borderless panelbg">
+			<div class="modal-header">
+				<span class="h3 modal-title" id="add_sample_payment_title">Add Task Payment</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<div class="themegrad spacy-tn themeround flow left mb-4 w3-text-white s_payment" data-role="cur_sample_report">
+					<div class="w3-center">
+						<b>Sample info</b>
+					</div>
+				</div>
+				<form id="add_sample_payment_form" action="defined:add_payment" data-onsubmit="send_payment" data-blockdefault="yes" data-callback="add_pay_form_afterfx" method="post">
+					<input type="hidden" class="form-control-custom" id="admin_password" name="admin_password">
+					<input type="hidden" name="taskid" value="">
+					<input type="hidden" name="sample_tag" value="">
+					<input type="hidden" name="sample_id" value="">
+					<input type="hidden" name="email" value="">
+					<input type="hidden" name="pw" value="">
+
+					<div class="input-group-custom">
+						<div class="form-group">
+							<label class="form-label" for="pay_method">Payment Method</label>
+							<select class="form-control-custom" id="pay_method" name="pay_method" required>
+								<option disabled value="">select a payment method</option>
+								<option>Mpesa</option>
+								<option>Cash</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="form-label" for="amount">Amount</label>
+							<input type="number" class="form-control-custom" id="amount" name="amount" placeholder="how much was paid" required>
+						</div>
+						<div class="form-group">
+							<label class="form-label" for="date_added">Payment Date [optional]</label>
+							<input type="datetime-local" class="form-control-custom" id="date_added" name="date_added" placeholder="how much was paid" required>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="mybtn secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="mybtn primary" data-submitme="#add_sample_payment_form">Add payment</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
 	let task_pay_state = window['payment_state_atlas'];
 	let sample = {};
+
 	window['temp_results'] = [];
 
 	if(window['cur_sheet'] == undefined){
@@ -207,6 +264,8 @@
 		'refreshStuff',
 		'publish_worksheet',
 		'worksheets_aftermath',
+		'mek_payment',
+		'send_payment',
 	];
 
 	// Render results table
@@ -1013,5 +1072,104 @@
 		killlist = [...killlist,...myaddition];
 
 		window['killOnLeave'] = killlist;
-	},300)
+	},300);
+
+
+	// add sample payment ops
+	let add_pay_sample = {};
+
+	window['mek_payment'] = (el) => {
+		let id = el.dataset.myid || null;
+
+		if(id == null){
+			alert_danger('invalid procedure call');
+			return;
+		}
+
+		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == (`${id}`).toLowerCase();})[0];
+
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		if(myn.task.payment_status == 2){
+			alert_danger('the client has already paid for the associated task');
+			return;
+		}
+
+		add_pay_sample = myn;
+
+		let s_ui = document.querySelector('.s_payment[data-role="cur_sample_report"]');
+		s_ui.innerHTML = `
+			<div>
+				<b>Sample tag: </b> <span>${myn.sample_tag}</span>
+			</div>
+			<div>
+				<b>Sample type: </b> <span>${myn.sample_type}</span>
+			</div>
+			<div>
+				<b>Balance: </b> <b class="w3-tag themeround w3-text-yellow">${formatNumber(myn.task.balance)}</b>
+			</div>
+			<div>
+				<b>Payment Progress: </b> <span><b class="w3-tag themeround w3-text-white">${formatNumber(myn.task.paid)}</b> / <b>${formatNumber(myn.task.cost)}</b></span>
+			</div>
+		`;
+
+		console.log('cur sample: ',myn);
+
+		function setup_payform(pw) {
+			// assign the necessary values to the form
+			// open the form
+			let add_payment_form = document.querySelector('#add_sample_payment_form');
+			add_sample_payment_trig.click();
+			add_payment_form.taskid.value = myn.task.id;
+			add_payment_form.email.value = cur_user.email;
+			add_payment_form.admin_password.value = pw.admin_password;
+			// add_payment_form.admin_password.value = 'wotahell';
+			add_payment_form.pw.value = pw.admin_password;
+			add_payment_form.sample_tag.value = myn.sample_tag;
+			add_payment_form.sample_id.value = myn.id;
+			if(add_payment_form.date_added.value == ''){
+				add_payment_form.date_added.value = formatLocalDateTime(new Date);
+			}
+		}
+
+		awaitConfirmPass(setup_payform);
+	}
+
+	window['send_payment'] = (el) => {
+		// make the shape of data to send
+		let fdata = getFormdata(el);
+
+		function fuel_the_jet() {
+			add_sample_payment_trig.click();
+			add_sample_payment_form.reset();
+
+			let thetag = el.sample_tag.value;
+			let payload = Object.fromEntries(fdata);
+
+			// saves payload as a file (for redundancy setups)
+			// save_as_fyl(payload,`[sample payment] ${myn.sample_tag} - payment_payload.json`);
+
+			alert_info('sample payment sent to the system');
+
+			window[fetch_bypass_fyls](linkAtlas['send_sample_payment'],fdata,'POST',true,true)
+			.then(t => {
+				responseHandler(t,finito,t);
+			})
+			.catch(d => {
+				alert_danger(d.message);
+				console.error(d);
+			})
+
+			function finito(n) {
+				if(window['refreshData'] !== undefined){
+					refreshData();
+				}
+			}
+		}
+
+		fuel_the_jet();
+	}
 </script>

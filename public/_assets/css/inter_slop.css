@@ -806,6 +806,10 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 	.mybtn.sm {
 		padding: 8px 16px;
 	}
+	.mybtn.tn {
+		padding: 4px 8px;
+		font-size: 0.8rem;
+	}
 	.mybtn.secondary,.mybtn.outline{
 		border: 1px solid var(--themecolor);
 		color: var(--themecolor);

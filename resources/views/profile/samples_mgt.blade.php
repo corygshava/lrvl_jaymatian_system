@@ -131,8 +131,9 @@
 		.action-btns {
 			display: flex;
 			flex-direction: row;
-			flex-wrap: wrap;
+			/*flex-wrap: wrap;*/
 			gap: 8px;
+			width: 142px;
 		}
 
 		.btn-action {
@@ -439,6 +440,15 @@
 	let samples_filter = [];
 	let pay_state_filter = [];
 
+	window['killOnLeave'] = [
+		'viewRecord',
+		'viewRecordInfo',
+		'add_record',
+		'edit_record',
+		'form_afterfx',
+		'view_acts',
+	];
+
 	window['runOnAwake'] = () => {
 		Object.keys(sample_state_atlas).forEach((k,id) => {
 			// if(id == 0){return;}
@@ -572,24 +582,82 @@
 						}
 					},
 					// */
+					// /*
 					{
 						title: 'Actions',
 						data: 'id',
 						sortable: false,
-						width: '200px',
+						width: '320px',
 						render: function(value, row) {
+							let acts_0 = (row.task.payment_status != 2) ?
+								`
+									<button class="mybtn secondary tn" data-runme='mek_payment' data-myid="${value}" title="Edit">
+										<i class="${iconAtlas['payments']}"></i> pay up
+									</button>
+								` : ``;
+							let acts_1 = (row.status == 2) ? '' : `
+								<button class="mybtn secondary tn" onclick="fix_tag(${value})" title="View">
+									<i class="fas fa-wrench"></i> fix tag
+								</button>
+							`;
+
+							let acts_2 = `
+								<button class="mybtn secondary tn" onclick="view_acts(${value})" title="View">
+									<i class="fas fa-cog"></i> actions
+								</button>
+							`;
+
 							return `
 								<div class="action-btns">
-									<button class="mybtn primary sm" onclick="viewRecord(${value})" title="View">
+									<button class="mybtn primary tn" onclick="viewRecord(${value})" title="View">
+										<i class="fas fa-eye"></i> view
+									</button>
+									${acts_2}
+								</div>
+							`;
+						},
+					},
+					// */
+					/*
+					{
+						title: 'Actions',
+						data: 'id',
+						sortable: false,
+						width: '250px',
+						render: function(value, row) {
+							let acts = (row.status == 2) ?
+								`
+									<button class="btn themeround btn-secondary btn-sm" data-runme='mek_report' data-myid="${value}" title="Edit">
+										<i class="fa fa-file-export"></i> make report
+									</button>
+								` : ``;
+							let acts_2 = (row.task.payment_status != 2) ?
+								`
+									<button class="btn themeround themebg w3-hover-black w3-text-white btn-sm" data-runme='mek_payment' data-myid="${value}" title="Edit">
+										<i class="${iconAtlas['payments']}"></i> pay up
+									</button>
+								` : ``;
+
+							let acts_3 = (row.status == 2) ? '' : `
+								<button class="btn themeround btn-dark w3-hover-yellow btn-sm" onclick="fix_tag(${value})" title="View">
+									<i class="fas fa-wrench"></i> fix tag
+								</button>
+							`;
+
+							return `
+								<div class="action-btns">
+									<b class="w3-hide">${row.status}</b>
+									<button class="mybtn primary sm w3-hide" onclick="viewRecord(${value})" title="View">
 										<i class="fas fa-cog"></i> Manage
 									</button>
-									<button class="btn-action btn-edit w3-hide" data-runme='edit_record' data-myid="${value}" title="Edit">
-										<i class="fas fa-edit"></i> edit
-									</button>
+									${acts_3}
+									${acts_2}
+									${acts}
 								</div>
 							`;
 						}
 					}
+					// */
 				],
 
 				// Optional: Items per page (max 300)
@@ -692,27 +760,16 @@
 		viewRecordInfo(cur);
 
 		// alert_dark(`viewing ${myn.id}'s details`);
-
 		// alert_info('set current user: ' + myn.name);
 		// alert_dark('set current userid: ' + myn.id);
 		// window['cur_record'] = cur;
 
 		// loadPage({template: linkAtlas['view_task'],sidenote: 'Task Information'});
 	}
-
 	function viewRecordInfo(who) {
 		view_samples_modal_trig.click();
 		renderSampleData(who);
 	}
-
-	function deleteRecord(id) {
-		if (confirmAction('Delete User?','Are you sure you want to delete this User?')) {
-			// Add your delete logic here
-			showToast('success', 'Deleted', `User ${id} deleted successfully`);
-			LaravelDataTable.refresh();
-		}
-	}
-
 	window['add_record'] = (e) => {
 		roleop = "add";
 		add_edit_form.recid.value = "";
@@ -722,7 +779,6 @@
 		// add_edit_form.user_password.removeAttribute('readonly');
 		add_edit_title.innerHTML = "Register new Client";
 	}
-
 	window['edit_record'] = (e) => {
 		if(e === undefined){return;}
 
@@ -738,12 +794,165 @@
 		// open the add page but with the job's deets
 	}
 
-	window['delete_user'] = (e) => {
-		roleop = "edit";
-		rec_id = e.dataset.id;
+	// extra stuff
+	window['view_acts'] = (n) => {
+		if(n == null){
+			alert_danger('invalid procedure call');
+			return;
+		}
+		alert_info('something is happening');
 
-		confirmAction();
-		alert_info(e.textContent);
+		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == ("" + n).toLowerCase();})[0];
+		let value = n;
+
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		let btn_1 = mekButton({
+			caption: `<i class="fa fa-wrench"></i> fix tag`,
+			btype: 'primary'
+		});
+
+		let acts_0 = (myn.task.payment_status != 2) ?
+			`
+				<button data-dismiss="modal" class="mybtn secondary sm" data-runme='mek_payment' data-myid="${value}" title="Edit">
+					<i class="${iconAtlas['payments']}"></i> pay up
+				</button>
+			` : ``;
+		let acts_1 = (myn.status == 2) ? '' : `
+			<button data-dismiss="modal" class="mybtn secondary sm" onclick="fix_tag(${value})" title="View">
+				<i class="fas fa-wrench"></i> fix tag
+			</button>
+		`;
+
+		let finht = `
+			<div class="actions flow gap-sm left" style="align-items: stretch;">
+				${acts_0}
+				${acts_1}
+			</div>
+		`;
+
+		acts_ht = `${finht}`;
+
+		mekModal({
+			title: 'sample actions',
+			sub: 'what actions do you want to perform on this sample',
+			content: acts_ht,
+			has_cancel: false,
+			has_continue: false,
+		});
+	}
+
+	// acts of the, well ...., act buttons
+	function fix_tag(n) {
+		// id = el.dataset.myid || null;
+		let id = n;
+
+		if(id == null){
+			alert_danger('invalid procedure call');
+			return;
+		}
+
+		alert_dark('this is twirkin');
+		// return;
+
+		let myn = window['curRecordData'].filter(f => {return f.id.toString().toLowerCase() == (`${id}`).toLowerCase();})[0];
+
+		if(myn == undefined){
+			alert_danger('invalid record');
+			return;
+		}
+
+		if(myn.status == 2){
+			alert_danger('you cant change the tag of a sample with readings');
+			return;
+		}
+
+		// alert_dark('got to input wirks');
+
+		// send to server
+		let tosend = {};
+		let inputs = [
+			{
+				label: "new sample tag",
+				field: "prompt",
+				typ:"text",
+				placeholder: 'enter the sample tag',
+				props: undefined,
+				value: myn.sample_tag,
+				_inp_props: undefined,
+				_inp_classes: undefined,
+				required: true
+			}
+		];
+
+		awaitConfirmPass(get_new_tag);
+
+		function get_new_tag(dta) {
+			let ppw = dta.admin_password;
+			tosend['pw'] = ppw;
+			tosend['admin_password'] = ppw;
+			tosend['email'] = cur_user.email;
+
+			get_input('change sample tag',inputs, send_the_tag);
+		}
+		function send_the_tag(el) {
+			alert_info('submitting the tag');
+
+			if(el.prompt.toLowerCase() == myn.sample_tag.toLowerCase()){
+				alert_warning('the new sample tag is the same as the old one');
+				return;
+			}
+
+			let shape = {
+				sample_tag: el.prompt,
+				sample_id: myn.id,
+			};
+
+			tosend = {
+				...tosend,
+				...shape,
+			};
+
+			send_the_tag_fr();
+		}
+		function send_the_tag_fr() {
+			alert_info('changing the sample tag');
+
+			window[fetch_bypass](linkAtlas['change_sample_tag'],tosend,'POST')
+			.then(() => {
+				if(window['refreshData'] !== undefined){
+					refreshData();
+				}
+			})
+
+			add_bg_worker(tmp);
+		}
+		function save_it_here(w) {
+			let tmp_1 = {
+				complete_msg: 'sample saved to local tools',
+				fail_msg: 'local sample saving failed, please retry',
+				data: w.sendme,
+				is_formdata: false,
+				destination: linkAtlas['save_sample'],
+				ui_title: 'Saving related sample to datastore',
+				mytype: 'worksheets',
+				ui_desc: `saving sample <b class="themetxt">${w.sendme.sample_no} [${w.sendme.sample_no}]</b> to the datastore`,
+				afterfx: (m) => {
+					// alert_success('')
+					alert_silent('sample added, we good cheese');
+					if(window['refreshData'] !== undefined){
+						refreshData();
+					}
+				},
+			};
+
+			add_bg_worker(tmp_1);
+		}
+
+		// save returned
 	}
 
 	window['form_afterfx'] = (m) => {
