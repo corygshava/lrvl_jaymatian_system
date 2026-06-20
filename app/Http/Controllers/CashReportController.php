@@ -355,7 +355,10 @@ class CashReportController extends Controller{
 				// get total income
 				if($haslast){
 					if(self::isDate($t_range)){
-						//
+						$payemnts = Payment::query()
+							->where('id','<>',null)
+							->timeRange($t_range)
+						;
 					} else {
 						$payemnts = Payment::query()
 							->where('id','<>',null)
@@ -377,7 +380,10 @@ class CashReportController extends Controller{
 					$_rlg('ignored payment filter');
 				}
 
-				$_rlg(['payments gotten' => (clone $payemnts)->get()]);
+				// if(isset($payemnts)){
+					$_rlg(['payments gotten' => (clone $payemnts)->get()]);
+				// }
+
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');
 				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->sum('amount');
 				$total_daily_cash = $total_income + $cash_from_debtors;
