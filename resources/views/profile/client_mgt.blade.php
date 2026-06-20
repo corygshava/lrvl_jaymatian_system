@@ -1,14 +1,14 @@
 <?php
-	// /*
+	/*
 	require_once __DIR__.'/piece_add_client_form.php';
 	require_once __DIR__.'/datatables_code.php';
 	// */
 ?>
 
-<!--
+{{-- <!-- --}}
 @include('pieces.codes_datatables')
 @include('pieces.forms_clientops')
--->
+{{-- --> --}}
 
 <style>
 	/* stats (keep here, ill figure them out later) */
