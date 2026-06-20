@@ -936,49 +936,60 @@ abstract class Controller{
 			return [
 				"start" => Carbon::parse($range)->subDay()->startOfDay(),
 				"end" => Carbon::parse($range)->subDay()->endOfDay(),
+				"tym" => Carbon::parse($range),
 			];
 		}
 
-		[$start, $end] = match($range) {
+		[$start, $end, $tym] = match($range) {
 			'today' => [
 				Carbon::today()->subDay()->startOfDay(),
 				Carbon::today()->subDay()->endOfDay(),
+				Carbon::today(),
 			],
 			'yesterday' => [
 				Carbon::yesterday()->subDay()->startOfDay(),
 				Carbon::yesterday()->subDay()->endOfDay(),
+				Carbon::yesterday(),
 			],
 			'juzi' => [
 				Carbon::today()->subDays(2)->subDay()->startOfDay(),
 				Carbon::today()->subDays(2)->subDay()->endOfDay(),
+				Carbon::today()->subDays(2),
 			],
 			'kabla_juzi' => [
 				Carbon::today()->subDays(3)->subDay()->startOfDay(),
 				Carbon::today()->subDays(3)->subDay()->endOfDay(),
+				Carbon::today()->subDays(3),
 			],
 			'this_week' => [
 				Carbon::now()->startOfWeek()->subDay()->startOfDay(),
 				Carbon::now()->endOfWeek()->subDay()->endOfDay(),
+				Carbon::now()->startOfWeek(),
 			],
 			'this_month' => [
 				Carbon::now()->startOfMonth()->subDay()->startOfDay(),
 				Carbon::now()->endOfMonth()->subDay()->endOfDay(),
+				Carbon::now()->startOfMonth(),
 			],
 			'this_year' => [
 				Carbon::now()->startOfYear()->subDay()->startOfDay(),
 				Carbon::now()->endOfYear()->subDay()->endOfDay(),
+				Carbon::now()->startOfYear(),
 			],
 			'last_week' => [
 				Carbon::now()->subWeek()->startOfWeek()->subDay()->startOfDay(),
 				Carbon::now()->subWeek()->endOfWeek()->subDay()->endOfDay(),
+				Carbon::now()->subWeek()->startOfWeek(),
 			],
 			'last_month' => [
 				Carbon::now()->subMonth()->startOfMonth()->subDay()->startOfDay(),
 				Carbon::now()->subMonth()->endOfMonth()->subDay()->endOfDay(),
+				Carbon::now()->subMonth()->startOfMonth(),
 			],
 			'last_year' => [
 				Carbon::now()->subYear()->startOfYear()->subDay()->startOfDay(),
 				Carbon::now()->subYear()->endOfYear()->subDay()->endOfDay(),
+				Carbon::now()->subYear()->startOfYear(),
 			],
 			default => [null, null],
 		};

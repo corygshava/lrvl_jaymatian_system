@@ -1083,6 +1083,7 @@
 				killghost('confirmPasswordCallback');
 			}
 			window['reset_saved_password'] = () => {
+				alert_info('cleared last used password');
 				killghost(variableAtlas['last_used_password']);
 			}
 
@@ -1272,7 +1273,7 @@
 							_props: ` data-submitme='[${formsel}]'`,
 						})
 					});
-				},700);
+				},300);
 
 				window[variableAtlas['get_input_inter']] = callback;
 

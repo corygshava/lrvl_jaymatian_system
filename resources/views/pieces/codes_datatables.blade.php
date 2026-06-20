@@ -14,7 +14,7 @@
 		// Private variables
 		let config = {};
 		let currentPage = 1;
-		let perPage = 10;
+		let perPage = 5;
 		let totalRecords = 0;
 		let currentFilters = {};
 		let searchQuery = '';
@@ -52,7 +52,7 @@
 
 			// Table configuration
 			columns: [],                        // Array of column definitions
-			perPage: 10,                        // Records per page (max 300)
+			perPage: 20,                        // Records per page (max 300)
 			enableSearch: true,                 // Enable search functionality
 			enableSort: true,                   // Enable column sorting
 			enableFilters: false,               // Enable filters
@@ -92,6 +92,8 @@
 			config = { ...defaultConfig, ...userConfig };
 			perPage = Math.min(config.perPage, 300);
 			sortDirection = config.sortDirection;
+
+			console.log('lrvl_dt config: ',config);
 
 			// set up the must have filters
 			let default_filters = [
@@ -273,13 +275,15 @@
 			// Build request parameters
 			const params = {
 				page: currentPage,
-				per_page: perPage,
+				per_page: config.perPage,
 				search: searchQuery,
 				sort_by: sortColumn,
 				sort_direction: sortDirection,
 				...currentFilters,
 				...config.additionalParams
 			};
+
+			console.log('lrvl_dt load data params: ',params);
 
 			// Make AJAX request
 			fetch(`${config.apiEndpoint}?${new URLSearchParams(params)}`, {

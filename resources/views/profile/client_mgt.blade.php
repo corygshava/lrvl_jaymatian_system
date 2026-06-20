@@ -1,14 +1,14 @@
 <?php
-	/*
+	// /*
 	require_once __DIR__.'/piece_add_client_form.php';
 	require_once __DIR__.'/datatables_code.php';
 	// */
 ?>
 
-{{-- <!-- --}}
+<!--
 @include('pieces.codes_datatables')
 @include('pieces.forms_clientops')
-{{-- --> --}}
+-->
 
 <style>
 	/* stats (keep here, ill figure them out later) */
@@ -644,7 +644,7 @@
 				],
 
 				// Optional: Items per page (max 300)
-				perPage: 10,
+				perPage: 20,
 
 				// Optional: Enable features
 				enableSearch: true,

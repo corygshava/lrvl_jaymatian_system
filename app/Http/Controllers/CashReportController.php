@@ -27,7 +27,7 @@ class CashReportController extends Controller{
 
 		return $result;
 	}
-    public function get_all_daily(Request $req){
+	public function get_all_daily(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
 
@@ -105,7 +105,7 @@ class CashReportController extends Controller{
 
 		return response()->json($res);
 	}
-    public function get_all_monthly(Request $req){
+	public function get_all_monthly(Request $req){
 		$res = $this->dftres;
 		// $alldata = $req->all();
 
@@ -241,7 +241,7 @@ class CashReportController extends Controller{
 		return response()->json($res);
 	}
 
-    public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
+	public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
 		$res = $this->dftres;
 		// $res = [...$res,...$oldres];
 		// $alldata = $req->all();
@@ -300,6 +300,7 @@ class CashReportController extends Controller{
 					->first()
 				;
 				$r = $this->getPreviousDay($myrange);
+				$_rlg(['prevdata' => $r]);
 				// $redone_range = $r['start'] ?? null;
 				$redone_range = $r['start'];
 				$carry_over_rec = null;
@@ -353,18 +354,30 @@ class CashReportController extends Controller{
 
 				// get total income
 				if($haslast){
-					$payemnts = Payment::query()
-						->where('id','<>',null)
-						->timeRange($t_range)
-					;
+					if(self::isDate($t_range)){
+						//
+					} else {
+						$payemnts = Payment::query()
+							->where('id','<>',null)
+							->timeRange($t_range)
+						;
+					}
 					$_rlg('added payment filter');
 				} else {
-					$payemnts = Payment::query()
-						->where('id','<>',null)
-					;
+					if(self::isDate($t_range)){
+						$payemnts = Payment::query()
+							->where('id','<>',null)
+							->timeRange($t_range)
+						;
+					} else {
+						$payemnts = Payment::query()
+							->where('id','<>',null)
+						;
+					}
 					$_rlg('ignored payment filter');
 				}
 
+				$_rlg(['payments gotten' => (clone $payemnts)->get()]);
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');
 				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->sum('amount');
 				$total_daily_cash = $total_income + $cash_from_debtors;
@@ -376,9 +389,8 @@ class CashReportController extends Controller{
 				$expenses = Expense::query()
 					->where('id','<>',null)
 				;
-				if($lastrec != null){
-					$expenses = $expenses->timeRange($t_range);
-				}
+
+				$expenses = $expenses->timeRange($t_range);
 
 				$expenditure = (clone $expenses)->sum('amount');
 				$total_balance_forward = $total_cash - $expenditure;
@@ -392,7 +404,14 @@ class CashReportController extends Controller{
 					$solution_samples = (clone $samples)->where('sample_type','solution')->sum('sample_count');
 					$carbon_samples = (clone $samples)->where('sample_type','carbon')->sum('sample_count');
 					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->sum('sample_count');
-					$monthly_samples = Sample::timeRange('this_month')->sum('sample_count');
+					if(isset($r['tym'])){
+						$monthly_samples = Sample::query()->whereBetween('created_at', [
+							$r['tym']->startOfMonth()->startOfDay(),
+							$r['tym']->startOfMonth()->endOfDay(),
+						])->sum('sample_count');
+					} else {
+						$monthly_samples = Sample::timeRange('this_month')->sum('sample_count');
+					}
 					$_msg('samples data fetched');
 
 					$sampledata = [
@@ -428,14 +447,16 @@ class CashReportController extends Controller{
 						->selectRaw('purpose, SUM(amount) as total_amount')
 						->groupBy('purpose')
 						->get()
-						->map(function($expense) {
-							return [
-								"p" => $expense->purpose,
-								"amt" => $expense->total_amount,
-							];
-						})
-						->toArray()
 					;
+					$_rlg(['spend recs' => $new_spend_data]);
+
+					$new_spend_data = $new_spend_data->map(function($expense) {
+						return [
+							"p" => $expense->purpose,
+							"amt" => $expense->total_amount,
+						];
+					})->toArray();
+
 					foreach($new_spend_data as $nsd){
 						$spend_data[$nsd["p"]] = $nsd["amt"];
 					}

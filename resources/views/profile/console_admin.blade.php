@@ -16,6 +16,18 @@
 
 <style>
 	/*[data-runme="save_daily_report"]{display: none;}*/
+	.btn-outline-themer{
+		border: 1px solid var(--themecolor);
+	}
+	.btn-outline-themer:hover{
+		background: var(--darkcolor);
+		border: 1px solid var(--darkcolor);
+		color: #fff;
+	}
+	.btn-outline-themer.active{
+		background: var(--themecolor);
+		color: #fff;
+	}
 </style>
 
 <div class="container-fluid">
@@ -255,17 +267,17 @@
 
 			timerange_atlas.forEach((t,n) => {
 				outht += `
-					<button class="btn btn-outline-primary ${n != 0 ? "" : " active"}" data-runme="reset_timerange" data-myid="${n}">
+					<button class="btn btn-outline-themer ${n != 0 ? "" : " active"}" data-runme="reset_timerange" data-myid="${n}">
 						${t.split('_').join(" ")}
 					</button>
 				`;
 			})
 
 			outht += `
-				<button class="btn btn-outline-primary" data-runme="change_date">
+				<button class="btn btn-outline-themer" data-runme="change_date">
 					<i class="fa fa-calendar"></i>
 				</button>
-				<button class="btn btn-outline-primary w3-hide" data-runme="change_date_range">
+				<button class="btn btn-outline-themer w3-hide" data-runme="change_date_range">
 					<i class="fa fa-calendar-alt"></i>
 				</button>
 			`;
@@ -567,6 +579,15 @@
 			function send_to_sys(b) {
 				console.log(b);
 				alert_dark('gotten input');
+
+				let date_txt = b.chosen_date;
+				let date = new Date(date_txt);
+				let taday = new Date();
+
+				if(date.getTime() > taday.getTime()){
+					alert_danger('sorry, you cant pick a date in the future');
+					return;
+				}
 
 				el.dataset.myid = b.chosen_date;
 
