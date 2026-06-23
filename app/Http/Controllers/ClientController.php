@@ -274,22 +274,26 @@ class ClientController extends Controller{
 				if($changed == null){
 					$msg = "invalid client";
 				} else {
-					$changed->update($tosend);
-					// $changed->refresh();
+					if($exist){
+						$msg = 'the phone number is already taken';
+					} else {
+						$changed->update($tosend);
+						// $changed->refresh();
 
-					$changed = Client::where('id',$recid)
-						->withCount('samples')
-						->withCount('payments')
-						->withCount('reports')
-						->withCount('tasks')
-						->withSum('payments','amount')
-						->with('mycreator')
-						->withCount('tasks')
-						->first()
-					;
+						$changed = Client::where('id',$recid)
+							->withCount('samples')
+							->withCount('payments')
+							->withCount('reports')
+							->withCount('tasks')
+							->withSum('payments','amount')
+							->with('mycreator')
+							->withCount('tasks')
+							->first()
+						;
 
-					$reslt = true;
-					$msg = "Client updated successfully";
+						$reslt = true;
+						$msg = "Client updated successfully";
+					}
 				}
 			}
 
