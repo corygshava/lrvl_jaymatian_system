@@ -285,7 +285,7 @@ class InvoiceController extends Controller{
 
 		return response()->json($res);
 	}
-    public function get_my_info(Request $req){
+    public function get_my_info(Request $req,$iscalled=false){
 		$res = $this->dftres;
 		$alldata = $req->all();
 		$msg = "authenticafion failed";
@@ -309,7 +309,7 @@ class InvoiceController extends Controller{
 			$update_msg($w,$l);
 		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg("fetching permissions");
 			$reslt = false;
@@ -355,6 +355,10 @@ class InvoiceController extends Controller{
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
+		}
+
+		if($iscalled){
+			return $res;
 		}
 
 		return response()->json($res);

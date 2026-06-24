@@ -74,4 +74,8 @@ Route::post('/get_bizdata',[ApiController::class,'get_bizdata'])
 	// ->middleware('throttle:60,1')
 ;
 
+Route::post('/get_invoice_info',[ApiController::class,'get_invoice_info'])
+	// ->middleware('throttle:60,1')
+;
+
 // Route::post('/verify_file')
