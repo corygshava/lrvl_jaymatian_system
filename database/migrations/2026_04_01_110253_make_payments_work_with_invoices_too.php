@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('payments', function (Blueprint $table) {
             $table->integer('invoice_id')->nullable()->default(null)->after('client_id');
-            $table->enum('payment_type',['task','invoice'])->default('task')->after('extra_details');
+            $table->enum('payment_type',['task','invoice','debt_payment'])->default('task')->after('extra_details');
         });
     }
 

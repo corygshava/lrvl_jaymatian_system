@@ -793,7 +793,7 @@
 							<td class="w3-right-align"><strong>${drd.samples_count || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['soil'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['rock'] || 0}</strong></td>
-							<td class="w3-right-align"><strong>${Number(s_dta['carbon'] || 0) + Number(s_dta['carbon activity'] || 0)}</strong></td>
+							<td class="w3-right-align"><strong>${(s_dta['carbon'] || 0) + (s_dta['carbon activity'] || 0)}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['solution'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['paid_tasks'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['unpaid_tasks'] || 0}</strong></td>
@@ -940,8 +940,8 @@
 								<th>${mekSpan('Name')}</th>
 								<th class="w3-hide">${mekSpan('Contact')}</th>
 								<th class="w3-hide">${mekSpan('unpaid invoices')}</th>
-								<th>${mekSpan('Total Paid')}</th>
-								<th>${mekSpan('Balance')}</th>
+								<th class="w3-hide">${mekSpan('Balance')}</th>
+								<th width="120px">${mekSpan('Total Paid')}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -955,8 +955,8 @@
 								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
 								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align w3-hide"><strong>${formatNumber(f.invoices_count)}</strong></td>
+								<td class="w3-right-align w3-hide"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
 								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
-								<td class="w3-right-align"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
 							</tr>
 						`;
 
@@ -966,8 +966,8 @@
 					debtpay_outht += `
 							<tr>
 								<td colspan="1"><b style="font-size: 1.1rem;">Total</b></td>
+								<td class="themetxt w3-right-align w3-hide"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
 								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
-								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -997,7 +997,7 @@
 								<th>${mekSpan('Name')}</th>
 								<th class="w3-hide">${mekSpan('Contact')}</th>
 								<th>${mekSpan('unpaid invoices')}</th>
-								<th>${mekSpan('Total Owed')}</th>
+								<th width="120px">${mekSpan('Total Owed')}</th>
 							</tr>
 						</thead>
 						<tbody>

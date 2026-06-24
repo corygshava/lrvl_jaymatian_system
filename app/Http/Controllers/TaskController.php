@@ -511,6 +511,9 @@ class TaskController extends Controller{
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
 		};
+		$_rlg = function($w) use($update_runlog){
+			$update_runlog($w);
+		};
 
 		if($this->ili() || $iscalled){
 			$res['success'] = true;
@@ -521,6 +524,8 @@ class TaskController extends Controller{
 
 			$wegood = false;
 			$paydate = $req->input('date_added',null);
+
+			$_rlg(['pay_date' => $paydate]);
 
 			if($p_user == null){
 				$wegood = self::verifyPassword($passed['admin_password'], $outps);
@@ -582,11 +587,21 @@ class TaskController extends Controller{
 
 						if($paydate !== null){
 							$newrec['transaction_time'] = Carbon::parse($paydate);
-							$newrec['created_at'] = Carbon::parse($paydate);
+							// $newrec['created_at'] = Carbon::parse($paydate);
+
+							$pdate = Carbon::parse($paydate);
+							$_rlg(['added' => $newrec]);
+						}
+
+						if($task->created_at->isBefore(Carbon::today())){
+							$newrec['payment_type'] = 'debt_payment';
 						}
 
 						// /*
 						$payrec = Payment::create($newrec);
+
+						$payrec->created_at = $newrec['created_at'];
+						$payrec->save();
 						// */
 
 						$newbal = $bal - $amt;

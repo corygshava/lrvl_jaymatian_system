@@ -385,7 +385,7 @@ class CashReportController extends Controller{
 				// }
 
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');
-				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->sum('amount');
+				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->orWhere('payment_type','debt_payment')->sum('amount');
 				$total_daily_cash = $total_income + $cash_from_debtors;
 				$total_cash = $total_daily_cash + $carry_over;
 				// $_rlg(['payments sum' => $payemnts]);
@@ -486,7 +486,9 @@ class CashReportController extends Controller{
 					}
 
 				// get debt payment data
-					$d_payments = Payment::where('payment_type', 'invoice')
+					$d_payments = Payment::query()
+						->where('payment_type', 'invoice')
+						->orWhere('payment_type', 'debt_payment')
 						->timeRange($t_range)
 						->selectRaw('client_id, SUM(amount) as total_payment')
 						->groupBy('client_id')

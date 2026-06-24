@@ -224,6 +224,7 @@
 	let pay_type_classes = {
 		'invoice' : 'alert-primary w3-text-black',
 		'task' : 'alert-warning w3-text-black',
+		'debt_payment' : 'w3-cobalt w3-text-white',
 	};
 
 	window['task_state_atlas'] = [
