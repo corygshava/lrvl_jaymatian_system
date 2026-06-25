@@ -307,23 +307,58 @@
 
 		console.log('report sample: ',report.sample);
 
-		let sample_info = {
-            "sample no": report.sample.sample_no,
-            "sample tag": report.sample.sample_tag,
-            "sample type": report.sample.sample_type,
-            "sample count": report.sample.sample_count,
-            "brough in": formatDate(report.sample.created_at),
-            "status": `<b>${sample_state_atlas[2]}</b>`
-		};
 		let sample_outht = '';
-		Object.keys(sample_info).forEach(f => {
-			sample_outht += `
+
+		if(!(report.sample == undefined)){
+			let sample_info = {
+	            "sample no": report.sample.sample_no,
+	            "sample tag": report.sample.sample_tag,
+	            "sample type": report.sample.sample_type,
+	            "sample count": report.sample.sample_count,
+	            "brough in": formatDate(report.sample.created_at),
+	            "status": `<b>${sample_state_atlas[2]}</b>`
+			};
+			Object.keys(sample_info).forEach(f => {
+				sample_outht += `
+					<div class="info-row">
+						<span class="info-label">${f}:</span>
+						<span class="info-value">${sample_info[f]}</span>
+					</div>
+				`;
+			});
+		} else {
+			sample_outht = `<div class="spacy-md w3-center"><i>the sample was deleted</i></div>`;
+		}
+
+		let tasks_btn = (report.sample == undefined) ? '' : `
+			<button class="mybtn secondary" onclick="viewTask_payments(${report.task.id})" data-openthis="taskinfo">
+				<i class="fas fa-folder"></i> View Task
+			</button>
+		`;
+
+		let tasks_outht = '';
+		if(report.task == undefined){
+			tasks_outht = ``;
+		} else {
+			tasks_outht = `
 				<div class="info-row">
-					<span class="info-label">${f}:</span>
-					<span class="info-value">${sample_info[f]}</span>
+					<span class="info-label">Task Number:</span>
+					<span class="info-value">${report.task.task_no}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label">Status:</span>
+					<span class="info-value"><b class="mybadge w3-black">${task_state_atlas[report.task.status]}</b></span>
+				</div>
+				<div class="info-row">
+					<span class="info-label">Payment Status:</span>
+					<span class="info-value">${getPaymentBadge(report.task.is_paid)}</span>
+				</div>
+				<div class="info-row">
+					<span class="info-label">Created:</span>
+					<span class="info-value">${formatDate(report.task.created_at)}</span>
 				</div>
 			`;
-		});
+		}
 
 		// return;
 		// Build the interface
@@ -342,9 +377,7 @@
 			<!-- Action Buttons -->
 			<div class="flowline overflow spacy-md">
 				<div class="flowline centerline center spacy-sm w3-hide_">
-					<button class="mybtn secondary" onclick="viewTask_payments(${report.task.id})" data-openthis="taskinfo">
-						<i class="fas fa-folder"></i> View Task
-					</button>
+					${tasks_btn}
 					<button class="mybtn secondary" onclick="viewClient_payments(${report.owner.id})" data-openthis="clientinfo">
 						<i class="fas fa-users"></i> View Client
 					</button>
@@ -381,9 +414,7 @@
 				<div class="collapse panelbg distance-sm spacy-sm" id="sampleInfo">
 					${sample_outht}
 					<div class="info-row">
-						<button class="mybtn secondary sm" onclick="viewTask_payments()" data-openthis="taskinfo">
-							<i class="fas fa-folder"></i> View Task
-						</button>
+						${tasks_btn}
 					</div>
 				</div>
 			</div>
@@ -394,22 +425,7 @@
 					<i class="fa fa-chevron-down myicon"></i>
 				</a>
 				<div class="collapse panelbg distance-sm spacy-sm" id="takInfo">
-					<div class="info-row">
-						<span class="info-label">Task Number:</span>
-						<span class="info-value">${report.task.task_no}</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Status:</span>
-						<span class="info-value"><b class="mybadge w3-black">${task_state_atlas[report.task.status]}</b></span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Payment Status:</span>
-						<span class="info-value">${getPaymentBadge(report.task.is_paid)}</span>
-					</div>
-					<div class="info-row">
-						<span class="info-label">Created:</span>
-						<span class="info-value">${formatDate(report.task.created_at)}</span>
-					</div>
+					${tasks_outht}
 				</div>
 			</div>
 

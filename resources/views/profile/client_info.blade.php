@@ -348,13 +348,14 @@
 			load_txt.innerHTML = 'loading client invoices';
 			// render reports
 
-			loadMe('invoices',linkAtlas['get_invoices'],c_pld,step6,'POST');
+			loadMe('invoices', linkAtlas['get_invoices'], c_pld, step6, 'POST');
 		}
 		const step6 = (d) => {
 			if(invoices_fetched){
 				// alert_danger('invalid fetch invoices call');
 				return;
 			}
+
 			client_info_data.invoiceData = d.sendme;
 			invoices_fetched = true;
 			load_txt.innerHTML = 'displaying data';
@@ -827,6 +828,9 @@
 						cap: 'Sample number',
 						field: 'sample',
 						show: function(value) {
+							if(value == null){
+								return `<b><i>the sample doesnt exist</i></b>`;
+							}
 							return `<strong>${value.sample_no}</strong>`;
 						}
 					},

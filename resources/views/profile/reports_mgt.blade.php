@@ -464,6 +464,9 @@
 						data: 'sample',
 						sortable: true,
 						render: function(value) {
+							if(value == null){
+								return `<i>deleted sample</i>`;
+							}
 							return `<strong>${value.sample_no}</strong>`;
 						}
 					},
