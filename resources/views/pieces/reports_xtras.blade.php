@@ -327,7 +327,7 @@
 				`;
 			});
 		} else {
-			sample_outht = `<div class="spacy-md w3-center"><i>the sample was deleted</i></div>`;
+			sample_outht = `<div class="spacy-sm"><i>the sample was deleted</i></div>`;
 		}
 
 		let tasks_btn = (report.sample == undefined) ? '' : `
@@ -338,7 +338,7 @@
 
 		let tasks_outht = '';
 		if(report.task == undefined){
-			tasks_outht = ``;
+			tasks_outht = `<div class="spacy-sm"><i>the task was deleted</i></div>`;
 		} else {
 			tasks_outht = `
 				<div class="info-row">
