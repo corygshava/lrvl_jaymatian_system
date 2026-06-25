@@ -360,6 +360,8 @@
 			`;
 		}
 
+		let report_tag = report.task == undefined ? `${report.owner.client_name.toUpperCase()}` : report.task.task_no;
+
 		// return;
 		// Build the interface
 		const html = `
@@ -388,7 +390,7 @@
 				<div class="border-left w3-hide-small"></div>
 				<div class="flowline centerline center spacy-sm">
 					<a class="mybtn secondary sm" target="blank" href="${linkAtlas['getreport_slug']}/${report.file_slug}"><i class="fa fa-eye"></i> view report</a>
-					<a class="mybtn secondary sm" target="blank" download="[${report.task.task_no}] ${encodeURIComponent(report.owner.client_name)} - report.png" href="${linkAtlas['getreport_slug']}/${report.file_slug}"><i class="fa fa-download"></i> download</a>
+					<a class="mybtn secondary sm" target="blank" download="[${report_tag}] ${encodeURIComponent(report.owner.client_name)} - report.png" href="${linkAtlas['getreport_slug']}/${report.file_slug}"><i class="fa fa-download"></i> download</a>
 					<!--
 					<a class="mybtn secondary sm w3-hide" data-runme="downloadPdf" target="blank" href="${linkAtlas['getreport_pdf']}/${report.pdf_link}"><i class="fa fa-download"></i> download as pdf</a>
 					// -->
