@@ -788,12 +788,22 @@
 
 				let s_dta = drd.sample_data;
 
+				let c_a_samples = Number(s_dta['carbon activity']);
+				if(isNaN(c_a_samples)){
+					c_a_samples = 0;
+				}
+				let c_samples =  Number(s_dta['carbon']);
+				if(isNaN(c_samples)){
+					c_samples = 0;
+				}
+				let carbon_count = c_a_samples + c_samples;
+
 				samples_outht += `
 						<tr>
 							<td class="w3-right-align"><strong>${drd.samples_count || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['soil'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['rock'] || 0}</strong></td>
-							<td class="w3-right-align"><strong>${(s_dta['carbon'] || 0) + (s_dta['carbon activity'] || 0)}</strong></td>
+							<td class="w3-right-align"><strong>${carbon_count}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['solution'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['paid_tasks'] || 0}</strong></td>
 							<td class="w3-right-align"><strong>${s_dta['unpaid_tasks'] || 0}</strong></td>
