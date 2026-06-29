@@ -73,6 +73,7 @@
 					</div>
 
 					<div class="w3-display-topright_ spacy-sm">
+						<button class="mybtn primary mr-2 w3-hide w3-animate-zoom" data-role="retrier_btn" data-runme="resync_from_date"><i class="fa fa-table"></i> Resync</button>
 						<button class="mybtn primary" data-runme="render_required_data"><i data-myicon="cash_reports"></i> view System Report</button>
 					</div>
 				</div>
@@ -232,6 +233,29 @@
 		'dash_runtime_data',
 		'timerange',
 		'is_admin_page',
+		'resync_from_date',
+		'initUIs',
+		'initdashsetup',
+		'render_all_stuff',
+		'showError',
+		'showmainLoader',
+		'hidemainLoader',
+		'refresh_data',
+		'loadthispage',
+		'refreshData',
+		'reset_timerange',
+		'change_date',
+		'change_date_range',
+		'view_sample',
+		'view_task_0',
+		'view_task',
+		'render_sales_chart',
+		'render_samples_chart',
+		'render_visits_chart',
+		'render_income_chart',
+		'render_line_chart',
+		'renderStats',
+		'renderTasks',
 	];
 
 	/*
@@ -274,7 +298,7 @@
 			})
 
 			outht += `
-				<button class="btn btn-outline-themer" data-runme="change_date">
+				<button class="btn btn-outline-themer" data-runme="change_date" id="calbtn">
 					<i class="fa fa-calendar"></i>
 				</button>
 				<button class="btn btn-outline-themer w3-hide" data-runme="change_date_range">
@@ -562,6 +586,20 @@
 			let btns = document.querySelectorAll('.scopebtns>.btn');
 			btns.forEach(l => {l.classList.remove('active');})
 			el.classList.add('active');
+
+			let rtbtn = document.querySelector('[data-role="retrier_btn"]');
+			if(rtbtn != undefined){
+				rtbtn.classList.add('w3-hide');
+				console.log('rtbtn found');
+
+				if(calbtn.classList.contains('active')){
+					setTimeout(() => {
+						alert_dark('showing extra button');
+						rtbtn.classList.remove('w3-hide');
+						// console.log('showing extra button');
+					},400);
+				}
+			}
 		}
 		window['change_date'] = (el) => {
 			//
@@ -602,6 +640,24 @@
 			function send_to_sys(b) {
 				console.log(b);
 				alert_dark(`gotten input: ${JSON.stringify(b)}`);
+			}
+		}
+		window['resync_from_date'] = (el) => {
+			// alert_dark('resyncing');
+			let payld = {
+				start_date: ''
+			};
+			let date = new Date(calbtn.dataset.myid);
+
+			payld.start_date = date.toISOString().split('T')[0];
+
+			window[fetch_bypass](linkAtlas['regen_daily_report'],payld,'POST').then((m) => {
+				responseHandler(m,final_step,m);
+			})
+
+			function final_step(d){
+				alert_info('data resynced');
+				refreshData();
 			}
 		}
 

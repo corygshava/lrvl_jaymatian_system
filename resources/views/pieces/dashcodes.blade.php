@@ -133,6 +133,7 @@
 				'save_daily_report' : './op/save_daily_report',
 				'change_sample_tag' : './op/change_sample_tag',
 				'send_sample_payment' : './op/send_sample_payment',
+				'regen_daily_report' : './op/regen_daily_reports_from_date',
 
 			// datalinks
 				'search_clients' : './data/search_clients',

@@ -108,6 +108,7 @@ class ExpenseController extends Controller{
 			'salary',
 			'government issue',
 			'home expense',
+			'expenditure',
 		];
 		$limits = [
 			'expenditure' => 2,

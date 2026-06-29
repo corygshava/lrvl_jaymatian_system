@@ -782,18 +782,15 @@ class CashReportController extends Controller{
 	}
 
 	// recreator setup
-	public function recreate_from_date(Request $req,$iscalled = false){
+	public function recreate_from_date(Request $req,$iscalled = false,$passdate = ''){
 		// recreates reports from a specified date till the present, might be very slow if starting from a far date
 		$res = $this->dftres;
 		$alldata = $req->all();
 		$msg = "didnt even get to start";
 
 		// /*
-		$passed = $iscalled ?
-			["start_date" => '']
-			:
-			$req->validate([
-				'start_date' => ['required','datetime'],
+		$passed = $req->validate([
+				'start_date' => ['required'],
 			])
 		;
 		// */
@@ -815,13 +812,42 @@ class CashReportController extends Controller{
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
+			$outdata = null;
 
-			$cmdt = self::commondata();
-			$mdta = random_int(0,14);
-			$reslt = $mdta >= 7;
+			// find out how many days we are regenerating
+			$thadate = $passed['start_date'];
+			$isdate = self::isDate($thadate);
+
+			if(!($isdate)){
+				$_msg('invalid date passed');
+			} else {
+				// do shit
+				$_msg('good date');
+				$taday = Carbon::today();
+				$day = Carbon::parse($thadate);
+				$gap = $taday->diffInDays($day);
+
+				$outdata = ['gap' => $gap];
+
+				if($gap > -1){
+					$_msg('you cant make a report for today onwards');
+				} else {
+					$_msg("the gap is $gap days");
+					$_msg('you can make a report');
+
+					$startday = $day->subDays($gap);
+					$update_runlog(['start_date' => $startday->toDateString()]);
+
+					for($n = 1;$n < ($gap * -1);$n++){
+						// $myday = $day
+						// $affected_recs = DailyCashReport::query()->where('created_at',$myday)->get();
+						// $update_runlog(['affected records' => $affected_recs]);
+					}
+				}
+			}
 
 			$res['result'] = $reslt;
-			$res['sendme'] = $cmdt['permissions'];
+			$res['sendme'] = $outdata;
 			$res['message'] = $msg;
 		}
 

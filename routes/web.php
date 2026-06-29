@@ -168,6 +168,7 @@ Route::prefix('/op')->group(function(){
 	// Route::post('/add_result',[SamplesController::class, 'add_results'])->middleware(['auth','verified']);
 
 	Route::post('/save_daily_report',[CashReportController::class, 'save_me'])->middleware(['auth','verified']);
+	Route::post('/regen_daily_reports_from_date',[CashReportController::class, 'recreate_from_date'])->middleware(['auth','verified']);
 })
 // ->middleware('')
 ;
