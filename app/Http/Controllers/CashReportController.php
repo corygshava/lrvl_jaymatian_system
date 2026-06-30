@@ -281,20 +281,21 @@ class CashReportController extends Controller{
 				$myrange = $req['use_range'];
 			}
 
-			$lastrec = DailyCashReport::query()
+			$recs = DailyCashReport::query()
 				->where('id','<>',null)
 			;
+			$lastrec = null;
 			$carry_over_rec = null;
 			$haslast = false;
 
 			if($myrange == null || strtolower("$myrange") == 'today'){
-				$lastrec = $lastrec
+				$lastrec = (clone $recs)
 					->latest()
 					->first()
 				;
 				$haslast = !($lastrec == null);
 			} else {
-				$lastrec = $lastrec
+				$lastrec = (clone $recs)
 					->timeRange($myrange)
 					->orderBy('created_at','desc')
 					->first()
@@ -306,7 +307,7 @@ class CashReportController extends Controller{
 				$carry_over_rec = null;
 
 				if($lastrec !== null){
-					$carry_over_rec = $lastrec
+					$carry_over_rec = (clone $recs)
 						->timeRange($redone_range)
 						->orderBy('created_at','desc')
 						->first()
@@ -348,6 +349,8 @@ class CashReportController extends Controller{
 						$_msg('generating today\'s report');
 					} else if($haslast) {
 						$_msg('this range has a last record');
+
+
 					} else {
 						$_msg('carry over will be 0');
 					}
