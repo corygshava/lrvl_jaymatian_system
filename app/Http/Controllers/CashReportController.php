@@ -308,7 +308,6 @@ class CashReportController extends Controller{
 
 				if($lastrec !== null){
 					$carry_over_rec = (clone $recs)
-						->query()
 						->whereDate('created_at', $redone_range)
 						->orderBy('created_at','desc')
 						->first()
