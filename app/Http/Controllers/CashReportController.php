@@ -483,8 +483,8 @@ class CashReportController extends Controller{
 					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->sum('sample_count');
 					if(isset($r['tym'])){
 						$monthly_samples = Sample::query()->whereBetween('created_at', [
-							$r['tym']->startOfMonth()->startOfDay(),
-							$r['tym']->startOfMonth()->endOfDay(),
+							Carbon::parse($r['tym'])->startOfMonth()->startOfDay(),
+							Carbon::parse($r['tym'])->startOfMonth()->endOfDay(),
 						])->sum('sample_count');
 					} else {
 						$monthly_samples = Sample::timeRange('this_month')->sum('sample_count');
