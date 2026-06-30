@@ -353,32 +353,46 @@ class CashReportController extends Controller{
 				;
 
 				// get total income
-				if($haslast){
-					if(self::isDate($t_range)){
-						$payemnts = Payment::query()
-							->where('id','<>',null)
-							->timeRange($t_range)
-						;
+				$payemnts = Payment::query()
+					->where('id','<>',null)
+					->timeRange($t_range)
+				;
+
+				if(false){
+					if($haslast){
+						$_rlg('added payment filter');
+
+						if(self::isDate($t_range)){
+							$payemnts = Payment::query()
+								->where('id','<>',null)
+								->timeRange($t_range)
+							;
+
+							$_rlg('valid date passed');
+						} else {
+							$payemnts = Payment::query()
+								->where('id','<>',null)
+								->timeRange($t_range)
+							;
+							$_rlg('valid date not passed');
+						}
 					} else {
-						$payemnts = Payment::query()
-							->where('id','<>',null)
-							->timeRange($t_range)
-						;
+						$_rlg('ignored payment filter');
+
+						if(self::isDate($t_range)){
+							$payemnts = Payment::query()
+								->where('id','<>',null)
+								->timeRange($t_range)
+							;
+							$_rlg('valid date passed');
+						} else {
+							$payemnts = Payment::query()
+								->where('id','<>',null)
+								->timeRange($t_range)
+							;
+							$_rlg('valid date not passed');
+						}
 					}
-					$_rlg('added payment filter');
-				} else {
-					if(self::isDate($t_range)){
-						$payemnts = Payment::query()
-							->where('id','<>',null)
-							->timeRange($t_range)
-						;
-					} else {
-						$payemnts = Payment::query()
-							->where('id','<>',null)
-							->timeRange($t_range)
-						;
-					}
-					$_rlg('ignored payment filter');
 				}
 
 				// if(isset($payemnts)){
@@ -386,7 +400,9 @@ class CashReportController extends Controller{
 				// }
 
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');
-				$cash_from_debtors = (clone $payemnts)->where('payment_type','invoice')->orWhere('payment_type','debt_payment')->sum('amount');
+				$cash_from_debtors_0 = (clone $payemnts)->where('payment_type','invoice')->sum('amount');
+				$cash_from_debtors_1 = (clone $payemnts)->where('payment_type','debt_payment')->sum('amount');
+				$cash_from_debtors = $cash_from_debtors_0 + $cash_from_debtors_1;
 				$total_daily_cash = $total_income + $cash_from_debtors;
 				$total_cash = $total_daily_cash + $carry_over;
 				// $_rlg(['payments sum' => $payemnts]);
