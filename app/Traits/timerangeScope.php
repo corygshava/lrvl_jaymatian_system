@@ -17,7 +17,7 @@ trait TimeRangeScope{
 		'lifetime',
 	];
 
-	public function scopeTimeRange($q, $range, $timezone = null){
+	public function scopeTimeRange($q, $range){
 		// Handle array (date range)
 		if (is_array($range)) {
 			if (count($range) === 2) {
@@ -37,52 +37,34 @@ trait TimeRangeScope{
 		// Handle named ranges
 		$range = strtolower($range);
 
-		// $tz = $timezone ?? config('app.timezone');
-		$tz = $timezone ?? 'Africa/Nairobi';
-		$storageTz = config('app.timezone'); // tz created_at is stored in (Laravel default: UTC)
-		$now = Carbon::now($tz);
-
 		return match($range){
-			'today' => $q->whereBetween('created_at', [
-				$now->copy()->startOfDay()->setTimezone($storageTz),
-				$now->copy()->endOfDay()->setTimezone($storageTz),
-			]),
+			'today' => $q->whereDate('created_at', Carbon::today()),
 			'yesterday' => $q->whereBetween('created_at', [
-				$now->copy()->subDay()->startOfDay()->setTimezone($storageTz),
-				$now->copy()->subDay()->endOfDay()->setTimezone($storageTz),
+				Carbon::yesterday()->startOfDay(),
+				Carbon::yesterday()->endOfDay(),
 			]),
 			'juzi' => $q->whereBetween('created_at', [
-				$now->copy()->subDays(2)->startOfDay()->setTimezone($storageTz),
-				$now->copy()->subDays(2)->endOfDay()->setTimezone($storageTz),
+				Carbon::today()->subDays(2)->startOfDay(),
+				Carbon::today()->subDays(2)->endOfDay(),
 			]),
 			'kabla_juzi' => $q->whereBetween('created_at', [
-				$now->copy()->subDays(3)->startOfDay()->setTimezone($storageTz),
-				$now->copy()->subDays(3)->endOfDay()->setTimezone($storageTz),
+				Carbon::today()->subDays(3)->startOfDay(),
+				Carbon::today()->subDays(3)->endOfDay(),
 			]),
 			'this_week' => $q->whereBetween('created_at', [
-				$now->copy()->startOfWeek()->setTimezone($storageTz),
-				$now->copy()->endOfWeek()->setTimezone($storageTz),
+				Carbon::now()->startOfWeek(),
+				Carbon::now()->endOfWeek(),
 			]),
+			'this_month' => $q->whereMonth('created_at', Carbon::now()->month)
+				->whereYear('created_at', Carbon::now()->year),
+			'this_year' => $q->whereYear('created_at', Carbon::now()->year),
 			'last_week' => $q->whereBetween('created_at', [
-				$now->copy()->subWeek()->startOfWeek()->setTimezone($storageTz),
-				$now->copy()->subWeek()->endOfWeek()->setTimezone($storageTz),
+				Carbon::now()->subWeek()->startOfWeek(),
+				Carbon::now()->subWeek()->endOfWeek(),
 			]),
-			'this_month' => $q->whereBetween('created_at', [
-				$now->copy()->startOfMonth()->setTimezone($storageTz),
-				$now->copy()->endOfMonth()->setTimezone($storageTz),
-			]),
-			'last_month' => $q->whereBetween('created_at', [
-				$now->copy()->subMonth()->startOfMonth()->setTimezone($storageTz),
-				$now->copy()->subMonth()->endOfMonth()->setTimezone($storageTz),
-			]),
-			'this_year' => $q->whereBetween('created_at', [
-				$now->copy()->startOfYear()->setTimezone($storageTz),
-				$now->copy()->endOfYear()->setTimezone($storageTz),
-			]),
-			'last_year' => $q->whereBetween('created_at', [
-				$now->copy()->subYear()->startOfYear()->setTimezone($storageTz),
-				$now->copy()->subYear()->endOfYear()->setTimezone($storageTz),
-			]),
+			'last_month' => $q->whereMonth('created_at', Carbon::now()->subMonth()->month)
+				->whereYear('created_at', Carbon::now()->subMonth()->year),
+			'last_year' => $q->whereYear('created_at', Carbon::now()->subYear()->year),
 			'lifetime' => $q,
 			default => $q,
 		};

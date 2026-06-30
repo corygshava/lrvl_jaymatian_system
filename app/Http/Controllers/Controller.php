@@ -931,73 +931,67 @@ abstract class Controller{
 		}
     }
 
-	public static function getPreviousDay(string $range, ?string $timezone = null): array{
-		$tz = $timezone ?? 'Africa/Nairobi';
-		$storageTz = config('app.timezone');
-		$now = Carbon::now($tz);
-
+	public static function getPreviousDay(string $range): array{
 		if (self::isDate($range)) {
-			$anchor = Carbon::parse($range, $tz);
-
 			return [
-				"start" => $anchor->copy()->subDay()->startOfDay()->setTimezone($storageTz),
-				"end" => $anchor->copy()->subDay()->endOfDay()->setTimezone($storageTz),
-				"tym" => $anchor->copy()->setTimezone($storageTz),
+				"start" => Carbon::parse($range)->subDay()->startOfDay(),
+				"end" => Carbon::parse($range)->subDay()->endOfDay(),
+				"tym" => Carbon::parse($range),
 			];
 		}
 
 		[$start, $end, $tym] = match($range) {
 			'today' => [
-				$now->copy()->startOfDay()->subDay()->startOfDay(),
-				$now->copy()->startOfDay()->subDay()->endOfDay(),
-				$now->copy()->startOfDay(),
+				Carbon::today()->subDay()->startOfDay(),
+				Carbon::today()->subDay()->endOfDay(),
+				Carbon::today(),
 			],
 			'yesterday' => [
-				$now->copy()->subDay()->startOfDay()->subDay()->startOfDay(),
-				$now->copy()->subDay()->startOfDay()->subDay()->endOfDay(),
-				$now->copy()->subDay()->startOfDay(),
+				Carbon::yesterday()->subDay()->startOfDay(),
+				Carbon::yesterday()->subDay()->endOfDay(),
+				Carbon::yesterday(),
 			],
 			'juzi' => [
-				$now->copy()->startOfDay()->subDays(2)->subDay()->startOfDay(),
-				$now->copy()->startOfDay()->subDays(2)->subDay()->endOfDay(),
-				$now->copy()->startOfDay()->subDays(2),
+				Carbon::today()->subDays(2)->subDay()->startOfDay(),
+				Carbon::today()->subDays(2)->subDay()->endOfDay(),
+				Carbon::today()->subDays(2),
 			],
 			'kabla_juzi' => [
-				$now->copy()->startOfDay()->subDays(3)->subDay()->startOfDay(),
-				$now->copy()->startOfDay()->subDays(3)->subDay()->endOfDay(),
-				$now->copy()->startOfDay()->subDays(3),
+				Carbon::today()->subDays(3)->subDay()->startOfDay(),
+				Carbon::today()->subDays(3)->subDay()->endOfDay(),
+				Carbon::today()->subDays(3),
 			],
 			'this_week' => [
-				$now->copy()->startOfWeek()->subDay()->startOfDay(),
-				$now->copy()->endOfWeek()->subDay()->endOfDay(),
-				$now->copy()->startOfWeek(),
+				Carbon::now()->startOfWeek()->subDay()->startOfDay(),
+				Carbon::now()->endOfWeek()->subDay()->endOfDay(),
+				Carbon::now()->startOfWeek(),
 			],
 			'this_month' => [
-				$now->copy()->startOfMonth()->subDay()->startOfDay(),
-				$now->copy()->endOfMonth()->subDay()->endOfDay(),
-				$now->copy()->startOfMonth(),
+				Carbon::now()->startOfMonth()->subDay()->startOfDay(),
+				Carbon::now()->endOfMonth()->subDay()->endOfDay(),
+				Carbon::now()->startOfMonth(),
 			],
 			'this_year' => [
-				$now->copy()->startOfYear()->subDay()->startOfDay(),
-				$now->copy()->endOfYear()->subDay()->endOfDay(),
-				$now->copy()->startOfYear(),
+				Carbon::now()->startOfYear()->subDay()->startOfDay(),
+				Carbon::now()->endOfYear()->subDay()->endOfDay(),
+				Carbon::now()->startOfYear(),
 			],
 			'last_week' => [
-				$now->copy()->subWeek()->startOfWeek()->subDay()->startOfDay(),
-				$now->copy()->subWeek()->endOfWeek()->subDay()->endOfDay(),
-				$now->copy()->subWeek()->startOfWeek(),
+				Carbon::now()->subWeek()->startOfWeek()->subDay()->startOfDay(),
+				Carbon::now()->subWeek()->endOfWeek()->subDay()->endOfDay(),
+				Carbon::now()->subWeek()->startOfWeek(),
 			],
 			'last_month' => [
-				$now->copy()->subMonth()->startOfMonth()->subDay()->startOfDay(),
-				$now->copy()->subMonth()->endOfMonth()->subDay()->endOfDay(),
-				$now->copy()->subMonth()->startOfMonth(),
+				Carbon::now()->subMonth()->startOfMonth()->subDay()->startOfDay(),
+				Carbon::now()->subMonth()->endOfMonth()->subDay()->endOfDay(),
+				Carbon::now()->subMonth()->startOfMonth(),
 			],
 			'last_year' => [
-				$now->copy()->subYear()->startOfYear()->subDay()->startOfDay(),
-				$now->copy()->subYear()->endOfYear()->subDay()->endOfDay(),
-				$now->copy()->subYear()->startOfYear(),
+				Carbon::now()->subYear()->startOfYear()->subDay()->startOfDay(),
+				Carbon::now()->subYear()->endOfYear()->subDay()->endOfDay(),
+				Carbon::now()->subYear()->startOfYear(),
 			],
-			default => [null, null, null],
+			default => [null, null],
 		};
 
 		if (!$start) {
@@ -1005,8 +999,8 @@ abstract class Controller{
 		}
 
 		return [
-			'start' => $start->setTimezone($storageTz)->toDateTimeString(),
-			'end'   => $end->setTimezone($storageTz)->toDateTimeString(),
+			'start' => $start->toDateTimeString(),
+			'end'   => $end->toDateTimeString(),
 		];
 	}
 	public static function isDate(string $value): bool{
