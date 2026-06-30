@@ -286,6 +286,8 @@ class CashReportController extends Controller{
 			$lastrec = null;
 			$carry_over_rec = null;
 			$haslast = false;
+			$redone_range = 'xx';
+			$r = 'prev_day_data';
 
 			if($myrange == null || strtolower("$myrange") == 'today'){
 				$lastrec = (clone $recs)
@@ -302,7 +304,7 @@ class CashReportController extends Controller{
 				$r = $this->getPreviousDay($myrange);
 				$_rlg(['prevdata' => $r]);
 				// $redone_range = $r['start'] ?? null;
-				$redone_range = $r['start'];
+				$redone_range = $r['end'];
 
 				if($lastrec !== null){
 					$carry_over_rec = (clone $recs)
@@ -339,6 +341,11 @@ class CashReportController extends Controller{
 
 				// debug stuff
 				if(true){
+					$_rlg([
+						'prevday data' => $r,
+						'redone range' => $redone_range,
+					]);
+
 					if($haslast){
 						$_msg('last record present');
 					} else {
@@ -374,6 +381,7 @@ class CashReportController extends Controller{
 								'typ' => 'carry over rec',
 								'date' => $carry_over_rec->created_at->toDateString(),
 								'carry over' => $carry_over_rec->total_balance_forward,
+								'reworked_range' => $redone_range,
 							]);
 						}
 					} else {
