@@ -339,30 +339,54 @@ class CashReportController extends Controller{
 
 				// debug stuff
 				if(true){
+					if($haslast){
+						$_msg('last record present');
+					}
+
 					if($carry_over_rec == null){
 						$_msg("carry over record is missing");
+						$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 					} else if ($myrange == null){
 						$_msg("no range passed");
+						$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 					} else if (strtolower("$myrange") == 'today'){
 						$_msg('generating today\'s report');
+						$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 					} else if($haslast) {
 						$_msg('this range has a last record');
 
+						$_rlg([
+							'typ' => 'last rec',
+							'date' => $lastrec->created_at->toDateString(),
+							'carry over' => $lastrec->total_balance_forward,
+						]);
+
 						if($carry_over_rec == null){
 							$_msg('but it doesnt have a carry over record');
+							$carry_over = $lastrec->total_balance_forward;
 						} else {
 							$_msg('and it has a carry over record');
+							$carry_over = $carry_over_rec->total_balance_forward;
+
+							$_rlg([
+								'typ' => 'carry over rec',
+								'date' => $carry_over_rec->created_at->toDateString(),
+								'carry over' => $carry_over_rec->total_balance_forward,
+							]);
 						}
 					} else {
 						$_msg('carry over will be 0');
+						$carry_over = 0;
 					}
 				}
 
+				/*
 				if($carry_over_rec == null || ($myrange == null || strtolower("$myrange") == 'today')){
 					$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
 				} else {
 					$carry_over = $haslast ? $carry_over_rec->total_balance_forward : 0;
 				}
+				// */
 
 				$_msg('carry over calculated');
 
