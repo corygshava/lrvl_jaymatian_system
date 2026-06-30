@@ -308,7 +308,8 @@ class CashReportController extends Controller{
 
 				if($lastrec !== null){
 					$carry_over_rec = (clone $recs)
-						->timeRange($redone_range)
+						->query()
+						->whereDate('created_at', $redone_range)
 						->orderBy('created_at','desc')
 						->first()
 					;
@@ -318,7 +319,7 @@ class CashReportController extends Controller{
 					'prev_date' => $redone_range,
 					'carry_over_rec' => $carry_over_rec == null ? $carry_over_rec : $carry_over_rec->toArray(),
 				];
-				$_rlg($dbg);
+				// $_rlg($dbg);
 				$haslast = !($carry_over_rec == null);
 			}
 

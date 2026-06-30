@@ -1001,6 +1001,7 @@ abstract class Controller{
 		return [
 			'start' => $start->toDateTimeString(),
 			'end'   => $end->toDateTimeString(),
+			'tym'   => $tym->toDateTimeString(),
 		];
 	}
 	public static function isDate(string $value): bool{
