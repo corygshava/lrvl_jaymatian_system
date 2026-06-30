@@ -375,6 +375,7 @@ class CashReportController extends Controller{
 					} else {
 						$payemnts = Payment::query()
 							->where('id','<>',null)
+							->timeRange($t_range)
 						;
 					}
 					$_rlg('ignored payment filter');
