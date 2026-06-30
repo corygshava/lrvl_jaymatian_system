@@ -289,7 +289,7 @@ class CashReportController extends Controller{
 			$redone_range = 'xx';
 			$r = 'prev_day_data';
 
-			$tryrecs = DailyCashReport::query()->timeRange('juzitu')->count();
+			$tryrecs = DailyCashReport::query()->timeRange('juzi')->count();
 			$_rlg(['recs_from_juzi' => $tryrecs]);
 
 			if($myrange == null || strtolower("$myrange") == 'today'){
