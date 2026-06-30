@@ -273,7 +273,6 @@ class CashReportController extends Controller{
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
-
 			$outdata = [];
 			$myrange = $req->input('t_range',null);
 
@@ -304,7 +303,6 @@ class CashReportController extends Controller{
 				$_rlg(['prevdata' => $r]);
 				// $redone_range = $r['start'] ?? null;
 				$redone_range = $r['start'];
-				$carry_over_rec = null;
 
 				if($lastrec !== null){
 					$carry_over_rec = (clone $recs)
@@ -350,7 +348,11 @@ class CashReportController extends Controller{
 					} else if($haslast) {
 						$_msg('this range has a last record');
 
-
+						if($carry_over_rec == null){
+							$_msg('but it doesnt have a carry over record');
+						} else {
+							$_msg('and it has a carry over record');
+						}
 					} else {
 						$_msg('carry over will be 0');
 					}
