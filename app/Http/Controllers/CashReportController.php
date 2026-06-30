@@ -341,6 +341,8 @@ class CashReportController extends Controller{
 				if(true){
 					if($haslast){
 						$_msg('last record present');
+					} else {
+						$_msg('last record not found');
 					}
 
 					if($carry_over_rec == null){
@@ -388,7 +390,7 @@ class CashReportController extends Controller{
 				}
 				// */
 
-				$_msg('carry over calculated');
+				$_msg("carry over calculated as : $carry_over");
 
 				// calculate sample counts
 				$samples = Sample::query()
