@@ -289,6 +289,9 @@ class CashReportController extends Controller{
 			$redone_range = 'xx';
 			$r = 'prev_day_data';
 
+			$tryrecs = DailyCashReport::query()->timeRange('juzi')->count();
+			$_rlg(['recs_from_juzi' => $tryrecs]);
+
 			if($myrange == null || strtolower("$myrange") == 'today'){
 				$lastrec = (clone $recs)
 					->latest()
@@ -344,6 +347,7 @@ class CashReportController extends Controller{
 					$_rlg([
 						'prevday data' => $r,
 						'redone range' => $redone_range,
+						'timerange' => $t_range,
 					]);
 
 					if($haslast){
@@ -482,7 +486,8 @@ class CashReportController extends Controller{
 					$carbon_samples = (clone $samples)->where('sample_type','carbon')->sum('sample_count');
 					$carbon_act_samples = (clone $samples)->where('sample_type','carbon activity')->sum('sample_count');
 					if(isset($r['tym'])){
-						$monthly_samples = Sample::query()->whereBetween('created_at', [
+						$monthly_samples = Sample::query()
+						->whereBetween('created_at', [
 							Carbon::parse($r['tym'])->startOfMonth()->startOfDay(),
 							Carbon::parse($r['tym'])->startOfMonth()->endOfDay(),
 						])->sum('sample_count');
