@@ -332,11 +332,26 @@ class CashReportController extends Controller{
 			$wegood = $timediff == null ? true : $timediff > 23;
 
 			if(true){
-				$_msg('you can make a daily report for today');
+				// $_msg('you can make a daily report for today');
 				$t_range = $myrange == null ? 'today' : $myrange;
 
 				// calculate carry over cash
 				$carry_over = 0;
+
+				// debug stuff
+				if(true){
+					if($carry_over_rec == null){
+						$_msg("carry over record is missing");
+					} else if ($myrange == null){
+						$_msg("no range passed");
+					} else if (strtolower("$myrange") == 'today'){
+						$_msg('generating today\'s report');
+					} else if($haslast) {
+						$_msg('this range has a last record');
+					} else {
+						$_msg('carry over will be 0');
+					}
+				}
 
 				if($carry_over_rec == null || ($myrange == null || strtolower("$myrange") == 'today')){
 					$carry_over = $haslast ? $lastrec->total_balance_forward : 0;
