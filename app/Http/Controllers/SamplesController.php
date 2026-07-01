@@ -7,6 +7,7 @@ use App\Models\Result;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Mavinoo\Batch\Batch;
+use Carbon\Carbon;
 
 class SamplesController extends Controller{
 	// getters
@@ -71,7 +72,10 @@ class SamplesController extends Controller{
 				->with('mycreator')
 				->with('owner')
 				->with('task')
-				->timeRange('this_month')
+				->whereBetween('created_at',[
+					Carbon::now()->endOfMonth(),
+					Carbon::now()->subMonth()->startOfMonth(),
+				])
 				->latest()
 			;
 
@@ -120,9 +124,9 @@ class SamplesController extends Controller{
 
 			$records = $records->get()->toArray();
 
-			$extras = $extras->get()->toArray();
+			// $extras = $extras->get()->toArray();
 			// $records = $records->get()->merge($extras->get());
-			$records = [...$records, ...$extras];
+			// $records = [...$records, ...$extras];
 
 			/*
 			for($i = 0;$i < count($users);$i++){
