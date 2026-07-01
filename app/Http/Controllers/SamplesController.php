@@ -74,6 +74,17 @@ class SamplesController extends Controller{
 				->timeRange('this_month')
 			;
 
+			$extras = Sample::query()
+				->with('worksheets')
+				->with('results')
+				->withCount('results')
+				->withCount('reports')
+				->with('mycreator')
+				->with('owner')
+				->with('task')
+				->timeRange('last_month')
+			;
+
 			// filter for task status
 			if($status !== null){
 				$res['runlog'][] = "added status filter";
@@ -86,8 +97,10 @@ class SamplesController extends Controller{
 
 				if($con){
 					$records = $records->has('results');
+					$extras = $extras->has('results');
 				} else {
 					$records = $records->doesntHave('results');
+					$extras = $extras->doesntHave('results');
 				}
 			}
 
@@ -104,6 +117,9 @@ class SamplesController extends Controller{
 			}
 
 			$records = $records->get();
+
+			$extras = $extras->get();
+			$records = [...$records, ...$extras];
 
 			/*
 			for($i = 0;$i < count($users);$i++){
