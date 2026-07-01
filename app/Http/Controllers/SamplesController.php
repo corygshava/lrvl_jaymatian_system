@@ -118,10 +118,11 @@ class SamplesController extends Controller{
 				$records = $records->where('sample_type',$sample_typ);
 			}
 
-			$records = $records->get();
+			$records = $records->get()->toArray();
 
-			$extras = $extras->get();
-			$records = $records->get()->merge($extras->get());
+			$extras = $extras->get()->toArray();
+			// $records = $records->get()->merge($extras->get());
+			$records = [...$records, ...$extras];
 
 			/*
 			for($i = 0;$i < count($users);$i++){
