@@ -76,7 +76,7 @@ class SamplesController extends Controller{
 					Carbon::now()->subMonth()->startOfMonth(), // Start of last month
 					Carbon::now()->endOfMonth(),               // End of this month
 				])
-				->latest()
+				->orderBy('created_at','desc')
 			;
 
 			$extras = Sample::query()
