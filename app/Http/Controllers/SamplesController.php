@@ -119,7 +119,7 @@ class SamplesController extends Controller{
 			$records = $records->get();
 
 			$extras = $extras->get();
-			$records = [...$records, ...$extras];
+			$records = $records->get()->merge($extras->get());
 
 			/*
 			for($i = 0;$i < count($users);$i++){
