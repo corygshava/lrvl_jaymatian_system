@@ -72,6 +72,7 @@ class SamplesController extends Controller{
 				->with('owner')
 				->with('task')
 				->timeRange('this_month')
+				->latest()
 			;
 
 			$extras = Sample::query()
@@ -83,6 +84,7 @@ class SamplesController extends Controller{
 				->with('owner')
 				->with('task')
 				->timeRange('last_month')
+				->latest()
 			;
 
 			// filter for task status
