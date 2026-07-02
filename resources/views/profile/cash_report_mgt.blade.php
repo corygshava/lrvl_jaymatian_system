@@ -404,7 +404,7 @@
 	<div class="page-header">
 		<div class="page-title">
 			<span class="h4" data-role="pagename">--</span>
-			<p>Here you can view all generated daily reports</p>
+			<p>Here you can view and add expense records</p>
 		</div>
 		<div class="header-actions">
 			<button class="mybtn secondary" onclick="refreshData()">
@@ -578,7 +578,7 @@
 				],
 
 				// Optional: Items per page (max 300)
-				perPage: 10,
+				perPage: 20,
 
 				// Optional: Enable features
 				enableSearch: true,

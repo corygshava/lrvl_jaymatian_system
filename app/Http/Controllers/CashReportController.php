@@ -14,6 +14,8 @@ use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Mavinoo\Batch\Batch;
 
 class CashReportController extends Controller{
 	public function route_stuff(Request $req){
@@ -241,7 +243,7 @@ class CashReportController extends Controller{
 		return response()->json($res);
 	}
 
-	public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = []){
+	public function get_for_today(Request $req,bool $iscalled = false,array &$errlog = [],$passed_range = null){
 		$res = $this->dftres;
 		// $res = [...$res,...$oldres];
 		// $alldata = $req->all();
@@ -275,6 +277,12 @@ class CashReportController extends Controller{
 			$reslt = false;
 			$outdata = [];
 			$myrange = $req->input('t_range',null);
+
+			if($myrange == null){
+				if($passed_range != null){
+					$myrange = $passed_range;
+				}
+			}
 
 			if(isset($req['use_range'])){
 				$myrange = $req['use_range'];
@@ -594,8 +602,9 @@ class CashReportController extends Controller{
 					$total_clients = Client::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$total_tasks = Task::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					// $total_samples = Sample::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
-					$total_payments_task = Payment::query()->timeRange($t_range)->where('id','task')->get()->count();
-					$total_payments_invoice = Payment::query()->timeRange($t_range)->where('id','invoice')->get()->count();
+					$total_payments_task = Payment::query()->timeRange($t_range)->where('payment_type','task')->get()->count();
+					$total_payments_invoice = Payment::query()->timeRange($t_range)->where('payment_type','invoice')->get()->count();
+					$total_payments_debt = Payment::query()->timeRange($t_range)->where('payment_type','debt_payment')->get()->count();
 					$reports_generated = ReportsGen::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$total_invoices = Invoice::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$total_expenses = Expense::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
@@ -635,6 +644,7 @@ class CashReportController extends Controller{
 					'samples_count' => $mysamples,
 					'total_payments_task_count' => $total_payments_task,
 					'total_payments_invoice_count' => $total_payments_invoice,
+					'total_payments_debt_count' => $total_payments_debt,
 					'reports_count' => $reports_generated,
 					'invoices_count' => $total_invoices,
 					'expenses_count' => $total_expenses,
@@ -823,7 +833,7 @@ class CashReportController extends Controller{
 				$_msg('You can only generate a monthly report once every month');
 			} else {
 				$_msg('saving monthly report');
-				$toadd = $this->get_for_today($req,true,$res['runlog']);
+				$toadd = $this->get_for_today($req, true, $res['runlog']);
 				$cnt = MonthlyCashReport::where('id','<>',null)->count();
 				$num = str_pad("$cnt",4,'0',STR_PAD_LEFT);
 				$toadd['added_by'] = $iscalled ? 0 : $user->id;
@@ -858,7 +868,7 @@ class CashReportController extends Controller{
 	}
 
 	// recreator setup
-	public function recreate_from_date(Request $req,$iscalled = false,$passdate = ''){
+	public function recreate_from_date(Request $req,$iscalled = false,$passdate = '',User $p_user = null){
 		// recreates reports from a specified date till the present, might be very slow if starting from a far date
 		$res = $this->dftres;
 		$alldata = $req->all();
@@ -866,9 +876,10 @@ class CashReportController extends Controller{
 
 		// /*
 		$passed = $req->validate([
-				'start_date' => ['required'],
-			])
-		;
+			'start_date' => ['required'],
+			'admin_password' => ['required'],
+		])
+;
 		// */
 
 		$update_runlog = function($wot) use (&$res){
@@ -883,43 +894,234 @@ class CashReportController extends Controller{
 		$_msg = function($w,$l = true) use (&$update_msg){
 			$update_msg($w,$l);
 		};
+		$_rlg = function($wot) use (&$update_runlog){
+			$update_runlog($wot);
+		};
 
-		if($this->ili()){
+		if($this->ili() || $iscalled){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
 			$outdata = null;
+			$user = null;
+			$passed_pw = $passed['admin_password'];
+			$ppw = 'nothing new';
+			$verif = self::verifyPassword($passed_pw, $ppw, $user);
 
-			// find out how many days we are regenerating
-			$thadate = $passed['start_date'];
-			$isdate = self::isDate($thadate);
-
-			if(!($isdate)){
-				$_msg('invalid date passed');
+			if($p_user == null){
+				self::cur_user();
 			} else {
-				// do shit
-				$_msg('good date');
-				$taday = Carbon::today();
-				$day = Carbon::parse($thadate);
-				$gap = $taday->diffInDays($day);
+				$user = $p_user;
+			}
 
-				$outdata = ['gap' => $gap];
+			if(!$verif){
+				$_msg('invalid password');
+			} else {
+				$_msg('valid password');
+				// find out how many days we are regenerating
+				$thadate = $passed['start_date'];
+				$isdate = self::isDate($thadate);
 
-				if($gap > -1){
-					$_msg('you cant make a report for today onwards');
+				// get current number of reports
+				$d_r_count = DailyCashReport::all()->count();
+
+				if(!($isdate)){
+					$_msg('invalid date passed');
 				} else {
-					$_msg("the gap is $gap days");
-					$_msg('you can make a report');
+					// do shit
+					$_msg('good date');
+					$taday = Carbon::now();
+					$day = Carbon::parse($thadate);
+					$gap = $taday->diffInDays($day);
 
-					$startday = $day->subDays($gap);
-					$update_runlog(['start_date' => $startday->toDateString()]);
+					$outdata = ['gap' => $gap];
 
-					for($n = 1;$n < ($gap * -1);$n++){
-						// $myday = $day
-						// $affected_recs = DailyCashReport::query()->where('created_at',$myday)->get();
-						// $update_runlog(['affected records' => $affected_recs]);
+					if($gap > -1){
+						$_msg('you cant make a report for today onwards');
+					} else {
+						$_msg("the gap is $gap days");
+						$_msg('you can make a report');
+
+						$endday = (clone $day)->subDays($gap);
+						$startday = (clone $day)->subDay();
+						$update_runlog([
+							'start_date' => $startday->toDateString(),
+							'end_date' => $endday->toDateString(),
+						]);
+
+						$worklogs = [];
+						$curdate = (clone $day)->toDateString();
+						$pastdate = $startday->toDateString();
+						$mekQueue = [];
+						$report_cols = (new DailyCashReport())->getCols();
+						$report_casts = (new DailyCashReport())->getCasts();
+						$_rlg([
+							'report columns' => $report_cols,
+							'report casts' => $report_casts,
+						]);
+
+						$inner_log = [];
+
+						// remove unregeneratable columns
+						unset($report_cols['debtors']);
+
+						try{
+							$_rlg("started the transaction");
+							DB::beginTransaction();
+
+							// $_rlg('inside transaction');
+							$counter = floor($gap * -1);
+							$_rlg(['counter' => $counter]);
+
+							for($n = 0;$n < $counter;$n++){
+								$inner_log[] = [];
+								$inner_log[$n][] = ("[$n] looped");
+
+								$worklog = [
+									'day_no' => $n,
+									'curdate' => $curdate,
+									'pastdate' => $pastdate,
+								];
+
+								$p_day = Carbon::parse($pastdate);
+								$c_day = Carbon::parse($curdate);
+								$p_dayrec = DailyCashReport::query()->whereDate('created_at', $p_day)->first();
+								$c_dayrec = DailyCashReport::query()->whereDate('created_at', $c_day)->first();
+
+								$arr = [];
+								$gen_report = $this->get_for_today($req,true,$arr,(clone $c_day)->toDateString());
+
+								$_rlg([
+									'from gen report' => $arr,
+								]);
+
+								$worklog['prev_daily_report'] = $p_dayrec;
+								$worklog['cur_daily_report'] = $c_dayrec;
+
+								if($c_dayrec == null){
+									$inner_log[$n][] = ("[$n] trying to create daily rec");
+									// remove stuff not in the model
+									unset($gen_report['time_difference']);
+									unset($gen_report['spend_data_new']);
+
+									$inner_log[$n][] = ("[$n] removed verbose props");
+
+									$gen_report['added_by'] = $user->id;
+									$rnm = strtoupper(self::mekRandomString(4));
+									$gen_report['cash_report_no'] = "CRPT_XT_{$rnm}";
+									$gen_report["created_at"] = $c_day->endOfDay()->format('Y-m-d H:i:s');
+									$temp_r_cols = array_keys($gen_report);
+									$addme = [];
+									$finadd = [];
+
+									$inner_log[$n][] = ("[$n] starting post processing on props");
+									$cnt = 0;
+
+									foreach($temp_r_cols as $c){
+										// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] processing prop");
+
+										if(in_array($c,$report_cols)){
+											// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] valid prop ($c)");
+
+											// /*
+											if(is_null($gen_report[$c])){
+												$inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] prop is null ($c)");
+												$addme[$c] = null;
+											} elseif(is_array($gen_report[$c])){
+												$addme[$c] = json_encode($gen_report[$c]);
+												// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] this is an array ($c)");
+											} else {
+												if(isset($report_casts[$c])){
+													if(str_contains($report_casts[$c], 'decimal')){
+														$me = $gen_report[$c];
+														$nm = number_format($me, 2,'.','');
+														$addme[$c] = $nm;
+														$inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] this a decimal ($c) => $nm");
+													} else {
+														$inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] this shouldnt happen ($c)");
+														$addme[$c] = $gen_report[$c];
+													}
+												} else {
+													// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] prop is well something ($c)");
+													$addme[$c] = $gen_report[$c];
+												}
+											}
+											// */
+
+											// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] prop preprocess complete ($c)");
+										} else {
+											$inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] invalid prop ($c)");
+										}
+
+										// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] updating counter");
+										$cnt += 1;
+									}
+
+									// final postprocess
+									foreach($report_cols as $c){
+										$finadd[$c] = $addme[$c];
+									}
+
+									$inner_log[$n]['added_rec'] = $finadd;
+									$mekQueue[] = $finadd;
+									$worklog['operation'] = 'added';
+
+									$inner_log[$n][] = ("[$n] report added to mek queue");
+								} else {
+									$worklog['operation'] = 'updated';
+									// just modify the current record
+									// TODO: activate for permanence
+									$c_dayrec->update($gen_report);
+
+									$inner_log[$n][] = ("[$n] report updated");
+								}
+
+								$worklog['gen_report'] = $gen_report;
+
+								// $myday = $day
+								// $affected_recs = DailyCashReport::query()->where('created_at',$myday)->get();
+								// $update_runlog(['affected records' => $affected_recs]);
+
+								$pastdate = (clone $p_day)->subDays(-1)->toDateString();
+								$curdate = (clone $c_day)->subDays(-1)->toDateString();
+								$worklogs[] = $worklog;
+							}
+
+							$_rlg("finished looping");
+
+							$_rlg(['reports to make' => count($mekQueue)]);
+							$_rlg(['worklogs' => $worklogs]);
+							$_rlg(['tomek' => $mekQueue]);
+
+							if(count($mekQueue) > 0){
+								$batch = app(Batch::class);
+								// TODO: activate for permanence
+								$batch->insert(new DailyCashReport,$report_cols,$mekQueue);
+							} else {
+								$_msg("no new reports to create");
+							}
+
+							DB::commit();
+							$_msg("all reports resynced");
+							$reslt = true;
+						} catch(\Exception $e) {
+							DB::rollBack();
+
+							$_rlg(['error' => $e]);
+							$_msg("saving daily reports failed");
+						}
+
+						$_rlg(['inner log' => $inner_log]);
 					}
 				}
+
+				$d_r_count_after = DailyCashReport::all()->count();
+				$_rlg([
+					'changes' => [
+						'start_records' => $d_r_count,
+						'end_records' => $d_r_count_after,
+					]
+				]);
 			}
 
 			$res['result'] = $reslt;

@@ -178,6 +178,8 @@
 				'getinvoice_slug' : './media/invoices/img',
 		};
 		const pageNames = {
+			'admin_dash' : 'Admin console',
+			'staff_dash' : 'Staff dashboard',
 			'view_users' : 'user information',
 			'view_user' : 'user summary',
 			'view_client' : 'Client summary',

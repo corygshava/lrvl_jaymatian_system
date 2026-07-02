@@ -643,22 +643,57 @@
 			}
 		}
 		window['resync_from_date'] = (el) => {
+			// check if the button click was bypassed
+			if(!calbtn.classList.contains('active')) {
+				alert_danger('invalid procedure, pick a date first',5);
+				return;
+			}
+
 			// alert_dark('resyncing');
 			let payld = {
 				start_date: ''
 			};
 			let date = new Date(calbtn.dataset.myid);
-
 			payld.start_date = date.toISOString().split('T')[0];
 
-			window[fetch_bypass](linkAtlas['regen_daily_report'],payld,'POST').then((m) => {
-				responseHandler(m,final_step,m);
-			})
+			function warn_user() {
+				warninght = `
+					are you sure you want to regenerate all reports from <b>${formatDate(date)}</b>.
+					<p>Note that <b>Debtor records</b> cannot be recreated</p>
+					<b>cancel: </b> nothing will happen
+					<br>
+					<b>confirm: </b> the system will recalculate all reports from <b>${formatDate(date)}</b> till today
+				`;
+				confirmAction(
+					mekHeading('Resync Reports','h3 w3-text-red'),
+					mekSpan(warninght),
+					() => {
+						setTimeout(() => {
+							confirm_pass();
+						},300)
+					}
+				);
+			}
+
+			function confirm_pass(){
+				awaitConfirmPass(send_it);
+			}
+
+			function send_it(n) {
+				payld.admin_password = n.admin_password;
+				alert_info('resyncing cash reports');
+
+				window[fetch_bypass](linkAtlas['regen_daily_report'],payld,'POST').then((m) => {
+					responseHandler(m,final_step,m);
+				})
+			}
 
 			function final_step(d){
 				alert_info('data resynced');
 				refreshData();
 			}
+
+			warn_user();
 		}
 
 		// samples ops
@@ -876,7 +911,7 @@
 					},
 					{
 						cap: 'Date added',
-						field: 'created_at',
+						field: '',
 						sortable: true,
 						show: function(value) {
 							return formatDate0(value);

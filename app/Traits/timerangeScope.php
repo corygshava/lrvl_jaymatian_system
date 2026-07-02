@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Traits;
+
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 trait TimeRangeScope{
@@ -31,7 +33,13 @@ trait TimeRangeScope{
 
 		// Handle single date (string that can be parsed as date)
 		if ($this->isDate($range)) {
-			return $q->whereDate('created_at', Carbon::parse($range));
+			// Controller::log_payload('a date was passed to timerange','debug_payload_0');
+			$date = Carbon::parse($range);
+
+			return $q->whereBetween('created_at', [
+				(clone $date)->startOfDay(),
+				(clone $date)->endOfDay(),
+			]);
 		}
 
 		// Handle named ranges
@@ -69,7 +77,6 @@ trait TimeRangeScope{
 			default => $q,
 		};
 	}
-
 	private function isDate(string $value): bool{
 		if (!is_string($value)) {
 			return false;

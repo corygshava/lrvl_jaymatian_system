@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Traits\TimeRangeScope;
+use App\Traits\Utils;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DailyCashReport extends Model{
 	use TimeRangeScope;
+	use Utils;
 
 	protected $fillable = [
 		'added_by',
@@ -38,6 +40,7 @@ class DailyCashReport extends Model{
 		'reports_count',
 		'invoices_count',
 		'expenses_count',
+		'created_at',
 	];
 
 	protected $casts = [
