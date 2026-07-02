@@ -239,7 +239,7 @@ class ClientController extends Controller{
 			$kra_pin = strip_tags($alldata['kra_pin']);
 			$id_number = strip_tags($alldata['id_number']);
 
-			$exist = Client::where('client_contact',$client_contact)->exists();
+			$exist = Client::query()->where('client_contact',$client_contact)->exists();
 			$changed = null;
 			$tosend = [
 				'client_name' => $client_name,
@@ -270,10 +270,12 @@ class ClientController extends Controller{
 					$msg = "phone number is already taken";
 				}
 			} else {
-				$changed = Client::where('id',$recid)->first();
+				$changed = Client::query()->where('id',$recid)->first();
 				if($changed == null){
 					$msg = "invalid client";
 				} else {
+					$exist = Client::query()->where('client_contact',$client_contact)->where('id','<>',$recid)->exists();
+
 					if($exist){
 						$msg = 'the phone number is already taken';
 					} else {
