@@ -73,22 +73,10 @@ class SamplesController extends Controller{
 				->with('owner')
 				->with('task')
 				->whereBetween('created_at', [
-					Carbon::now()->subMonth()->startOfMonth(), // Start of last month
-					Carbon::now()->endOfMonth(),               // End of this month
+					Carbon::now()->subMonth()->startOfMonth(),
+					Carbon::now()->endOfMonth(),
 				])
 				->orderBy('id','asc')
-			;
-
-			$extras = Sample::query()
-				->with('worksheets')
-				->with('results')
-				->withCount('results')
-				->withCount('reports')
-				->with('mycreator')
-				->with('owner')
-				->with('task')
-				->timeRange('last_month')
-				->latest()
 			;
 
 			// filter for task status
@@ -103,10 +91,8 @@ class SamplesController extends Controller{
 
 				if($con){
 					$records = $records->has('results');
-					$extras = $extras->has('results');
 				} else {
 					$records = $records->doesntHave('results');
-					$extras = $extras->doesntHave('results');
 				}
 			}
 
