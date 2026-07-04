@@ -200,7 +200,29 @@
 	let dash_runtime_data = {};
 	window['is_staff_page'] = true;
 	window['killOnLeave'] = [
-		'is_staff_page'
+		'is_staff_page',
+		'runOnAwake',
+		'initdashsetup',
+		'render_all_stuff',
+		'showError',
+		'showmainLoader',
+		'hidemainLoader',
+		'refresh_data',
+		'loadthispage',
+		'createNewTask',
+		'viewClients',
+		'viewTasks',
+		'viewSamples',
+		'viewReports',
+		'viewPayments',
+		'viewthis',
+		'refreshData',
+		'view_sample',
+		'view_task_0',
+		'view_task',
+		'renderStats',
+		'renderTasks',
+		'renderSamples',
 	];
 
 	/*

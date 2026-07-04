@@ -711,6 +711,8 @@
 				})
 				.catch(err => {
 					dynamic_ui.innerHTML = mekError('Error',`error loading interface: ${err.message}`,true);
+					console.error(err);
+
 					window[fetch_bypass]('./api/log_error',{intent: p.sidenote,path: p.template,ccsx: cur_user.id,error: err.message}).then(() => {
 						alert_silent('error logged');
 						console.log('error logged successfully');

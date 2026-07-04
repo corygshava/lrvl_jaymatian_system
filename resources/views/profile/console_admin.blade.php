@@ -230,10 +230,10 @@
 	window['timerange'] = timerange_atlas[0];
 
 	window['killOnLeave'] = [
+		'is_admin_page',
 		'dash_runtime_data',
 		'timerange',
-		'is_admin_page',
-		'resync_from_date',
+		'runOnAwake',
 		'initUIs',
 		'initdashsetup',
 		'render_all_stuff',
@@ -246,6 +246,7 @@
 		'reset_timerange',
 		'change_date',
 		'change_date_range',
+		'resync_from_date',
 		'view_sample',
 		'view_task_0',
 		'view_task',

@@ -955,6 +955,10 @@
 		// save returned
 	}
 
+	// function mek_payment() {
+		// alert_info('what is this');
+	// }
+
 	window['form_afterfx'] = (m) => {
 		// alert_danger('runnin afterfx');
 		add_edit_modal_trig.click();
