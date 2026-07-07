@@ -390,7 +390,7 @@
 					</button>
 					${regen_report_btn}
 				</div>
-				<div class="border-left w3-hide-small"></div>
+				<div class="border-left w3-hide-small w3-hide-medium"></div>
 				<div class="flowline centerline center spacy-sm">
 					<a class="mybtn secondary sm" target="blank" href="${linkAtlas['getreport_slug']}/${report.file_slug}"><i class="fa fa-eye"></i> view report</a>
 					<a class="mybtn secondary sm" target="blank" download="[${report_tag}] ${encodeURIComponent(report.owner.client_name)} - report.png" href="${linkAtlas['getreport_slug']}/${report.file_slug}"><i class="fa fa-download"></i> download</a>
