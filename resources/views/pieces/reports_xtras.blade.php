@@ -361,6 +361,11 @@
 		}
 
 		let report_tag = report.task == undefined ? `${report.owner.client_name.toUpperCase()}` : report.task.task_no;
+		let regen_report_btn = report.sample == undefined ? `` : `
+			<button class="mybtn secondary" data-runme="regen_report">
+				<i class="fas fa-file-export"></i> Regenerate
+			</button>
+		`;
 
 		// return;
 		// Build the interface
@@ -383,9 +388,7 @@
 					<button class="mybtn secondary" onclick="viewClient_payments(${report.owner.id})" data-openthis="clientinfo">
 						<i class="fas fa-users"></i> View Client
 					</button>
-					<button class="mybtn secondary" data-runme="regen_report">
-						<i class="fas fa-file-export"></i> Regenerate
-					</button>
+					${regen_report_btn}
 				</div>
 				<div class="border-left w3-hide-small"></div>
 				<div class="flowline centerline center spacy-sm">
