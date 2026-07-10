@@ -1039,63 +1039,6 @@ function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warni
 		alert_dark('all view cache cleared');
 	}
 
-function formatDate0(date) {
-	if(!date){return '--';}
-
-	const d = new Date(date); // Ensures input is a Date object
-	const day = String(d.getDate()).padStart(2, '0');
-	const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-	const year = d.getFullYear();
-	const hours = String(d.getHours()).padStart(2, '0');
-	const minutes = String(d.getMinutes()).padStart(2, '0');
-	const seconds = String(d.getSeconds()).padStart(2, '0');
-
-	return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-}
-
-function formatDate(date) {
-	if(!date){return '--';}
-
-	return date.toLocaleDateString('en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric'
-	});
-}
-
-function formatDateTime(date) {
-	if(!date){return '--';}
-
-	return date.toLocaleString('en-US', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		hour12: false
-	}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
-}
-
-function formatNumber(n,dp = 0,locale = true) {
-	if(Number(n) == NaN){
-		alert_danger('invalid number passed for formatting');
-		return 'NaN';
-	} else {
-		n = Number(n);
-	}
-
-	let parts = n.toString().split('.');
-	let p1 = locale ? Number(parts[0]).toLocaleString() : Number(parts[0]);
-	let p2 = parts[1] || '00';
-
-	p2 = p2.slice(0,dp);
-	res = dp == 0 || !(n.toString().includes('.')) ? p1 : `${p1}.${p2}`;
-
-	return res;
-}
-
-
 // log visit
 callOnLoad.push({act: window['log_visit']});
 callOnLoad.push({act: window['mekXtras']});

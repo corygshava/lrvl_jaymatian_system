@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Exception;
 use Carbon\Carbon;
 
@@ -1022,6 +1021,7 @@ abstract class Controller{
 		$res = $this->dftres;
 		$alldata = $req->all();
 		$msg = "didnt even get to start";
+		$out = null;
 
 		/*
 		$passed = $req->validate([
@@ -1029,6 +1029,7 @@ abstract class Controller{
 		]);
 		// */
 
+		// utils
 		$update_runlog = function($wot) use (&$res){
 			$res['runlog'][] = $wot;
 		};
@@ -1041,18 +1042,23 @@ abstract class Controller{
 		$_msg = function($w,$l = true) use (&$update_msg){
 			$update_msg($w,$l);
 		};
+		$_rlg = function($w) use (&$update_runlog){
+			$update_runlog($w);
+		};
 
+		// ops begin
 		if($this->ili()){
 			$res['success'] = true;
 			$update_msg('starting the procedure');
 			$reslt = false;
 
 			$cmdt = self::commondata();
+			$out = $cmdt['permissions'];
 			$mdta = random_int(0,14);
 			$reslt = $mdta >= 7;
 
 			$res['result'] = $reslt;
-			$res['sendme'] = $cmdt['permissions'];
+			$res['sendme'] = $out;
 			$res['message'] = $msg;
 		}
 

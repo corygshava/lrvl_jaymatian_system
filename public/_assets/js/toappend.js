@@ -142,18 +142,23 @@ function findIndex(arr, searchString) {
 	return arr.findIndex(element => element.includes(searchString));
 }
 
-function typetext(duration,word) {
+function typetext(sel,duration,word) {
 	let letr = 0,wad = "";
+	let item = document.querySelector(sel);
 
-	let myinter = setInterval(() => {
-		letr += 1;
-		wad = `${word.slice(0,letr)}_`;
-		subtxt.innerHTML = `${wad}`;
+	if(item != null){
+		let myinter = setInterval(() => {
+			letr += 1;
+			wad = letr < word.length ? `${word.slice(0,letr)}_` : word;
+			item.innerHTML = `${wad}`;
 
-		if(letr >= word.length){
-			clearInterval(myinter);
-		}
-	},(duration * 1000) / (word.length))
+			if(letr >= word.length){
+				clearInterval(myinter);
+			}
+		},(duration * 1000) / (word.length))
+	} else {
+		alert_danger('invalid selector for typetext');
+	}
 }
 
 function openinnewtab(url) {
@@ -402,7 +407,7 @@ window['objtoquery'] = (obj, prefix = '') => {
 	return pairs.join('&');
 }
 
-// new from Jaymatt [19/03/26]
+// new from Jeymat on 19/03/2026 around 156 days after these
 function reverseLerp(min,max,val) {
 	return (val - min) / (max - min);
 }
@@ -475,3 +480,62 @@ function mekQRCode(encodedText, size = 100) {
     });
 }
 // */
+
+// new from jeymat on 19/07/2026 around 112 days after these
+
+function formatDate0(date) {
+	if(!date){return '--';}
+
+	const d = new Date(date); // Ensures input is a Date object
+	const day = String(d.getDate()).padStart(2, '0');
+	const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+	const year = d.getFullYear();
+	const hours = String(d.getHours()).padStart(2, '0');
+	const minutes = String(d.getMinutes()).padStart(2, '0');
+	const seconds = String(d.getSeconds()).padStart(2, '0');
+
+	return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+function formatDate(date) {
+	if(!date){return '--';}
+
+	return date.toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric'
+	});
+}
+
+function formatDateTime(date) {
+	if(!date){return '--';}
+
+	return date.toLocaleString('en-US', {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: false
+	}).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2');
+}
+
+function formatNumber(n,dp = 0,locale = true) {
+	if(Number(n) == NaN){
+		alert_danger('invalid number passed for formatting');
+		return 'NaN';
+	} else {
+		n = Number(n);
+	}
+
+	let parts = n.toString().split('.');
+	let p1 = locale ? Number(parts[0]).toLocaleString() : Number(parts[0]);
+	let p2 = parts[1] || '00';
+
+	p2 = p2.slice(0,dp);
+	res = dp == 0 || !(n.toString().includes('.')) ? p1 : `${p1}.${p2}`;
+
+	return res;
+}
+
