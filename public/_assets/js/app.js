@@ -300,7 +300,7 @@ if(window[curfun] == undefined){
 			let req = await fetch(p,s_data);
 			let final = await req.text();
 			let cache = {
-				saved_at: (new Date()).toLocaleString(),
+				saved_at: (new Date()).toISOString(),
 				html: final
 			};
 			let cache_data = JSON.stringify(cache);
@@ -316,6 +316,7 @@ if(window[curfun] == undefined){
 		}
 	}
 }
+
 
 curfun = "loadUI";
 if(window[curfun] == undefined){
