@@ -23,12 +23,14 @@ class Result extends Model{
 		'sample_name',
         'sample_type',
         'au_ppm',
+        'au_ppm_2',
         'cu_ppm',
         'activity',
     ];
 
     protected $casts = [
         'au_ppm' => 'decimal:2',
+        'au_ppm_2' => 'decimal:2',
         'cu_ppm' => 'decimal:2',
     ];
 
