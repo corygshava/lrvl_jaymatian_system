@@ -1,8 +1,9 @@
 <?php
+	// /*
 	$mcon = new \App\Http\Controllers\UserController();
 	$sitedata = $mcon::getSiteData();
+	// */
 ?>
-
 
 	<script>
 		// state atlases

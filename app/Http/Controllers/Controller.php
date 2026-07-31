@@ -25,7 +25,7 @@ abstract class Controller{
 	public static $sitedata = null;
 	public static $permissions = [];
 	public static $mypermissions = [];
-	public static $sitedata_last_update = '2026-07-31 03:25:29';
+	public static $sitedata_last_update = '2026-07-31 17:33:29';
 	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
 
 	// storage stuff
@@ -485,9 +485,7 @@ abstract class Controller{
 			'date_created' => $created,
 			'date_updated' => $lastupdate,
 			'branch_name' => 'migori',
-			'user_data' => [
-				'deliveryCharge' => 300
-			],
+			'sitelink' => 'https://migori.jaymattlab.com/',
 			"developer_details" => [
 				'email' => 'corygshava777+jaymattdev@gmail.com',
 				"name" => 'Cory',
