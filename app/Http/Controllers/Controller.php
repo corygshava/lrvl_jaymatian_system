@@ -25,7 +25,7 @@ abstract class Controller{
 	public static $sitedata = null;
 	public static $permissions = [];
 	public static $mypermissions = [];
-	public static $sitedata_last_update = '2025-11-21 03:25:29';
+	public static $sitedata_last_update = '2026-07-31 03:25:29';
 	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
 
 	// storage stuff
@@ -484,22 +484,9 @@ abstract class Controller{
 		$data = [
 			'date_created' => $created,
 			'date_updated' => $lastupdate,
+			'branch_name' => 'migori',
 			'user_data' => [
-				'deliveryCharge' => 300,
-				'valueCutoff' => 30000,
-				'sitelink' => 'https://migori.jaymattlab.com/',
-				'Mpesa' => [
-					'passkey' => 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-					'BusinessShortCode' => '174379',
-					'TestPhoneNumber' => '254708374149',
-					'CallbackRoute' => 'mpesa_callback',
-				],
-				'PaymentMethods' => [
-					'Mpesa' => 'mpesa',
-				],
-				'AvailablePaymentMethods' => [
-					'Mpesa' => 'mpesa',
-				]
+				'deliveryCharge' => 300
 			],
 			"developer_details" => [
 				'email' => 'corygshava777+jaymattdev@gmail.com',

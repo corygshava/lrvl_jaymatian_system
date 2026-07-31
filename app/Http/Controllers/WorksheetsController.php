@@ -557,6 +557,7 @@ class WorksheetsController extends Controller{
 							$sname = str_contains($r['sample_id'], self::$readings_divider) ? substr($r['sample_id'],strlen(self::$readings_divider)) : $r['sample_id'];
 							$tmp_rec['sample_name'] = $sname;
 
+							$update_runlog(['result' => $tmp_rec]);
 							$results[] = $tmp_rec;
 
 							$update_runlog($results);

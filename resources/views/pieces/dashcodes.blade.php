@@ -1,3 +1,8 @@
+<?php
+	$mcon = new \App\Http\Controllers\UserController();
+	$sitedata = $mcon::getSiteData();
+?>
+
 
 	<script>
 		// state atlases
@@ -64,6 +69,7 @@
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
 		const lastrefresh = '10/04/2026 02:10:37';
+		const sitedata = <?=json_encode($sitedata)?>;
 
 		var menubar = undefined;
 		let themenu = undefined;

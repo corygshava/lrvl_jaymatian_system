@@ -21,73 +21,81 @@ const icons = {
 	"dark": "fa fa-caret-right",
 };
 const mekicon = (what) => {return `<i class="${what}"></i>`;}
+const alert_class = "c_" + mekRandomString(3);
 
 function mekstyles() {
 	let zindex = 1056;
 	let intertxt = isinteractible ? 'all' : 'none';
-    let mystyles = `
-    	/* alert holder */
+	let mystyles = `
+		/* alert holder */
 
 		#alertContainer {
 			position: fixed;
 			bottom: 0;
 			right: 0;
 			width: 100%;
-    		max-width: fit-content;
+			max-width: fit-content;
 			height: auto;
 			pointer-events: none;
 			padding: 20px 30px 80px 30px;
 			z-index: ${zindex};
 			font-family: 'calibri', sans-serif !important;
-    		--c: #fff;
-    		--altc: #000;
+			--c: #fff;
+			--altc: #000;
 		}
 
 		#alertContainer button {
 			border:none;
 		}
 
-		.alert {
+		.${alert_class}:not(.except) {
 			position: relative;
 			padding: 8px 16px;
 			margin-bottom: 20px;
 			color: var(--c);
 			border-radius: var(--roundness,12px) !important;
 			width: fit-content;
-    		min-width: 300px;
+			min-width: 300px;
 			max-width: 400px;
 			pointer-events: ${intertxt};
-    		// font-weight: 700;
+			// font-weight: 700;
 		}
 
-		.alert.success{background-color: mediumseagreen;box-shadow: 0 0 12px mediumseagreen;}
-		.alert.info{background-color: dodgerblue;box-shadow: 0 0 12px dodgerblue;}
-		.alert.warning{background-color: rgb(255, 166, 0);box-shadow: 0 0 12px rgb(255, 166, 0);color:var(--altc)}
-		.alert.danger,.alert.error{background-color: red;box-shadow: 0 0 12px red;}
-		.alert.primary{background-color: #007bff;box-shadow: 0 0 12px #007bff;}
-		.alert.theme{background-color: var(--themecolor);box-shadow: 0 0 12px var(--themecolor);}
-		.alert.secondary{background-color: #343a40;box-shadow: 0 0 12px #343a40;}
-		.alert.light{background-color: #fff;box-shadow: 0 0 12px #fff;color:var(--altc) !important;}
-		.alert.dark{background-color: #343a40;box-shadow: 0 0 12px #343a40;}
-		.alert b,.alert strong{
+		.${alert_class}:not(.except).success{background-color: mediumseagreen;box-shadow: 0 0 12px mediumseagreen;}
+		.${alert_class}:not(.except).info{background-color: dodgerblue;box-shadow: 0 0 12px dodgerblue;}
+		.${alert_class}:not(.except).warning{background-color: rgb(255, 166, 0);box-shadow: 0 0 12px rgb(255, 166, 0);color:var(--altc)}
+		.${alert_class}:not(.except).danger,.${alert_class}.error{background-color: red;box-shadow: 0 0 12px red;}
+		.${alert_class}:not(.except).primary{background-color: #007bff;box-shadow: 0 0 12px #007bff;}
+		.${alert_class}:not(.except).theme{background-color: var(--themecolor);box-shadow: 0 0 12px var(--themecolor);}
+		.${alert_class}:not(.except).secondary{background-color: #343a40;box-shadow: 0 0 12px #343a40;}
+		.${alert_class}:not(.except).light{background-color: #fff;box-shadow: 0 0 12px #fff;color:var(--altc) !important;}
+		.${alert_class}:not(.except).dark{background-color: #343a40;box-shadow: 0 0 12px #343a40;}
+		.${alert_class}:not(.except) b,.${alert_class}:not(.except) strong{
 			display: inline-block;
 			border-radius: calc(var(--roundness) / 2);
 			background-color: var(--alttextcolor);
 			padding: 2px 12px;
 		}
-    `;
+	`;
 
-    let st = document.createElement('style');
-    st.innerHTML = mystyles;
-    document.body.appendChild(st);
+	let st = document.createElement('style');
+	st.innerHTML = mystyles;
+	document.body.appendChild(st);
 
-    let thecon = document.createElement('div');
-    thecon.id = 'alertContainer';
-    document.body.appendChild(thecon);
+	let thecon = document.createElement('div');
+	thecon.id = 'alertContainer';
+	document.body.appendChild(thecon);
 
-    stylesmade = true;
+	stylesmade = true;
 
-    console.log("made styles");
+	console.log("made styles");
+}
+function mekContainer() {
+	let div = document.createElement('div');
+	div.dataset.is_backup = "yes";
+	div.id = 'alertContainer';
+
+	document.body.appendChild(div);
 }
 
 function showAlert(alertMessage, alertTime, alertType) {
@@ -98,17 +106,26 @@ function showAlert(alertMessage, alertTime, alertType) {
 	rawmsg = alertMessage;
 	alertMessage = useicons ? (icons[alertType] == undefined ? '' : mekicon(icons[alertType])) + ` ${alertMessage}` : alertMessage;
 
-    if(!stylesmade){
-        mekstyles();
-    }
+	if(!stylesmade){
+		mekstyles();
+	}
 
-    if(alertType != "quiet"){
+	if(alertType != "quiet"){
 		// Create alert container if it doesn't exist
 		let alertContainer = document.getElementById('alertContainer');
 
+		if(alertContainer == undefined){
+			mekContainer();
+
+			setTimeout(() => {
+				showAlert(alertMessage, alertTime, alertType);
+			}, 700);
+			return;
+		}
+
 		// Create alert element
 		const alertElement = document.createElement('div');
-		alertElement.className = `alert ${alertType} alert-dismissible fade show`;
+		alertElement.className = `${alert_class} ${alertType} alert-dismissible fade show`;
 		alertElement.role = 'alert';
 		alertElement.innerHTML = `
 			${alertMessage}
@@ -148,11 +165,11 @@ function showAlert(alertMessage, alertTime, alertType) {
 				}
 			}, alertTime * 1000);
 		}
-		console.log(`i will die in ${alertTime} seconds`);
+		// console.log(`i will die in ${alertTime} seconds`);
 	}
 
 	let timestamp = (new Date()).getTime();
-    alertlogs.push({msg: rawmsg,atype: alertType,atime: timestamp});
+	alertlogs.push({msg: rawmsg,atype: alertType,atime: timestamp});
 }
 
 function alert_success(message,time) {showAlert(message,time,"success");}
@@ -171,6 +188,7 @@ function clear_alerts() {
 	alertContainer.innerHTML = '';
 }
 
+// CoryG prod easter egg
 window.addEventListener('keydown',(e) => {
 	if(e.key != undefined && e.key.toLowerCase() == 'tab' && e.shiftKey){
 		let mystring = mekRandomString(16);
