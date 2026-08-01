@@ -393,6 +393,9 @@ class WorksheetsController extends Controller{
 		$_msg = function($w,$l = true) use (&$update_msg){
 			$update_msg($w,$l);
 		};
+		$_rlg = function($w) use (&$update_runlog){
+			$update_runlog($w);
+		};
 
 		if($this->ili() || $iscalled){
 			$res['success'] = true;
@@ -456,11 +459,8 @@ class WorksheetsController extends Controller{
 					$mysheet->has_readings = true;
 					$mysheet->save();
 
-					// calculate results using the calculator setup
-					foreach($parsed_readings as $r){
-						if($r['is_final']){
-							// $update_runlog($r);
-
+					// isolate the calculater setup
+						$calculater = function($r) use($thesample, $user, $s_id, $mysheet, $_rlg, $update_runlog) {
 							$tmp_rec = [
 								'task_id' => $thesample->task_id,
 								'sample_id' => $s_id,
@@ -472,7 +472,9 @@ class WorksheetsController extends Controller{
 								'sample_type' => $thesample->sample_type,
 								'au_ppm' => 0.00,
 								'cu_ppm' => 0.00,
+								'au_ppm_2' => 0.10,
 							];
+
 							$calc_au_ppm = 707.77;
 							$calc_cu_ppm = 707.77;
 							$calc_activity = -1.33;
@@ -485,14 +487,14 @@ class WorksheetsController extends Controller{
 								$calc_au_ppm = ($au_reading * 4 * (250 - (0.35 * $weight))) / ($weight * 50);
 								$calc_cu_ppm = (300 / $weight) * $cu_reading;
 							};
-							$calculate_soil = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal){
+							$calculate_soil = function() use(&$calculate_nermal){
 								return $calculate_nermal();
 							};
-							$calculate_solution = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal){
+							$calculate_solution = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
 								$calc_au_ppm = $au_reading;
 								$calc_cu_ppm = $cu_reading;
 							};
-							$calculate_carbon = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog){
+							$calculate_carbon = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
 								$calc_au_ppm = $au_reading * 100;
 								$calc_cu_ppm = $cu_reading * 100;
 
@@ -505,7 +507,7 @@ class WorksheetsController extends Controller{
 									]);
 								// */
 							};
-							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$calculate_nermal,&$update_runlog,&$calc_activity){
+							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$update_runlog,&$calc_activity){
 								$act = $weight;
 								$virgin = $au_reading;
 								$initial = $cu_reading;
@@ -528,7 +530,7 @@ class WorksheetsController extends Controller{
 							};
 
 							$stype = strtolower($thesample->sample_type);
-							$update_runlog("type: $stype");
+							$_rlg("[calculater] type: $stype");
 
 							switch ($stype) {
 								case 'soil':
@@ -557,15 +559,68 @@ class WorksheetsController extends Controller{
 							$sname = str_contains($r['sample_id'], self::$readings_divider) ? substr($r['sample_id'],strlen(self::$readings_divider)) : $r['sample_id'];
 							$tmp_rec['sample_name'] = $sname;
 
-							$update_runlog(['result' => $tmp_rec]);
-							$results[] = $tmp_rec;
+							return $tmp_rec;
+						};
 
-							$update_runlog($results);
+					$sitedata = self::getSiteData();
 
-							$cols = array_keys($tmp_rec);
-						} else {
-							// not meant to be saved so its ignored
+					if($sitedata['branch_name'] == 'migori'){
+						// calculate results using the calculator setup
+						// $nn = 0;
+						foreach($parsed_readings as $r){
+							if($r['is_final']){
+								// $update_runlog($r);
+
+								$tmp_rec = $calculater($r);
+								$results[] = $tmp_rec;
+								// $parsed_readings[$nn] = $r;
+
+								$update_runlog($results);
+
+								$cols = array_keys($tmp_rec);
+							} else {
+								// not meant to be saved so its ignored
+							}
+
+							// $nn += 1;
 						}
+					} else {
+					// revamp to cater for the new result parameter
+						// group readings based on their sample id
+						$grouped = [];
+						foreach($parsed_readings as $r){
+							if(!isset($grouped[$r['sample_id']])){
+								$grouped[$r['sample_id']] = $r;
+							} else {
+								// $sid = $r['sample_id'];
+								$sid = str_replace('RPT ', '', $r['sample_id']);
+								$already_in = $grouped[$sid];
+								$xtradata = isset($already_in['xtras']) ? $already_in['xtras'] : [];
+								$xtradata[] = $r;
+								$already_in = [...$already_in, 'xtras' => $xtradata];
+								$grouped[$r['sample_id']] = $already_in;
+							}
+						}
+
+						// demo of string replacement (gets rid of npt, check this to understand the sample_id isolation setup above)
+						$str = "RPT notafari xxuv";
+						$wot = str_replace('RPT ', '',$str);
+						$_msg($wot);
+
+						$newones = [];
+						$in = 0;
+
+						foreach($grouped as $g){
+							$g['is_def_checked'] = "yes matafaka";
+
+							if($in < (count($grouped) - 1)){
+								$newones[] = $g;
+							}
+
+							$in += 1;
+						}
+						$_rlg($grouped);
+						// $_rlg($newones);
 					}
 
 					// delete all current results
