@@ -11,7 +11,7 @@ return new class extends Migration {
      */
     public function up(): void {
         Schema::table('results', function (Blueprint $table) {
-            $table->decimal($this->col1, 10, 4)->after('au_ppm')->default('0.00');
+            $table->decimal($this->col1, 10, 4)->after('au_ppm')->default('-77.00');
         });
     }
 

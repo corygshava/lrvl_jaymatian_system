@@ -271,6 +271,7 @@
 	// Render results table
 	window['render_sample_results'] = (results,xtra_results = []) => {
 		let special = sample.sample_type.toLowerCase() == 'carbon activity';
+		let changers = !special && sample.sample_type.toLowerCase() != 'solution' && sitedata.branch_name != 'migori';
 		// alert_dark(special ? 'special' : 'nope');
 
 		let head_rows = special ? `
@@ -283,6 +284,16 @@
 			<th>AU (ppm)</th>
 			<th>CU (ppm)</th>
 		`;
+
+		if(changers){
+			head_rows = `
+				<th class="w3-hide">ID</th>
+				<th>Sample ID</th>
+				<th>AU (ppm)</th>
+				<th>AU RPT (ppm)</th>
+				<th>CU (ppm)</th>
+			`;
+		}
 
 		let tableHTML = `
 			<table class="table table-bordered results-table">
@@ -320,6 +331,15 @@
 					<td>${vonv(result.au_ppm)}</td>
 					<td>${vonv(result.cu_ppm)}</td>
 				`;
+
+				if(changers){
+					rescon = `
+						<td>${result.sample_name}</td>
+						<td>${vonv(result.au_ppm)}</td>
+						<td>${vonv(result.au_ppm_2)}</td>
+						<td>${vonv(result.cu_ppm)}</td>
+					`;
+				}
 
 				tableHTML += `
 					<tr>

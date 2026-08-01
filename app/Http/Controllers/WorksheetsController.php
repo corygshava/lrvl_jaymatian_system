@@ -459,108 +459,163 @@ class WorksheetsController extends Controller{
 					$mysheet->has_readings = true;
 					$mysheet->save();
 
-					// isolate the calculater setup
-						$calculater = function($r) use($thesample, $user, $s_id, $mysheet, $_rlg, $update_runlog) {
-							$tmp_rec = [
-								'task_id' => $thesample->task_id,
-								'sample_id' => $s_id,
-								'client_id' => $thesample->client_id,
-								'added_by' => $user->id,
-								'worksheet_id' => $mysheet->id,
-								'last_updated_by' => $user->id,
-								'sample_name' => $r['sample_id'],
-								'sample_type' => $thesample->sample_type,
-								'au_ppm' => 0.00,
-								'cu_ppm' => 0.00,
-								'au_ppm_2' => 0.10,
-							];
+					// isolated calculater based functions
+					$calculater = function($r) use($thesample, $user, $s_id, $mysheet, $_rlg, $update_runlog) {
+						$tmp_rec = [
+							'task_id' => $thesample->task_id,
+							'sample_id' => $s_id,
+							'client_id' => $thesample->client_id,
+							'added_by' => $user->id,
+							'worksheet_id' => $mysheet->id,
+							'last_updated_by' => $user->id,
+							'sample_name' => $r['sample_id'],
+							'sample_type' => $thesample->sample_type,
+							'au_ppm' => 0.00,
+							'cu_ppm' => 0.00,
+							'au_ppm_2' => 7.77,
+						];
 
-							$calc_au_ppm = 707.77;
-							$calc_cu_ppm = 707.77;
-							$calc_activity = -1.33;
-							$weight = $r['weight'];
-							$au_reading = $r['au_reading'];
-							$cu_reading = $r['cu_reading'];
+						$calc_au_ppm = 707.77;
+						$calc_cu_ppm = 707.77;
+						$calc_activity = -1.33;
+						$weight = $r['weight'];
+						$au_reading = $r['au_reading'];
+						$cu_reading = $r['cu_reading'];
 
-							// calculate results based on sample type [done]
-							$calculate_nermal = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
-								$calc_au_ppm = ($au_reading * 4 * (250 - (0.35 * $weight))) / ($weight * 50);
-								$calc_cu_ppm = (300 / $weight) * $cu_reading;
-							};
-							$calculate_soil = function() use(&$calculate_nermal){
-								return $calculate_nermal();
-							};
-							$calculate_solution = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
-								$calc_au_ppm = $au_reading;
-								$calc_cu_ppm = $cu_reading;
-							};
-							$calculate_carbon = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
-								$calc_au_ppm = $au_reading * 100;
-								$calc_cu_ppm = $cu_reading * 100;
+						// calculate results based on sample type [done]
+						$calculate_nermal = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
+							$calc_au_ppm = ($au_reading * 4 * (250 - (0.35 * $weight))) / ($weight * 50);
+							$calc_cu_ppm = (300 / $weight) * $cu_reading;
+						};
+						$calculate_soil = function() use(&$calculate_nermal){
+							return $calculate_nermal();
+						};
+						$calculate_solution = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
+							$calc_au_ppm = $au_reading;
+							$calc_cu_ppm = $cu_reading;
+						};
+						$calculate_carbon = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm){
+							$calc_au_ppm = $au_reading * 100;
+							$calc_cu_ppm = $cu_reading * 100;
 
-								/*
-									$update_runlog([
-										'calc_au' => "$au_reading * 100",
-										'calc_cu' => "$cu_reading * 100",
-										'au_ppm' => $calc_au_ppm,
-										'cu_ppm' => $calc_cu_ppm,
-									]);
-								// */
-							};
-							$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$update_runlog,&$calc_activity){
-								$act = $weight;
-								$virgin = $au_reading;
-								$initial = $cu_reading;
+							/*
+								$update_runlog([
+									'calc_au' => "$au_reading * 100",
+									'calc_cu' => "$cu_reading * 100",
+									'au_ppm' => $calc_au_ppm,
+									'cu_ppm' => $calc_cu_ppm,
+								]);
+							// */
+						};
+						$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$update_runlog,&$calc_activity){
+							$act = $weight;
+							$virgin = $au_reading;
+							$initial = $cu_reading;
 
-								$i = $initial;
-								$v = $virgin;
-								$a = $act;
+							$i = $initial;
+							$v = $virgin;
+							$a = $act;
+							$clc = 0;
 
-								$top = ($i - $a);
-								$bottom = ($i - $v);
+							$top = ($i - $a);
+							$bottom = ($i - $v);
+							if($bottom > 0){
 								$clc = (float) $top / $bottom;
-								$calc_activity = $clc * 85;
+							}
+							$calc_activity = $clc * 85;
 
-								// /*
-								$update_runlog("clc sum: ($top / $bottom) = $clc");
-								$update_runlog("calc: $clc");
-								$update_runlog("sum: $clc * 85");
-								$update_runlog("final: $calc_activity");
-								// */
-							};
+							// /*
+							$update_runlog("clc sum: ($top / $bottom) = $clc");
+							$update_runlog("calc: $clc");
+							$update_runlog("sum: $clc * 85");
+							$update_runlog("final: $calc_activity");
+							// */
+						};
+						$mek_null = function() use( &$calc_au_ppm, &$calc_cu_ppm, &$calc_activity){
+							$calc_au_ppm = 0.00;
+							$calc_cu_ppm = 0.00;
+							$calc_activity = 0.00;
+						};
 
-							$stype = strtolower($thesample->sample_type);
-							$_rlg("[calculater] type: $stype");
+						$stype = strtolower($thesample->sample_type);
+						$_rlg("[calculater] type: $stype");
+						// $is_nul = ;
 
-							switch ($stype) {
-								case 'soil':
+						switch ($stype) {
+							case 'soil':
+								if($weight == 0){
+									$mek_null();
+								} else {
 									$calculate_soil();
-									break;
-								case 'carbon':
-									$calculate_carbon();
-									break;
-								case 'solution':
-									$calculate_solution();
-									break;
-								case 'carbon activity':
-									// $update_runlog('processing carbon_activity');
-									$calculate_carbon_activity();
-									break;
-								default:
-									$calculate_nermal();
-									break;
+								}
+								break;
+							case 'carbon':
+								$calculate_carbon();
+								break;
+							case 'solution':
+								$calculate_solution();
+								break;
+							case 'carbon activity':
+								// $update_runlog('processing carbon_activity');
+								$calculate_carbon_activity();
+								break;
+							default:
+								$calculate_nermal();
+								break;
+						}
+
+						$tmp_rec['au_ppm'] = $calc_au_ppm;
+						$tmp_rec['cu_ppm'] = $calc_cu_ppm;
+						$tmp_rec['activity'] = $calc_activity;
+
+						// fix up the name before saving
+						$sname = str_contains($r['sample_id'], self::$readings_divider) ? substr($r['sample_id'],strlen(self::$readings_divider)) : $r['sample_id'];
+						$tmp_rec['sample_name'] = $sname;
+
+						return $tmp_rec;
+					};
+					$sort_this_mess = function($m){
+						// so just a rudimentary sorting setup
+						$ret = [];
+						$sm = [];
+
+						$getmax = function($nms){
+							$max = -999999999999;
+							$maxfound = false;
+
+							foreach($nms as $n){
+								if(!$maxfound){
+									if($n < $max){
+										$max = $n;
+									}
+								}
+
+								if($n >= $max){
+									$maxfound = true;
+									$max = $n;
+								}
 							}
 
-							$tmp_rec['au_ppm'] = $calc_au_ppm;
-							$tmp_rec['cu_ppm'] = $calc_cu_ppm;
-							$tmp_rec['activity'] = $calc_activity;
-
-							// fix up the name before saving
-							$sname = str_contains($r['sample_id'], self::$readings_divider) ? substr($r['sample_id'],strlen(self::$readings_divider)) : $r['sample_id'];
-							$tmp_rec['sample_name'] = $sname;
-
-							return $tmp_rec;
+							return $max;
 						};
+
+						// $sm[] = $getmax($m);
+						$lastnum = $getmax($m);
+						$sm[] = $lastnum;
+						$tmp_arr = $m;
+
+						for($x = 1;$x < count($m);$x++){
+							$key = array_search($lastnum, $tmp_arr);
+							if($key !== false){
+								unset($tmp_arr[$key]);
+							}
+
+							$lastnum = $getmax($tmp_arr);
+							$sm[] = $lastnum;
+						}
+
+						return $sm;
+					};
 
 					$sitedata = self::getSiteData();
 
@@ -605,7 +660,7 @@ class WorksheetsController extends Controller{
 						// demo of string replacement (gets rid of npt, check this to understand the sample_id isolation setup above)
 						$str = "RPT notafari xxuv";
 						$wot = str_replace('RPT ', '',$str);
-						$_msg($wot);
+						// $_msg($wot);
 
 						$newones = [];
 						$in = 0;
@@ -619,8 +674,67 @@ class WorksheetsController extends Controller{
 
 							$in += 1;
 						}
-						$_rlg($grouped);
-						// $_rlg($newones);
+						$_rlg(['grouped' => $grouped]);
+						$_rlg(['newsetup' => $newones]);
+
+						$finres = [];
+
+						// working with the new setup after removing the reference materials from
+						// the idea is to return one result entry per new setup
+						foreach($newones as $ns){
+							// $_rlg(['in_res' => $ns]);
+							$picked = $ns;
+							$n_res =  $calculater($ns);
+							$cols = array_keys($n_res);
+
+							$arr = [
+								$ns,
+								...$ns['xtras'],
+							];
+
+							// $_rlg(['final_res_start' => $n_res]);
+							$au_results = [];
+
+							// calculate everything and get the fixed item record
+							foreach($arr as $ar){
+								$mres = $calculater($ar);
+								$tmp_r = $mres;
+
+								if($ar['is_final']){
+									$n_res = $mres;
+									$_rlg(['[indata]' => 'is final']);
+								} else {
+									$_rlg(['[indata]' => 'not final']);
+								}
+
+								$_rlg(['indata_form' => $tmp_r]);
+								$au_results[] = $mres['au_ppm'];
+							}
+
+							// $_rlg(['final_res_end' => $n_res]);
+							$_rlg(['au_ppms' => $au_results]);
+
+							$stype = strtolower($thesample->sample_type);
+							if($stype != 'solution' && $stype != 'carbon activity'){
+								if($stype == 'carbon'){
+									// run the processing logic for carbon
+									// do some black magic to sort the arrays in an order that wirks
+									$sorted_au = $sort_this_mess($au_results);
+									// $n_res['au_ppm'] = $sorted_au[1];
+									$n_res['au_ppm_2'] = $sorted_au[2];
+								} else {
+									// just use the second gold value as the set thing
+									$n_res['au_ppm'] = $au_results[1];
+									$n_res['au_ppm_2'] = $au_results[0];
+								}
+							}
+
+							$finres[] = $arr;
+							$results[] = $n_res;
+						}
+
+						$_rlg(['results' => $results]);
+						$_rlg(['finalised results' => $finres]);
 					}
 
 					// delete all current results

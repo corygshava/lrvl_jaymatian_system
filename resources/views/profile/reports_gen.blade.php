@@ -774,6 +774,7 @@
 		outht = '';
 		resultsguy.innerHTML = '';
 		let is_special = sample.sample_type.toLowerCase() == 'carbon activity';
+		let changers = !is_special && sample.sample_type.toLowerCase() != 'solution' && sitedata.branch_name != 'migori';
 
 		resultsHead.innerHTML = is_special ? `
 			<tr>
@@ -796,13 +797,30 @@
 			</tr>
 		`;
 
+		if(changers){
+			resultsHead.innerHTML = `
+				<tr>
+					<th style="width: 40px;"><span>SN</span></th>
+					<th style="width: 400px;"><span>SAMPLE ID</span></th>
+					<th style="width: 90px;"><span>Au (ppm)</span></th>
+					<th style="width: 120px;"><span>Au RPT (ppm)</span></th>
+					<th style="width: 90px;">
+						<span>Cu (ppm)</span>
+						<button data-subrole="entry_editor" data-runme="unhide_stuff" class="removebtn w3-blue"><i class="fa fa-sync-alt"></i></button>
+					</th>
+				</tr>
+			`;
+
+			alert_info('showing 3 results');
+		}
+
 		let is_carbon = sample.sample_type.toLowerCase() == 'carbon';
 		let vonv = (n) => {
 			return is_carbon ? formatNumber(n,0,false) : n;
 		}
 
 		s_data.results.forEach((r,i) => {
-			outht += is_special ? `
+			let theht = is_special ? `
 				<tr data-role="result_entry" data-myid="${i}">
 					<td><span>${i + 1}</span></td>
 					<td><span>${r.sample_name}</span></td>
@@ -822,6 +840,23 @@
 					</td>
 				</tr>
 			`;
+
+			if(changers){
+				theht = `
+					<tr data-role="result_entry" data-myid="${i}">
+						<td><span>${i + 1}</span></td>
+						<td><span>${r.sample_name}</span></td>
+						<td class="text-right"><span>${vonv(r.au_ppm)}</span></td>
+						<td class="text-right"><span>${vonv(r.au_ppm_2)}</span></td>
+						<td class="text-right">
+							<span>${vonv(r.cu_ppm)}</span>
+							<button data-subrole="entry_editor" data-runme="just_hide_this" data-myid="${i}" class="removebtn w3-red"><i class="fa fa-eye-slash"></i></button>
+						</td>
+					</tr>
+				`;
+			}
+
+			outht += theht;
 		})
 
 		resultsguy.innerHTML = outht;
