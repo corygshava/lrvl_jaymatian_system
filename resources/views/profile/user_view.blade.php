@@ -276,9 +276,9 @@
 		const updatedDate = new Date(data.updated_at);
 		const loginDate = new Date(data.last_login_at);
 
-		document.getElementById('member-since').textContent = formatDate(createdDate);
-		document.getElementById('last-updated').textContent = formatDate(updatedDate);
-		document.getElementById('last-login').textContent = loginDate.getTime() == 0 ? '--' : formatDate(loginDate);
+		document.getElementById('member-since').textContent = data.created_at == null ? '--' : formatDate(createdDate);
+		document.getElementById('last-updated').textContent = data.updated_at == null ? '--' : formatDate(updatedDate);
+		document.getElementById('last-login').textContent = data.last_login_at == null ? '--' : formatDate(loginDate);
 
 		// Email verification status
 		const verifyBadge = document.getElementById('email-verified-badge');
