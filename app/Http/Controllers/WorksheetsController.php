@@ -642,18 +642,23 @@ class WorksheetsController extends Controller{
 					} else {
 					// revamp to cater for the new result parameter
 						// group readings based on their sample id
+						$_rlg('grouping readings');
 						$grouped = [];
 						foreach($parsed_readings as $r){
-							if(!isset($grouped[$r['sample_id']])){
-								$grouped[$r['sample_id']] = $r;
+							$my_sid = str_replace('RPT ', '', $r['sample_id']);
+							// $_rlg(['sample_id' => $my_sid]);
+
+							if(!isset($grouped[$my_sid])){
+								// $_rlg('sample id not found');
+								$grouped[$my_sid] = $r;
 							} else {
+								// $_rlg('sample id found');
 								// $sid = $r['sample_id'];
-								$sid = str_replace('RPT ', '', $r['sample_id']);
-								$already_in = $grouped[$sid];
+								$already_in = $grouped[$my_sid];
 								$xtradata = isset($already_in['xtras']) ? $already_in['xtras'] : [];
 								$xtradata[] = $r;
 								$already_in = [...$already_in, 'xtras' => $xtradata];
-								$grouped[$r['sample_id']] = $already_in;
+								$grouped[$my_sid] = $already_in;
 							}
 						}
 
@@ -662,6 +667,8 @@ class WorksheetsController extends Controller{
 						$wot = str_replace('RPT ', '',$str);
 						// $_msg($wot);
 
+						$_rlg(['grouped' => $grouped]);
+						$_rlg('trimming grouped readings');
 						$newones = [];
 						$in = 0;
 
@@ -674,7 +681,6 @@ class WorksheetsController extends Controller{
 
 							$in += 1;
 						}
-						$_rlg(['grouped' => $grouped]);
 						$_rlg(['newsetup' => $newones]);
 
 						$finres = [];
@@ -683,9 +689,12 @@ class WorksheetsController extends Controller{
 						// the idea is to return one result entry per new setup
 						foreach($newones as $ns){
 							// $_rlg(['in_res' => $ns]);
+							// $_rlg('processing parsed data');
 							$picked = $ns;
 							$n_res =  $calculater($ns);
 							$cols = array_keys($n_res);
+
+							// $_rlg(['processing_this' => $ns]);
 
 							$arr = [
 								$ns,
@@ -702,12 +711,12 @@ class WorksheetsController extends Controller{
 
 								if($ar['is_final']){
 									$n_res = $mres;
-									$_rlg(['[indata]' => 'is final']);
+									// $_rlg(['[indata]' => 'is final']);
 								} else {
-									$_rlg(['[indata]' => 'not final']);
+									// $_rlg(['[indata]' => 'not final']);
 								}
 
-								$_rlg(['indata_form' => $tmp_r]);
+								// $_rlg(['indata_form' => $tmp_r]);
 								$au_results[] = $mres['au_ppm'];
 							}
 
@@ -729,12 +738,12 @@ class WorksheetsController extends Controller{
 								}
 							}
 
-							$finres[] = $arr;
+							// $finres[] = $arr;
 							$results[] = $n_res;
 						}
 
 						$_rlg(['results' => $results]);
-						$_rlg(['finalised results' => $finres]);
+						// $_rlg(['finalised results' => $finres]);
 					}
 
 					// delete all current results
