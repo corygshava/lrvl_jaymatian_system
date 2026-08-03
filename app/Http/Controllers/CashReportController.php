@@ -608,8 +608,8 @@ class CashReportController extends Controller{
 					$reports_generated = ReportsGen::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$total_invoices = Invoice::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
 					$total_expenses = Expense::query()->timeRange($t_range)->where('id','<>',null)->get()->count();
-					$unpaid_tasks = Task::query()->timeRange($t_range)->where('payment_status','<>',2)->get()->count();
-					$paid_tasks = Task::query()->timeRange($t_range)->where('payment_status',2)->get()->count();
+					$unpaid_tasks = Task::query()->timeRange($t_range)->where('payment_status','<>',2)->sum('sample_count');
+					$paid_tasks = Task::query()->timeRange($t_range)->where('payment_status',2)->sum('sample_count');
 
 					$sampledata = [
 						...$sampledata,

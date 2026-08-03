@@ -427,6 +427,7 @@ class WorksheetsController extends Controller{
 			} else {
 				$msg = "sample found";
 				$update_runlog($msg);
+				$stype = $thesample->sample_type;
 
 				try{
 					// setup transactions block
@@ -525,6 +526,8 @@ class WorksheetsController extends Controller{
 							$calc_activity = $clc * 85;
 
 							// /*
+							$update_runlog("top: ($i - $a) = $top");
+							$update_runlog("top: ($i - $v) = $bottom");
 							$update_runlog("clc sum: ($top / $bottom) = $clc");
 							$update_runlog("calc: $clc");
 							$update_runlog("sum: $clc * 85");
@@ -672,10 +675,19 @@ class WorksheetsController extends Controller{
 						$newones = [];
 						$in = 0;
 
+						$stype = strtolower($thesample->sample_type);
+						$_rlg(["sample type" => $stype]);
+						$good = $stype == "carbon activity" || $stype == "solution";
+						$_rlg(["its good" => $good]);
+
 						foreach($grouped as $g){
 							$g['is_def_checked'] = "yes matafaka";
 
-							if($in < (count($grouped) - 1)){
+							if(!$good){
+								if($in < (count($grouped) - 1)){
+									$newones[] = $g;
+								}
+							} else {
 								$newones[] = $g;
 							}
 
@@ -693,12 +705,13 @@ class WorksheetsController extends Controller{
 							$picked = $ns;
 							$n_res =  $calculater($ns);
 							$cols = array_keys($n_res);
+							$xts = isset($ns['xtras']) ? $ns['xtras'] : [];
 
 							// $_rlg(['processing_this' => $ns]);
 
 							$arr = [
 								$ns,
-								...$ns['xtras'],
+								...$xts,
 							];
 
 							// $_rlg(['final_res_start' => $n_res]);
