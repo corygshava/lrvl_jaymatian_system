@@ -350,7 +350,7 @@ class ViewController extends Controller{
 
 		if(!File::exists($path)){
 			http_response_code(404);
-			echo 'file not found';
+			// echo 'file not found';
 			return response()->json('file not found', 404);
 		}
 
