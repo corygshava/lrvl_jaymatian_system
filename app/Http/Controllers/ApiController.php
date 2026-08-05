@@ -699,7 +699,7 @@ class ApiController extends Controller{
 						->first()
 					;
 
-					$update_runlog(['sample' => $mysample, 's_id' => $s_id, 'passed' => $passed]);
+					// $update_runlog(['sample' => $mysample, 's_id' => $s_id, 'passed' => $passed]);
 
 					if($mysample == null){
 						$_msg('invalid sample details');
@@ -816,7 +816,7 @@ class ApiController extends Controller{
 
 					$mysample = Sample::query()
 						->where('id',$s_id)
-						->timeRange('this_month')
+						// ->timeRange('this_month')
 
 						// for consistency when saving
 						->with('worksheets')
