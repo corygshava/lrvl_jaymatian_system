@@ -4,7 +4,8 @@
 	</div>
 
 	<div class="title flowline overflow center" style="gap: 4px;">
-		<b data-role="branch_name">--</b>:
+		<b class="themetxt" data-role="branch_name">--</b>
+		<span data-visibledata="0,1,1"> : </span>
 		<span class="text-muted" id="curArea">--</span>
 	</div>
 
