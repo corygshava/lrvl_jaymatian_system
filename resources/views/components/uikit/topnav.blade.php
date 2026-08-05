@@ -3,8 +3,9 @@
 		<img src="./_assets/img/logo_txts.png">
 	</div>
 
-	<div class="title">
-		<span class="text-muted" id="curArea"></span>
+	<div class="title flowline overflow center" style="gap: 4px;">
+		<b data-role="branch_name">--</b>:
+		<span class="text-muted" id="curArea">--</span>
 	</div>
 
 	<div class="search-holder w3-hide">
@@ -29,7 +30,7 @@
 				<span class="d-none d-md-block" data-role="user_name_display">{{ auth()->user()->name }}</span>
 				<i class="fa fa-caret-down"></i>
 			</div>
-			<div class="dropdown-menu nopadding nooverflow w3-animate-opacity themeround realign" aria-labelledby="userOpsDropper" style="margin-top: 12px;border: none;">
+			<div class="dropdown-menu dropdown-menu-right nopadding nooverflow w3-animate-opacity themeround realign themeshadow" aria-labelledby="userOpsDropper" style="margin-top: 12px;border: none;">
 				<button class="dropdown-item spacy-tn flowline gap-tn centerline left" href="#" data-runme="view_profile">
 					<i class="fa fa-user-tie"></i>
 					<span>View profile</span>

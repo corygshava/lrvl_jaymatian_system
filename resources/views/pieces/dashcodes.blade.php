@@ -48,7 +48,7 @@
 		window['timeranges'] = [
 			"today",
 			"yesterday",
-			"juzi",
+			// "juzi",
 			"this_week",
 			"this_month",
 			"this_year",
@@ -376,6 +376,9 @@
 			let pnames = document.querySelectorAll('[data-role="pagename"]');
 			pnames.forEach(pn => {pn.innerHTML = p.sidenote;});
 
+			// render all branchnames where needed
+			pnames = document.querySelectorAll('[data-role="branch_name"]');
+			pnames.forEach(pn => {pn.innerHTML = `${sitedata.branch_name} branch`;});
 
 
 			// alert_warning('updating user');

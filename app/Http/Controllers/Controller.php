@@ -485,9 +485,9 @@ abstract class Controller{
 			'date_created' => $created,
 			'date_updated' => $lastupdate,
 			'branch_name' => 'migori',
-			'sitelink' => 'https://migori.jaymattlab.com/',
+			'sitelink' => 'https://migori.jaymat.com/',
 			"developer_details" => [
-				'email' => 'corygshava777+jaymattdev@gmail.com',
+				'email' => 'corygshava777+jaymat_dev_migori@gmail.com',
 				"name" => 'Cory',
 			],
 			"owner_details" => [

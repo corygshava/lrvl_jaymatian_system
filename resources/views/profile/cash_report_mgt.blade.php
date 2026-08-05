@@ -592,7 +592,7 @@
 						label: 'Record Type',
 						rawname: 'method',
 						options: [
-							{value: 'monthly',label: 'Monthly reports'},
+							// {value: 'monthly',label: 'Monthly reports'},
 							{value: 'daily',label: 'Daily reports'},
 						]
 					}

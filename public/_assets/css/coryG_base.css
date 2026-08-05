@@ -336,3 +336,6 @@ a{
 	.lightshadow{
 		box-shadow: 0 0 12px #dddddd77;
 	}
+	.themeshadow{
+		box-shadow: 0 0 12px var(--clr-shadow);
+	}
