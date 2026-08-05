@@ -276,10 +276,10 @@
 			};
 
 		/*
-		const confirm_modal = document.querySelector('#confirmerBox');
-		const confirm_toggler = document.querySelector('[data-role="toggleConfirmModal"]');
-		const info_modal = document.querySelector('#dashmodal');
-		const info_toggler = document.querySelector('[data-role="toggleDashModal"]');
+			const confirm_modal = document.querySelector('#confirmerBox');
+			const confirm_toggler = document.querySelector('[data-role="toggleConfirmModal"]');
+			const info_modal = document.querySelector('#dashmodal');
+			const info_toggler = document.querySelector('[data-role="toggleDashModal"]');
 		// */
 
 		const fadein = [{opacity: 1},{opacity: 0}];
