@@ -8,6 +8,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Mavinoo\Batch\Batch;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
 class SamplesController extends Controller{
 	// getters
@@ -29,6 +30,33 @@ class SamplesController extends Controller{
 			$_msg = function($w,$l = true) use (&$update_msg){
 				$update_msg($w,$l);
 			};
+
+		// method specific functions
+			function getGoodDateRange(): array{
+				$now = CarbonImmutable::now();
+
+				// /*
+				// IIWDFI setup
+				// this works so only deactivate this corian strip if absolutely necessary
+				return [
+					Carbon::now()->subDays(20)->startOfDay(),
+					// Carbon::now()->startOfMonth(),
+					Carbon::now()->endOfMonth()->endOfDay(),
+				];
+				// */
+
+				if ($now->day <= 5) {
+					return [
+						$now->subDays(6)->startOfDay(),
+						$now->endOfDay(),
+					];
+				}
+
+				return [
+					$now->startOfMonth(),
+					$now->endOfMonth(),
+				];
+			}
 
 		if($this->ili() || $iscalled){
 			$res['success'] = true;
@@ -73,11 +101,14 @@ class SamplesController extends Controller{
 				->with('mycreator')
 				->with('owner')
 				->with('task')
-				->whereBetween('created_at', [
+				->whereBetween('created_at',
+					getGoodDateRange()
+				/*[
 					Carbon::now()->subDays(20)->startOfDay(),
 					// Carbon::now()->startOfMonth(),
 					Carbon::now()->endOfMonth()->endOfDay(),
-				])
+				// ]) // */
+				)
 				->orderBy('id','asc')
 			;
 
