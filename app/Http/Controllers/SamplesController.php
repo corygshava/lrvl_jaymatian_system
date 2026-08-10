@@ -111,7 +111,8 @@ class SamplesController extends Controller{
 			}
 
 			// $records = $records->get()->toArray();
-			$records = $records->cursor();
+			$records = $records->get();
+			// $records = $records->cursor();
 
 			// $extras = $extras->get()->toArray();
 			// $records = $records->get()->merge($extras->get());
