@@ -12,6 +12,7 @@ use Carbon\Carbon;
 class SamplesController extends Controller{
 	// getters
 	public function get_everything(Request $req, $iscalled = false){
+		ini_set('memory_limit', '1280M');
 		$res = $this->dftres;
 		// $alldata = $req->all();
 
@@ -109,7 +110,8 @@ class SamplesController extends Controller{
 				$records = $records->where('sample_type',$sample_typ);
 			}
 
-			$records = $records->get()->toArray();
+			// $records = $records->get()->toArray();
+			$records = $records->cursor();
 
 			// $extras = $extras->get()->toArray();
 			// $records = $records->get()->merge($extras->get());
