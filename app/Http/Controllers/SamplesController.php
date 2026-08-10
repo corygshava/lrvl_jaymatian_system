@@ -74,9 +74,9 @@ class SamplesController extends Controller{
 				->with('owner')
 				->with('task')
 				->whereBetween('created_at', [
-					Carbon::now()->subDays(32)->startOfDay(),
+					Carbon::now()->subDays(20)->startOfDay(),
 					// Carbon::now()->startOfMonth(),
-					Carbon::now()->endOfMonth(),
+					Carbon::now()->endOfMonth()->endOfDay(),
 				])
 				->orderBy('id','asc')
 			;
