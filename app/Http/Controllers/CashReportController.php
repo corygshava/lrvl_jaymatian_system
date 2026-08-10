@@ -486,6 +486,8 @@ class CashReportController extends Controller{
 				$total_profit = $total_balance_forward - $carry_over;
 				$_msg("calculated expenses");
 
+				$_rlg(['value of r' => $r]);
+
 				// get samples data
 					$mysamples = (clone $samples)->sum('sample_count');
 					$soil_samples = (clone $samples)->where('sample_type','soil')->sum('sample_count');
@@ -497,8 +499,9 @@ class CashReportController extends Controller{
 						$monthly_samples = Sample::query()
 						->whereBetween('created_at', [
 							Carbon::parse($r['tym'])->startOfMonth()->startOfDay(),
-							Carbon::parse($r['tym'])->endOfDay(),
-							// Self::getPreviousDay($r['tym'])['end'],
+							Carbon::parse($r['end'])->addDay()->endOfDay(),
+							// Carbon::parse($r['end'])->subDays(-1)->endOfDay(),
+							// Self::getPreviousDay($r['tym'])['end']->subDay(-1)->endOfDay(),
 						])->sum('sample_count');
 					} else {
 						$monthly_samples = Sample::timeRange('this_month')->sum('sample_count');
