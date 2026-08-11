@@ -248,6 +248,7 @@ class CashReportController extends Controller{
 		// $res = [...$res,...$oldres];
 		// $alldata = $req->all();
 		$msg = "didnt even get to start";
+		$cuttoff = Carbon::parse(self::$universal_start_date);
 
 		/*
 		$passed = $req->validate([
@@ -313,7 +314,7 @@ class CashReportController extends Controller{
 					->first()
 				;
 				$r = $this->getPreviousDay($myrange);
-				$_rlg(['prevdata' => $r]);
+				// $_rlg(['prevdata' => $r]);
 				// $redone_range = $r['start'] ?? null;
 				$redone_range = $r['end'];
 
@@ -333,14 +334,14 @@ class CashReportController extends Controller{
 				$haslast = !($carry_over_rec == null);
 			}
 
-			$_rlg($lastrec);
+			// $_rlg($lastrec);
 			$timediff = null;
 
 			if($lastrec !== null){
 				$timediff = $lastrec->created_at->diffInHours(now());
 			}
 
-			$_rlg(['timediff' => $timediff]);
+			// $_rlg(['timediff' => $timediff]);
 			$wegood = $timediff == null ? true : $timediff > 23;
 
 			if(true){
@@ -557,7 +558,19 @@ class CashReportController extends Controller{
 
 				// get debtors
 					$d_clients = Client::query()->whereHas('tasks',function($q) use($t_range){$q->timeRange($t_range)->where('payment_status','<>',2);})->where('credit_balance','>',0);
-					$total_debit = (clone $d_clients)->sum('credit_balance');
+					$endtym = isset($r['tym']) ? Carbon::parse($r['end'])->addDay()->endOfDay() : Carbon::now();
+					$total_debit = 0;
+					if($t_range == 'today'){
+						$total_debit = Task::query()->where('id','<>',null)->sum('balance');
+					} else {
+						$total_debit = Task::query()->whereBetween('created_at', [$cuttoff, $endtym])->sum('balance');
+					}
+					$total_debtors = Client::query()
+						->whereHas('tasks', function ($query) use ($cuttoff, $endtym) {
+							$query->whereBetween('created_at', [$cuttoff, $endtym]);
+						})
+						->get()
+					;
 					$guys = (clone $d_clients)->get();
 					$debtors = [];
 
@@ -1042,6 +1055,7 @@ class CashReportController extends Controller{
 
 						// remove unregeneratable columns
 						unset($report_cols['debtors']);
+						unset($report_cols['total_owed']);
 
 						try{
 							$_rlg("started the transaction");
@@ -1207,7 +1221,7 @@ class CashReportController extends Controller{
 			$res['message'] = $msg;
 		}
 
-		if(!self::$showlogs){
+		if(!self::$showlogs || true){
 			if(array_key_exists('runlog',$res)){
 				unset($res['runlog']);
 			}
