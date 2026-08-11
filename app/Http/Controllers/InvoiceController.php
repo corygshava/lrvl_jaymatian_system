@@ -636,7 +636,7 @@ class InvoiceController extends Controller{
 			if(!$wegood){
 				$msg = "invalid admin password";
 			} else {
-				$client = Client::where('id',$client_id)
+				$client = Client::query()->where('id', $client_id)
 					->withCount('invoices')
 					->first()
 				;
@@ -644,7 +644,7 @@ class InvoiceController extends Controller{
 				if($client == null){
 					$msg = "invalid client";
 				} else {
-					$tasks = Task::where('client_id',$client_id)->where('payment_status','<>',2)->with('samples')->get();
+					$tasks = Task::query()->where('client_id', $client_id)->where('payment_status','<>',2)->with('samples')->get();
 					$task_ids = [];
 					$total = 0;
 					$savetasks = $tasks->toArray();

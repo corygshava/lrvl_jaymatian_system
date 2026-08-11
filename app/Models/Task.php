@@ -65,7 +65,7 @@ class Task extends Model{
 		return $this->belongsTo(Client::class,'client_id');
 	}
 	public function invoices(): BelongsToMany{
-		return $this->belongsToMany(Invoice::class,'invoice_tasks','invoice_id','task_id');
+		return $this->belongsToMany(Invoice::class,'invoice_tasks','task_id','invoice_id');
 	}
 
 	public function samples(): HasMany{

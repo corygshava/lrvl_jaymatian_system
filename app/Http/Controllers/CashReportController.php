@@ -911,7 +911,7 @@ class CashReportController extends Controller{
 			$cmdt = self::commondata();
 			// $out = $cmdt['permissions'];
 			$mdta = random_int(0,14);
-			$reslt = $mdta >= 7;
+			// $reslt = $mdta >= 7;
 
 			// calculate total owed
 			$_msg('fetching clients with unpaid samples');
@@ -932,7 +932,7 @@ class CashReportController extends Controller{
 			];
 			$_msg('all debtors loaded');
 
-			$res['result'] = $reslt;
+			$res['result'] = true;
 			$res['sendme'] = $out;
 			$res['message'] = $msg;
 		}
