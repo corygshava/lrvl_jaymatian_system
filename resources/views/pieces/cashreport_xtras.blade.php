@@ -847,9 +847,10 @@
 			let outht = mekStandin('total owed: ' + mekSpan(formatNumber(d.sendme.total_owed,2)));
 			console.log(d);
 
-			outht = renderDebtors(d);
+			// outht = renderDebtors(d);
 
-			container.innerHTML = outht;
+			DebtorsUI.mount(container, d);
+			// container.innerHTML = outht;
 		}
 
 		step1();
@@ -888,7 +889,7 @@
 	(function () {
 		// "use strict";
 
-		var DEFAULTS = { currency: "$", pageSize: 25, onAction: null };
+		var DEFAULTS = { currency: "KSH ", pageSize: 25, onAction: null };
 		var MIX_COLORS = 4;
 
 		/* ---------- helpers ---------- */
