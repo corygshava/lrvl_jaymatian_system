@@ -406,12 +406,16 @@
 			<span class="h4" data-role="pagename">--</span>
 			<p>Here you can view and add expense records</p>
 		</div>
-		<div class="header-actions">
+		<div class="header-actions overflow">
 			<button class="mybtn secondary" onclick="refreshData()">
 				<i class="fas fa-sync-alt"></i>
 				Refresh
 			</button>
 			<!-- <button class="mybtn primary" data-runme="add_record"> -->
+			<button class="mybtn secondary" id="view_debt_btn" data-runme="just_render_debtors">
+				<i data-myicon="cash_reports"></i>
+				view all debtors
+			</button>
 			<button class="mybtn primary" id="add_record_btn" data-runme="just_render_daily_report">
 				<i data-myicon="cash_reports"></i>
 				Today's report

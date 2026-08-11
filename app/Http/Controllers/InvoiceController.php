@@ -317,17 +317,18 @@ class InvoiceController extends Controller{
 			$c_id = $passed['client_id'];
 			$incomplete = [];
 
-			$theclient = Client::where('id',$c_id)->first();
+			$theclient = Client::query()->where('id',$c_id)->first();
 
 			if($theclient == null){
 				$update_msg("invalid client specified");
 			} else {
 				$update_msg("valid client specified");
 
-				$incomplete = Task::where('client_id',$c_id)
+				$incomplete = Task::query()->where('client_id',$c_id)
 					->where('payment_status','<>',2)
 					->doesntHave('invoices')
 					->with('samples')
+					->withCount('invoices')
 					->get()
 				;
 				$cnt = count($incomplete);
