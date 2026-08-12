@@ -1,5 +1,5 @@
 <?php
-	// /*
+	/*
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
@@ -10,7 +10,7 @@
 	// */
 ?>
 
-<!--
+{{-- <!-- --}}
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
@@ -18,7 +18,7 @@
 @include('pieces.worksheet_xtras')
 @include('pieces.invoices_xtras')
 @include('pieces.codes_simpletables')
--->
+{{-- --> --}}
 
 <style>
 	.profile_card{
