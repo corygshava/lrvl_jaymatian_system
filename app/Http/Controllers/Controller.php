@@ -590,6 +590,7 @@ abstract class Controller{
 					"MANAGE_EXPENSES" => 'view expenses interface',
 					"MANAGE_CASHREPORTS" => 'view cash reports interface',
 					"VERIFY_FILES" => 'view file verification interface',
+					"MANAGE_DEBTORS" => 'view all business debtors',
 				// add more permissions later
 					"TOGGLE_USER_ACTIVATE" => "activate / deactivate user accounts",
 					"CHANGE_PASSWORDS" => "change other users' passwords",
@@ -1017,21 +1018,21 @@ abstract class Controller{
 		// */
 
 		// utils
-		$update_runlog = function($wot) use (&$res){
-			$res['runlog'][] = $wot;
-		};
-		$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
-			$msg = $wot;
-			if($logit){
-				$update_runlog($wot);
-			}
-		};
-		$_msg = function($w,$l = true) use (&$update_msg){
-			$update_msg($w,$l);
-		};
-		$_rlg = function($w) use (&$update_runlog){
-			$update_runlog($w);
-		};
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
 
 		// ops begin
 		if($this->ili()){

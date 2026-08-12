@@ -467,6 +467,167 @@ class ClientController extends Controller{
 		return response()->json($res);
 	}
 
+    public function get_debtors(Request $req){
+		$res = $this->dftres;
+		$msg = "didnt even get to start";
+		$alldata = $req->all();
+		$out = null;
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+		// ops begin
+		if($this->ili()){
+			$res['success'] = true;
+			$_msg("trying to get debtors");
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search',null);
+			$sortBy = $req->input('sort_by', 'credit_balance');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$payment_plan = $req->input('payment_plan',null);
+			$client_gender = $req->input('client_gender',null);
+			$has_credit_balance = $req->input('with_credit_balance',null);
+			$invoice_status = $req->input('has_invoice',null);
+			$t_range = $req->input('timerange',null);
+
+			$search = $search == '*' ? null : $search;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"payment_plan" => $payment_plan,
+				"client_gender" => $client_gender,
+				"credit_balance" => $has_credit_balance,
+			];
+
+			$clients = Client::query()->whereHas('tasks', function($q) use(&$_msg){
+				$q->where('balance','>',0);
+			});
+
+			if($search){
+				$clients = $clients
+					->where('client_name', 'like', "%{$search}%")
+					->orWhere('client_contact', 'like', "%{$search}%")
+					->orWhere('id_number', 'like', "%{$search}%")
+					->orWhere('kra_pin', 'like', "%{$search}%");
+
+				$_msg("added search filter");
+			}
+
+			// filter for gender
+			if($client_gender){
+				$clients = $clients->where('client_gender',$client_gender);
+				$_msg("added gender filter");
+			}
+
+			// filter for credit balance
+			if($has_credit_balance){
+				$con = $has_credit_balance == 'yes' ? '>' : '=';
+				$clients = $clients->where('credit_balance',$con,0);
+			}
+
+			if($invoice_status){
+				$invoice_status = strtolower($invoice_status);
+				$_msg('invoice filter');
+
+				switch($invoice_status){
+					case 'none':
+						$clients = $clients->doesntHave('invoices');
+						$_msg('showing ones without invoices');
+						break;
+					case 'paid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status',2);
+						});
+						$_msg('showing ones with paid invoices');
+						break;
+					case 'unpaid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status','<>',2);
+						});
+						$_msg('showing ones with unpaid invoices');
+						break;
+					default:
+						$clients = $clients->has('invoices');
+						$_msg('showing ones with invoices');
+						break;
+				}
+			}
+
+			if($payment_plan){
+				$clients = $clients->where('payment_plan',$payment_plan);
+				$_msg("added payment plan filter");
+			}
+
+			if($t_range){
+				$clients = $clients->timeRange($t_range);
+			}
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$clients = $clients
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->withCount('tasks')
+				->withCount('invoices')
+				->withSum('payments','amount')
+				->with('mycreator')
+				->orderBy($sortBy, $sortDirection)
+				->paginate($perPage)
+			;
+			$out = $clients;
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$_msg("debtors fetched");
+			$res['result'] = true;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
 	public function edit_payment(Request $req){
 		$res = $this->dftres;
 		$alldata = $req->all();

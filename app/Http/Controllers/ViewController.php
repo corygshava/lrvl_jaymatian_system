@@ -105,6 +105,18 @@ class ViewController extends Controller{
 			return $this->showerror($req,'log in to continue');
 		}
 	}
+	public function showdebtors(Request $req){
+		if($this->ili()){
+			$cmdt = self::commondata();
+			$topass = [
+				"cmdt" => $cmdt
+			];
+
+			return view('profile.debtors_mgt',$topass);
+		} else {
+			return $this->showerror($req,'log in to continue');
+		}
+	}
 	public function showclient(Request $req){
 		if($this->ili()){
 			$cmdt = self::commondata();

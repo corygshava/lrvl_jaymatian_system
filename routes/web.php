@@ -47,6 +47,7 @@ Route::prefix('/ui')->group(function (){
 
 	Route::get('/client_mgt', [ViewController::class,'showclients'])->middleware(['check.permissions.ui:manage_clients'])->name('client_mgt');
 	Route::get('/view_client', [ViewController::class,'showclient'])->middleware(['check.permissions.ui:view_client']);
+	Route::get('/debtors_mgt', [ViewController::class,'showdebtors'])->middleware(['check.permissions.ui:manage_debtors']);
 	Route::get('/client_info', [ViewController::class,'showclientinfo']);
 
 	Route::get('/task_mgt', [ViewController::class,'showtasks']);
@@ -84,6 +85,7 @@ Route::prefix('/data')->group(function(){
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_client', [ClientController::class,'get_one'])->middleware(['auth','verified']);
+	Route::get('/get_debtors', [ClientController::class,'get_debtors'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/task', [TaskController::class,'get_one'])->middleware(['auth','verified']);

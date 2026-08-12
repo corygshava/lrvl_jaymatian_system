@@ -24,7 +24,7 @@
 		let timeranges = [
 			"today",
 			"yesterday",
-			"juzi",
+			// "juzi",
 			"this_week",
 			"this_month",
 			"this_year",

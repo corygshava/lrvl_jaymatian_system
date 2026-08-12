@@ -1111,7 +1111,6 @@ class CashReportController extends Controller{
 
 									foreach($temp_r_cols as $c){
 										// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] processing prop");
-
 										if(in_array($c,$report_cols)){
 											// $inner_log[$n]["lastlog_".$cnt] = ("[$n] [$cnt] valid prop ($c)");
 
