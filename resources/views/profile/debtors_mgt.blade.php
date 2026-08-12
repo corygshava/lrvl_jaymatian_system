@@ -2,6 +2,7 @@
 	/*
 	// require_once __DIR__.'/piece_invoices_xtras.php';
 	require_once __DIR__.'/datatables_code.php';
+	require_once __DIR__.'/piece_debtors_xtras.php';
 	// require_once __DIR__.'/piece_simple_table.php';
 	// */
 ?>
@@ -10,6 +11,7 @@
 @include('pieces.codes_datatables')
 @include('pieces.invoices_xtras')
 @include('pieces.codes_simpletables')
+@include('pieces.debtors_xtras')
 {{-- --> --}}
 
 <style>
@@ -355,7 +357,11 @@
 			<p>Here you can view and manage debtor information</p>
 		</div>
 		<div class="header-actions">
-			<button class="mybtn secondary" onclick="refreshData()">
+			<button class="mybtn secondary" data-runme="just_render_debtors">
+				<i data-myicon="debtors"></i>
+				view unrefined list
+			</button>
+			<button class="mybtn primary" onclick="refreshData()">
 				<i class="fas fa-sync-alt"></i>
 				Refresh
 			</button>
@@ -547,12 +553,10 @@
 					},
 					{
 						name: 'payment_plan',
-						label: 'Invoices',
+						label: 'Payment Plan',
 						options: [
-							{ value: 'has', label: 'Have invoices' },
-							{ value: 'none', label: 'Without Invoices' },
-							{ value: 'unpaid', label: 'with Unpaid Invoices' },
-							{ value: 'paid', label: 'with Paid Invoices' },
+							{ value: 'per_visit', label: 'Per visit' },
+							{ value: 'monthly', label: 'Monthly' }
 						]
 					}
 				],

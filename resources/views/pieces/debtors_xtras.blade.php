@@ -326,11 +326,11 @@
 	</button>
 
 	<div class="modal fade" id="view_debtors_modal" tabindex="-1" role="dialog" aria-labelledby="view_debtors_modal_title" aria-hidden="true" style="z-index: 102;">
-		<div class="modal-dialog modal-lg themodal" role="document">
+		<div class="modal-dialog modal-lg themodal" role="document" style="max-width: 1280px">
 			<div class="modal-content themeround borderless">
 				<div class="modal-header">
-					<span class="h3 modal-title" id="view_debtors_modal_title">All debtors</span>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<span class="h3 modal-title w3-hide" id="view_debtors_modal_title">All debtors</span>
 				</div>
 				<div class="modal-body">
 					<div id="viewDebtsUI"></div>
@@ -373,6 +373,7 @@
 				outht = `There was an error fetching Debtors information: <br><b class="${err.result !== undefined ? 'w3-text-orange' : 'w3-text-red'}">${err.message}</b>`;
 				container.innerHTML = mekError('Error loading daily report', outht);
 				report_sect_errshown = true;
+				console.log(err);
 			})
 		}
 
@@ -479,19 +480,34 @@
 		function buildModel(data) {
 			var d = data || {};
 			var send = d.sendme || {};
-			var debtors = Array.isArray(send.debtors) ? send.debtors.slice() : [];
+			var debtors = Array.isArray(send.debtors) ? [...send.debtors] : [];
 			debtors.forEach(function (x, i) { x.__i = i; }); // stable index for callbacks
 
 			var sum = debtors.reduce(function (a, x) { return a + toNum(x.credit_balance); }, 0);
 			var hasTotal = send.total_owed != null && send.total_owed !== "";
 			var plans = {};
+
 			debtors.forEach(function (x) {
 				var k = x.payment_plan || "unspecified";
 				plans[k] = (plans[k] || 0) + 1;
 			});
 
+			let balances = [...debtors].map(d => {return toNum(d.credit_balance);});
+			let mymax = 0;
+			balances.forEach(n => {
+				if(n >= mymax){
+					mymax = n;
+				}
+			})
+			let mymin = mymax;
+			balances.forEach(n => {
+				if(n <= mymin){
+					mymin = n;
+				}
+			})
+
 			return {
-				ok: d.success !== false,
+				ok: d.result !== false,
 				message: d.message || "",
 				runlog: Array.isArray(d.runlog) ? d.runlog : [],
 				debtors: debtors,
@@ -499,17 +515,23 @@
 				total: hasTotal ? toNum(send.total_owed) : sum,
 				sum: sum,
 				avg: debtors.length ? sum / debtors.length : 0,
-				max: debtors.reduce(function (m, x) { return Math.max(m, toNum(x.credit_balance)); }, 0),
+				max: mymax,
+				min: mymin,
 				plans: plans
 			};
 		}
 
 		/* ---------- fragments ---------- */
 		function statTile(icoCls, icon, num, cap) {
-			return '<div class="dlt-stat">' +
-				'<span class="dlt-stat-ico ' + icoCls + '"><i class="fas ' + icon + '"></i></span>' +
-				'<div><div class="dlt-stat-num">' + num + '</div>' +
-				'<div class="dlt-stat-cap">' + cap + '</div></div></div>';
+			return `
+				<div class="dlt-stat">
+					<span class="dlt-stat-ico ${icoCls}"><i class="fas ${icon}"></i></span>
+					<div>
+						<div class="dlt-stat-num">${num}</div>
+						<div class="dlt-stat-cap">${cap}</div>
+					</div>
+				</div>
+			`;
 		}
 
 		function mixBlock(model) {
@@ -535,21 +557,36 @@
 			var pm = planMeta(d.payment_plan);
 			var bal = toNum(d.credit_balance);
 			var delay = Math.min((n - 1) * 26, 300);
-			return '<tr class="dlt-row" data-idx="' + d.__i + '" style="animation-delay:' + delay + 'ms">' +
-				'<td class="dlt-idx">' + String(n).padStart(2, "0") + '</td>' +
-				'<td><div class="dlt-client">' +
-					'<span class="dlt-avatar dlt-avatar--' + hueOf(d.client_name) + '">' + esc(initials(d.client_name)) + '</span>' +
-					'<div><div class="dlt-name">' + esc(d.client_name) + genderIcon(d.client_gender) + '</div>' +
-					'<div class="dlt-contact"><i class="fas fa-phone-alt"></i>' + esc(d.client_contact || "—") + '</div></div>' +
-				'</div></td>' +
-				'<td><span class="dlt-badge ' + pm.cls + '"><i class="fas ' + pm.icon + '"></i>' + esc(pm.label) + '</span></td>' +
-				'<td class="text-right"><div class="dlt-balance' + (bal > 0 ? "" : " dlt-balance--zero") + '">' +
-					money(bal) + '</div><div class="dlt-balance-sub">' + esc(cur) + '</div></td>' +
-				'<td class="dlt-date dlt-col-added">' + shortDate(d.created_at) + '</td>' +
-				'<td class="text-right"><div class="dlt-acts">' +
-					'<button class="dlt-act" data-act="view" title="View debtor"><i class="fas fa-eye"></i></button>' +
-					'<button class="dlt-act" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>' +
-				'</div></td></tr>';
+
+			return `
+				<tr class="dlt-row" data-idx="${d.__i}" style="animation-delay:${delay}ms">
+					<td class="dlt-idx">${String(n).padStart(2, "0")}</td>
+					<td class="dlt-idx">${d.id}</td>
+					<td>
+						<div class="dlt-client">
+							<span class="dlt-avatar dlt-avatar--${hueOf(d.client_name)}">${esc(initials(d.client_name))}</span>
+						<div>
+						<div class="dlt-name">${esc(d.client_name)} ${genderIcon(d.client_gender)}</div>
+						<div class="dlt-contact">
+							<i class="fas fa-phone-alt"></i> ${esc(d.client_contact || "—")}
+						</div>
+					</td>
+					<td>
+						<span class="dlt-badge ${pm.cls}"><i class="fas ${pm.icon}"></i>${esc(pm.label)}</span>
+					</td>
+					<td class="text-right">
+						<div class="dlt-balance">${money(bal)}</div>
+						<div class="dlt-balance-sub">${esc(cur)}</div>
+					</td>
+					<td class="dlt-date dlt-col-added">${shortDate(d.created_at)}</td>
+					<td class="text-right">
+						<div class="dlt-acts">
+							<button class="dlt-act" data-act="view" title="View debtor"><i class="fas fa-eye"></i></button>
+							<button class="dlt-act" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>
+						</div>
+					</td>
+				</tr>
+			`;
 		}
 
 		function pagerHTML(page, pages) {
@@ -576,98 +613,137 @@
 
 		/* ---------- shell (the HTML string) ---------- */
 		function shellHTML(model, opts, rawData) {
-			var cur = opts.currency;
-			var now = new Date();
-			var stamp = now.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ", " +
-									now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+			let cur = opts.currency;
+			let now = new Date();
+			let stamp = formatDate1(now, true);
+			// console.log('making the shell');
 
 			var h = '<section class="dlt">';
+			let model_state_ht = model.ok
+				? ' <span class="dlt-pill dlt-pill--ok"><i class="fas fa-check-circle"></i>ok</span>'
+				: ' <span class="dlt-pill dlt-pill--bad"><i class="fas fa-exclamation-circle"></i>error</span>';
 
 			/* header */
-			h += '<header class="dlt-head"><div>' +
-				'<div class="dlt-eyebrow"><i class="fas fa-file-invoice-dollar"></i> Accounts receivable</div>' +
-				'<h2 class="dlt-title">Debtors ledger</h2>' +
-				'<p class="dlt-msg">' + esc(model.message || "Debtors loaded") +
-				(model.ok
-					? ' <span class="dlt-pill dlt-pill--ok"><i class="fas fa-check-circle"></i>ok</span>'
-					: ' <span class="dlt-pill dlt-pill--bad"><i class="fas fa-exclamation-circle"></i>error</span>') +
-				'</p></div>' +
-				'<div><div class="dlt-total-label"><i class="fas fa-coins"></i>Total owed</div>' +
-				'<div class="dlt-total-num"><span>' + esc(cur) + '</span>' + money(model.total) + '</div>' +
-				'<div class="dlt-total-sub">across ' + model.count + ' account' + (model.count === 1 ? "" : "s") +
-				' · ' + stamp + '</div></div></header>';
+			h += `
+				<header class="dlt-head">
+					<div>
+						<div class="dlt-eyebrow w3-hide">
+							<i class="fas fa-file-invoice-dollar"></i> Accounts receivable
+						</div>
+						<h2 class="dlt-title">Debtors ledger</h2>
+						<p class="dlt-msg w3-hide">
+							${esc(model.message)} ${model_state_ht}
+						</p>
+					</div>
+					<div>
+						<div class="dlt-total-label">
+							<i class="fas fa-coins"></i> Total owed
+						</div>
+						<div class="dlt-total-num">
+							<span>${esc(cur)}</span> ${money(model.total)}
+						</div>
+						<div class="dlt-total-sub">
+							from ${model.count} ${plural('client',model.count)} | ${stamp}
+						</div>
+					</div>
+				</header>
+			`;
 
+			// if the op was a success
 			if (!model.ok) {
-				h += '<div class="dlt-warn"><i class="fas fa-exclamation-triangle"></i>' +
-					'The request reported a failure' + (model.message ? " — " + esc(model.message) : "") + '.</div>';
+				h += `
+					<div class="dlt-warn">
+						<i class="fas fa-exclamation-triangle"></i>
+						The request reported a failure: ${(model.message ? " ... " + esc(model.message) : "")}
+					</div>
+				`;
 			}
 
-			/* no debtors at all → static empty state, still show the log */
-			if (!model.count) {
-				h += '<div class="dlt-empty-static"><div class="dlt-empty">' +
-					'<i class="fas fa-folder-open"></i>No debtors on record.<br>Credit accounts will appear here as they are created.</div></div>';
+			if (!model.count || model.count == 0) {
+				alert_info('no debtors found');
+
+				h += `
+					<div class="dlt-empty-static">
+						<div class="dlt-empty">
+							<i class="fas fa-folder-open"></i>
+							No debtors on record.<br>Credit accounts will appear here as they are created.
+						</div>
+					</div>
+				`;
 			} else {
-				/* stats band */
+				// stats
 				var planKeys = Object.keys(model.plans);
-				h += '<div class="dlt-stats">' +
-					statTile("dlt-ico-teal", "fa-users", model.count, "Debtors on file") +
-					statTile("dlt-ico-blue", "fa-balance-scale", cur + " " + money(model.avg), "Average balance") +
-					statTile("dlt-ico-amber", "fa-angle-double-up", cur + " " + money(model.max), "Largest balance") +
-					mixBlock(model) + '</div>';
+
+				h += `
+					<div class="dlt-stats">
+						${statTile("dlt-ico-teal", "fa-users", model.count, "Debtors on file")}
+						${/*statTile("dlt-ico-blue", "fa-balance-scale", cur + " " + money(model.avg), "Average balance")*/''}
+						${statTile("dlt-ico-amber", "fa-angle-double-up", cur + " " + money(model.max), "Largest balance")}
+						${statTile("dlt-ico-amber", "fa-angle-double-up", cur + " " + money(model.min), "smallest balance")}
+						${mixBlock(model)}
+					</div>`;
 
 				/* toolbar */
-				h += '<div class="dlt-toolbar">' +
-					'<div class="input-group dlt-search">' +
-						'<div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-search"></i></span></div>' +
-						'<input type="search" class="form-control" placeholder="Search name or contact…" data-dlt="query" autocomplete="off">' +
-					'</div>' +
-					'<select class="custom-select dlt-plan" data-dlt="plan" aria-label="Filter by plan">' +
-					'<option value="">All payment plans</option>' +
-					planKeys.map(function (k) {
-						return '<option value="' + esc(k) + '">' + esc(planMeta(k === "unspecified" ? "" : k).label) +
-							' (' + model.plans[k] + ')</option>';
-					}).join("") +
-					'</select>' +
-					'<span class="dlt-count" data-dlt="count"></span></div>';
+				h += `
+						<div class="dlt-toolbar">
+							<div class="input-group dlt-search">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fas fa-search"></i></span>
+								</div>
+								<input type="search" class="form-control" placeholder="Search name or contact…" data-dlt="query" autocomplete="off">
+							</div>
+							<div>
+								<select class="custom-select dlt-plan" data-dlt="plan" aria-label="Filter by plan">
+									<option value="">All payment plans</option>${
+										planKeys.map(function (k) {
+											return `<option value="${esc(k)}">${esc(planMeta(k === "unspecified" ? "" : k).label)} ${model.plans[k]}</option>`;
+										}).join("")
+									}
+								</select>
+								<span class="dlt-count" data-dlt="count"></span>
+							</div>
+						</div>
+					`;
 
 				/* table */
-				h += '<div class="dlt-scroll"><table class="table dlt-table mb-0"><thead><tr>' +
-					'<th style="width:52px">#</th>' +
-					'<th data-dlt-sort="client_name">Client<i class="fas fa-sort dlt-sortico"></i></th>' +
-					'<th>Plan</th>' +
-					'<th class="text-right" data-dlt-sort="credit_balance">Balance<i class="fas fa-sort-down dlt-sortico"></i></th>' +
-					'<th class="dlt-col-added" data-dlt-sort="created_at">Added<i class="fas fa-sort dlt-sortico"></i></th>' +
-					'<th class="text-right">Actions</th>' +
-					'</tr></thead><tbody data-dlt="rows"></tbody></table></div>';
+				h += `
+					<div class="dlt-scroll">
+						<table class="table dlt-table mb-0">
+							<thead>
+								<tr>
+									<th style="width:52px">#</th>
+									<th style="width:52px">id</th>
+									<th data-dlt-sort="client_name">Client<i class="fas fa-sort dlt-sortico"></i></th>
+									<th data-dlt-sort="payment_plan">Payment Plan</th>
+									<th class="text-right" data-dlt-sort="credit_balance">Balance <i class="fas fa-sort-down dlt-sortico"></i></th>
+									<th class="dlt-col-added" data-dlt-sort="created_at">Timestamps <i class="fas fa-sort dlt-sortico"></i></th>
+									<th class="text-right">Actions</th>
+								</tr>
+							</thead>
+							<tbody data-dlt="rows">
+							</tbody>
+						</table>
+					</div>
+				`;
 
 				/* footer */
-				h += '<div class="dlt-foot"><span class="dlt-showing" data-dlt="showing"></span>' +
-					'<nav aria-label="Debtors pages"><ul class="pagination dlt-pager" data-dlt="pager"></ul></nav></div>';
-			}
-
-			/* run log console */
-			if (model.runlog.length) {
-				h += '<div class="dlt-log">' +
-					'<button type="button" class="dlt-log-toggle" data-dlt="logtoggle" aria-expanded="false">' +
-					'<i class="fas fa-terminal"></i> Run log <span class="dlt-log-n">' + model.runlog.length + '</span>' +
-					'<i class="fas fa-chevron-down dlt-chev"></i></button>' +
-					'<div class="dlt-log-body" data-dlt="logbody" hidden>' +
-					model.runlog.map(function (line, i) {
-						var last = i === model.runlog.length - 1;
-						return '<div class="dlt-log-line' + (last ? " dlt-log-line--last" : "") +
-							'" style="animation-delay:' + (i * 90) + 'ms">' +
-							'<span class="dlt-log-i">' + String(i + 1).padStart(2, "0") + '</span>' +
-							'<span class="dlt-log-caret">›</span><span>' + esc(line) + '</span></div>';
-					}).join("") +
-					'</div></div>';
+				h += `
+					<div class="dlt-foot">
+						<span class="dlt-showing" data-dlt="showing"></span>
+						<div aria-label="Debtors pages">
+							<ul class="pagination dlt-pager" data-dlt="pager"></ul>
+						</div>
+					</div>
+				`;
 			}
 
 			/* data carrier so a rendered string can self-activate */
 			h += '<scr' + 'ipt type="application/json" data-dlt="payload">' +
 				JSON.stringify(rawData).replace(/</g, "\\u003c") +
 				'</scr' + 'ipt>';
+			h += `</section>`;
 
-			return h + '</section>';
+			return h;
 		}
 
 		/* ---------- live behaviour ---------- */
@@ -696,7 +772,7 @@
 			var slice = list.slice(start, start + o.pageSize);
 
 			var rows = inst.root.querySelector('[data-dlt="rows"]');
-			rows.innerHTML = slice.length
+			rows.innerHTML = slice.length > 0
 				? slice.map(function (d, i) { return rowHTML(d, start + i + 1, o.currency); }).join("")
 				: '<tr><td colspan="6"><div class="dlt-empty"><i class="fas fa-search"></i>' +
 					'No debtors match your filters.</div></td></tr>';
@@ -710,6 +786,11 @@
 			inst.root.querySelectorAll("[data-dlt-sort]").forEach(function (th) {
 				var key = th.getAttribute("data-dlt-sort");
 				var ic = th.querySelector(".dlt-sortico");
+
+				if(ic == undefined){
+					return;
+				}
+
 				if (key === inst.sortKey) {
 					th.classList.add("dlt-sorted");
 					ic.className = "fas dlt-sortico " + (inst.sortDir > 0 ? "fa-sort-up" : "fa-sort-down");
@@ -722,6 +803,7 @@
 
 		function bind(inst) {
 			var root = inst.root;
+
 			var onQuery = debounce(function (v) {
 				inst.query = v.trim().toLowerCase();
 				inst.page = 1;
@@ -779,26 +861,45 @@
 
 		function mount(el, data, opts) {
 			var root = typeof el === "string" ? document.querySelector(el) : el;
-			if (!root) return null;
-			opts = Object.assign({}, DEFAULTS, opts || {});
-			var model = buildModel(data);
-			root.innerHTML = shellHTML(model, opts, data);
+			if (!root){
+				alert_danger('invalid container mounted');
+				return null;
+			}
 
-			var inst = {
-				root: root, model: model, opts: opts,
-				query: "", plan: "",
-				sortKey: "credit_balance", sortDir: -1,  // biggest debts first
+			opts = Object.assign({}, DEFAULTS, opts || {});
+
+			var model = buildModel(data);
+			console.log('created model',model);
+
+			root.innerHTML = shellHTML(model, opts, data);
+			console.log('generated the full UI');
+			// return;
+
+			let inst = {
+				root: root,
+				model: model,
+				opts: opts,
+				query: "",
+				plan: "",
+				sortKey: "credit_balance",
+				sortDir: -1,				// biggest debts first
 				page: 1
 			};
+			console.log('current instance: ', inst);
 			bind(inst);
-			if (model.count) paint(inst);
+			// return;
+			if (model.count){
+				paint(inst);
+			}
 
 			/* animate the plan-mix bar once the shell is in the DOM */
 			requestAnimationFrame(function () {
+				return;
 				root.querySelectorAll(".dlt-mix-fill").forEach(function (f) {
 					f.style.width = f.getAttribute("data-w") + "%";
 				});
 			});
+
 			return inst;
 		}
 

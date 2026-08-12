@@ -16,7 +16,7 @@
 	</button>
 
 	<div class="modal fade" id="save_daily_modal" tabindex="-1" role="dialog" aria-labelledby="save_daily_modal_title" aria-hidden="true" style="z-index: 102;">
-		<div class="modal-dialog modal-lg themodal" style="max-width: 1280px" role="document">
+		<div class="modal-dialog modal-lg themodal" role="document">
 			<div class="modal-content themeround borderless">
 				<div class="modal-header">
 					<span class="h3 modal-title" id="save_daily_modal_title">Daily Summary</span>
