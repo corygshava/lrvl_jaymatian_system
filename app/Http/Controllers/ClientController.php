@@ -467,6 +467,80 @@ class ClientController extends Controller{
 		return response()->json($res);
 	}
 
+	// get debtors
+	public function get_all_debtors(Request $req,$iscalled = false){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+		$out = null;
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+		// ops begin
+		if($this->ili() || $iscalled){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+			$t_range = $req->input('timerange',null);
+
+			$cmdt = self::commondata();
+			// $out = $cmdt['permissions'];
+			$mdta = random_int(0,14);
+			// $reslt = $mdta >= 7;
+
+			// calculate total owed
+			$_msg('fetching clients with unpaid samples');
+			$d_clients = Client::query()->whereHas('tasks', function($q) use($t_range){
+				if($t_range != null){
+					$q->timeRange($t_range)->where('payment_status','<>',2);
+					return;
+				}
+				$q->where('payment_status','<>',2);
+			})->where('credit_balance','>',0);
+			$total_debit = (clone $d_clients)->sum('credit_balance');
+			$guys = (clone $d_clients)->get();
+
+			$out = [
+				// ...$out,
+				'total_owed' => $total_debit,
+				'debtors' => $guys,
+			];
+			$_msg('all debtors loaded');
+
+			$res['result'] = true;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
     public function get_debtors(Request $req){
 		$res = $this->dftres;
 		$msg = "didnt even get to start";

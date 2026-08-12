@@ -85,6 +85,8 @@ Route::prefix('/data')->group(function(){
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_client', [ClientController::class,'get_one'])->middleware(['auth','verified']);
+
+	Route::post('/all_debtors', [ClientController::class,'get_all_debtors'])->middleware(['auth','verified']);
 	Route::get('/get_debtors', [ClientController::class,'get_debtors'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
@@ -115,7 +117,6 @@ Route::prefix('/data')->group(function(){
 	Route::post('/get_daily_report', [CashReportController::class,'get_for_today'])->middleware(['auth','verified']);
 	Route::get('/cash_reports', [CashReportController::class,'route_stuff'])->middleware(['auth','verified']);
 	Route::post('/cash_report', [CashReportController::class,'get_one'])->middleware(['auth','verified']);
-	Route::post('/all_debtors', [CashReportController::class,'get_debtors'])->middleware(['auth','verified']);
 
 	Route::post('/bizdata', [BizdataController::class,'get_all'])->middleware(['auth','verified']);
 
