@@ -554,10 +554,11 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-				renderStats(data);
+				renderStats(data.sendme);
 			})
 			.catch(error => {
 				console.error('Stats loading error:', error);
+				alert_danger('error loading stats');
 			});
 		}
 
@@ -570,14 +571,28 @@
 
 			let statsHTML = '';
 
-			stats.forEach(stat => {
+
+			stats.forEach((stat,n) => {
+				stat.icon = stat.icon.includes('defined:') ? iconAtlas[stat.icon.split(':')[1]] : stat.icon;
+
+				let myval = '--';
+
+				switch(stat.valtype.toLowerCase()){
+				case 'number':
+					myval = formatNumber(stat.value);
+					break;
+				default:
+					myval = stat.value;
+					break;
+				}
+
 				statsHTML += `
-					<div class="stat-card-modern">
+					<div class="stat-card-modern slide-up" style="${mekstagger(n + 2,200)}">
 						<div class="stat-icon-modern ${stat.type || 'total'}">
 							<i class="${stat.icon || 'fas fa-chart-line'}"></i>
 						</div>
 						<div class="stat-info-modern">
-							<h3>${stat.value}</h3>
+							<h3>${myval}</h3>
 							<p>${stat.label}</p>
 						</div>
 					</div>
@@ -592,6 +607,10 @@
 		 */
 		function refresh() {
 			loadData();
+
+			if (config.enableStats && config.statsEndpoint) {
+				loadStats();
+			}
 		}
 
 		/**

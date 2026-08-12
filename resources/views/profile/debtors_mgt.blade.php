@@ -18,39 +18,43 @@
 	/* stats (keep here, ill figure them out later) */
 		.stat-card-modern {
 			background: white;
-			border-radius: var(--radius);
+			border-radius: var(--roundness);
 			padding: 20px;
 			display: flex;
 			align-items: center;
 			gap: 15px;
-			box-shadow: var(--shadow-sm);
-			transition: all 0.3s;
-			border: 1px solid var(--border);
+			/*box-shadow: 0 0 2px var(--clr-shadow);*/
+			border: 1px solid var(--clr-border);
+			--c: var(--clr-text);
 		}
 		.stat-card-modern:hover {
 			transform: translateY(-3px);
-			box-shadow: var(--shadow);
+			border: 1px solid var(--themecolor);
 		}
 		.stat-icon-modern {
 			width: 50px;
 			height: 50px;
-			border-radius: var(--radius-sm);
+			border-radius: var(--roundness-sm);
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			font-size: 20px;
 		}
 
-		.stat-icon-modern.total { background: var(--primary-light); color: var(--primary); }
-		.stat-icon-modern.active { background: #d1fae5; color: var(--success); }
-		.stat-icon-modern.inactive { background: #fee2e2; color: var(--danger); }
+		.stat-icon-modern.total,.stat-icon-modern.primary { background: var(--themecolor); color: var(--light); }
+		.stat-icon-modern.active,.stat-icon-modern.success { background: #d1fae5; color: var(--success); }
+		.stat-icon-modern.inactive,.stat-icon-modern.danger { background: #fee2e2; color: var(--danger);}
 		.stat-icon-modern.new { background: #fef3c7; color: var(--warning); }
+
+		.stat-card-modern:has(.stat-icon-modern.danger){--c: var(--danger);}
+		.stat-card-modern:has(.stat-icon-modern.success){--c: var(--success);}
+		.stat-card-modern:has(.stat-icon-modern.primary){--c: var(--themecolor);}
 
 		.stat-info-modern h3 {
 			font-size: 24px;
 			font-weight: 700;
 			margin: 0;
-			color: var(--dark);
+			color: var(--c);
 		}
 		.stat-info-modern p {
 			margin: 0;
@@ -287,7 +291,7 @@
 		}
 		.toast_ {
 			background: white;
-			border-radius: var(--radius-sm);
+			border-radius: var(--roundness-sm);
 			padding: 16px 20px;
 			box-shadow: var(--shadow-lg);
 			display: flex;

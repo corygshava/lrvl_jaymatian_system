@@ -88,6 +88,7 @@ Route::prefix('/data')->group(function(){
 
 	Route::post('/all_debtors', [ClientController::class,'get_all_debtors'])->middleware(['auth','verified']);
 	Route::get('/get_debtors', [ClientController::class,'get_debtors'])->middleware(['auth','verified']);
+	Route::get('/all_debtors_stats', [ClientController::class,'get_debtors_stats'])->middleware(['auth','verified']);
 
 	Route::get('/tasks', [TaskController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/task', [TaskController::class,'get_one'])->middleware(['auth','verified']);

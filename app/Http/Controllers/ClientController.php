@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -677,6 +678,261 @@ class ClientController extends Controller{
 				->paginate($perPage)
 			;
 			$out = $clients;
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$_msg("debtors fetched");
+			$res['result'] = true;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+    public function get_debtors_stats(Request $req){
+		$res = $this->dftres;
+		$msg = "didnt even get to start";
+		$alldata = $req->all();
+		$out = null;
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+			$stats = [];
+			$_statme = function(array $s ) use (&$stats){
+				$dvl = rand(0,500);
+				$dft = [
+					"value" => $dvl,
+					"valtype" => 'number',			// either number, string, date or plain
+					"label" => "Total Debtors",
+					"type" => $dvl > 250 ? "success" : ($dvl > 200 ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				];
+				$stats[] = [...$dft,...$s];
+			};
+
+		// ops begin
+		if($this->ili()){
+			$res['success'] = true;
+
+			$_msg("trying to get debtors");
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search',null);
+			$sortBy = $req->input('sort_by', 'credit_balance');
+			$sortDirection = $req->input('sort_direction', 'desc');
+
+			// filters
+			$payment_plan = $req->input('payment_plan',null);
+			$client_gender = $req->input('client_gender',null);
+			$has_credit_balance = $req->input('with_credit_balance',null);
+			$invoice_status = $req->input('has_invoice',null);
+			$t_range = $req->input('timerange',null);
+
+			$search = $search == '*' ? null : $search;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+				"payment_plan" => $payment_plan,
+				"client_gender" => $client_gender,
+				"credit_balance" => $has_credit_balance,
+			];
+
+			$clients = Client::query()->whereHas('tasks', function($q) use(&$_msg){
+				$q->where('balance','>',0);
+			});
+
+			if($search){
+				$clients = $clients
+					->where('client_name', 'like', "%{$search}%")
+					->orWhere('client_contact', 'like', "%{$search}%")
+					->orWhere('id_number', 'like', "%{$search}%")
+					->orWhere('kra_pin', 'like', "%{$search}%");
+
+				$_msg("added search filter");
+			}
+
+			// filter for gender
+			if($client_gender){
+				$clients = $clients->where('client_gender',$client_gender);
+				$_msg("added gender filter");
+			}
+
+			// filter for credit balance
+			if($has_credit_balance){
+				$con = $has_credit_balance == 'yes' ? '>' : '=';
+				$clients = $clients->where('credit_balance',$con,0);
+			}
+
+			if($invoice_status){
+				$invoice_status = strtolower($invoice_status);
+				$_msg('invoice filter');
+
+				switch($invoice_status){
+					case 'none':
+						$clients = $clients->doesntHave('invoices');
+						$_msg('showing ones without invoices');
+						break;
+					case 'paid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status',2);
+						});
+						$_msg('showing ones with paid invoices');
+						break;
+					case 'unpaid':
+						$clients = $clients->whereHas('invoices',function($q) {
+							$q->where('status','<>',2);
+						});
+						$_msg('showing ones with unpaid invoices');
+						break;
+					default:
+						$clients = $clients->has('invoices');
+						$_msg('showing ones with invoices');
+						break;
+				}
+			}
+
+			if($payment_plan){
+				$clients = $clients->where('payment_plan',$payment_plan);
+				$_msg("added payment plan filter");
+			}
+
+			if($t_range){
+				$clients = $clients->timeRange($t_range);
+			}
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$debtors = (clone $clients);
+			$clients = $clients
+				->withCount('samples')
+				->withCount('payments')
+				->withCount('reports')
+				->withCount('tasks')
+				->withCount('invoices')
+				->withSum('payments','amount')
+				->with('mycreator')
+				->orderBy($sortBy, $sortDirection)
+				->paginate($perPage)
+			;
+
+			// the prev was left in case i feel like attaching the filters to stats too
+			// stat of stats processing, get it :)
+			$debtors = Client::query()->whereHas('tasks', function($q) use($t_range){
+				$q->where('balance','<>',0);
+			});
+			$allclients = Client::query()->where('id','<>',null);
+
+			// total debtors
+			$statval = (clone $debtors)->count();
+			$thresh = [50, 70];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Debtors",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+
+			// total client credit
+			$statval = (clone $allclients)->sum('credit_balance');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total client credit",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:invoices"
+				]
+			);
+
+			/*
+			// total client credit
+			$statval = Task::query()->where('balance','<>',0)->sum('balance');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Balance",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+			*/
+
+			// total client credit
+			$statval = Task::query()->where('balance','<>',0)->sum('balance');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Balance",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+
+			$statval = (clone $allclients)->where('credit_balance','>',0)->min('credit_balance');
+			$thresh = [10000, 5000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Lowest client credit",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:invoices"
+				]
+			);
+
+			$statval = (clone $allclients)->max('credit_balance');
+			$thresh = [50000, 100000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "highest client credit",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:invoices"
+				]
+			);
+
+			$out = $stats;
 
 			/*
 			for($i = 0;$i < count($users);$i++){
