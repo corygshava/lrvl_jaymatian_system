@@ -1,5 +1,5 @@
 <?php
-	/*
+	// /*
 	require_once __DIR__.'/piece_task_view_styles.php';
 	require_once __DIR__.'/piece_samples_extras.php';
 	require_once __DIR__.'/piece_payments_xtras.php';
@@ -9,14 +9,14 @@
 	// */
 ?>
 
-{{-- <!-- --}}
+<!--
 @include('pieces.task_view_styles')
 @include('pieces.samples_xtras')
 @include('pieces.payments_xtras')
 @include('pieces.reports_xtras')
 @include('pieces.worksheet_xtras')
 @include('pieces.codes_simpletables')
-{{-- --> --}}
+-->
 
 <style>
 	/*span[data-subrole="sample_id_entry"]{display:none;}*/
@@ -1290,7 +1290,7 @@
 						}
 					},
 					{
-						title: 'Payment status',
+						cap: 'Payment status',
 						field: 'task',
 						// sortable: false,
 						show: function(v,row) {
