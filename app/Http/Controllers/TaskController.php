@@ -453,7 +453,7 @@ class TaskController extends Controller{
 								$batch->insert(new Payment,$cols,$payments);
 							}
 
-							$update_runlog ("remove from credit: $removeFromCredit");
+							// $update_runlog ("remove from credit: $removeFromCredit");
 							$update_runlog ("add to client credit: $client_balance");
 
 							if($client_balance > 0){
