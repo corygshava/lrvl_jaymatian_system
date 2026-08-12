@@ -1,6 +1,7 @@
 <?php
 	/*
 	require_once __DIR__.'/piece_cash_report_xtras.php';
+	require_once __DIR__.'/piece_debtors_xtras.php';
 	require_once __DIR__.'/datatables_code.php';
 	// */
 ?>
@@ -8,6 +9,7 @@
 {{-- <!-- --}}
 @include('pieces.codes_datatables')
 @include('pieces.cashreport_xtras')
+@include('pieces.debtors_xtras')
 {{-- --> --}}
 
 <style>
@@ -666,14 +668,6 @@
 		save_daily_modal_trig.click();
 		actual_renderer(who.data);
 	}
-
-	// adding recs handler
-		window['add_new_record'] = () => {
-			add_edit_form.purpose.value = cur_user.my_roles.role_name == 'admin' ? 'Expenditure' : 'Bank transfer';
-			add_edit_form.purpose.setAttribute('readonly',true);
-
-			add_edit_modal_trig.click();
-		}
 
 	window['add_form_afterfx'] = (m) => {
 		add_edit_modal_trig.click();

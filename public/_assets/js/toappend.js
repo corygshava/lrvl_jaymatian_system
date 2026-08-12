@@ -496,7 +496,22 @@ function formatDate0(date) {
 
 	return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
+function formatDate1(date,hastime = false,onlytime = false) {
+	let now = new Date(date);
+	let datepart = now.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+	let timepart = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+	let out = [datepart, timepart];
 
+	if(hastime && !onlytime){
+		return out.join(" , ");
+	} else {
+		if(!hastime){
+			return datepart;
+		} else {
+			return timepart;
+		}
+	}
+}
 function formatDate(date) {
 	if(!date){return '--';}
 

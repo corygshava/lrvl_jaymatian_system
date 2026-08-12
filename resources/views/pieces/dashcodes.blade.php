@@ -174,8 +174,8 @@
 				'get_cash_reports' : './data/cash_reports',
 				'get_cashreports' : './data/cash_reports',
 				'get_cash_report' : './data/cash_report',
-				// 'get_all_debtors' : './data/all_debtors',
 				'get_all_debtors' : './data/get_debtors',
+				'get_all_debtors_raw' : './data/all_debtors',
 				'get_all_debtors_stats' : './data/all_debtors_stats',
 
 			// misc

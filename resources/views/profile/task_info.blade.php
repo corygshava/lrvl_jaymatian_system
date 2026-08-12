@@ -1290,14 +1290,22 @@
 						}
 					},
 					{
+						title: 'Payment status',
 						field: 'task',
-						cap: 'Payment Status',
-						show: function(v) {
-							// console.log({sample_task: v});
+						// sortable: false,
+						show: function(v,row) {
 							let pid = v.payment_status;
 							let pstate = task_pay_state[pid];
 							let cls = pstate_classes[pid];
-							return `<strong class="${cls}">${pstate}</strong>`;
+							let xtraht = v.payment_status == 2 ? '' : `
+								<div class="w3-small" style="margin-top: 4px;">
+									<b class="themetxt">${Number(row.task.paid).toLocaleString()}</b> / ${Number(row.task.cost).toLocaleString()}
+								</div>
+							`;
+							return `
+								<strong class="${cls}">${pstate}</strong>
+								${xtraht}
+							`;
 						}
 					},
 					{
