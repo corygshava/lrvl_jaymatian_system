@@ -344,23 +344,41 @@
 </div>
 
 <script>
-	window['view_client_info'] = (el) => {
+	window['debtorsui_view_client_info'] = (el) => {
 		if(el == undefined){
-			alert_danger('[view_client_info] invalid procedure call');
+			alert_danger('[debtorsui_view_client_info] invalid procedure call');
 			return;
 		}
 		if(el.dataset == undefined){
-			alert_danger('[view_client_info] invalid argument');
+			alert_danger('[debtorsui_view_client_info] invalid argument');
 			return;
 		}
 		if(el.dataset.myid == undefined){
-			alert_danger('[view_client_info] no id attached');
+			alert_danger('[debtorsui_view_client_info] no id attached');
 			return;
 		}
 
 		let id = el.dataset.myid;
 		window[variableAtlas['client_id']] = id;
 		loadPage({template: linkAtlas['client_info'],sidenote: pageNames['client_info']});
+	}
+	window['debtorsui_make_client_invoice'] = (el) => {
+		if(el == undefined){
+			alert_danger('[debtorsui_make_client_invoice] invalid procedure call');
+			return;
+		}
+		if(el.dataset == undefined){
+			alert_danger('[debtorsui_make_client_invoice] invalid argument');
+			return;
+		}
+		if(el.dataset.myid == undefined){
+			alert_danger('[debtorsui_make_client_invoice] no id attached');
+			return;
+		}
+
+		let id = el.dataset.myid;
+		window[variableAtlas['client_id']] = id;
+		loadPage({template: linkAtlas['mek_invoice'],sidenote: pageNames['mek_invoice']});
 	}
 	window['just_render_debtors'] = (btn) => {
 		window['all_debtors'] = [];
@@ -601,8 +619,8 @@
 					</td>
 					<td class="text-right">
 						<div class="dlt-acts is_ghost_">
-							<button class="dlt-act" data-act="view" title="View debtor" data-runme="view_client_info" data-myid="${d.id}"><i class="fas fa-info"></i></button>
-							<button class="dlt-act w3-hide" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>
+							<button class="dlt-act" title="View debtor" data-runme="debtorsui_view_client_info" data-myid="${d.id}"><i class="fas fa-info"></i></button>
+							<button class="dlt-act" title="make invoice" data-runme="debtorsui_make_client_invoice" data-myid="${d.id}"><i class="${iconAtlas['invoices']}"></i></button>
 						</div>
 					</td>
 				</tr>
