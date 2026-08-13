@@ -554,3 +554,22 @@ function formatNumber(n,dp = 0,locale = true) {
 	return res;
 }
 
+// fileops
+window['readTextFile'] = (toread,callback,isjson=false) => {
+	let fr = new FileReader();
+	fr.onload = (e) => {
+		try{
+			console.log('trying to read the file');
+			console.log('reader input', e);
+			if(isjson){
+				callback(JSON.parse(e.target.result),e);
+			} else {
+				callback(e.target.result,e);
+			}
+		} catch(err){
+			console.error(err);
+		}
+	};
+	fr.readAsText(toread);
+}
+

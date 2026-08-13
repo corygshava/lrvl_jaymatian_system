@@ -71,6 +71,7 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/expenses_mgt', [ViewController::class,'showexpenses']);
 	Route::get('/cash_reports_mgt', [ViewController::class,'showcashreports']);
 	Route::get('/gen_cash_report', [ViewController::class,'showprintcashreports']);
+	Route::get('/_ui_demopage', [ViewController::class,'showtempui']);
 });
 
 Route::prefix('/data')->group(function(){
@@ -85,6 +86,7 @@ Route::prefix('/data')->group(function(){
 	Route::get('/clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/search_clients', [ClientController::class,'get_all'])->middleware(['auth','verified']);
 	Route::post('/get_client', [ClientController::class,'get_one'])->middleware(['auth','verified']);
+	Route::post('/get_clients_by_ids', [ClientController::class,'get_by_ids'])->middleware(['auth','verified']);
 
 	Route::post('/all_debtors', [ClientController::class,'get_all_debtors'])->middleware(['auth','verified']);
 	Route::get('/get_debtors', [ClientController::class,'get_debtors'])->middleware(['auth','verified']);

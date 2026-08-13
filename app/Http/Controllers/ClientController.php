@@ -467,6 +467,58 @@ class ClientController extends Controller{
 
 		return response()->json($res);
 	}
+	public function get_by_ids(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+		$out = null;
+
+		// /*
+		$passed = $req->validate([
+			'client_ids' => ['required','array'],
+			'client_ids.*' => ['integer','exists:clients,id'],
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+		// ops begin
+		if($this->ili()){
+			$res['success'] = true;
+			$_msg('starting the procedure');
+			$reslt = false;
+
+			$out = Client::query()->whereIn('id', $passed['client_ids'])->get();
+			$reslt = true;
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
 
 	// get debtors
 	public function get_all_debtors(Request $req,$iscalled = false){

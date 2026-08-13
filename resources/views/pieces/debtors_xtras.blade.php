@@ -1,4 +1,3 @@
-
 <style>
 	/*
 		============================================================
@@ -345,6 +344,24 @@
 </div>
 
 <script>
+	window['view_client_info'] = (el) => {
+		if(el == undefined){
+			alert_danger('[view_client_info] invalid procedure call');
+			return;
+		}
+		if(el.dataset == undefined){
+			alert_danger('[view_client_info] invalid argument');
+			return;
+		}
+		if(el.dataset.myid == undefined){
+			alert_danger('[view_client_info] no id attached');
+			return;
+		}
+
+		let id = el.dataset.myid;
+		window[variableAtlas['client_id']] = id;
+		loadPage({template: linkAtlas['client_info'],sidenote: pageNames['client_info']});
+	}
 	window['just_render_debtors'] = (btn) => {
 		window['all_debtors'] = [];
 		render_the_debtors();
@@ -582,10 +599,10 @@
 						<span>created: <b class="w3-text-grey">${shortDate(d.created_at)}</b></span>
 						<span>last visit: <b class="w3-text-purple">${shortDate(d.updated_at)}</b></span>
 					</td>
-					<td class="text-right w3-hide">
-						<div class="dlt-acts is_ghost">
-							<button class="dlt-act" data-act="view" title="View debtor"><i class="fas fa-eye"></i></button>
-							<button class="dlt-act" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>
+					<td class="text-right">
+						<div class="dlt-acts is_ghost_">
+							<button class="dlt-act" data-act="view" title="View debtor" data-runme="view_client_info" data-myid="${d.id}"><i class="fas fa-info"></i></button>
+							<button class="dlt-act w3-hide" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>
 						</div>
 					</td>
 				</tr>
@@ -720,7 +737,7 @@
 									<th data-dlt-sort="payment_plan">Payment Plan</th>
 									<th class="text-right" data-dlt-sort="credit_balance">Balance <i class="fas fa-sort-down dlt-sortico"></i></th>
 									<th class="dlt-col-added" data-dlt-sort="created_at">Timestamps <i class="fas fa-sort dlt-sortico"></i></th>
-									<th class="text-right w3-hide">Actions</th>
+									<th class="text-right w3-hide_">Actions</th>
 								</tr>
 							</thead>
 							<tbody data-dlt="rows">
@@ -803,6 +820,8 @@
 					ic.className = "fas dlt-sortico fa-sort";
 				}
 			});
+
+			refreshUI(100);
 		}
 
 		function bind(inst) {
@@ -896,7 +915,8 @@
 				paint(inst);
 			}
 
-			/* animate the plan-mix bar once the shell is in the DOM */
+			/*
+			// animate the plan-mix bar once the shell is in the DOM
 			requestAnimationFrame(function () {
 				return;
 				root.querySelectorAll(".dlt-mix-fill").forEach(function (f) {
@@ -905,6 +925,7 @@
 			});
 
 			return inst;
+			// */
 		}
 
 		/* ---------- public API ---------- */

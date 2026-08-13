@@ -111,6 +111,7 @@
 				'reports_mgt' : './ui/reports_mgt',
 				'invoices_mgt' : './ui/invoices_mgt',
 				'ui_tester' : './ui/_ui_creat0r',
+				'temp_ui' : './ui/_ui_demopage',
 				'mek_invoice' : './ui/gen_invoice',
 				'verify_file' : './ui/verify_file',
 				'expenses_mgt' : './ui/expenses_mgt',
@@ -148,6 +149,8 @@
 				'get_task' : './data/get_task',
 				'get_sample' : './data/get_sample',
 				'get_client' : './data/get_client',
+				'get_clients' : './data/clients',
+				'get_clients_from_ids' : './data/get_clients_by_ids',
 				'get_samples' : './data/get_samples',
 				'get_payments' : './data/get_payments',
 				'get_results' : './data/get_results',
@@ -221,6 +224,7 @@
 			'print_cash_report' : 'Print Cash Report',
 
 			'ui_tester' : 'UI testing grounds',
+			'temp_ui' : 'UI testing grounds',
 		};
 		const variableAtlas = {
 			'initstuff' : `sys_init_${mekRandomString(8)}`,
@@ -308,6 +312,7 @@
 			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
 			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
+			{caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -1326,7 +1331,7 @@
 				refreshUI(100);
 			}
 
-			window['get_input_callback'] = (el) => {
+			window['get_input_callback_old'] = (el) => {
 				let cl_btn = the_modal_toggler;
 
 				if(cl_btn == undefined){
@@ -1342,6 +1347,35 @@
 				let fdata = get_text_fields(el);
 				alert_info('gotten input info');
 				console.log('data from get_input: ',fdata);
+
+				window[variableAtlas['get_input_inter']](fdata);
+			}
+			window['get_input_callback'] = (el) => {
+				let cl_btn = the_modal_toggler;
+
+				if(cl_btn == undefined){
+					alert_danger('close button not found');
+					return;
+				} else {
+					// console.log('button: ',cl_btn);
+					// return;
+				}
+
+				cl_btn.click();
+
+				let fdata = get_text_fields(el);
+				alert_info('gotten input info');
+
+				const fileInputs = el.querySelectorAll('input[type="file"]');
+				fileInputs.forEach(input => {
+					if (input.name) {
+						// convert the FileList into a standard Jayza array
+						const blobs = Array.from(input.files);
+						fdata[input.name] = blobs;
+					}
+				});
+
+				console.log('data from get_input: ', fdata);
 
 				window[variableAtlas['get_input_inter']](fdata);
 			}
