@@ -50,6 +50,10 @@
 
 	window['runOnAwake'] = () => {
 		outputguy = document.querySelector('[data-role="debtdisplay"]');
+
+		if(demopage_chached_last_clients != undefined){
+			refreshData();
+		}
 	}
 
 	window['upload_clients'] = () => {
