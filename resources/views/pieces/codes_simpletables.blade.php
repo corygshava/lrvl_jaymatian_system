@@ -58,7 +58,7 @@
 			outht = '';
 
 			data.forEach((s,id) => {
-				outht += `<tr style="cursor:pointer;" data-runme="${dta.viewcall}" data-myid="${id}" ${dta.rowprops}>`;
+				outht += `<tr style="cursor:pointer;" data-runme="${dta.viewcall}" data-myid="${id}" data-recid="${s.id || -1}" ${dta.rowprops}>`;
 
 				cols.forEach(c => {
 					let f = s[c.field];

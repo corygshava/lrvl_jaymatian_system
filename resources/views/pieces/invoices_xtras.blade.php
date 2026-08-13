@@ -543,7 +543,7 @@
 
 	window['viewTask_invoices'] = (el) => {
 		alert_info('opening task');
-		window[variableAtlas['task_id']] = el.myid;
+		window[variableAtlas['task_id']] = el.dataset.recid;
 
 		let payld = {
 			template: linkAtlas['task_info'],
