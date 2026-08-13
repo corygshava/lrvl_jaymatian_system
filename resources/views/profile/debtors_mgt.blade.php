@@ -26,6 +26,9 @@
 			/*box-shadow: 0 0 2px var(--clr-shadow);*/
 			border: 1px solid var(--clr-border);
 			--c: var(--clr-text);
+			width: 100%;
+			/*max-width: 200px;*/
+			flex: 1 0 300px;
 		}
 		.stat-card-modern:hover {
 			transform: translateY(-3px);

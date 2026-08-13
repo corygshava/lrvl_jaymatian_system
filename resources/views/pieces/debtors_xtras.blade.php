@@ -251,8 +251,8 @@
 	.dlt-date { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 
 	/* row actions — revealed on hover */
-	.dlt-acts { display: flex; gap: 6px; justify-content: flex-end; opacity: .35; transition: opacity .2s; }
-	.dlt-row:hover .dlt-acts { opacity: 1; }
+	.dlt-acts { display: flex; gap: 6px; justify-content: flex-end; transition: opacity .2s; }
+	/*.dlt-row:hover .dlt-acts { opacity: 1; }*/
 	@media (hover: none) { .dlt-acts { opacity: 1; } }
 	.dlt-act {
 		width: 30px; height: 30px; border-radius: 8px;
@@ -578,9 +578,12 @@
 						<div class="dlt-balance">${money(bal)}</div>
 						<div class="dlt-balance-sub">${esc(cur)}</div>
 					</td>
-					<td class="dlt-date dlt-col-added">${shortDate(d.created_at)}</td>
-					<td class="text-right">
-						<div class="dlt-acts">
+					<td class="dlt-date dlt-col-added flow" style="gap:2px;">
+						<span>created: <b class="w3-text-grey">${shortDate(d.created_at)}</b></span>
+						<span>last visit: <b class="w3-text-purple">${shortDate(d.updated_at)}</b></span>
+					</td>
+					<td class="text-right w3-hide">
+						<div class="dlt-acts is_ghost">
 							<button class="dlt-act" data-act="view" title="View debtor"><i class="fas fa-eye"></i></button>
 							<button class="dlt-act" data-act="edit" title="Edit debtor"><i class="fas fa-user-edit"></i></button>
 						</div>
@@ -717,7 +720,7 @@
 									<th data-dlt-sort="payment_plan">Payment Plan</th>
 									<th class="text-right" data-dlt-sort="credit_balance">Balance <i class="fas fa-sort-down dlt-sortico"></i></th>
 									<th class="dlt-col-added" data-dlt-sort="created_at">Timestamps <i class="fas fa-sort dlt-sortico"></i></th>
-									<th class="text-right">Actions</th>
+									<th class="text-right w3-hide">Actions</th>
 								</tr>
 							</thead>
 							<tbody data-dlt="rows">

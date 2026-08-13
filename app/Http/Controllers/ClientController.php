@@ -904,7 +904,7 @@ class ClientController extends Controller{
 			$_statme(
 				[
 					"value" => $statval,
-					"label" => "Total Balance",
+					"label" => "Total Unpaid Balance",
 					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
 					"icon" => "defined:debtors"
 				]
