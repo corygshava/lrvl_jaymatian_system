@@ -32,23 +32,25 @@
 		</div>
 	</div>
 
-	<div class="spacy-sm panelbg distance-sm themeround" data-role="debtdisplay">
+	<div data-role="debtdisplay">
 	</div>
 </div>
 
 <script>
 	window['outputguy'] = undefined;
-	window['chached_last_data'] = undefined;
-	window['chached_last_clients'] = undefined;
-	window['thefilter'] = undefined;
+	window['demopage_cached_last_data'] = window['demopage_cached_last_data'] || undefined;
+	window['demopage_chached_last_clients'] = window['demopage_chached_last_clients'] || undefined;
+	window['demopage_thefilter'] = window['demopage_thefilter'] || undefined;
 
 	window['killOnLeave'] = [
 		'outputguy',
-		'chached_last_data',
 		'upload_clients',
 		'renderclients',
-		'thefilter',
 	];
+
+	window['runOnAwake'] = () => {
+		outputguy = document.querySelector('[data-role="debtdisplay"]');
+	}
 
 	window['upload_clients'] = () => {
 		inputs = [
@@ -76,8 +78,6 @@
 			}
 		];
 
-		outputguy = document.querySelector('[data-role="debtdisplay"]');
-
 		get_input('Upload Clients list',inputs,processthis);
 	}
 
@@ -91,10 +91,10 @@
 
 			// if(iscalled == false){
 			if(m !== undefined){
-				chached_last_clients = m;
+				demopage_chached_last_clients = m;
 				alert_info('client id list saved');
 			} else {
-				m = chached_last_clients;
+				m = demopage_chached_last_clients;
 			}
 
 			if(m == undefined){
@@ -103,19 +103,19 @@
 			}
 
 			let clients = m.filter(f => {
-				if(thefilter == "all" || thefilter == undefined){
+				if(demopage_thefilter == "all" || demopage_thefilter == undefined){
 					return true;
 				} else {
-					return f.client_class.toLowerCase() == thefilter.toLowerCase();
+					return f.client_class.toLowerCase() == demopage_thefilter.toLowerCase();
 				}
 			});
 
 			/*
 			let clients = m.filter(f => {
-				if(thefilter == "all" || thefilter == undefined){
+				if(demopage_thefilter == "all" || demopage_thefilter == undefined){
 					new_cl.push(f);
 				} else {
-					if(f.client_class.toLowerCase() == thefilter.toLowerCase()){
+					if(f.client_class.toLowerCase() == demopage_thefilter.toLowerCase()){
 						new_cl.push(f);
 					}
 				}
@@ -127,7 +127,7 @@
 			console.log('clients being sent',clients);
 
 			if(clients.length == 0){
-				alert_danger(`no clients for '${thefilter}' found`);
+				alert_danger(`no clients for '${demopage_thefilter}' found`);
 				return;
 			}
 
@@ -142,13 +142,13 @@
 			return;
 		}
 
-		thefilter = d.thecon;
+		demopage_thefilter = d.thecon;
 		readTextFile(d.thefile[0], readfile, true);
 	}
 
 	function renderclients(d) {
 		if(d == undefined){
-			d = chached_last_data || null;
+			d = demopage_cached_last_data || null;
 		}
 
 		if(d == null){
@@ -156,7 +156,7 @@
 			return;
 		}
 
-		chached_last_data = d;
+		demopage_cached_last_data = d;
 		// alert_info('getting clients');
 		let snd = d.sendme;
 		let sum = 0;

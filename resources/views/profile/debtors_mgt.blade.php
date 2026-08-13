@@ -28,7 +28,7 @@
 			--c: var(--clr-text);
 			width: 100%;
 			/*max-width: 200px;*/
-			flex: 1 0 300px;
+			flex: 1 0 240px;
 		}
 		.stat-card-modern:hover {
 			transform: translateY(-3px);
