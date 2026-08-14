@@ -754,10 +754,10 @@
 								<tr>
 									<th style="width:52px">#</th>
 									<th style="width:52px">id</th>
-									<th data-dlt-sort="client_name">Client<i class="fas fa-sort dlt-sortico"></i></th>
+									<th data-dlt-sort="client_name">Client <i class="fas fa-sort dlt-sortico"></i></th>
 									<th data-dlt-sort="payment_plan">Payment Plan</th>
 									<th class="text-right" data-dlt-sort="credit_balance">Balance <i class="fas fa-sort-down dlt-sortico"></i></th>
-									<th style="width:52px">unpaid tasks</th>
+									<th data-dlt-sort="unpaid_tasks" style="width:52px">unpaid tasks <i class="fas fa-sort dlt-sortico"></i></th>
 									<th class="dlt-col-added" data-dlt-sort="created_at">Timestamps <i class="fas fa-sort dlt-sortico"></i></th>
 									<th class="text-right w3-hide_">Actions</th>
 								</tr>
@@ -804,6 +804,7 @@
 			list.sort(function (a, b) {
 				if (k === "credit_balance") return (toNum(a.credit_balance) - toNum(b.credit_balance)) * dir;
 				if (k === "created_at") return (+new Date(a.updated_at || 0) - +new Date(b.updated_at || 0)) * dir;
+				if (k === "unpaid_tasks") return (+new Date(a.unpaid_tasks || 0) - +new Date(b.unpaid_tasks || 0)) * dir;
 				// if (k === "created_at") return (+new Date(a.created_at || 0) - +new Date(b.created_at || 0)) * dir;
 				return String(a.client_name || "").toLowerCase().localeCompare(String(b.client_name || "").toLowerCase()) * dir;
 			});
