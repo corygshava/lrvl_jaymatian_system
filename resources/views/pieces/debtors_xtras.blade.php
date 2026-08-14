@@ -613,6 +613,9 @@
 						<div class="dlt-balance">${money(bal)}</div>
 						<div class="dlt-balance-sub">${esc(cur)}</div>
 					</td>
+					<td>
+						<div class="text-right"><b>${d.unpaid_tasks || '--'}</b></div>
+					</td>
 					<td class="dlt-date dlt-col-added flow" style="gap:2px;">
 						<span>created: <b class="w3-text-grey">${shortDate(d.created_at)}</b></span>
 						<span>last visit: <b class="w3-text-purple">${shortDate(d.updated_at)}</b></span>
@@ -754,6 +757,7 @@
 									<th data-dlt-sort="client_name">Client<i class="fas fa-sort dlt-sortico"></i></th>
 									<th data-dlt-sort="payment_plan">Payment Plan</th>
 									<th class="text-right" data-dlt-sort="credit_balance">Balance <i class="fas fa-sort-down dlt-sortico"></i></th>
+									<th style="width:52px">unpaid tasks</th>
 									<th class="dlt-col-added" data-dlt-sort="created_at">Timestamps <i class="fas fa-sort dlt-sortico"></i></th>
 									<th class="text-right w3-hide_">Actions</th>
 								</tr>

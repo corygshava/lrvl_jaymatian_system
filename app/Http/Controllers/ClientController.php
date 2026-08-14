@@ -503,7 +503,11 @@ class ClientController extends Controller{
 			$_msg('starting the procedure');
 			$reslt = false;
 
-			$out = Client::query()->whereIn('id', $passed['client_ids'])->get();
+			$out = Client::query()->whereIn('id', $passed['client_ids'])
+				->withCount(['tasks as unpaid_tasks' => function($q){
+					$q->where('balance','>',0);
+				}])
+				->get();
 			$reslt = true;
 
 			$res['result'] = $reslt;
@@ -565,12 +569,17 @@ class ClientController extends Controller{
 			// calculate total owed
 			$_msg('fetching clients with unpaid samples');
 			$d_clients = Client::query()->whereHas('tasks', function($q) use($t_range){
-				if($t_range != null){
-					$q->timeRange($t_range)->where('payment_status','<>',2);
-					return;
-				}
-				$q->where('payment_status','<>',2);
-			})->where('credit_balance','>',0);
+					if($t_range != null){
+						$q->timeRange($t_range)->where('payment_status','<>',2);
+						return;
+					}
+					$q->where('payment_status','<>',2);
+				})->where('credit_balance','>',0)
+				->withCount(['tasks as unpaid_tasks' => function($q){
+					$q->where('balance','>',0);
+				}])
+				->get();
+			;
 			$total_debit = (clone $d_clients)->sum('credit_balance');
 			$guys = (clone $d_clients)->get();
 
@@ -653,15 +662,21 @@ class ClientController extends Controller{
 			];
 
 			$clients = Client::query()->whereHas('tasks', function($q) use(&$_msg){
-				$q->where('balance','>',0);
-			});
+					$q->where('balance','>',0);
+				})
+				->withCount(['tasks as unpaid_tasks' => function($q){
+					$q->where('balance','>',0);
+				}])
+				->get();
+			;
 
 			if($search){
 				$clients = $clients
 					->where('client_name', 'like', "%{$search}%")
 					->orWhere('client_contact', 'like', "%{$search}%")
-					->orWhere('id_number', 'like', "%{$search}%")
-					->orWhere('kra_pin', 'like', "%{$search}%");
+					// ->orWhere('id_number', 'like', "%{$search}%")
+					// ->orWhere('kra_pin', 'like', "%{$search}%")
+				;
 
 				$_msg("added search filter");
 			}
