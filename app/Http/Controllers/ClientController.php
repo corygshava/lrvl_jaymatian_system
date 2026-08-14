@@ -991,7 +991,7 @@ class ClientController extends Controller{
 				[
 					"value" => $statval,
 					"label" => "Total Unpaid Today",
-					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"type" => $statval < $thresh[0] ? "success" : ($statval < $thresh[1] ? "primary" : "danger"),
 					"icon" => "defined:debtors"
 				]
 			);
