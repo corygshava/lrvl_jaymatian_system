@@ -666,8 +666,7 @@ class ClientController extends Controller{
 				})
 				->withCount(['tasks as unpaid_tasks' => function($q){
 					$q->where('balance','>',0);
-				}])
-				->get();
+				}]);
 			;
 
 			if($search){
