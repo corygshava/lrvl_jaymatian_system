@@ -316,6 +316,43 @@
 	@media (prefers-reduced-motion: reduce) {
 		.dlt *, .dlt *::before { animation: none !important; transition: none !important; }
 	}
+
+	/* end of AI slop */
+	.modal_task_chip{
+		border: 1px solid var(--clr-border);
+		display: flex;
+		flex-direction: column;
+		cursor: pointer;
+		position: relative;
+	}
+	.modal_task_chip:hover{
+		border: 1px solid var(--themecolor);
+	}
+	.modal_task_chip .hovicon {
+	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    opacity: 0;
+	    /*height: 100%;*/
+	    padding: 4px;
+	    display: flex;
+	    align-items: center;
+	    translate: 0px -10px;
+	    color: var(--themecolor) !important;
+	}
+	.modal_task_chip:hover .hovicon{
+	    translate: 0 0;
+		opacity: 1;
+	}
+	.modal_task_chip .subhead{
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		opacity: 0.8;
+	}
+	.modal_task_chip .theitems>div{
+		flex: 1 0 80px;
+		font-size: 0.8rem;
+	}
 </style>
 
 <div>
@@ -344,6 +381,110 @@
 </div>
 
 <script>
+	window['myaddition_debtors'] = [
+		'renderDebtors',
+		'DebtorsUI',
+		'debtorsui_open_tasks_modal',
+		'debtorsui_view_client_info',
+		'debtorsui_make_client_invoice',
+		'just_render_debtors',
+		'render_the_debtors',
+		'manage_this_task',
+		'debtorsui_last_client_data',
+
+		'esc',
+		'toNum',
+		'money',
+		'shortDate',
+		'debounce',
+		'initials',
+		'hueOf',
+		'planMeta',
+		'genderIcon',
+		'buildModel',
+		'statTile',
+		'mixBlock',
+		'rowHTML',
+		'pagerHTML',
+		'shellHTML',
+		'paint',
+		'bind',
+		'mount',
+		'renderDebtors',
+		'activate',
+	];
+	window['debtorsui_open_tasks_modal'] = (el) => {
+		console.log('last debtors data: ',debtorsui_last_client_data);
+
+		if(el == undefined){
+			alert_danger('invalid procedure call');
+			return;
+		}
+		if(el.dataset == undefined){
+			alert_danger('invalid argument');
+			return;
+		}
+		if(el.dataset.myid == undefined){
+			alert_danger('no id attached');
+			return;
+		}
+		if(debtorsui_last_client_data == undefined){
+			alert_danger('Invalid data setup');
+			return;
+		}
+
+		let debtors = debtorsui_last_client_data.sendme.debtors;
+		let id = el.dataset.myid;
+		let f_list = debtorsui_last_client_data.sendme.debtors.filter(d => {return d.id == id});
+
+		if(f_list.length == 0){
+			alert_danger('invalid client id passed');
+			return;
+		}
+
+		let cl = f_list[0];
+		let tasks = cl.tasks;
+
+		let con = `black girl magic, like wtf are these writers on 😂<br><div>`;
+		con = '';
+		con = tasks.length > 0 ? con : `<div>${mekStandin('this client has no tasks')}`;
+
+		tasks.forEach(t => {
+			con += `
+				<div class="modal_task_chip spacy-tn mb-2 themeround" data-runme="manage_this_task" data-myid="${t.id}" data-dismiss="modal">
+					<div class=head"">${mekBold(t.task_no)}</div>
+					<div class="flowline overflow gap-sm theitems mt-2 border-top pt-2">
+						<div>
+							<small class="subhead">task details</small>
+							<div>samples: ${mekBold(t.sample_count)}</div>
+							<div>has discount: ${mekBold(t.cost < t.fullcost ? 'yes' : 'no', '')}</div>
+						</div>
+						<div>
+							<small class="subhead">PAYMENT STATUS</small>
+							<div>progress: ${mekBold(formatNumber(t.paid))} / ${mekBold(formatNumber(t.cost))}</div>
+							<div>balance: ${mekBold(formatNumber(t.balance))}</div>
+						</div>
+						<div>
+							<small class="subhead">Timestamps</small>
+							<div>brought: ${mekBold(formatDate1(t.created_at))}</div>
+							<div>last update: ${mekBold(formatDate1(t.updated_at))}</div>
+						</div>
+					</div>
+					<div class="hovicon">
+						<b class="mybadge">click to manage</b>
+					</div>
+				</div>
+			`;
+		})
+
+		con += '</div>';
+
+		mekModal({
+			title: `${mekStrong(cl.client_name,'themetxt')}: unpaid_tasks`,
+			sub: `here are the unpaid tasks from ${mekBold(cl.client_name)}`,
+			content: con
+		});
+	}
 	window['debtorsui_view_client_info'] = (el) => {
 		if(el == undefined){
 			alert_danger('[debtorsui_view_client_info] invalid procedure call');
@@ -431,10 +572,17 @@
 		step1();
 	}
 
+	window['manage_this_task'] = (el) => {
+		window[variableAtlas['task_id']] = el.dataset.myid;
+		loadPage({template: linkAtlas['task_info'], sidenote: pageNames['task_info']});
+	}
+
+	window['debtorsui_last_client_data'] = undefined;
+
 	setTimeout(() => {
 		window['killOnLeave'] = window['killOnLeave'] == undefined ? [] : killOnLeave;
 		killlist = killOnLeave;
-		killlist = [...killlist, ...myaddition];
+		killlist = [...killlist, ...myaddition_debtors];
 
 		window['killOnLeave'] = killlist;
 	},randomRange(500,800));
@@ -459,7 +607,7 @@
 		 - All user-supplied text is HTML-escaped.
 	 ============================================================ */
 
-	(function () {
+	// (function () {
 		// "use strict";
 
 		var DEFAULTS = { currency: "KSH ", pageSize: 25, onAction: null };
@@ -592,6 +740,9 @@
 			var pm = planMeta(d.payment_plan);
 			var bal = toNum(d.credit_balance);
 			var delay = Math.min((n - 1) * 26, 300);
+			let opentaskht = [null, undefined, 0].includes(d.unpaid_tasks_count) ? `` : `
+				<button class="dlt-act" title="View debtor" data-runme="debtorsui_open_tasks_modal" data-myid="${d.id}"><i class="${iconAtlas['tasks']}"></i></button>
+			`;
 
 			return `
 				<tr class="dlt-row" data-idx="${d.__i}" style="animation-delay:${delay}ms">
@@ -614,7 +765,7 @@
 						<div class="dlt-balance-sub">${esc(cur)}</div>
 					</td>
 					<td>
-						<div class="text-right"><b>${d.unpaid_tasks || '--'}</b></div>
+						<div class="text-right"><b>${d.unpaid_tasks_count || '--'}</b></div>
 					</td>
 					<td class="dlt-date dlt-col-added flow" style="gap:2px;">
 						<span>created: <b class="w3-text-grey">${shortDate(d.created_at)}</b></span>
@@ -622,6 +773,7 @@
 					</td>
 					<td class="text-right">
 						<div class="dlt-acts is_ghost_">
+							${opentaskht}
 							<button class="dlt-act" title="View debtor" data-runme="debtorsui_view_client_info" data-myid="${d.id}"><i class="fas fa-info"></i></button>
 							<button class="dlt-act" title="make invoice" data-runme="debtorsui_make_client_invoice" data-myid="${d.id}"><i class="${iconAtlas['invoices']}"></i></button>
 						</div>
@@ -790,15 +942,36 @@
 
 		/* ---------- live behaviour ---------- */
 		function paint(inst) {
-			var m = inst.model, o = inst.opts;
+			// alert_info('rendering stuff');
+
+			var m = inst.model, o = inst.opts, outcl = [];
+			// console.log('debtors before',m.debtors);
 			var list = m.debtors.filter(function (d) {
 				if (inst.plan && (d.payment_plan || "") !== inst.plan) return false;
 				if (inst.query) {
-					var hay = ((d.client_name || "") + " " + (d.client_contact || "")).toLowerCase();
-					if (hay.indexOf(inst.query) === -1) return false;
+					let sch = inst.query;
+
+					if(sch.toLowerCase().includes('exclude:') || sch.toLowerCase().includes('isolate:')){
+						let cids = sch.split(":")[1].split(',').map(n => {return Number(n);});
+						let con = cids.includes(d.id);
+						let f_con = sch.toLowerCase().includes('exclude:') ? con : !con;
+
+						outcl = cids;
+						if(f_con){
+							// alert_info('found exclude');
+							return false;
+						}
+					} else {
+						// alert_info('not running exclude');
+						var hay = ((d.client_name || "") + " " + (d.client_contact || "")).toLowerCase();
+						if (hay.indexOf(inst.query) === -1) return false;
+					}
 				}
 				return true;
 			});
+
+			// console.log('filtered',outcl);
+			// console.log('debtors after',list);
 
 			var k = inst.sortKey, dir = inst.sortDir;
 			list.sort(function (a, b) {
@@ -857,7 +1030,9 @@
 			}, 130);
 
 			root.addEventListener("input", function (e) {
-				if (e.target.matches('[data-dlt="query"]')) onQuery(e.target.value);
+				if (e.target.matches('[data-dlt="query"]')){
+					onQuery(e.target.value);
+				}
 			});
 
 			root.addEventListener("change", function (e) {
@@ -906,6 +1081,8 @@
 		}
 
 		function mount(el, data, opts) {
+			debtorsui_last_client_data = data;
+
 			var root = typeof el === "string" ? document.querySelector(el) : el;
 			if (!root){
 				alert_danger('invalid container mounted');
@@ -968,5 +1145,5 @@
 
 		window['renderDebtors'] = renderDebtors;
 		window['DebtorsUI'] = { render: renderDebtors, mount: mount, activate: activate };
-	})();
+	// })();
 </script>

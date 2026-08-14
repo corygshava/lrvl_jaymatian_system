@@ -503,6 +503,7 @@
 					<div>
 						<span class="h4">Sample: ${sample.sample_no}</span>
 						<div class="flowline overflow gap-sm left" style="margin-top: 8px;">
+							<div class="distance-tn">Task no: <b>${sample.task.task_no}</b></div>
 							<div class="distance-tn">Tag: <b>${sample.sample_tag}</b></div>
 							<div class="distance-tn">Type: <b>${sample.sample_type}</b></div>
 							<div class="distance-tn">amount: <b>${sample.sample_count}</b></div>
@@ -510,19 +511,21 @@
 					</div>
 				</div>
 
-				<div class="spacy-md w3-display-right"><b>${getStatusBadge(sample.status)}</b></div>
+				<div class="spacy-md w3-display-right">
+					<b>${getStatusBadge(sample.status)}</b>
+				</div>
 			</div>
 
 			<!-- Action Buttons -->
 			<div class="flowline centerline center spacy-sm w3-hide_">
-				<button class="mybtn primary w3-hide" data-toggle="collapse" data-target="#add_result_form">
-					<i class="fas fa-plus-circle"></i> Add Result
+				<button class="mybtn secondary w3-hide" onclick="copy_this_shit('${sample.task.task_no}')">
+					<i class="fas fa-copy"></i> Copy Task number
 				</button>
 				<button class="mybtn secondary" onclick="viewTask_samples(${sample.task_id})" data-openthis="taskinfo">
-					<i class="fas fa-folder"></i> View Task
+					<i class="${iconAtlas['tasks']}"></i> View Task
 				</button>
 				<button class="mybtn secondary" onclick="viewClient_samples(${sample.owner.id})" data-openthis="clientinfo">
-					<i class="fas fa-users"></i> View Client
+					<i class="${iconAtlas['clients']}"></i> View Client
 				</button>
 				${genreport}
 			</div>
@@ -1193,3 +1196,4 @@
 		fuel_the_jet();
 	}
 </script>
+

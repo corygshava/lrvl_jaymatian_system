@@ -311,7 +311,7 @@
 			{caption: pageNames['expenses_mgt'], url: linkAtlas['expenses_mgt'],icon: iconAtlas['expenses'],permissions: 'MANAGE_EXPENSES'},
 			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
-			{caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
+			// {caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
 			{caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},

@@ -9,7 +9,7 @@ function copytext1(txt) {
 		document.body.appendChild(b);
 
 		b.select()
-		b.setSelectionRange(0,99000);
+		// b.setSelectionRange(0,99000);
 
 		try{
 			let suc = document.execCommand('copy');

@@ -245,6 +245,8 @@ if(window[curfun] == undefined){
 			let cache_saved = local_cache_version !== undefined && local_cache_version !== null;
 			let perms_saved = saved_perms !== undefined && saved_perms !== null;
 
+			// perms_saved = true;
+
 			if(cache_saved && perms_saved && enableCache){
 				let local_cache = JSON.parse(local_cache_version);
 				let myperms = getitempermissions(p);
@@ -316,7 +318,6 @@ if(window[curfun] == undefined){
 		}
 	}
 }
-
 
 curfun = "loadUI";
 if(window[curfun] == undefined){
@@ -919,17 +920,17 @@ const mekModal = (d) => {
 	refreshUI(200);
 }
 
-function mekHeading(content,type){
-	return `<span class="${type || 'h2'}">${content || 'heading'}</span>`;
+function mekHeading(content,type, props=""){
+	return `<span class="${type || 'h2'}" ${props}>${content || 'heading'}</span>`;
 }
-function mekSpan(w) {
-	return `<span>${w}</span>`;
+function mekSpan(w, classes = '', props = '') {
+	return `<span class="${classes}" ${props}>${w}</span>`;
 }
-function mekStrong(w) {
-	return `<strong>${w}</strong>`;
+function mekStrong(w, classes = '', props = '') {
+	return `<strong class="${classes}" ${props}>${w}</strong>`;
 }
-function mekBold(w) {
-	return mekStrong(w);
+function mekBold(w, classes = '', props = '') {
+	return mekStrong(w, classes, props);
 }
 
 // [end of generators]_____________________________________________________________
@@ -1038,6 +1039,11 @@ function confirmAction(title=undefined,msg=undefined,callback=() => {alert_warni
 		})
 
 		alert_dark('all view cache cleared');
+	}
+	const copy_this_shit = async (wot) => {
+		alert_dark('copying: ' + wot);
+		copytext1(wot);
+		alert_dark('copied');
 	}
 
 // log visit

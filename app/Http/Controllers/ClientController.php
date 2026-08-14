@@ -504,7 +504,10 @@ class ClientController extends Controller{
 			$reslt = false;
 
 			$out = Client::query()->whereIn('id', $passed['client_ids'])
-				->withCount(['tasks as unpaid_tasks' => function($q){
+				->withCount(['tasks as unpaid_tasks_count' => function($q){
+					$q->where('balance','>',0);
+				}])
+				->with(['tasks' => function($q){
 					$q->where('balance','>',0);
 				}])
 				->get();
@@ -575,10 +578,12 @@ class ClientController extends Controller{
 					}
 					$q->where('payment_status','<>',2);
 				})->where('credit_balance','>',0)
-				->withCount(['tasks as unpaid_tasks' => function($q){
+				->withCount(['tasks as unpaid_tasks_count' => function($q){
 					$q->where('balance','>',0);
 				}])
-				->get();
+				->with(['tasks' => function($q){
+					$q->where('balance','>',0);
+				}]);
 			;
 			$total_debit = (clone $d_clients)->sum('credit_balance');
 			$guys = (clone $d_clients)->get();
@@ -664,7 +669,10 @@ class ClientController extends Controller{
 			$clients = Client::query()->whereHas('tasks', function($q) use(&$_msg){
 					$q->where('balance','>',0);
 				})
-				->withCount(['tasks as unpaid_tasks' => function($q){
+				->withCount(['tasks as unpaid_tasks_count' => function($q){
+					$q->where('balance','>',0);
+				}])
+				->with(['tasks' => function($q){
 					$q->where('balance','>',0);
 				}]);
 			;

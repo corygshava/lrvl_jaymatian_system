@@ -189,7 +189,7 @@ class TaskController extends Controller{
 			$perPage = $req->input('per_page', 10);
 			$search = $req->input('search');
 			$sortBy = $req->input('sort_by', 'created_at');
-			$sortDirection = $req->input('sort_direction', 'asc');
+			$sortDirection = $req->input('sort_direction', 'desc');
 
 			$tasks = Task::query()
 				->withCount('samples')

@@ -2,8 +2,8 @@
 	* Author: Cornelius Shava
 	* Organisation: CoryG productions
 	* Date: 27/07/2025
-	* last modified: 25/07/2026
-	* Time: 20:40
+	* last modified: 04/03/2026
+	* Time: 11:38
 	* Email: corygprod@duck.com
 	* File: coryG_UIOps.js
 */
@@ -45,16 +45,8 @@ let c_inters = [];
 let tg_btns = {};
 let tg_contents = {};
 
-/*
-// loader operations
-	format {act,delay,type: 'post', 'pre', 'both' (for callOnRefreshUI only)}
-*/
 var callOnLoad = [];
 var callOnDocLoad = [];
-var callOnRefreshUI = [];
-
-var uiops_handle_loader = true;
-var uiops_handle_docloader = true;
 
 // Startup functions - these must run before everything else
 
@@ -123,49 +115,8 @@ var uiops_handle_docloader = true;
 	}
 
 // Ops - these do stuff
-	function runops(ops,errmsg = undefined) {
-		let id = mekRandomString(3);
-
-		if(typeof ops != 'object'){
-			alert_danger('Invalid operations array in runops');
-			return;
-		}
-
-		ops.forEach((f,n) => {
-			if(typeof f['act'] == 'function'){
-				setTimeout(() => {
-					try{
-						f['act'](f['args']);
-					} catch(err) {
-						console.error(err);
-						alert_danger(`[${id}][${n}] -> ${err.message}`);
-					}
-				}, (f['delay'] == undefined ? 1 : f['delay']));
-			} else {
-				alert_danger(errmsg == undefined ? `[${id}] invalid function assigned to ops[${n}]` : `[${id}] ${errmsg}`);
-			}
-		})
-	}
-
-	function ui_ops(type) {
-		let ops = [];
-		ops = [...callOnRefreshUI];
-
-		if(ops.length == 0){
-			return;
-		}
-
-		if(type != 'all'){
-			ops.filter(r => {return r.type == type || r.type == 'both'});
-		}
-
-		runops(ops);
-	}
-
 	// function poolers
 	function uis_init() {
-		ui_ops('pre');
-
 		console.log("running initialiser");
 		alert_silent("running initialiser");
 		// alert_info("running initialiser");
@@ -228,8 +179,6 @@ var uiops_handle_docloader = true;
 
 		// livecountdown
 		init_countdowns();
-
-		ui_ops('post');
 	}
 
 	function uis_afterfx() {
@@ -253,7 +202,7 @@ var uiops_handle_docloader = true;
 			let navlinks = naver != undefined ? naver.querySelectorAll('a') : undefined;
 
 			if(navlinks == undefined){
-				alert_silent('sitelinks not found');
+				alert_danger('sitelinks not found');
 				console.log('sitelinks not found');
 				return;
 			}
@@ -266,19 +215,21 @@ var uiops_handle_docloader = true;
 				curpage = `./${curpage}`;
 
 				navlinks.forEach((el,id) => {
-					let href = `./${cpg(el.href)}`;
-					let ccx = href.toLowerCase() == curpage.toLowerCase();
-					let cnc = ccx ? 'yes' : 'fek no';
-
+					href = `./${cpg(el.href)}`;
 					el.classList.remove("active");
 					// el.innerHTML += ' -> nvr'; // test if it works
-					if(ccx){
-						theid = id;
-						el.classList.add('active');
-					}
+					el.dataset.curpage = `${el.href.toLowerCase()} | ${curpage} | ${id} | ${theid}`;
 
-					el.dataset.curpage = `${el.href.toLowerCase()} | ${href} | ${curpage} | ${id} | ${theid} | ${cnc}`;
+					if(href.toLowerCase() === curpage.toLowerCase()){
+						// alert_dark("found one");
+						theid = id;
+					}
 				})
+
+				if(theid >= 0){
+					navlinks[theid].classList.add('active');
+					// alert_dark(curpage);
+				}
 			}
 		}
 	}
@@ -483,10 +434,15 @@ var uiops_handle_docloader = true;
 
 				el.addEventListener('click',() => {
 					let target = mytarget;
+					// console.log('copy target: ',target);
 
 					if(target != undefined){
 						const _2copy = target.innerText;
-						let resb = copytext1(_2copy);
+						// console.log('target text: ', _2copy,'target txt', target.innerText);
+						// copytext1(_2copy);
+
+						let resb = copytext1("" + _2copy);
+						console.log('text copied, i think');
 						let succeed = el.dataset.successtext || 'text copied successfully';
 						let fail = el.dataset.failtext || 'text copy failed';
 						let _quiet = el.dataset.isquiet || "false";
@@ -654,7 +610,7 @@ var uiops_handle_docloader = true;
 						}
 					});
 				} else {
-					alert_silent(`[UIops] form: ${sel}, doesnt exist`);
+					alert_warning(`form: ${sel}, doesnt exist`);
 				}
 			}
 		})
@@ -719,6 +675,7 @@ var uiops_handle_docloader = true;
 		runs.forEach((el,id) => {
 			if(el.dataset.picked == undefined || el.dataset.picked !== picker){
 				let who = el.dataset.runme;
+				const load_stats = 'alert_danger';
 
 				if(who.includes('defined:')){
 					// whatever follows MUST be defined by var
@@ -730,19 +687,12 @@ var uiops_handle_docloader = true;
 					// return;
 				}
 
-				if(window[who] != undefined && typeof window[who] == 'function'){
-					el.dataset.picked = picker;
-				}
+				el.dataset.picked = window[who] == undefined ? undefined : picker;
 
 				el.addEventListener('click', () => {
 					if(window[who] == undefined){
 						if(el.dataset.errorset == undefined){
-							if(el.dataset.quieterrors == undefined || el.dataset.quieterrors == 'no' || el.dataset.quieterrors == 'false'){
-								let errtext = `function not found`;
-								el.dataset.error = errtext;
-								alert_danger(errtext);
-							}
-
+							alert_danger(`function not found`);
 							el.dataset.errorset = true;
 						}
 					} else {
@@ -901,7 +851,7 @@ var uiops_handle_docloader = true;
 		const alerters = document.querySelectorAll('[data-alertme]');
 
 		alerters.forEach((el,id) => {
-			if(el.dataset.picked == undefined || el.dataset.picked !== picker || el.dataset.taker !== picker){
+			if(el.dataset.picked == undefined || el.dataset.picked !== picker){
 				if(el.dataset.notme != undefined){
 					el.dataset.skipped = "yes";
 					return;
@@ -915,9 +865,6 @@ var uiops_handle_docloader = true;
 
 				// in case i ever implement an abbreviation dictionary
 				// aldata[0] = getlonger(aldata[0]);
-
-				el.dataset.picked = picker;
-				el.dataset.taker = picker;
 
 				el.addEventListener('click',() => {
 					// showAlert(toshow,dur,thetype);
@@ -1038,17 +985,14 @@ var uiops_handle_docloader = true;
 // runtime events and utilities
 	// start the functions as soon as the page is loaded
 	window.addEventListener('load',() => {
-		alert_silent('coryG_UIOps is initialising');
 		createextras();
 		uis_init();
 
 		setTimeout(() => {
 			uis_afterfx();
-			alert_silent('coryG_UIOps after effects complete');
 		},afterfx_delay);
 
 		pageloaded = true;
-		alert_silent('coryG_UIOps has initialized');
 	})
 
 	// run the scroll handler whenever there is a scroll event on the document
@@ -1114,12 +1058,7 @@ var uiops_handle_docloader = true;
 	function getconstval(name) {
 		if(typeof name !== 'string'){return false;}
 		try{
-			let res = window[name];
-
-			if(typeof res == 'undefined'){
-				res = name in globalThis ? globalThis[name] : null;
-			}
-
+			let res = name in globalThis ? globalThis[name] : 'not found';
 			return res;
 		} catch {
 			return false;
@@ -1128,12 +1067,6 @@ var uiops_handle_docloader = true;
 
 	// initialisers
 	window.addEventListener('load',() => {
-		if(!uiops_handle_loader){
-			return;
-		}
-
-		// alert_info('running callOnLoad stack');
-
 		callOnLoad.forEach(f => {
 			if(typeof f['act'] == 'function'){
 				try{
@@ -1151,12 +1084,6 @@ var uiops_handle_docloader = true;
 		})
 	});
 	document.addEventListener('DOMContentLoaded',() => {
-		if(!uiops_handle_docloader){
-			return;
-		}
-
-		// alert_info('running callOnDocLoad stack');
-
 		callOnDocLoad.forEach(f => {
 			if(typeof f['act'] == 'function'){
 				try{
