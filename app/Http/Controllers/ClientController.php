@@ -984,6 +984,18 @@ class ClientController extends Controller{
 				]
 			);
 
+			// total client credit
+			$statval = Task::query()->where('balance','<>',0)->timeRange('today')->sum('balance');
+			$thresh = [50000, 100000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Unpaid Today",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+
 			$out = $stats;
 
 			/*
