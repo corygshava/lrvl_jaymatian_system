@@ -179,7 +179,7 @@
 
 	/* ---------- table ---------- */
 	.dlt-scroll {
-		max-height: 540px;
+		max-height: calc(100vh - 250px);
 		overflow: auto;
 		border-top: 1px solid var(--line-soft);
 		border-bottom: 1px solid var(--line-soft);
