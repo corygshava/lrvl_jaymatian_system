@@ -977,7 +977,7 @@
 			list.sort(function (a, b) {
 				if (k === "credit_balance") return (toNum(a.credit_balance) - toNum(b.credit_balance)) * dir;
 				if (k === "created_at") return (+new Date(a.updated_at || 0) - +new Date(b.updated_at || 0)) * dir;
-				if (k === "unpaid_tasks") return ((a.unpaid_tasks || 0) - (b.unpaid_tasks || 0)) * dir;
+				if (k === "unpaid_tasks") return (toNum(a.unpaid_tasks) - toNum(b.unpaid_tasks)) * dir;
 				// if (k === "created_at") return (+new Date(a.created_at || 0) - +new Date(b.created_at || 0)) * dir;
 				return String(a.client_name || "").toLowerCase().localeCompare(String(b.client_name || "").toLowerCase()) * dir;
 			});
