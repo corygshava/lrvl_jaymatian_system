@@ -480,7 +480,7 @@
 		con += '</div>';
 
 		mekModal({
-			title: `${mekStrong(cl.client_name,'themetxt')}: unpaid_tasks`,
+			title: `[${cl.id}] ${mekStrong(cl.client_name,'themetxt')}: unpaid tasks`,
 			sub: `here are the unpaid tasks from ${mekBold(cl.client_name)}`,
 			content: con
 		});
