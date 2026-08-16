@@ -477,6 +477,14 @@
 			`;
 		})
 
+		if(tasks.length > 1){
+			con += `
+				<div>
+					${mekButton({caption: `<i class="${iconAtlas['invoices']}"></i> make invoice`,_props: 'data-dismiss="modal" data-runme="debtorsui_make_client_invoice" data-myid="'+ cl.id +'"',btype: 'primary'})}
+				</div>
+			`;
+		}
+
 		con += '</div>';
 
 		mekModal({
