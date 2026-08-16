@@ -378,7 +378,7 @@
 			<div class="spacy-sm panelbg themeround mt-4">
 				<span class="h4">Invoice Generation successful</span>
 				<p>the Invoice has been generated, pick an option below to proceed</p>
-				<div class="flowline gap-tn left">
+				<div class="flowline gap-tn left overflow">
 					<button class="mybtn primary sm" data-runme="load_page" data-link="defined:invoices_mgt" data-label="defined:invoices_mgt"><i class="fa fa-file-export"></i> manage Invoices</button>
 					<button class="mybtn secondary sm" data-runme="load_page" data-link="defined:samples_mgt" data-label="defined:samples_mgt"><i class="fa fa-plus"></i> generate another</button>
 					<button class="mybtn secondary sm" data-runme="download_invoice_img"><i class="fa fa-download"></i> download Invoice (image)</button>
