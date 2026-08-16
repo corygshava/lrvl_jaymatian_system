@@ -446,7 +446,11 @@
 		let tasks = cl.tasks;
 
 		let con = `black girl magic, like wtf are these writers on 😂<br><div>`;
-		con = '';
+		con = `
+			<div class="py-2">
+				total owed: ${sitedata.currency} ${mekBold(formatNumber(cl.credit_balance),'themetxt')}
+			</div>
+		`;
 		con = tasks.length > 0 ? con : `<div>${mekStandin('this client has no tasks')}`;
 
 		tasks.forEach(t => {

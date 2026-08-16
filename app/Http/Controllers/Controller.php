@@ -488,6 +488,7 @@ abstract class Controller{
 			'date_updated' => $lastupdate,
 			'branch_name' => 'migori',
 			'sitelink' => 'https://migori.jaymat.com/',
+			'currency' => 'KSH',
 			"developer_details" => [
 				'email' => 'corygshava777+jaymat_dev_migori@gmail.com',
 				"name" => 'Cory',
