@@ -425,6 +425,20 @@
 		};
 
 		window[variableAtlas['initstuff']] = () => {
+			const step0 = () => {
+				setUI();
+				dynamic_ui.innerHTML = mekLoader();
+				// maincon.innerHTML = mekError('error loading system permissions','there was an error',true);
+
+				window[fetch_bypass_fyls](linkAtlas['get_allpermissions'],{},'GET').then(d => {
+					// console.log('maincon', maincon);
+					responseHandler(d,step1,d);
+					// initmenu();
+				}).catch(err => {
+					console.error(err);
+					dynamic_ui.innerHTML = mekError('error loading system permissions',err.message,true);
+				});
+			}
 			const step1 = (w) => {
 				clearStorage();
 
@@ -439,7 +453,10 @@
 					}
 				}).catch(err => {
 					dynamic_ui.innerHTML = mekError('Error',`error getting user permissions: ${err.message}`,true);
-				})
+				}).catch(err => {
+					console.error(err);
+					dynamic_ui.innerHTML = mekError('error loading user permissions',err.message,true);
+				});
 			};
 
 			const step2 = (w) => {
@@ -453,6 +470,7 @@
 						throw new Error(d.message);
 					}
 				}).catch(err => {
+					console.error(err);
 					dynamic_ui.innerHTML = mekError('Error',`error getting user information: ${err.message}`,true);
 				})
 			};
@@ -473,6 +491,7 @@
 						throw new Error(d.message);
 					}
 				}).catch(err => {
+					console.error(err);
 					dynamic_ui.innerHTML = mekError('Error',`error getting business information: ${err.message}`,true);
 				})
 				// */
@@ -496,12 +515,8 @@
 				Object.freeze(encsetup);
 			}
 
-			window[fetch_bypass_fyls](linkAtlas['get_allpermissions'],{},'GET').then(d => {
-				responseHandler(d,step1,d);
-				// initmenu();
-			})
+			step0();
 		}
-
 		window['parseBizdata'] = (m) => {
 			alert_dark('parsing bizdata');
 			window['debug_var_bizdata'] = m;
