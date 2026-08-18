@@ -526,6 +526,12 @@
 									<button class="btn-action mybtn primary sm" data-runme='view_info' data-myid="${value}" title="Edit">
 										<i class="fas fa-info"></i> my data
 									</button>
+									<button class="btn-action mybtn primary sm" data-runme='debtorsui_open_tasks_modal' data-myid="${value}" title="Edit">
+										<i class="${iconAtlas['tasks']}"></i>
+									</button>
+									<button class="btn-action mybtn primary sm" data-runme='debtorsui_make_client_invoice' data-myid="${value}" title="Edit">
+										<i class="${iconAtlas['invoices']}"></i>
+									</button>
 								</div>
 							`;
 						}

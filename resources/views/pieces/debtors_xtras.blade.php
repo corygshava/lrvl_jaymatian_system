@@ -428,14 +428,20 @@
 			alert_danger('no id attached');
 			return;
 		}
+
+		let d = false;
 		if(debtorsui_last_client_data == undefined){
-			alert_danger('Invalid data setup');
-			return;
+			if(curRecordData == undefined){
+				alert_danger('Invalid data setup');
+				return;
+			} else {
+				d = true;
+			}
 		}
 
-		let debtors = debtorsui_last_client_data.sendme.debtors;
+		let debtors = d ? curRecordData : debtorsui_last_client_data.sendme.debtors;
 		let id = el.dataset.myid;
-		let f_list = debtorsui_last_client_data.sendme.debtors.filter(d => {return d.id == id});
+		let f_list = debtors.filter(d => {return d.id == id});
 
 		if(f_list.length == 0){
 			alert_danger('invalid client id passed');
@@ -1128,7 +1134,7 @@
 			}
 
 			/*
-			// animate the plan-mix bar once the shell is in the DOM
+			// animate the plan-mix bar once the shell is in the DOM 
 			requestAnimationFrame(function () {
 				return;
 				root.querySelectorAll(".dlt-mix-fill").forEach(function (f) {
