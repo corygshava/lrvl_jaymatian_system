@@ -71,6 +71,7 @@
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
 		const lastrefresh = '10/04/2026 02:10:37';
 		const sitedata = <?=json_encode($sitedata)?>;
+		window['cur_user'] = {};
 
 		var menubar = undefined;
 		let themenu = undefined;
@@ -353,6 +354,9 @@
 			if(maincon == undefined){maincon = document.querySelector('#dynamic_ui');}
 			if(dynacode == undefined){dynacode = document.querySelector('#dynamic_js');}
 
+			if(window['cur_user'] == undefined){
+				return;
+			}
 			updateSessionUI();
 		}
 
