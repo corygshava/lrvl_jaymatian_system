@@ -1134,7 +1134,7 @@
 			}
 
 			/*
-			// animate the plan-mix bar once the shell is in the DOM 
+			// animate the plan-mix bar once the shell is in the DOM
 			requestAnimationFrame(function () {
 				return;
 				root.querySelectorAll(".dlt-mix-fill").forEach(function (f) {
