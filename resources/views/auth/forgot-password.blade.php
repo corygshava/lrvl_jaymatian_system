@@ -15,11 +15,14 @@
 
 	<div class="loginHolder fullcon flow centroid">
 		<div class="panelbg spacy-md formholder mycon sm themeround slide-up">
-			<div class="logo_img_ flow centroid">
-				<img src="./_assets/img/logo_full.png">
+			<div class="border-bottom pb-2">
+				<div class="logo_img_ flow centroid">
+					<img src="./_assets/img/logo_full.png">
+				</div>
+				<!-- <span>Internal Operations management system</span> -->
 			</div>
 
-			<div class="mb-4 text-sm">
+			<div class="mb-4 text-sm spacy-sm">
 				{{ __('enter your email to reset your password') }}
 			</div>
 
