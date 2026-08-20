@@ -754,7 +754,7 @@
 					dynamic_ui.innerHTML = mekError('Error',`error loading interface: ${err.message}`,true);
 					console.error(err);
 
-					window[fetch_bypass]('./api/log_error',{intent: p.sidenote,path: p.template,ccsx: cur_user.id,error: err.message}).then(() => {
+					window[fetch_bypass]('./api/log_error',{intent: p.sidenote,path: p.template,ccsx: cur_user.id,error: err.message},'POST').then(() => {
 						alert_silent('error logged');
 						console.log('error logged successfully');
 					})
@@ -795,7 +795,14 @@
 
 			window['loadPage'](passme);
 		}
-		window['refresh_']
+		window['refresh_'] = () => {
+			// alert_dark('refresher called, i think');
+
+			if(window['refreshData'] != undefined){
+				window['refreshData']();
+				return;
+			}
+		};
 
 		window['view_profile'] = () => {
 			alert_info('loading full profile')

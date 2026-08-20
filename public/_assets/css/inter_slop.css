@@ -15,6 +15,15 @@ tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
 	background: var(--lightcolor2);
 }
 
+/* scroll bars */
+	::-webkit-scrollbar { width: 8px; height: 8px; }
+	::-webkit-scrollbar-track { background: transparent; }
+	::-webkit-scrollbar-thumb {
+		background: var(--themecolor);
+		border-radius: 10px;
+	}
+	::-webkit-scrollbar-thumb:hover { background: var(--themecolor); }
+
 /* loader */
 	.loader {
 		width: 50px;
