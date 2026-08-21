@@ -1020,6 +1020,7 @@ class CashReportController extends Controller{
 									// remove stuff not in the model
 									unset($gen_report['time_difference']);
 									unset($gen_report['spend_data_new']);
+									unset($gen_report['total_owed']);
 
 									$inner_log[$n][] = ("[$n] removed verbose props");
 
