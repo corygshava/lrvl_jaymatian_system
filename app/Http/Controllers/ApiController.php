@@ -559,6 +559,8 @@ class ApiController extends Controller{
 							->where('sample_type',$s_type)
 							->where('sample_count',$s_amt)
 							->where('sample_tag',$s_tag)
+							->where('status',0)
+							->timeRange('this_month')
 						;
 
 						$_rlg("no sample id using old way");
@@ -572,8 +574,6 @@ class ApiController extends Controller{
 					}
 
 					$mysample = $mysample
-						->where('status',0)
-						->timeRange('this_month')
 						// for consistency when saving
 						->with('worksheets')
 						->with('results')
