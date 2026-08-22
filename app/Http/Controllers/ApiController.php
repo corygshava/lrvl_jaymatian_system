@@ -567,6 +567,7 @@ class ApiController extends Controller{
 							->where('id',$sample_id)
 						;
 
+						$_rlg(["sample id" => $sample_id]);
 						$_rlg("sample id found using new way");
 					}
 
