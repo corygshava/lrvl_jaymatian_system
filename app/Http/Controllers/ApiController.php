@@ -530,6 +530,7 @@ class ApiController extends Controller{
 			$pw = $passed['pw'];
 			$newpw = null;
 			$mysample = null;
+			$sample_id = $req->input('sample_id',null);
 
 			$user = User::where('email',$email)->with('myRoles')->first();
 
@@ -550,10 +551,19 @@ class ApiController extends Controller{
 					$s_tag = $passed['sample_tag'];
 					$s_type = $passed['sample_type'];
 
-					$mysample = Sample::query()
-						->where('sample_type',$s_type)
-						->where('sample_count',$s_amt)
-						->where('sample_tag',$s_tag)
+					if($sample_id == null){
+						$mysample = Sample::query()
+							->where('sample_type',$s_type)
+							->where('sample_count',$s_amt)
+							->where('sample_tag',$s_tag)
+						;
+					} else {
+						$mysample = Sample::query()
+							->where('id',$sample_id)
+						;
+					}
+
+					$mysample = $mysample
 						->where('status',0)
 						->timeRange('this_month')
 						// for consistency when saving

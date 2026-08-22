@@ -38,6 +38,9 @@
 	--roundness-sm: 8px;
 	--rounder: 20px;
 	--minspan: 800px;
+
+	--danger-glass: #ff8c972b;
+	--success-glass: #42ea6829;
 }
 
 [data-mode="light"]{

@@ -242,7 +242,7 @@ class SamplesController extends Controller{
 
 			// filter for task status
 			if($status !== null){
-				$res['runlog'][] = "added status filter";
+				$res['runlog'][] = "added status filter -> $status";
 				$records = $records->where('status',$status);
 			}
 
@@ -257,7 +257,7 @@ class SamplesController extends Controller{
 				}
 			}
 
-			if($pay_status){
+			if($pay_status != null){
 				$con = $pay_status;
 
 				$records = $records->whereHas('task', function($q) use ($con){
