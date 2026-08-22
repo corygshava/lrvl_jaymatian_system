@@ -810,7 +810,16 @@ class WorksheetsController extends Controller{
 
 			if($thesample !== null){
 				$thesample->refresh();
-				$mysheet->refresh();
+
+				if($mysheet !== null){
+					$mysheet->refresh();
+				} else {
+					$reslt = false;
+					$_msg("no worksheet for this sample");
+				}
+			} else {
+				$reslt = false;
+				$_msg("invalid sample passed");
 			}
 
 			$res['result'] = $reslt;

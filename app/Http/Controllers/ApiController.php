@@ -512,6 +512,9 @@ class ApiController extends Controller{
 			$_msg = function($w,$l = true) use (&$update_msg){
 				$update_msg($w,$l);
 			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
 
 			$logdata = [
 				'where' => 'Jaytools_save_worksheet',
@@ -557,10 +560,14 @@ class ApiController extends Controller{
 							->where('sample_count',$s_amt)
 							->where('sample_tag',$s_tag)
 						;
+
+						$_rlg("no sample id using old way");
 					} else {
 						$mysample = Sample::query()
 							->where('id',$sample_id)
 						;
+
+						$_rlg("sample id found using new way");
 					}
 
 					$mysample = $mysample
