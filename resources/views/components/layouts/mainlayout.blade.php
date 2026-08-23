@@ -1,9 +1,16 @@
+<?php
+	$ucon = new App\Http\Controllers\UserController();
+	$cmdt = $ucon::commondata();
+	$sitedata = $cmdt['sitedata'];
+	$branch_name = $sitedata['branch_name'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>JayMatian Mineral Laboratory System</title>
+	<title>Jeymat Labs System - {{ $branch_name }} branch</title>
 
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="shortcut icon" href="favicon.png" type="image/png">

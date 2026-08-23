@@ -1,5 +1,12 @@
 <!-- dont forget to activate the form csrf region -->
 
+<?php
+	$ucon = new App\Http\Controllers\UserController();
+	$cmdt = $ucon::commondata();
+	$sitedata = $cmdt['sitedata'];
+	$branch_name = $sitedata['branch_name'];
+?>
+
 <x-layouts.mainlayout>
 	<style>
 		.logo_img_ img {
@@ -16,6 +23,8 @@
 					<div class="logo_img_ flow centroid">
 						<img src="./_assets/img/logo_full.png">
 					</div>
+
+					<div class="w3-center themetxt"><b>{{ $branch_name }} Branch</b></div>
 					<!-- <span>Internal Operations management system</span> -->
 				</div>
 				<!-- <hr> -->
