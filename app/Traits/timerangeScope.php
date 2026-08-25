@@ -77,7 +77,7 @@ trait TimeRangeScope{
 			default => $q,
 		};
 	}
-	private function isDate(string|null $value): bool{
+	private function isDate($value): bool{
 		if (!is_string($value)) {
 			return false;
 		} elseif(is_null($value)) {
