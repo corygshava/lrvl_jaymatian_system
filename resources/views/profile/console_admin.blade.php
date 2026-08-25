@@ -292,7 +292,7 @@
 
 			timerange_atlas.forEach((t,n) => {
 				if(t == 'juzi'){
-					return;
+					// return;
 				}
 				outht += `
 					<button class="btn btn-outline-themer ${n != 0 ? "" : " active"}" data-runme="reset_timerange" data-myid="${n}">

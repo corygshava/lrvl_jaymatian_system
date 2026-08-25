@@ -653,6 +653,7 @@ class ClientController extends Controller{
 			$has_credit_balance = $req->input('with_credit_balance',null);
 			$invoice_status = $req->input('has_invoice',null);
 			$t_range = $req->input('timerange',null);
+			$u_range = $req->input('updated_range',null);
 
 			$search = $search == '*' ? null : $search;
 
@@ -735,6 +736,10 @@ class ClientController extends Controller{
 
 			if($t_range){
 				$clients = $clients->timeRange($t_range);
+			}
+
+			if($u_range){
+				$clients = $clients->updateRange($u_range);
 			}
 
 			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;

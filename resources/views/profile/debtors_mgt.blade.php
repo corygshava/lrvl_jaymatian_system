@@ -1,3 +1,4 @@
+
 <?php
 	/*
 	// require_once __DIR__.'/piece_invoices_xtras.php';
@@ -449,6 +450,8 @@
 			meth_map.push({value: m,label: invoice_state_atlas[m]});
 		})
 
+		let update_times = [...timeranges].map(r => {return {value: r, label: r.replaceAll('_',' ')}; });
+
 		const initstuff = (m) => {
 			// add_record_btn.dataset.link = linkAtlas['add_task'];
 
@@ -571,6 +574,11 @@
 							{ value: 'per_visit', label: 'Per visit' },
 							{ value: 'monthly', label: 'Monthly' }
 						]
+					},
+					{
+						name: 'updated_range',
+						label: 'Update range',
+						options: update_times
 					}
 				],
 
@@ -661,3 +669,4 @@
 	}
 	*/
 </script>
+

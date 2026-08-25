@@ -463,7 +463,7 @@ class CashReportController extends Controller{
 				}
 
 				// if(isset($payemnts)){
-					$_rlg(['payments gotten' => (clone $payemnts)->get()]);
+					// $_rlg(['payments gotten' => (clone $payemnts)->get()]);
 				// }
 
 				$total_income = (clone $payemnts)->where('payment_type','task')->sum('amount');

@@ -48,7 +48,7 @@
 		window['timeranges'] = [
 			"today",
 			"yesterday",
-			// "juzi",
+			"juzi",
 			"this_week",
 			"this_month",
 			"this_year",
@@ -69,7 +69,7 @@
 	<script>
 		// runtime variables (move to something else later)
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
-		const lastrefresh = '10/04/2026 02:10:37';
+		const lastrefresh = '2026-04-10T02:10:37.000Z';
 		const sitedata = <?=json_encode($sitedata)?>;
 		window['cur_user'] = {};
 
