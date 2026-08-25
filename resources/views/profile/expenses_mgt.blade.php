@@ -530,12 +530,13 @@
 				// Optional: Filter definitions
 				filters: [
 					{
-						name: 'payment_type',
-						label: 'Payment Type',
+						name: 'expense_type',
+						label: 'Expense Type',
 						rawname: 'method',
 						options: [
-							{value: 'invoice',label: 'Invoice'},
-							{value: 'task',label: 'Task'},
+							{value: 'expenditure',label: 'Expenditure'},
+							{value: 'bank transfer',label: 'Bank transfer'},
+							{value: 'reconciler',label: 'Reconciler'},
 						]
 					}
 				],
