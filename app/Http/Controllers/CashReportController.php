@@ -685,13 +685,12 @@ class CashReportController extends Controller{
 		}
 
 		if(!$iscalled){
-			return response()->json($res);
-		} else {
 			if(isset($res['runlog'])){
 				$runlog = $res['runlog'];
 				$errlog = [...$errlog,...$runlog];
 			}
-
+			return response()->json($res);
+		} else {
 			return $res['sendme'];
 		}
 	}
