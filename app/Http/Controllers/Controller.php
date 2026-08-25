@@ -20,6 +20,9 @@ use App\Models\User;
 use App\Http\Controllers\FileopsController;
 
 abstract class Controller{
+	public static $system_commission_date = '2026-02-02 12:44:35';
+	public static $system_completion_date = '2026-02-17 12:44:35';
+
 	public static $prefix = '_assets';
 	public static $uimode = "dark";
 	public static $sitedata = null;
@@ -29,6 +32,7 @@ abstract class Controller{
 	public static $system_data_cutoff = '2026-06-24 00:12:29';
 	public static $sitedata_last_update = '2026-07-31 17:33:29';
 	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
+	public static $system_start_date = '2026-06-23 00:00:35';
 
 	// storage stuff
 	public static $payload_path = "runtime/payloads/";
@@ -979,7 +983,8 @@ abstract class Controller{
 				Carbon::now()->subYear()->endOfYear()->subDay()->endOfDay(),
 				Carbon::now()->subYear()->startOfYear(),
 			],
-			default => [null, null],
+			default => [
+				Carbon::parse(self::$system_start_date)->startOfDay(), Carbon::today(), Carbon::today()],
 		};
 
 		if (!$start) {
