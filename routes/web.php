@@ -116,6 +116,7 @@ Route::prefix('/data')->group(function(){
 	Route::post('/get_invoices', [InvoiceController::class,'get_some'])->middleware(['auth','verified']);
 
 	Route::get('/expenses', [ExpenseController::class,'get_all'])->middleware(['auth','verified']);
+	Route::get('/expenses_stats', [ExpenseController::class,'get_expenses_stats'])->middleware(['auth','verified']);
 
 	Route::post('/get_daily_report', [CashReportController::class,'get_for_today'])->middleware(['auth','verified']);
 	Route::get('/cash_reports', [CashReportController::class,'route_stuff'])->middleware(['auth','verified']);

@@ -190,4 +190,189 @@ class ExpenseController extends Controller{
 
 		return response()->json($res);
 	}
+
+	public function get_expenses_stats(Request $req){
+		$res = $this->dftres;
+		$msg = "didnt even get to start";
+		$alldata = $req->all();
+		$out = null;
+
+		/*
+		$passed = $req->validate([
+			'condition' => ['required']
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+			$stats = [];
+			$_statme = function(array $s ) use (&$stats){
+				$dvl = rand(0,500);
+				$dft = [
+					"value" => $dvl,
+					"valtype" => 'number',			// either number, string, date or plain
+					"label" => "Total Debtors",
+					"type" => $dvl > 250 ? "success" : ($dvl > 200 ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				];
+				$stats[] = [...$dft,...$s];
+			};
+
+		// ops begin
+		if($this->ili()){
+			$res['success'] = true;
+
+			$_msg("trying to get expenses");
+
+			$perPage = $req->input('per_page', 10);
+			$search = $req->input('search',null);
+			$sortBy = $req->input('sort_by', 'credit_balance');
+			$sortDirection = $req->input('sort_direction', 'desc');
+			$t_range = $req->input('timerange', null);
+
+			// filters
+			$ex_type = $req->input('expense_type',null);
+
+			$search = $search == '*' ? null : $search;
+
+			$res['runlog'][] = [
+				"perPage" => $perPage,
+				"search" => $search,
+				"sortBy" => $sortBy,
+				"sortDirection" => $sortDirection,
+			];
+
+			$records = Expense::query()->timeRange($t_range);
+
+			if($search){
+				$records = $records
+					->whereHas('mycreator', function($q) use ($search){
+						$q->where('name','like',"%{$search}%")
+							->orWhere('email','like',"%{$search}%")
+						;
+					})
+					->orWhere('amount', 'like', "%{$search}%")
+					// ->orWhere('sample_tag', 'like', "%{$search}%")
+				;
+				$res['runlog'][] = "added search filter";
+			}
+
+			// filter for task status
+			if($ex_type){
+				$records = $records->where('purpose',$ex_type);
+			}
+
+			if($t_range){
+				$records = $records->timeRange($t_range);
+			}
+
+			$sortBy = $sortBy == null || $sortBy == '' ? 'created_at' : $sortBy;
+			$sortBy = ($sortBy == 'role_name') ? "user_roles_id" : $sortBy;
+
+			$expenses = (clone $records);
+
+			// the prev was left in case i feel like attaching the filters to stats too
+			// stat of stats processing, get it :)
+			$all_expenses = Expense::query()->where('id','<>',null);
+
+			// total expenses
+			$statval = (clone $expenses)->count();
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Expense entries",
+					"type" => "primary",
+					"icon" => "defined:debtors"
+				]
+			);
+
+			// total expenses
+			$statval = (clone $expenses)->sum('amount');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total expenses",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:expenses"
+				]
+			);
+
+			// total expenditure
+			$statval = (clone $expenses)->where('purpose','expenditure')->sum('amount');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total expenditure",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+
+			// total bank transfer
+			$statval = (clone $expenses)->where('purpose','bank transfer')->sum('amount');
+			$thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total Bank Transfer",
+					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"icon" => "defined:debtors"
+				]
+			);
+
+			// total bank transfer
+			$statval = (clone $expenses)->where('purpose','reconciler')->sum('amount');
+			// $thresh = [500000, 200000];
+			$_statme(
+				[
+					"value" => $statval,
+					"label" => "Total reconciled",
+					// "type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
+					"type" => "primary",
+					"icon" => "defined:debtors"
+				]
+			);
+
+			$out = $stats;
+
+			/*
+			for($i = 0;$i < count($users);$i++){
+				$users[$i]->role_name = $users[$i]->myRoles?->role_name;
+				$users[$i]->role_permissions = $users[$i]->myRoles?->role_permissions;
+			}
+			*/
+
+			$_msg("debtors fetched");
+			$res['result'] = true;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		// dd($res);
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
 }

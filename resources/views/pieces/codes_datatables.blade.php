@@ -248,11 +248,13 @@
 
 				config.filters.forEach(filter => {
 					let lbl = `${filter.label}`;
+					let _props = `data-myobj="${JSON.stringify(filter)}"`;
+
+					_props = '';
 					filtersHTML += `
-						<div class="filter-group" data-myobj="${JSON.stringify(filter)}">
+						<div class="filter-group" ${_props}>
 							<label>${lbl}</label>
-							<select class="filter-control" id="filter_${filter.name}"
-									onchange="filterme('${filter.name}', this.value)">
+							<select class="filter-control" id="filter_${filter.name}" onchange="filterme('${filter.name}', this.value)">
 								<option value="">All</option>
 								${filter.options.map(opt =>
 									`<option value="${opt.value || null}">${opt.label || '??'}</option>`
@@ -321,6 +323,11 @@
 					config.onError(error);
 				}
 			});
+
+			// update stats if allowed
+			if (config.enableStats) {
+				loadStats();
+			}
 		}
 
 		/**
@@ -544,7 +551,18 @@
 		 * Load stats data
 		 */
 		function loadStats() {
-			fetch(config.statsEndpoint, {
+			const params = {
+				page: currentPage,
+				per_page: config.perPage,
+				search: searchQuery,
+				sort_by: sortColumn,
+				sort_direction: sortDirection,
+				...currentFilters,
+				...config.additionalParams
+			};
+			let getparams = new URLSearchParams(params);
+
+			fetch(`${config.statsEndpoint}?${getparams}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -607,10 +625,6 @@
 		 */
 		function refresh() {
 			loadData();
-
-			if (config.enableStats && config.statsEndpoint) {
-				loadStats();
-			}
 		}
 
 		/**

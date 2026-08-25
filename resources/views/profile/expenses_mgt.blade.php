@@ -11,49 +11,6 @@
 {{-- --> --}}
 
 <style>
-	/* stats (keep here, ill figure them out later) */
-		.stat-card-modern {
-			background: white;
-			border-radius: var(--radius);
-			padding: 20px;
-			display: flex;
-			align-items: center;
-			gap: 15px;
-			box-shadow: var(--shadow-sm);
-			transition: all 0.3s;
-			border: 1px solid var(--border);
-		}
-		.stat-card-modern:hover {
-			transform: translateY(-3px);
-			box-shadow: var(--shadow);
-		}
-		.stat-icon-modern {
-			width: 50px;
-			height: 50px;
-			border-radius: var(--radius-sm);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 20px;
-		}
-
-		.stat-icon-modern.total { background: var(--primary-light); color: var(--primary); }
-		.stat-icon-modern.active { background: #d1fae5; color: var(--success); }
-		.stat-icon-modern.inactive { background: #fee2e2; color: var(--danger); }
-		.stat-icon-modern.new { background: #fef3c7; color: var(--warning); }
-
-		.stat-info-modern h3 {
-			font-size: 24px;
-			font-weight: 700;
-			margin: 0;
-			color: var(--dark);
-		}
-		.stat-info-modern p {
-			margin: 0;
-			color: var(--gray);
-			font-size: 13px;
-		}
-
 	/* Filter Bar */
 		.filter-bar {
 			background: white;
@@ -419,10 +376,10 @@
 		</div>
 	</div>
 
-	<div class="stats-row w3-hide themeround" id="statsContainer">
+	<div class="stats-row w3-hide_ themeround" id="statsContainer">
 	</div>
 
-	<div class="filter-bar w3-hide themeround" id="filterContainer">
+	<div class="filter-bar w3-hide_ themeround" id="filterContainer">
 		<span class="h4">Filters</span>
 		<div class="filter-row"></div>
 	</div>
@@ -584,8 +541,8 @@
 				],
 
 				// Optional: Enable stats
-				// enableStats: false,
-				// statsEndpoint: '/api/students/stats',
+				enableStats: true,
+				statsEndpoint: linkAtlas['get_expenses_stats'],
 
 				// Optional: Callbacks
 				onDataLoaded: function(data) {

@@ -174,6 +174,7 @@
 				'get_invoices' : './data/get_invoices',
 				'get_reports_count' : './data/get_reports_count',
 				'get_expenses' : './data/expenses',
+				'get_expenses_stats' : './data/expenses_stats',
 				'get_daily_report' : './data/get_daily_report',
 				'get_cash_reports' : './data/cash_reports',
 				'get_cashreports' : './data/cash_reports',
