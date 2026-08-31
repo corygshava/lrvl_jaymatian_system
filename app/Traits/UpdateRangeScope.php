@@ -6,6 +6,7 @@ use Carbon\Carbon;
 
 trait UpdateRangeScope
 {
+	// must use with TimeRangeScope
     public $rangeAtlas = [
 		'today',
 		'yesterday',
@@ -20,10 +21,12 @@ trait UpdateRangeScope
 	];
 
 	public function scopeUpdateRange($q, $range){
+		$t_field = 'updated_at';
+
 		// Handle array (date range)
 		if (is_array($range)) {
 			if (count($range) === 2) {
-				return $q->whereBetween('created_at', [
+				return $q->whereBetween($t_field, [
 					Carbon::parse($range[0])->startOfDay(),
 					Carbon::parse($range[1])->endOfDay(),
 				]);
@@ -36,7 +39,7 @@ trait UpdateRangeScope
 			// Controller::log_payload('a date was passed to timerange','debug_payload_0');
 			$date = Carbon::parse($range);
 
-			return $q->whereBetween('created_at', [
+			return $q->whereBetween($t_field, [
 				(clone $date)->startOfDay(),
 				(clone $date)->endOfDay(),
 			]);
@@ -44,7 +47,6 @@ trait UpdateRangeScope
 
 		// Handle named ranges
 		$range = strtolower($range);
-		$t_field = 'updated_at';
 
 		return match($range){
 			'today' => $q->whereDate($t_field, Carbon::today()),
@@ -78,19 +80,4 @@ trait UpdateRangeScope
 			default => $q,
 		};
 	}
-
-	/*
-	private function isDate(string $value): bool{
-		if (!is_string($value)) {
-			return false;
-		}
-
-		try {
-			Carbon::parse($value);
-			return true;
-		} catch (\Exception $e) {
-			return false;
-		}
-	}
-	*/
 }
