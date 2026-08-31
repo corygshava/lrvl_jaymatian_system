@@ -297,7 +297,7 @@ class ExpenseController extends Controller{
 					"value" => $statval,
 					"label" => "Total Expense entries",
 					"type" => "primary",
-					"icon" => "defined:debtors"
+					"icon" => "defined:expenses"
 				]
 			);
 
@@ -321,7 +321,7 @@ class ExpenseController extends Controller{
 					"value" => $statval,
 					"label" => "Total expenditure",
 					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
-					"icon" => "defined:debtors"
+					"icon" => "fas fa-money-bill"
 				]
 			);
 
@@ -333,7 +333,7 @@ class ExpenseController extends Controller{
 					"value" => $statval,
 					"label" => "Total Bank Transfer",
 					"type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
-					"icon" => "defined:debtors"
+					"icon" => "fa fa-credit-card"
 				]
 			);
 
@@ -346,7 +346,7 @@ class ExpenseController extends Controller{
 					"label" => "Total reconciled",
 					// "type" => $statval < $thresh[1] ? "success" : ($statval < $thresh[0] ? "primary" : "danger"),
 					"type" => "primary",
-					"icon" => "defined:debtors"
+					"icon" => "fas fa-sync-alt"
 				]
 			);
 
@@ -361,7 +361,7 @@ class ExpenseController extends Controller{
 					"label" => "Total Cash Available",
 					"type" => $statval > $thresh[1] ? "success" : ($statval > $thresh[0] ? "primary" : "danger"),
 					// "type" => "primary",
-					"icon" => "defined:debtors"
+					"icon" => "fas fa-wallet"
 				]
 			);
 
