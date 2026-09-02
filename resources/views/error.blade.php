@@ -1,12 +1,12 @@
 <?php
-    $msg = isset($msg) ? $msg : "an error occured";
+	$msg = isset($msg) ? $msg : "an error occured";
 ?>
 
 <div class="spacy-lg w3-center">
-    <div class="flow center">
-        <span class="h3">Error</span>
-        <p><?=$msg?></p>
-        <button class="mybtn primary" onclick="window.location.reload()" data-myrole="reloader">reload page</button>
-        <button class="mybtn primary" onclick="window.location.assign('/')" data-myrole="send_to_homepage">homepage</button>
-    </div>
+	<div class="flow center">
+		<span class="h3">Error</span>
+		<p><?=$msg?></p>
+		<button class="mybtn primary" onclick="window.location.reload()" data-myrole="reloader">reload page</button>
+		<button class="mybtn primary" onclick="window.location.assign('/')" data-myrole="send_to_homepage">homepage</button>
+	</div>
 </div>

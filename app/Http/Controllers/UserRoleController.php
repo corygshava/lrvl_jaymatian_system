@@ -17,7 +17,6 @@ class UserRoleController extends Controller{
 
 			$res['runlog'] = $this->getpermissions();
 			$sysroles = userRoles::withCount('users')->get();
-			// $mdta = random_int(0,14);
 
 			$res['result'] = true;
 			$res['sendme'] = $sysroles;

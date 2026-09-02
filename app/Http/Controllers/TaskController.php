@@ -262,6 +262,8 @@ class TaskController extends Controller{
 			$uid = $user->id;
 			$reslt = false;
 			$task = null;
+			$cmdt = self::commondata();
+			$sitedata = $cmdt['sitedata'];
 
 			$mekdate = $req->input('date_added',null);
 
@@ -349,12 +351,13 @@ class TaskController extends Controller{
 							$task_serial = '';
 							$exist = true;
 							$addme = 1;
+							$prefix = isset($sitedata['task_prefix']) ? $sitedata['task_prefix'] : 'JML_0';
 
 							// added addme to prevent an infinite loop
 							do {
 								$newid = Task::query()->where('id','<>',null)->count() + $addme;
 								$suffix = str_pad($newid,4,'0',STR_PAD_LEFT);
-								$task_serial = 'JML_' . $suffix;
+								$task_serial = $prefix ."_". $suffix;
 								$exist = Task::query()->where('task_no',$task_serial)->exists();
 								$addme += 1;
 							} while ($exist);
