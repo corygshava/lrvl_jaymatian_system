@@ -352,13 +352,14 @@ class ExpenseController extends Controller{
 
 			// total bank transfer
 			$cash = new CashReportController();
-			$dailyreport = $cash->get_for_today($req, true, $res['runlog'], $t_range);
+			// $dailyreport = $cash->get_for_today($req, true, $res['runlog'], $t_range);
+			$dailyreport = $cash->get_for_today($req, true, $res['runlog'], 'today');
 			$statval = $dailyreport['total_balance_forward'];
 			$thresh = [50000, 250000];
 			$_statme(
 				[
 					"value" => $statval,
-					"label" => "Total Cash Available",
+					"label" => "Total Available (today)",
 					"type" => $statval > $thresh[1] ? "success" : ($statval > $thresh[0] ? "primary" : "danger"),
 					// "type" => "primary",
 					"icon" => "fas fa-wallet"

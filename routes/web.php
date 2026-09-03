@@ -135,7 +135,7 @@ Route::prefix('/op')->group(function(){
 	Route::post('/user_roles', [UserRoleController::class,'add_new'])->middleware(['auth','verified']);
 	Route::delete('/user_roles', [UserRoleController::class,'delete_role'])->middleware(['auth','verified']);
 
-	Route::post('/users',[UserController::class, 'add_edit'])->middleware(['auth','verified']);
+	Route::post('/users', [UserController::class, 'add_edit'])->middleware(['auth','verified']);
 	Route::post('/change_password',[UserController::class, 'change_password'])->middleware(['auth','verified']);
 	Route::post('/toggle_active',[UserController::class, 'toggle_active'])->middleware(['auth','verified']);
 
