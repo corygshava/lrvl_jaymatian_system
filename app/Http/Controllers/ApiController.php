@@ -18,6 +18,79 @@ class ApiController extends Controller{
 		return $res;
 	}
 
+	public function sitedata(Request $req){
+		$res = $this->dftres;
+		$alldata = $req->all();
+		$msg = "didnt even get to start";
+		$out = null;
+
+		// /*
+		$passed = $req->validate([
+			'email' => ['required'],
+			'pw' => ['required'],
+		]);
+		// */
+
+		// utils
+			$update_runlog = function($wot) use (&$res){
+				$res['runlog'][] = $wot;
+			};
+			$update_msg = function($wot,$logit = true) use (&$msg,&$update_runlog){
+				$msg = $wot;
+				if($logit){
+					$update_runlog($wot);
+				}
+			};
+			$_msg = function($w,$l = true) use (&$update_msg){
+				$update_msg($w,$l);
+			};
+			$_rlg = function($w) use (&$update_runlog){
+				$update_runlog($w);
+			};
+
+		if(true){
+			$res['success'] = true;
+			$update_msg('starting the procedure');
+			$reslt = false;
+
+			$email = $passed['email'];
+			$pw = $passed['pw'];
+			$newpw = null;
+
+			$user = User::query()->where('email',$email)->with('myRoles')->first();
+
+			if($user == null){
+				$_msg('user not found');
+			} else {
+				$wegood = $this->verifyPassword($pw,$newpw,$user);
+				$logdata['uname'] = $user->name;
+				$logdata['user_id'] = $user->id;
+
+				if(!$wegood){
+					$_msg('invalid password');
+				} else {
+					$_msg('user details verified');
+					$reslt = true;
+					$cmdt = self::commondata();
+					$_msg('sitedata retreived');
+					$out = $cmdt['sitedata'];
+				}
+			}
+
+			$res['result'] = $reslt;
+			$res['sendme'] = $out;
+			$res['message'] = $msg;
+		}
+
+		if(!self::$showlogs){
+			if(array_key_exists('runlog',$res)){
+				unset($res['runlog']);
+			}
+		}
+
+		return response()->json($res);
+	}
+
 	public function log_visit(Request $req){
 		// writes to visitslog.json in the format [date] [country] -> page visited
 		$fl = new FileopsController();

@@ -8,6 +8,8 @@ use App\Http\Controllers\ViewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test',[ApiController::class,'test']);
+Route::get('/sitedata',[ApiController::class,'sitedata']);
+
 Route::post('/log_visit',[ApiController::class,'log_visit']);
 Route::post('/log_intent',[ApiController::class,'log_intent'])
 	// ->middleware('throttle:72,1')
