@@ -4,7 +4,20 @@
 // sleep(77);
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\BizdataController;
+use App\Http\Controllers\CashReportController;
+use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SamplesController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\ViewController;
+use App\Http\Controllers\WorksheetsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test',[ApiController::class,'test']);
@@ -98,5 +111,119 @@ Route::prefix('/media')->group(function(){
 	Route::get('/invoices/img/{fyl}',[ViewController::class, 'findinvoice_img']);
 });
 
+// auth handlers
+Route::prefix('/auth')->group(function (){
+	Route::post('/login',[UserController::class,'api_login']);
+});
+Route::prefix('/auth')->group(function (){
+	//
+})
+->middleware('auth:sanctum');
+
+// remade
+Route::prefix('/data')->group(function(){
+	Route::get('/user_roles', [UserRoleController::class,'get_all']);
+	Route::get('/cur_user', [UserController::class,'get_current']);
+	Route::get('/users', [UserController::class,'get_all']);
+	Route::get('/allpermissions', [UserController::class,'showpermissions']);
+	Route::get('/my_permissions', [UserController::class,'mypermissions']);
+	Route::post('/staffstats', [UserController::class,'staff_stats']);
+	Route::post('/adminstats', [UserController::class,'admin_stats']);
+
+	Route::get('/clients', [ClientController::class,'get_all']);
+	Route::get('/search_clients', [ClientController::class,'get_all']);
+	Route::post('/get_client', [ClientController::class,'get_one']);
+	Route::post('/get_clients_by_ids', [ClientController::class,'get_by_ids']);
+
+	Route::post('/all_debtors', [ClientController::class,'get_all_debtors']);
+	Route::get('/get_debtors', [ClientController::class,'get_debtors']);
+	Route::get('/all_debtors_stats', [ClientController::class,'get_debtors_stats']);
+
+	Route::get('/tasks', [TaskController::class,'get_all']);
+	Route::post('/task', [TaskController::class,'get_one']);
+	Route::post('/get_task', [TaskController::class,'get_one']);
+	Route::post('/tasks/incomplete', [TaskController::class,'get_incomplete']);
+	Route::post('/get_worksheets', [WorksheetsController::class,'get_some']);
+
+	Route::get('/samples', [SamplesController::class,'get_all']);
+	Route::post('/get_sample', [SamplesController::class,'get_sample']);
+	Route::post('/get_samples', [SamplesController::class,'get_some']);
+	Route::post('/samples/incomplete', [SamplesController::class,'get_incomplete']);
+
+	Route::get('/payments', [PaymentsController::class,'get_all']);
+	Route::post('/get_payments', [PaymentsController::class,'get_some']);
+
+	Route::get('/reports', [ReportsController::class,'get_all']);
+	Route::post('/get_reports', [ReportsController::class,'get_some']);
+	Route::post('/get_reports_count', [ReportsController::class,'get_count']);
+
+	Route::get('/invoices', [InvoiceController::class,'get_all']);
+	Route::post('/get_invoice_info', [InvoiceController::class,'get_my_info']);
+	Route::post('/get_spec_invoice_info', [InvoiceController::class,'get_my_spec_info']);
+	Route::post('/get_invoices', [InvoiceController::class,'get_some']);
+
+	Route::get('/expenses', [ExpenseController::class,'get_all']);
+	Route::get('/expenses_stats', [ExpenseController::class,'get_expenses_stats']);
+
+	Route::post('/get_daily_report', [CashReportController::class,'get_for_today']);
+	Route::get('/cash_reports', [CashReportController::class,'route_stuff']);
+	Route::post('/cash_report', [CashReportController::class,'get_one']);
+
+	Route::post('/bizdata', [BizdataController::class,'get_all']);
+
+	// chart datapoints
+	Route::post('/sales_chart_data', [ChartsController::class,'sales']);
+	Route::post('/samples_chart_data', [ChartsController::class,'samples']);
+	Route::post('/visits_chart_data', [ChartsController::class,'visits']);
+	Route::post('/income_chart_data', [ChartsController::class,'income']);
+})
+->middleware('auth:sanctum');
+
+Route::prefix('/op')->group(function(){
+	Route::post('/user_roles', [UserRoleController::class,'add_new']);
+	Route::delete('/user_roles', [UserRoleController::class,'delete_role']);
+
+	Route::post('/users', [UserController::class, 'add_edit']);
+	Route::post('/change_password',[UserController::class, 'change_password']);
+	Route::post('/toggle_active',[UserController::class, 'toggle_active']);
+
+	Route::post('/clients',[ClientController::class, 'add_edit']);
+	Route::post('/change_credit',[ClientController::class, 'change_credit']);
+	Route::post('/update_client_payment',[ClientController::class, 'edit_payment']);
+	Route::post('/standardize_charges',[ClientController::class, 'standardize_all']);
+
+	Route::post('/add_task',[TaskController::class, 'add_new_task']);
+	Route::post('/add_payment',[TaskController::class, 'add_payment']);
+	Route::post('/add_task_note',[TaskController::class, 'add_note']);
+	Route::post('/save_worksheet',[WorksheetsController::class, 'add_edit']);
+	Route::post('/save_worksheet_readings',[WorksheetsController::class, 'save_readings']);
+	Route::post('/publish_worksheet',[WorksheetsController::class, 'publish_one']);
+	Route::post('/change_sample_tag',[SamplesController::class, 'change_sample_tag']);
+	Route::post('/send_sample_payment',[TaskController::class, 'add_payment']);
+
+	// Route::post('/add_result',[SamplesController::class, 'add_results']);
+
+	Route::post('/update_bizdata',[BizdataController::class, 'update_sth']);
+	Route::post('/update_bizdata_images',[BizdataController::class, 'update_sth_2']);
+
+	Route::post('/save_invoice', [InvoiceController::class,'add_new']);
+	Route::post('/add_payment_invoice',[InvoiceController::class, 'add_payment']);
+	Route::post('/change_invoice_image',[InvoiceController::class, 'change_image']);
+	Route::post('/verify_invoice', [InvoiceController::class,'verify_me'])
+		->middleware('throttle:5,1')
+	;
+
+	Route::post('/save_report', [ReportsController::class,'add_new']);
+	Route::post('/verify_report', [ReportsController::class,'verify_me'])
+		->middleware('throttle:5,1')
+	;
+
+	Route::post('/add_expense',[ExpenseController::class, 'add_new']);
+	// Route::post('/add_result',[SamplesController::class, 'add_results']);
+
+	Route::post('/save_daily_report',[CashReportController::class, 'save_me']);
+	Route::post('/regen_daily_reports_from_date',[CashReportController::class, 'recreate_from_date']);
+})
+->middleware('auth:sanctum');
 
 // Route::post('/verify_file')

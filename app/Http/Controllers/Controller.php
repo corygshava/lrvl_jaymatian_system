@@ -101,7 +101,13 @@ abstract class Controller{
 	}
 
 	public static function isloggedin(){
-		return Auth::check();
+		$auth = Auth::check();
+
+		if(!$auth){
+			$auth = Auth::guard('sanctum')->check();
+		}
+
+		return $auth;
 	}
 
 	public static function ili() {
@@ -110,7 +116,13 @@ abstract class Controller{
 
 	public static function cur_user() : User | null{
 		if(self::ili()){
-			return Auth::user();
+			$user = Auth::user();
+
+			if($user == null){
+				$user = Auth::guard('sanctum')->check();
+			}
+
+			return $user;
 		} else {
 			return null;
 		}
