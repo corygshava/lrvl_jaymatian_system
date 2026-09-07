@@ -119,7 +119,7 @@ abstract class Controller{
 			$user = Auth::user();
 
 			if($user == null){
-				$user = Auth::guard('sanctum')->check();
+				$user = Auth::guard('sanctum')->user();
 			}
 
 			return $user;
@@ -934,7 +934,7 @@ abstract class Controller{
 		$rl = $decrypted_pw;
 
 		if($urec == null){
-			return Hash::check($decrypted_pw,Auth::user()->password);
+			return Hash::check($decrypted_pw,self::cur_user()->password);
 		} else {
 			return Hash::check($decrypted_pw,$urec->password);
 		}
