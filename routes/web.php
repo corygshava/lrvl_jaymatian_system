@@ -74,6 +74,7 @@ Route::prefix('/ui')->group(function (){
 	Route::get('/_ui_demopage', [ViewController::class,'showtempui']);
 });
 
+// to be sent to API
 Route::prefix('/data')->group(function(){
 	Route::get('/user_roles', [UserRoleController::class,'get_all'])->middleware(['auth','verified']);
 	Route::get('/cur_user', [UserController::class,'get_current'])->middleware(['auth','verified']);
@@ -131,6 +132,7 @@ Route::prefix('/data')->group(function(){
 	Route::post('/income_chart_data', [ChartsController::class,'income'])->middleware(['auth','verified']);
 });
 
+// to be sent to API
 Route::prefix('/op')->group(function(){
 	Route::post('/user_roles', [UserRoleController::class,'add_new'])->middleware(['auth','verified']);
 	Route::delete('/user_roles', [UserRoleController::class,'delete_role'])->middleware(['auth','verified']);
