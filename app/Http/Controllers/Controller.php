@@ -30,7 +30,7 @@ abstract class Controller{
 	public static $mypermissions = [];
 	public static $universal_start_date = '2026-02-13 03:12:29';
 	public static $system_data_cutoff = '2026-06-24 00:12:29';
-	public static $sitedata_last_update = '2026-07-31 17:33:29';
+	public static $sitedata_last_update = '2026-09-07 17:33:29';
 	public static $sys_permissions_last_update = '2026-03-05 12:44:35';
 	public static $system_start_date = '2026-06-23 00:00:35';
 
@@ -505,6 +505,10 @@ abstract class Controller{
 			'branch_name' => 'migori',
 			'sitelink' => 'https://migorimain.jaymat.com/',
 			'currency' => 'KSH',
+			"country_code"  => "KE",
+			"initials" => "MGI",
+			"location" => "Migori, Kenya",
+			"manager"  => "??",
 			"task_prefix" => "JML",
 			"developer_details" => [
 				'email' => 'corygshava777+jaymat_dev_migori@gmail.com',
