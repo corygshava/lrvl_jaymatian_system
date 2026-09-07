@@ -71,6 +71,7 @@
 		const task_data_var = 'runtime_var_' + mekRandomString(5);
 		const lastrefresh = '2026-04-10T02:10:37.000Z';
 		const sitedata = <?=json_encode($sitedata)?>;
+		const is_control_center = false;
 		window['cur_user'] = {};
 
 		var menubar = undefined;
@@ -314,7 +315,7 @@
 			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
 			// {caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
-			{caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
+			// {caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -1244,7 +1245,12 @@
 				})
 			}
 
-
+		// for harmony with the latest revamp
+			function refreshlocalAtlas(){
+				if(is_control_center === true){
+					// gotte
+				}
+			}
 		// on probation (to be added to toappend)
 			window['save_as_fyl'] = async (dta,name,opts = undefined) => {
 				// wrapper for saving files

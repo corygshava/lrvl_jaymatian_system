@@ -220,7 +220,16 @@
 </div>
 
 <script>
-	let charts = {};
+	window['localAtlas'] = {
+		'get_daily_report' : linkAtlas['get_daily_report'],
+		"get_admin_stats" : linkAtlas['get_admin_stats'],
+		"get_sales_chart_data" : linkAtlas['get_sales_chart_data'],
+		"get_samples_chart_data" : linkAtlas['get_samples_chart_data'],
+		"get_visits_chart_data" : linkAtlas['get_visits_chart_data'],
+		"get_income_chart_data" : linkAtlas['get_income_chart_data'],
+		"regen_daily_report" : linkAtlas['regen_daily_report'],
+	};
+	window['charts'] = {};
 	window['is_admin_page'] = true;
 	window['dash_runtime_data'] = {
 		charts: {}
@@ -230,6 +239,8 @@
 	window['timerange'] = timerange_atlas[0];
 
 	window['killOnLeave'] = [
+		'localAtlas',
+		'charts',
 		'is_admin_page',
 		'dash_runtime_data',
 		'timerange',
@@ -258,23 +269,6 @@
 		'renderStats',
 		'renderTasks',
 	];
-
-	/*
-	dash_runtime_data.statsData = [
-		{
-			icon: 'fa-flask',
-			caption: 'sales',
-			amt: 54300,
-		},
-		{
-			icon: 'fa-flask',
-			caption: 'tasks',
-			amt_progress: 3,
-			amt_total: 54300,
-		},
-		...
-	]
-	// */
 
 	// initialiser
 		window['runOnAwake'] = () => {
@@ -314,7 +308,7 @@
 		}
 		window['initdashsetup'] = () => {
 			const step0 = () => {
-				window[fetch_bypass](linkAtlas['get_daily_report'],{t_range: timerange},'POST').then(dta => {
+				window[fetch_bypass](localAtlas['get_daily_report'],{t_range: timerange},'POST').then(dta => {
 					if(!dta.success || !dta.result){
 						throw new Error(dta.message);
 					}
@@ -330,7 +324,7 @@
 				window['daily_report_data'].daily_report.context = timerange;
 				window['daily_report_data'].daily_report_loadtime = new Date();
 
-				window[fetch_bypass](linkAtlas['get_admin_stats'],{t_range: timerange},'POST').then((d) => {
+				window[fetch_bypass](localAtlas['get_admin_stats'],{t_range: timerange},'POST').then((d) => {
 
 					if(d.result){
 						showError(false);
@@ -452,7 +446,7 @@
 				alert_dark('now getting sales chart');
 
 				// get incomplete tasks
-				window[fetch_bypass](linkAtlas['get_sales_chart_data'],{t_range: timerange},'POST').then((d) => {
+				window[fetch_bypass](localAtlas['get_sales_chart_data'],{t_range: timerange},'POST').then((d) => {
 					responseHandler(d,step3,d);
 				}).catch(err => {
 					showError(true,{heading: 'Error getting sales chart data',text: err.message});
@@ -464,7 +458,7 @@
 				dash_runtime_data.charts.salesdata = d.sendme;
 
 				// get samples
-				window[fetch_bypass](linkAtlas['get_samples_chart_data'],{t_range: timerange},'POST').then((d) => {
+				window[fetch_bypass](localAtlas['get_samples_chart_data'],{t_range: timerange},'POST').then((d) => {
 					responseHandler(d,step4,d);
 				}).catch(err => {
 					showError(true,{heading: 'Error getting samples',text: err.message});
@@ -475,7 +469,7 @@
 				dash_runtime_data.charts.samplesdata = d.sendme;
 
 				// get unprocessed samples
-				window[fetch_bypass](linkAtlas['get_visits_chart_data'],{t_range: timerange},'POST').then((d) => {
+				window[fetch_bypass](localAtlas['get_visits_chart_data'],{t_range: timerange},'POST').then((d) => {
 					responseHandler(d,step5,d);
 				}).catch(err => {
 					showError(true,{heading: 'Error getting samples',text: err.message});
@@ -486,7 +480,7 @@
 				dash_runtime_data.charts.visitsdata = d.sendme;
 
 				// get unprocessed samples
-				window[fetch_bypass](linkAtlas['get_income_chart_data'],{t_range: timerange},'POST').then((d) => {
+				window[fetch_bypass](localAtlas['get_income_chart_data'],{t_range: timerange},'POST').then((d) => {
 					responseHandler(d,step6,d);
 				}).catch(err => {
 					showError(true,{heading: 'Error getting samples',text: err.message});
@@ -687,7 +681,7 @@
 				payld.admin_password = n.admin_password;
 				alert_info('resyncing cash reports');
 
-				window[fetch_bypass](linkAtlas['regen_daily_report'],payld,'POST').then((m) => {
+				window[fetch_bypass](localAtlas['regen_daily_report'],payld,'POST').then((m) => {
 					responseHandler(m,final_step,m);
 				})
 			}
@@ -961,3 +955,4 @@
 			render_simpleTable(data);
 		}
 </script>
+
