@@ -242,7 +242,59 @@
 	let userRoles = [];
 	let rec_id = null;
 
+	window['localAtlas'] = {
+		'get_user_roles' : './data/user_roles',
+		'get_user_roles' : './data/user_roles',
+		'roles_endpoint' : './op/user_roles',
+	};
+	window['killOnLeave'] = [
+		'roleop',
+		'userRoles',
+		'rec_id',
+		'populateEditForm',
+		'form_op_update_perms',
+		'form_op_giveall',
+		'renderRoles',
+		'add_role',
+		'edit_role',
+		'delete_role',
+		'refresh_stuff',
+		'form_afterfx',
+		'reinit_stuff',
+	];
+
 	// let afterfx_canrun = true;
+
+	window['runOnAwake'] = () => {
+		alert_info('fetching user roles, please wait...',22);
+
+		const setroles = (d) => {
+			userRoles = d.sendme;
+		}
+
+		window[fetch_bypass_fyls](localAtlas['get_user_roles'],{},'GET').then(d => {
+			// alert_dark('its done getting user roles');
+			clear_alerts();
+			alert_success(d.message);
+			responseHandler(d,setroles,d,true,true);
+			renderRoles();
+			populateEditForm();
+			refreshUI(300);
+		}).catch(err => {
+			console.error(err);
+			alert_danger('error getting user roles');
+			alert_danger(err.message);
+		});
+	};
+
+	window['reinit_stuff'] = () => {
+		if(is_branch_side){
+			refreshlocalAtlas();
+			add_edit_form.action = localAtlas['roles_endpoint'];
+		}
+
+		runOnAwake();
+	}
 
 	function populateEditForm() {
 		const p_box = add_edit_form.querySelector('.permissions_box');
@@ -404,7 +456,7 @@
 				alert_danger('deleted successfully');
 			}
 
-			window[fetch_bypass]('./op/user_roles',{recid: rec_id},'DELETE').then(d => {
+			window[fetch_bypass](localAtlas['roles_endpoint'],{recid: rec_id},'DELETE').then(d => {
 				responseHandler(d,callme,d);
 			}).finally(() => {
 				window['refresh_stuff']();
@@ -413,32 +465,13 @@
 
 		let explain = `
 			this will delete this user role from the database.
-			<br><br>
+			<br>
 			<b>NOTE:</b> if any users are assigned to this role, deleting it will fail
 		`;
 
 		confirmAction('Delete User Role',explain,delRole);
 		// alert_info(e.textContent);
 	}
-
-	// autoruns
-	window['runOnAwake'] = () => {
-		alert_info('fetching user roles, please wait...',22);
-
-		const setroles = (d) => {
-			userRoles = d.sendme;
-		}
-
-		window[fetch_bypass_fyls]('./data/user_roles',{},'GET').then(d => {
-			// alert_dark('its done getting user roles');
-			clear_alerts();
-			alert_success(d.message);
-			responseHandler(d,setroles,d,true,true);
-			renderRoles();
-			populateEditForm();
-			refreshUI(300);
-		});
-	};
 
 	window['refresh_stuff'] = () => {
 		rolesHolder.innerHTML = '';

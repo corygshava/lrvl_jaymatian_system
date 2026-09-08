@@ -51,7 +51,7 @@ abstract class Controller{
 	public $dftres = [
 		"success" => false,
 		'result' => false,
-		"message" => "default",
+		"message" => "authentication Error, try again",
 		"sendme" => null,
 		"runlog" => []
 	];

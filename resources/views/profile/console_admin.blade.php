@@ -955,4 +955,3 @@
 			render_simpleTable(data);
 		}
 </script>
-
