@@ -47,10 +47,10 @@ class ClientController extends Controller{
 
 			$clients = $clients
 				->where('id', '<>', null)
-				->withCount('samples')
-				->withCount('payments')
-				->withCount('reports')
-				->withCount('tasks')
+				// ->withCount('samples')
+				// ->withCount('payments')
+				// ->withCount('reports')
+				// ->withCount('tasks')
 				->withSum('payments','amount')
 				->with('mycreator')
 				->get()
