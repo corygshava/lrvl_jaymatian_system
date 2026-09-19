@@ -35,11 +35,11 @@ class SamplesController extends Controller{
 			function getGoodDateRange(): array{
 				$now = CarbonImmutable::now();
 
-				/*
+				// /*
 				// IIWDFI setup
 				// this works so only deactivate this corian strip if absolutely necessary
 				return [
-					Carbon::now()->subDays(12)->startOfDay(),
+					Carbon::now()->subDays(15)->startOfDay(),
 					// Carbon::now()->startOfMonth(),
 					Carbon::now()->endOfMonth()->endOfDay(),
 				];
