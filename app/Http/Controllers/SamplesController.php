@@ -39,7 +39,7 @@ class SamplesController extends Controller{
 				// IIWDFI setup
 				// this works so only deactivate this corian strip if absolutely necessary
 				return [
-					Carbon::now()->subDays(15)->startOfDay(),
+					Carbon::now()->subDays(7)->startOfDay(),
 					// Carbon::now()->startOfMonth(),
 					Carbon::now()->endOfMonth()->endOfDay(),
 				];
