@@ -63,6 +63,17 @@
 			'Expenditure',
 		];
 
+		window['semantics'] = {
+			"KE" : {
+				"currency" : "KES",
+				"KRA" : "KRA"
+			},
+			"TZ" : {
+				"currency" : "TZS",
+				"KRA" : "TRA"
+			},
+		}
+
 		const min_loadtime = 400;
 	</script>
 
@@ -190,7 +201,7 @@
 				'getreport_img' : './media/getreport/imgs',
 				'getreport_slug' : './media/reports/img',
 
-				'getinvoice_pdf' : './media/getinvoice/pdfs',
+			'getinvoice_pdf' : './media/getinvoice/pdfs',
 				'getinvoice_img' : './media/getinvoice/imgs',
 				'getinvoice_slug' : './media/invoices/img',
 		};
@@ -315,7 +326,7 @@
 			{caption: pageNames['cash_reports'], url: linkAtlas['cash_reports'],icon: iconAtlas['cash_reports'],permissions: 'MANAGE_CASHREPORTS'},
 			{caption: "Business data", url: './ui/biz_data',icon: iconAtlas['bizdata'],permissions: 'MANAGE_BIZDATA'},
 			// {caption: pageNames['verify_file'], url: linkAtlas['verify_file'],icon: iconAtlas['verify_file'],permissions: 'VERIFY_FILES'},
-			// {caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
+			{caption: pageNames['temp_ui'], url: linkAtlas['temp_ui'],icon: 'fa fa-question',permissions: 'VERIFY_FILES'},
 			/*
 			{caption: "test permissions", url: './ui/get_menu',icon: 'fa fa-code'},
 			{caption: "view permissions", url: './my_permissions',icon: 'fa fa-code'},
@@ -401,6 +412,31 @@
 
 			// alert_warning('updating user');
 			// console.log(cur_user);
+			// semantics setup
+			let sems = document.querySelectorAll('[data-sem],[data-semantics]');
+			sems.forEach(s => {
+				if(s.dataset.semantized == undefined){
+					s.dataset.semantized = "yes";
+				} else {
+					return;
+				}
+
+				let sm = s.dataset.sem || s.dataset.semantics;
+				let mysem = semantics[sitedata.country_code];
+				let sem = mysem[sm];
+				let prop = s.dataset.prop || 'innerHTML';
+				let format = s.dataset.format;
+
+				s.dataset.wot = sm;
+
+				if(sem !== undefined){
+					if(format == undefined){
+						s[prop] = `${sem} ${s[prop]}`;
+					} else {
+						s[prop] = format.replaceAll('$',sem);
+					}
+				}
+			})
 		}
 
 		window['toggleSidenav'] = (me,override = undefined) => {

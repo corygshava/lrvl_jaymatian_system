@@ -402,31 +402,31 @@
 					{
 						"caption": "Carried Over",
 						"icon": iconAtlas['cash_reports'],
-						"prefix": 'KES',
+						"prefix": semantics[sitedata.country_code].currency,
 						"amt": formatNumber(fetched.today.carry_over,2),
 					},
 					{
 						"caption": "Total income (today)",
 						"icon": iconAtlas['payments'],
-						"prefix": 'KES',
+						"prefix": semantics[sitedata.country_code].currency,
 						"amt": formatNumber(fetched.today.total_daily_cash,2),
 					},
 					{
 						"caption": "Gross Cash",
 						"icon": iconAtlas['payments'],
-						"prefix": 'KES',
+						"prefix": semantics[sitedata.country_code].currency,
 						"amt": formatNumber(fetched.today.total_cash,2),
 					},
 					{
 						"caption": "Total expenses",
 						"icon": iconAtlas['expenses'],
-						"prefix": 'KES',
+						"prefix": semantics[sitedata.country_code].currency,
 						"amt": formatNumber(fetched.today.expenditure,2),
 					},
 					{
 						"caption": "Total Cash Available",
 						"icon": iconAtlas['expenses'],
-						"prefix": 'KES',
+						"prefix": semantics[sitedata.country_code].currency,
 						"amt": formatNumber(fetched.cash_available,2),
 					},
 				]
@@ -850,7 +850,7 @@
 								<i class="fa ${el.icon}"></i>
 							</div>
 							<div class="stats">
-								<h3 data-subrole="stat_amt">${prf} ${el.amt}</h3>
+								<h3 data-subrole="stat_amt" class="w3-text-red_">${prf} ${el.amt}</h3>
 								<span class="text-muted" data-subrole="stat_cap">${el.caption}</span>
 							</div>
 						</div>

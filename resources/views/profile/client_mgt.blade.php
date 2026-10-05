@@ -520,6 +520,8 @@
 
 	// Initialize the data table with your configuration
 	window['runOnAwake'] = () => {
+		updateSessionUI();
+
 		const initstuff = (m) => {
 			user_roles = m.sendme;
 			user_roles_condensed = [];

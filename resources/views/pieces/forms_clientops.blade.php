@@ -2,7 +2,6 @@
 	<i class="fas fa-plus"></i>
 	Add New
 </button>
-
 <div class="modal fade" id="add_edit_modal" tabindex="-1" role="dialog" aria-labelledby="add_edit_title" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content themeround borderless">
@@ -53,8 +52,8 @@
 
 					<div class="input-group-custom">
 						<div class="form-group">
-							<label class="form-label" for="kra_pin">KRA PIN <span style="opacity: 0.6;">(optional)</span></label>
-							<input type="text" class="form-control-custom" id="kra_pin" name="kra_pin" placeholder="enter KRA PIN">
+							<label class="form-label" for="kra_pin" data-sem="KRA">PIN <span style="opacity: 0.6;">(optional)</span></label>
+							<input type="text" class="form-control-custom" id="kra_pin" name="kra_pin" placeholder="enter KRA PIN" data-sem="KRA" data-prop="placeholder" data-format="enter $ PIN here">
 						</div>
 					</div>
 
@@ -78,7 +77,6 @@
 	<i class="fas fa-plus"></i>
 	Change password
 </button>
-
 <div class="modal fade" id="change_credit_modal" tabindex="-1" role="dialog" aria-labelledby="change_credit_title" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content themeround borderless">
@@ -144,7 +142,6 @@
 	<i class="fas fa-plus"></i>
 	Edit payment data
 </button>
-
 <div class="modal fade" id="edit_paydata_modal" tabindex="-1" role="dialog" aria-labelledby="edit_paydata_title" aria-hidden="true" style="z-index: 102;">
 	<div class="modal-dialog modal-md" role="document">
 		<div class="modal-content themeround borderless">
@@ -255,7 +252,6 @@
 
 	window['add_edit_client'] = (el) => {
 		el.bizdata_pricing.value = JSON.stringify(bizdata.pricing_data);
-
 		sendform(el);
 	}
 	window['edit_paydata_client'] = (el) => {

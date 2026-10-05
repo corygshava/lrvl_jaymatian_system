@@ -72,7 +72,7 @@
 						</div>
 						<div class="stat">
 							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Credit Balance</small>
-							<span class="text-success font-weight-bold">KES <span id="credit-balance">0.00</span></span>
+							<span class="text-success font-weight-bold" data-sem="currency"><span id="credit-balance">0.00</span></span>
 						</div>
 						<div class="stat">
 							<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Member Since</small>
@@ -202,7 +202,7 @@
 						<div class="collapse panelbg distance-sm spacy-sm" id="additionalInfo">
 							<div class="row">
 								<div class="col-md-6">
-									<small class="text-muted">KRA PIN</small>
+									<small class="text-muted" data-sem="KRA">PIN</small>
 									<p class="font-weight-bold mb-2" id="kra-pin-detail">--</p>
 								</div>
 								<div class="col-md-6">
