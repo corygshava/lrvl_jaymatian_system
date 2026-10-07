@@ -693,8 +693,7 @@ class WorksheetsController extends Controller{
 
 							$in += 1;
 						}
-						$_rlg(['newsetup' => $newones]);
-
+						$_rlg(['newones' => $newones]);
 						$finres = [];
 
 						// working with the new setup after removing the reference materials from
@@ -714,7 +713,8 @@ class WorksheetsController extends Controller{
 								...$xts,
 							];
 
-							// $_rlg(['final_res_start' => $n_res]);
+							$_rlg(['final_res_start' => $n_res]);
+							$_rlg(['final results arr' => $arr]);
 							$au_results = [];
 
 							// calculate everything and get the fixed item record
