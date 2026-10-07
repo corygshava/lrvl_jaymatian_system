@@ -740,8 +740,8 @@
 			</tr>
 			<tr>
 				<td>
-					<b>Company contact: </b>
-					<span>${processNumber(bizdeets.phone)}</span>
+					<b>Client contact: </b>
+					<span>${processNumber(s_data.owner.client_contact)}</span>
 				</td>
 				<td>
 					<b>Sample Type: </b>
