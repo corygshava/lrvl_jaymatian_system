@@ -16,6 +16,7 @@ tr:has(.pripicker:checked),tr:has(.pripicker:checked):hover{
 }
 tr:has(.pripicker:checked) .secpicker{
 	opacity: 0;
+	pointer-events: none;
 }
 tr:has(.secpicker:checked){
 	background: var(--warning-glass) !important;

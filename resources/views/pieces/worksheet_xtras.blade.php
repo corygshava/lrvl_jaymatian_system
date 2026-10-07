@@ -170,8 +170,8 @@
 				`<input type="text" oninput="update_readings_preview('${x}')" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
 				` : `<span>${_data.remarks || "--"}</span>`;
 
-			let xtracheck = is_carbon && sitedata.country_code == "TZ" ? `
-				<input type="radio" name="seconder_${givenid}" class="secpicker" data-subrole="secondary_marker">
+			let xtracheck = is_carbon && sitedata.country_code == "TZ" && !is_reference ? `
+				<input type="radio" name="seconder_${givenid}" class="secpicker ${cur_sheet.is_published ? 'is_ghost' : ''}" data-subrole="secondary_marker" ${cur_sheet.is_published ? (_data.is_secondary ? 'checked' : '') : ''}>
 			` : '';
 
 			return `
