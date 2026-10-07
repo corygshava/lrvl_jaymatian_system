@@ -640,7 +640,7 @@
 			stats.innerHTML = `
 				<div class="stat">
 					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Client Credit</small>
-					<span class="font-weight-bold" id="client-name">KES ${(Math.floor(client.credit_balance)).toLocaleString()}</span>
+					<span class="font-weight-bold" id="client-name">${c_currency} ${(Math.floor(client.credit_balance)).toLocaleString()}</span>
 				</div>
 				<div class="stat">
 					<small class="text-muted d-block text-uppercase font-weight-bold" style="font-size: 0.7rem;">Samples</small>
@@ -790,7 +790,7 @@
 						field: 'amount',
 						cap: 'Amount',
 						show: (v) => {
-							return `<b>KES ${Math.floor(v).toLocaleString()}</b>`;
+							return `<b>${c_currency} ${Math.floor(v).toLocaleString()}</b>`;
 						}
 					},
 					{
