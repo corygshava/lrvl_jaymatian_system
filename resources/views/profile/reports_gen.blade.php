@@ -1348,8 +1348,8 @@
 				el.sampleid.value = report_runtime_data.sampleData.id;
 				el.admin_password_mine.value = d.admin_password;
 				el.bizdata.value = JSON.stringify(bizdata);
-				pick_step(3);
 
+				pick_step(3);
 				sendform(el,step3,step2b);
 			}
 
