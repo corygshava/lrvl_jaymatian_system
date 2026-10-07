@@ -73,6 +73,7 @@
 				"KRA" : "TRA"
 			},
 		}
+		window['c_currency'] = 'KT';
 
 		const min_loadtime = 400;
 	</script>
@@ -201,7 +202,7 @@
 				'getreport_img' : './media/getreport/imgs',
 				'getreport_slug' : './media/reports/img',
 
-			'getinvoice_pdf' : './media/getinvoice/pdfs',
+				'getinvoice_pdf' : './media/getinvoice/pdfs',
 				'getinvoice_img' : './media/getinvoice/imgs',
 				'getinvoice_slug' : './media/invoices/img',
 		};
@@ -436,7 +437,9 @@
 						s[prop] = format.replaceAll('$',sem);
 					}
 				}
-			})
+			});
+
+			c_currency = semantics[sitedata.country_code].currency;
 		}
 
 		window['toggleSidenav'] = (me,override = undefined) => {

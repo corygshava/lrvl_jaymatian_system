@@ -361,40 +361,6 @@
 
 			// package the data for sending
 			rows.forEach((r,id) => {
-				/*
-					<tr>
-						<td>
-							<input type="radio" class="" data-subrole="final_marker" checked="" data-myid="1" data-mygroup="Markle 0" name="radio_Markle 0" value="1">
-						</td>
-						<td>2</td>
-						<td>
-							<div>
-						<span><b></b> Markle 0</span>
-					</div>
-						</td>
-						<td>
-							<div>
-								<input type="text" class="form-control-custom" data-subrole="weight" name="weight_1" data-myid="1" placeholder="weight 2" value="" required="">
-							</div>
-						</td>
-						<td>
-							<div>
-								<input type="text" class="form-control-custom" data-subrole="au_reading" name="au_reading_1" data-myid="1" placeholder="au_reading 2" value="" required="">
-							</div>
-						</td>
-						<td>
-							<div>
-								<input type="text" class="form-control-custom" data-subrole="cu_reading" name="cu_reading_1" data-myid="1" placeholder="cu_reading 2" value="" required="">
-							</div>
-						</td>
-						<td>
-							<div>
-								<input type="text" class="form-control-custom" data-subrole="remarks" name="remarks_1" data-myid="1" placeholder="remarks 2" value="">
-							</div>
-						</td>
-					</tr>
-				*/
-
 				let is_ref = false;
 
 				if(r.dataset.refcol !== undefined){
@@ -427,12 +393,12 @@
 				let outdata = {
 					is_final: marker,
 					is_secondary: s_marker,
+					is_reference: is_ref,
 					sample_id: sample_id,
 					weight: weight,
 					au_reading: au_reading,
 					cu_reading: cu_reading,
 					remarks: rmks,
-					is_reference: is_ref,
 				};
 
 				// let val = npt.value;

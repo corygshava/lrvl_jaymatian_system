@@ -544,7 +544,7 @@
 						data: 'carry_over',
 						sortable: true,
 						render: function(value) {
-							return `<strong>KES ${formatNumber(Number(value),2)}</strong>`;
+							return `<strong>${c_currency} ${formatNumber(Number(value),2)}</strong>`;
 						}
 					},
 					{
@@ -552,7 +552,7 @@
 						data: 'total_balance_forward',
 						sortable: true,
 						render: function(value) {
-							return `<strong>KES ${formatNumber(Number(value),2)}</strong>`;
+							return `<strong>${c_currency} ${formatNumber(Number(value),2)}</strong>`;
 						}
 					},
 					{
@@ -563,7 +563,7 @@
 							let val = row.total_balance_forward - row.carry_over;
 							let cls = val <= 0 ? 'w3-text-red' : 'themetxt';
 
-							return `<strong class="${cls}">KES ${formatNumber(Number(val),2)}</strong>`;
+							return `<strong class="${cls}">${c_currency} ${formatNumber(Number(val),2)}</strong>`;
 						}
 					},
 					{

@@ -499,7 +499,7 @@
 						data: 'amount',
 						sortable: true,
 						render: function(value) {
-							return `<strong>KES ${formatNumber(value,2)}</strong>`;
+							return `<strong>${c_currency} ${formatNumber(value,2)}</strong>`;
 						}
 					},
 					{
