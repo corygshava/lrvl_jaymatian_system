@@ -14,6 +14,7 @@ use Mavinoo\Batch\Batch;
 
 class WorksheetsController extends Controller{
 	public static $readings_divider = 'RPT ';
+
 	// get ops
     public function get_all(Request $req){
 		$res = $this->dftres;
@@ -643,7 +644,7 @@ class WorksheetsController extends Controller{
 							// $nn += 1;
 						}
 					} else {
-					// revamp to cater for the new result parameter
+						// revamp to cater for the new result parameter
 						// group readings based on their sample id
 						$_rlg('grouping readings');
 						$grouped = [];
@@ -702,6 +703,7 @@ class WorksheetsController extends Controller{
 							// $_rlg(['in_res' => $ns]);
 							// $_rlg('processing parsed data');
 							$picked = $ns;
+							$_rlg('running the calculation for the first');
 							$n_res =  $calculater($ns);
 							$cols = array_keys($n_res);
 							$xts = isset($ns['xtras']) ? $ns['xtras'] : [];
@@ -713,9 +715,11 @@ class WorksheetsController extends Controller{
 								...$xts,
 							];
 
-							$_rlg(['final_res_start' => $n_res]);
+							// $_rlg(['final_res_start' => $n_res]);
 							$_rlg(['final results arr' => $arr]);
 							$au_results = [];
+
+							$sec_res = null;
 
 							// calculate everything and get the fixed item record
 							foreach($arr as $ar){
@@ -725,8 +729,12 @@ class WorksheetsController extends Controller{
 								if($ar['is_final']){
 									$n_res = $mres;
 									// $_rlg(['[indata]' => 'is final']);
-								} else {
-									// $_rlg(['[indata]' => 'not final']);
+								} elseif(isset($ar['is_secondary'])) {
+									if($ar['is_secondary']){
+										$r_id = $ar['sample_id'];
+										$_rlg(['[indata]' => "[{$r_id}] secondary result found"]);
+										$sec_res = $mres;
+									}
 								}
 
 								// $_rlg(['indata_form' => $tmp_r]);
@@ -734,16 +742,22 @@ class WorksheetsController extends Controller{
 							}
 
 							// $_rlg(['final_res_end' => $n_res]);
+							$_rlg(['secondary results' => $sec_res]);
 							$_rlg(['au_ppms' => $au_results]);
 
 							$stype = strtolower($thesample->sample_type);
 							if($stype != 'solution' && $stype != 'carbon activity'){
 								if($stype == 'carbon'){
-									// run the processing logic for carbon
-									// do some black magic to sort the arrays in an order that wirks
-									$sorted_au = $sort_this_mess($au_results);
-									// $n_res['au_ppm'] = $sorted_au[1];
-									$n_res['au_ppm_2'] = $sorted_au[2];
+									// check if there is a secondary result to avoid the unnecessary black magic
+									if($sec_res != null){
+										$n_res['au_ppm_2'] = $sec_res['au_ppm'];
+									}else {
+										// run the processing logic for carbon
+										// do some black magic to sort the arrays in an order that wirks
+										$sorted_au = $sort_this_mess($au_results);
+										// $n_res['au_ppm'] = $sorted_au[1];
+										$n_res['au_ppm_2'] = $sorted_au[2];
+									}
 								} else {
 									// just use the second gold value as the set thing
 									$n_res['au_ppm'] = $au_results[1];
