@@ -153,6 +153,7 @@
 			let toggle_radio = !show_radio ? `opacity: 0;` : '';
 			let toggle_editable = cur_sheet.is_published ? 'pointer-events: none;' : '';
 			let is_special = cur_sheet.sample_type.toLowerCase() == 'carbon activity';
+			let is_carbon = cur_sheet.sample_type.toLowerCase() == 'carbon';
 			let noweight = cur_sheet.sample_type.toLowerCase() == 'solution';
 			let weightval = noweight ? '--' : _data.weight == undefined ? "!!" : _data.weight;
 
@@ -169,10 +170,15 @@
 				`<input type="text" oninput="update_readings_preview('${x}')" class="form-control-custom" data-subrole="remarks" name="remarks_${x}" data-myid="${x}" placeholder="remarks ${n}" data-myval="${_data.remarks}" value="${_data.remarks || ""}">
 				` : `<span>${_data.remarks || "--"}</span>`;
 
+			let xtracheck = is_carbon && sitedata.country_code == "TZ" ? `
+				<input type="radio" name="seconder_${givenid}" class="secpicker" data-subrole="secondary_marker">
+			` : '';
+
 			return `
 				<tr ${is_reference ? 'data-refcol' : ''} data-rowid="${x}" data-subrole="readings_entry">
 					<td>
-						<input type="radio" class="" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}" style="${toggle_radio}${toggle_editable}">
+						<input type="radio" class="pripicker" data-subrole="final_marker" ${is_final ? 'checked' : ''} data-myid="${x}" data-mygroup="${givenid}" name="radio_${givenid}" value="${x}" style="${toggle_radio}${toggle_editable}">
+						${xtracheck}
 					</td>
 					<td>${n}</td>
 					<td>
@@ -350,6 +356,9 @@
 
 		const step1 = () => {
 			let readings = [];
+			let wegood = true;
+			let reason = "";
+
 			// package the data for sending
 			rows.forEach((r,id) => {
 				/*
@@ -393,6 +402,9 @@
 				}
 				let mymarker = r.querySelector('[data-subrole="final_marker"]');
 				let marker = mymarker == undefined ? false : mymarker.checked;
+				let secmarker = r.querySelector('[data-subrole="secondary_marker"]');
+				let s_marker = secmarker == undefined ? false : secmarker.checked;
+
 				let weight = r.querySelector('[data-subrole="weight"]').value;
 				let au_reading = r.querySelector('[data-subrole="au_reading"]').value;
 				let cu_reading = r.querySelector('[data-subrole="cu_reading"]').value;
@@ -405,9 +417,16 @@
 					return;
 				}
 
+				if(marker && s_marker){
+					wegood = false;
+					reason = `[${sample_id}] secondary result error!`;
+					return;
+				}
+
 				let rmks = remarks !== '' ? remarks : null;
 				let outdata = {
 					is_final: marker,
+					is_secondary: s_marker,
 					sample_id: sample_id,
 					weight: weight,
 					au_reading: au_reading,
@@ -430,7 +449,12 @@
 
 			console.log(send_pack);
 			alert_silent(send_pack);
-			step2();
+
+			if(wegood){
+				step2();
+			} else {
+				alert_danger(reason,12);
+			}
 		};
 
 

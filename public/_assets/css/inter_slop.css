@@ -11,8 +11,14 @@
 input[type="radio"]:checked{
 	scale: 1.5;
 }
-tr:has(input[type="radio"]:checked),tr:has(input[type="radio"]:checked):hover{
+tr:has(.pripicker:checked),tr:has(.pripicker:checked):hover{
 	background: var(--lightcolor2);
+}
+tr:has(.pripicker:checked) .secpicker{
+	opacity: 0;
+}
+tr:has(.secpicker:checked){
+	background: var(--warning-glass) !important;
 }
 
 /* scroll bars */
