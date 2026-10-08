@@ -815,11 +815,11 @@
 
 			// top finances section
 				let toshow_1 = {
-					// "total_debitors" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
-					"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
-					"income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
-					"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
-					"total_daily_income" : `<b>KES ${formatNumber(drd.total_daily_cash)}</b>`,
+					// "total_debitors" : `<b>${c_currency} ${formatNumber(drd.total_owed)}</b>`,
+					"carry_over" : `<b>${c_currency} ${formatNumber(drd.carry_over)}</b>`,
+					"income" : `<b>${c_currency} ${formatNumber(drd.total_income)}</b>`,
+					"cash_from_debtors" : `<b>${c_currency} ${formatNumber(drd.cash_from_debtors)}</b>`,
+					"total_daily_income" : `<b>${c_currency} ${formatNumber(drd.total_daily_cash)}</b>`,
 				};
 				let finances_outht = `
 					<table class="mytable">
@@ -918,9 +918,9 @@
 				`;
 
 				toshow_1 = {
-					"total_cash" : `<b class="themetxt">KES ${formatNumber(drd.total_cash)}</b>`,
-					"expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
-					"<b>total_balance_available</b>" : `<b class="w3-text-green">KES ${formatNumber(drd.total_balance_forward)}</b>`,
+					"total_cash" : `<b class="themetxt">${c_currency} ${formatNumber(drd.total_cash)}</b>`,
+					"expenditure" : `<b class="w3-text-orange">${c_currency} ${formatNumber(drd.expenditure)}</b>`,
+					"<b>total_balance_available</b>" : `<b class="w3-text-green">${c_currency} ${formatNumber(drd.total_balance_forward)}</b>`,
 				};
 
 				Object.keys(toshow_1).forEach(f => {
@@ -965,8 +965,8 @@
 								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
 								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align w3-hide"><strong>${formatNumber(f.invoices_count)}</strong></td>
-								<td class="w3-right-align w3-hide"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
-								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
+								<td class="w3-right-align w3-hide"><strong>${c_currency} ${formatNumber(f.credit_balance,2)}</strong></td>
+								<td class="w3-right-align"><strong>${c_currency} ${formatNumber(f.payment_amount)}</strong></td>
 							</tr>
 						`;
 
@@ -976,8 +976,8 @@
 					debtpay_outht += `
 							<tr>
 								<td colspan="1"><b style="font-size: 1.1rem;">Total</b></td>
-								<td class="themetxt w3-right-align w3-hide"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
-								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
+								<td class="themetxt w3-right-align w3-hide"><strong>${c_currency} ${formatNumber(tot_balance,2)}</strong></td>
+								<td class="themetxt w3-right-align"><strong>${c_currency} ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -1023,7 +1023,7 @@
 								<td><span style="/*font-size: 1.1rem;*/">${f.client_name}</span></td>
 								<td class="w3-right-align w3-hide"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
-								<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+								<td><strong>${c_currency} ${formatNumber(f.credit_balance,2)}</strong></td>
 							</tr>
 						`;
 					});
@@ -1031,7 +1031,7 @@
 					debtors_outht += `
 							<tr>
 								<td colspan="2"><b style="font-size: 1.1rem;">Total</b></td>
-								<td><strong class="themetxt">KES ${formatNumber(tdt, 2)}</strong></td>
+								<td><strong class="themetxt">${c_currency} ${formatNumber(tdt, 2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -1111,14 +1111,14 @@
 			} : {};
 			let toshow_1 = {
 				...xtra,
-				"total_owed" : `<b>KES ${formatNumber(drd.total_owed)}</b>`,
-				"carry_over" : `<b>KES ${formatNumber(drd.carry_over)}</b>`,
-				"total_income" : `<b>KES ${formatNumber(drd.total_income)}</b>`,
-				"cash_from_debtors" : `<b>KES ${formatNumber(drd.cash_from_debtors)}</b>`,
-				"total_daily_cash" : `<b>KES ${formatNumber(drd.total_daily_cash)}</b>`,
-				"total_cash" : `<b class="themetxt">KES ${formatNumber(drd.total_cash)}</b>`,
-				"expenditure" : `<b class="w3-text-orange">KES ${formatNumber(drd.expenditure)}</b>`,
-				"total_balance_available" : `<b class="w3-text-green">KES ${formatNumber(drd.total_balance_forward)}</b>`,
+				"total_owed" : `<b>${c_currency} ${formatNumber(drd.total_owed)}</b>`,
+				"carry_over" : `<b>${c_currency} ${formatNumber(drd.carry_over)}</b>`,
+				"total_income" : `<b>${c_currency} ${formatNumber(drd.total_income)}</b>`,
+				"cash_from_debtors" : `<b>${c_currency} ${formatNumber(drd.cash_from_debtors)}</b>`,
+				"total_daily_cash" : `<b>${c_currency} ${formatNumber(drd.total_daily_cash)}</b>`,
+				"total_cash" : `<b class="themetxt">${c_currency} ${formatNumber(drd.total_cash)}</b>`,
+				"expenditure" : `<b class="w3-text-orange">${c_currency} ${formatNumber(drd.expenditure)}</b>`,
+				"total_balance_available" : `<b class="w3-text-green">${c_currency} ${formatNumber(drd.total_balance_forward)}</b>`,
 			};
 			let deets_1_outht = '';
 
@@ -1154,12 +1154,12 @@
 
 			// cash flow subsection
 			let toshow_3 = {
-				"income via mpesa" : `<b>KES ${formatNumber(drd.cash_data["income mpesa"])}</b>`,
-				"income via cash" : `<b>KES ${formatNumber(drd.cash_data["income cash"])}</b>`,
-				"debt paid via mpesa" : `<b>KES ${formatNumber(drd.cash_data["debt mpesa"])}</b>`,
-				"debt paid via cash" : `<b>KES ${formatNumber(drd.cash_data["debt cash"])}</b>`,
-				"total mpesa" : `<b>KES ${formatNumber(drd.cash_data["total mpesa"])}</b>`,
-				"total cash" : `<b>KES ${formatNumber(drd.cash_data["total cash"])}</b>`,
+				"income via mpesa" : `<b>${c_currency} ${formatNumber(drd.cash_data["income mpesa"])}</b>`,
+				"income via cash" : `<b>${c_currency} ${formatNumber(drd.cash_data["income cash"])}</b>`,
+				"debt paid via mpesa" : `<b>${c_currency} ${formatNumber(drd.cash_data["debt mpesa"])}</b>`,
+				"debt paid via cash" : `<b>${c_currency} ${formatNumber(drd.cash_data["debt cash"])}</b>`,
+				"total mpesa" : `<b>${c_currency} ${formatNumber(drd.cash_data["total mpesa"])}</b>`,
+				"total cash" : `<b>${c_currency} ${formatNumber(drd.cash_data["total cash"])}</b>`,
 			};
 			let deets_3_outht = '';
 
@@ -1246,8 +1246,8 @@
 								<td><span style="/* font-size: 1.1rem; */">${f.client_name}</span></td>
 								<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
-								<td class="w3-right-align"><strong>KES ${formatNumber(f.payment_amount)}</strong></td>
-								<td class="w3-right-align"><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+								<td class="w3-right-align"><strong>${c_currency} ${formatNumber(f.payment_amount)}</strong></td>
+								<td class="w3-right-align"><strong>${c_currency} ${formatNumber(f.credit_balance,2)}</strong></td>
 							</tr>
 						`;
 
@@ -1257,8 +1257,8 @@
 					debtpay_outht += `
 							<tr>
 								<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
-								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
-								<td class="themetxt w3-right-align"><strong>KES ${formatNumber(tot_balance,2)}</strong></td>
+								<td class="themetxt w3-right-align"><strong>${c_currency} ${formatNumber(drd.cash_from_debtors,2)}</strong></td>
+								<td class="themetxt w3-right-align"><strong>${c_currency} ${formatNumber(tot_balance,2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -1298,7 +1298,7 @@
 								<td><span style="font-size: 1.1rem;">${f.client_name}</span></td>
 								<td class="w3-right-align"><strong>${processNumber(f.client_contact)}</strong></td>
 								<td class="w3-right-align"><strong>${formatNumber(f.invoices_count)}</strong></td>
-								<td><strong>KES ${formatNumber(f.credit_balance,2)}</strong></td>
+								<td><strong>${c_currency} ${formatNumber(f.credit_balance,2)}</strong></td>
 							</tr>
 						`;
 					});
@@ -1306,7 +1306,7 @@
 					debtors_outht += `
 							<tr>
 								<td colspan="3"><b style="font-size: 1.1rem;">Total</b></td>
-								<td><strong class="themetxt">KES ${formatNumber(drd.total_owed,2)}</strong></td>
+								<td><strong class="themetxt">${c_currency} ${formatNumber(drd.total_owed,2)}</strong></td>
 							</tr>
 						</tbody>
 					</table>
