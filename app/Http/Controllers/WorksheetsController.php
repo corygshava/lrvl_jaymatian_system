@@ -376,10 +376,10 @@ class WorksheetsController extends Controller{
 		$alldata = $req->all();
 
 		// /*
-		$passed = $req->validate([
-			'sample_id' => ['required','numeric'],
-			'readings' => ['required','array'],
-		]);
+			$passed = $req->validate([
+				'sample_id' => ['required','numeric'],
+				'readings' => ['required','array'],
+			]);
 		// */
 
 		$update_runlog = function($wot) use (&$res){
@@ -521,8 +521,9 @@ class WorksheetsController extends Controller{
 
 							$top = ($i - $a);
 							$bottom = ($i - $v);
-							if($bottom > 0){
+							if($bottom == 0){
 								$clc = (float) $top / $bottom;
+								$update_runlog("calculated");
 							}
 							$calc_activity = $clc * 85;
 
