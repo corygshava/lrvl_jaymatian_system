@@ -443,7 +443,7 @@ class WorksheetsController extends Controller{
 					$results = [];
 
 					// save readings first
-					$mysheet = Worksheet::where('sample_id',$s_id)->first();
+					$mysheet = Worksheet::query()->where('sample_id',$s_id)->first();
 
 					if($mysheet == null){
 						throw new \Exception("Worksheet not found", 1);
