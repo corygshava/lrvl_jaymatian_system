@@ -409,6 +409,8 @@ class WorksheetsController extends Controller{
 			$s_id = $passed['sample_id'];
 			$s_readings = $passed['readings'];
 			$mysheet = [];
+			$cmdt = self::commondata();
+			$sitedata = $cmdt['sitedata'];
 
 			$thesample = Sample::query()
 				->where('id',$s_id)
@@ -462,7 +464,7 @@ class WorksheetsController extends Controller{
 					$mysheet->save();
 
 					// isolated calculater based functions
-					$calculater = function($r) use($thesample, $user, $s_id, $mysheet, $_rlg, $update_runlog) {
+					$calculater = function($r) use($thesample, $user, $s_id, $mysheet, $_rlg, $update_runlog, $sitedata) {
 						$tmp_rec = [
 							'task_id' => $thesample->task_id,
 							'sample_id' => $s_id,
@@ -509,7 +511,7 @@ class WorksheetsController extends Controller{
 								]);
 							// */
 						};
-						$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$update_runlog,&$calc_activity){
+						$calculate_carbon_activity = function() use(&$weight, &$au_reading, &$cu_reading, &$calc_au_ppm, &$calc_cu_ppm,&$update_runlog,&$calc_activity, $sitedata){
 							$act = $weight;
 							$virgin = $au_reading;
 							$initial = $cu_reading;
@@ -518,14 +520,22 @@ class WorksheetsController extends Controller{
 							$v = $virgin;
 							$a = $act;
 							$clc = 0;
+							$mul = 85;
 
 							$top = ($i - $a);
 							$bottom = ($i - $v);
+
+							if(strtolower($sitedata['branch_name']) == "saza"){
+								$top = ($i - $v);
+								$bottom = ($i - $a);
+								$mul = 98;
+							}
+
 							if($bottom != 0){
 								$clc = (float) $top / $bottom;
 								$update_runlog("calculated");
 							}
-							$calc_activity = $clc * 85;
+							$calc_activity = $clc * $mul;
 
 							// /*
 							$update_runlog("top: ($i - $a) = $top");
