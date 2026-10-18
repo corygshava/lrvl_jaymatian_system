@@ -527,6 +527,14 @@
 
 			let top = (i - a).toFixed(3);
 			let bottom = (i - v).toFixed(3);
+			let mul = 85;
+
+			if(sitedata.branch_name.toLowerCase() == "saza"){
+				top = (i - v).toFixed(3);
+				bottom = (i - a).toFixed(3);
+				mul = 98;
+			}
+
 			let clc = top / bottom;
 
 			// console.log(`(i - a) => (${i} - ${a}) => ${top}`)
@@ -534,7 +542,7 @@
 			// console.log(`calc => (top / bottom) => (${top} / ${bottom}) => ${clc}`)
 			// console.log(`act => (calc * 90) => (${clc} * 90) => ${clc * 85}`)
 
-			activity = clc * 85;
+			activity = clc * mul;
 		};
 
 		let stype = typ.toLowerCase();
