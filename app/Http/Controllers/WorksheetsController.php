@@ -528,7 +528,7 @@ class WorksheetsController extends Controller{
 							if(strtolower($sitedata['branch_name']) == "saza"){
 								$top = ($i - $v);
 								$bottom = ($i - $a);
-								$mul = 98;
+								$mul = 95;
 							}
 
 							if($bottom != 0){

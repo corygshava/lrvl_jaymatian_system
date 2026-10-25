@@ -532,7 +532,7 @@
 			if(sitedata.branch_name.toLowerCase() == "saza"){
 				top = (i - v).toFixed(3);
 				bottom = (i - a).toFixed(3);
-				mul = 98;
+				mul = 95;
 			}
 
 			let clc = top / bottom;
