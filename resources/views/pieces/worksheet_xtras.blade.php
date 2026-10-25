@@ -517,9 +517,9 @@
 			cu_ppm = cu_reading * 100;
 		};
 		$calculate_carbon_activity = () => {
-			let act = weight;
+			let initial = weight;
+			let act = au_reading;
 			let virgin = cu_reading;
-			let initial = au_reading;
 
 			let i = Number(initial);
 			let v = Number(virgin);
