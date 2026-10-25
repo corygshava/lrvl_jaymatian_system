@@ -518,8 +518,8 @@
 		};
 		$calculate_carbon_activity = () => {
 			let act = weight;
-			let virgin = au_reading;
-			let initial = cu_reading;
+			let virgin = cu_reading;
+			let initial = au_reading;
 
 			let i = Number(initial);
 			let v = Number(virgin);
