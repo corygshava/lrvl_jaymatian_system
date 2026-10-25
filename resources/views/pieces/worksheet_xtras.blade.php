@@ -530,8 +530,8 @@
 			let mul = 85;
 
 			if(sitedata.branch_name.toLowerCase() == "saza"){
-				top = (i - v).toFixed(3);
-				bottom = (i - a).toFixed(3);
+				// top = (i - v).toFixed(3);
+				// bottom = (i - a).toFixed(3);
 				mul = 95;
 			}
 
