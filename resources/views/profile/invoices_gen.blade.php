@@ -664,7 +664,7 @@
 
 		_dta.forEach(d => {
 			total += Number(d.balance);
-		})
+		});
 
 		agg = {
 			total: total.toFixed(2),
@@ -842,6 +842,7 @@
 			</tr>
 		`;
 		resultsguy.innerHTML = outht;
+		// let c_currency = 
 
 		invoice_summary.innerHTML = `
 			<h3 class="heading">Payment Details</h3>
@@ -856,7 +857,7 @@
 						<strong>Total Due</strong>
 					</div>
 					<div>
-						<strong class="h4 themetxt">KES ${formatNumber(agg.total)}</strong>
+						<strong class="h4 themetxt" data-sem="currency">${c_currency} ${formatNumber(agg.total)}</strong>
 					</div>
 				</div>
 			</div>
