@@ -725,6 +725,7 @@
 		taskinfo.classList.add('smallerCells');
 
 		client_whatsapp.dataset.number = s_data.owner.client_contact;
+		let s_type = s_data.sample_type.toLowerCase() == 'carbon activity' ? 'carbon' : s_data.sample_type;
 
 		taskinfo.innerHTML = `
 			<tr>
@@ -745,7 +746,7 @@
 				</td>
 				<td>
 					<b>Sample Type: </b>
-					<span>${s_data.sample_type}</span>
+					<span>${s_type}</span>
 				</td>
 			</tr>
 			<tr>
